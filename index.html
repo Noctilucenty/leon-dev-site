@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Leon Dev — Custom Software &amp; AI for Your Business | Bay Area</title>
+<meta name="description" content="Custom websites, mobile apps, AI agents and automation built around how your business actually works. Fixed quotes, weekly demos, you own the code. Hayward, CA — remote worldwide.">
+<meta name="theme-color" content="#08080a">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://leondev.example/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Leon Dev — Custom Software &amp; AI for Your Business">
+<meta property="og:description" content="Websites, apps, AI agents and automation. Built for your business, not a template.">
+<meta property="og:image" content="assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Caveat:wght@500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Leon Dev — Software & AI Solutions",
+  "description": "Custom websites, mobile apps, AI agents, and business automation for small and growing businesses.",
+  "areaServed": ["San Francisco Bay Area", "United States", "Remote"],
+  "address": { "@type": "PostalAddress", "addressLocality": "Hayward", "addressRegion": "CA", "addressCountry": "US" },
+  "email": "leondragon3798@gmail.com",
+  "telephone": "+1-510-826-7735",
+  "founder": { "@type": "Person", "name": "Leon Kelvin Li" },
+  "priceRange": "$$"
+}
+</script>
+</head>
+<body>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<g id="i-base" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"></g>
+</defs>
+<symbol id="ic-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></symbol>
+<symbol id="ic-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14-4.5L4 9"/><path d="M4 13a8 8 0 0 0 14 4.5L20 15"/><path d="M4 4v5h5M20 20v-5h-5"/></symbol>
+<symbol id="ic-mobile" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></symbol>
+<symbol id="ic-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2.2l2 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.5L20.5 8H6"/><circle cx="10" cy="20" r="1.2"/><circle cx="17.5" cy="20" r="1.2"/></symbol>
+<symbol id="ic-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8.5 3v4M15.5 3v4"/><path d="M8 14h2M8 17h2M14 14h2"/></symbol>
+<symbol id="ic-user" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></symbol>
+<symbol id="ic-card" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6 15h3.5"/></symbol>
+<symbol id="ic-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 5h10.5l-1.8 3.4L16.5 12H6"/></symbol>
+<symbol id="ic-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6.2 3.5h3l1.5 4-2 1.4a12.5 12.5 0 0 0 6.4 6.4l1.4-2 4 1.5v3a2 2 0 0 1-2.2 2A17.5 17.5 0 0 1 4.2 5.7a2 2 0 0 1 2-2.2Z"/></symbol>
+<symbol id="ic-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 12.5c0 4-3.8 7-8.5 7a10 10 0 0 1-2.8-.4L4 21l1.4-3.6A6.7 6.7 0 0 1 3.5 12.5c0-4 3.8-7 8.5-7s8.5 3 8.5 7Z"/><path d="M9 12h.01M12 12h.01M15 12h.01"/></symbol>
+<symbol id="ic-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8.4 4.3 4 4.4v13.2c4.4-.1 6.5.6 8 2.1 1.5-1.5 3.6-2.2 8-2.1V4.4c-4.4-.1-6.5.6-8 2.1Z"/><path d="M12 6.5v13.2"/></symbol>
+<symbol id="ic-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7.5A2.5 2.5 0 0 0 5 5.5v13A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V8Z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/></symbol>
+<symbol id="ic-video" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="13" height="12" rx="2.5"/><path d="M15.5 11l6-3.2v8.4l-6-3.2Z"/></symbol>
+<symbol id="ic-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7.5 3v5.4c0 4.4-3 8.2-7.5 9.6-4.5-1.4-7.5-5.2-7.5-9.6V6Z"/><path d="M9 12l2.2 2.2L15.5 10"/></symbol>
+<symbol id="ic-language" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5h8M7 3.5v2M9.5 5.5c-.4 4-2.9 7.4-6 8.8M5 9.4c1 2.2 3.1 4 5.6 4.6"/><path d="M12.5 20.5l4-9.5 4 9.5M14 17.5h5"/></symbol>
+<symbol id="ic-flow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.8" width="6" height="4.4" rx="1.4"/><rect x="2.5" y="16.8" width="6" height="4.4" rx="1.4"/><rect x="15.5" y="16.8" width="6" height="4.4" rx="1.4"/><path d="M12 7.2v4.3M5.5 16.8v-2.6h13v2.6M12 11.5v2.7"/></symbol>
+<symbol id="ic-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 19.5a6 6 0 0 1 12 0"/><path d="M16 5.4a3.2 3.2 0 0 1 0 5.2M17.5 14.6a6 6 0 0 1 3.5 4.9"/></symbol>
+<symbol id="ic-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8l8.5 4.4v9.6L12 21.2 3.5 16.8V7.2Z"/><path d="M3.5 7.2L12 11.6l8.5-4.4M12 11.6v9.6"/></symbol>
+<symbol id="ic-sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M3.5 9h17M9.5 9v11.5M3.5 15h17"/></symbol>
+<symbol id="ic-node" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.4"/><circle cx="5" cy="18" r="2.4"/><circle cx="19" cy="12" r="2.4"/><path d="M7.4 6.6l9.4 4.4M7.4 17.4l9.4-4.4"/></symbol>
+<symbol id="ic-layers" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 4.6-9 4.6-9-4.6Z"/><path d="M3 12.4l9 4.6 9-4.6M3 16.9l9 4.6 9-4.6"/></symbol>
+<symbol id="ic-puzzle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3.5a2 2 0 0 1 4 0c0 .8-.4 1.2-.4 1.5h4v4c-.3 0-.7-.4-1.5-.4a2 2 0 0 0 0 4c.8 0 1.2-.4 1.5-.4v4.9H13c0-.3.4-.7.4-1.5a2 2 0 0 0-4 0c0 .8.4 1.2.4 1.5H5V5h4.6c0-.3-.6-.7-.6-1.5Z"/></symbol>
+<symbol id="ic-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10.2 13.8a4 4 0 0 0 5.7 0l2.9-2.9a4 4 0 0 0-5.7-5.7l-1.4 1.4"/><path d="M13.8 10.2a4 4 0 0 0-5.7 0l-2.9 2.9a4 4 0 0 0 5.7 5.7l1.4-1.4"/></symbol>
+<symbol id="ic-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M15.8 15.8L21 21"/></symbol>
+<symbol id="ic-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.7 5.6 6.1.8-4.5 4.3 1.2 6.1L12 17.4l-5.5 2.9 1.2-6.1-4.5-4.3 6.1-.8Z"/></symbol>
+<symbol id="ic-megaphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4a2 2 0 0 0 2 2h2l8 4.5V5.5L8 10H6a2 2 0 0 0-2 2Z"/><path d="M19 9.5a4 4 0 0 1 0 5M8 16v4.5"/></symbol>
+<symbol id="ic-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V13M10 20.5V7M16 20.5v-6M21 20.5V3.5"/></symbol>
+<symbol id="ic-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s6.5-6 6.5-11a6.5 6.5 0 1 0-13 0C5.5 15 12 21 12 21Z"/><circle cx="12" cy="10" r="2.4"/></symbol>
+<symbol id="ic-database" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="6" rx="7.5" ry="3"/><path d="M4.5 6v12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3V6M4.5 12c0 1.7 3.4 3 7.5 3s7.5-1.3 7.5-3"/></symbol>
+<symbol id="ic-brain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v15"/><path d="M12 6a3 3 0 0 0-5.6-1.5A2.8 2.8 0 0 0 4 9.2a3 3 0 0 0 .6 4.6A3 3 0 0 0 8 19a3 3 0 0 0 4-1.4"/><path d="M12 6a3 3 0 0 1 5.6-1.5A2.8 2.8 0 0 1 20 9.2a3 3 0 0 1-.6 4.6A3 3 0 0 1 16 19a3 3 0 0 1-4-1.4"/></symbol>
+<symbol id="ic-cube3d" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8.5l8-4.5 8 4.5v7L12 20l-8-4.5Z"/><path d="M4 8.5l8 4.5 8-4.5M12 13v7"/><path d="M8 6.2l8 4.6"/></symbol>
+<symbol id="ic-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></symbol>
+<symbol id="ic-bolt" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 2.5L4.5 13.5h6l-.5 8 9.5-11.5h-6.2Z"/></symbol>
+<symbol id="ic-wrench" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5.2a5 5 0 0 1-6.6 6.6L5.6 19.6a2 2 0 0 1-2.8-2.8l7.8-7.8A5 5 0 0 1 17.2 2.4l-3 3 1.4 3 3-1.4Z"/></symbol>
+<symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+<symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol>
+<symbol id="ic-tooth" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/></symbol>
+<symbol id="ic-fork" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v6a2.5 2.5 0 0 0 5 0V3M8.5 11v10"/><path d="M17 3c-1.5 1.5-2 3.4-2 5.5S16 12 17.5 12H18V3Z"/><path d="M17.5 12v9"/></symbol>
+<symbol id="ic-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15.5v-2.2l2-4.6A2.5 2.5 0 0 1 7.3 7h9.4a2.5 2.5 0 0 1 2.3 1.7l2 4.6v2.2"/><path d="M3 15.5h18v2.5h-3v-2.5M6 18v-2.5H3V18Z"/><path d="M6.5 12h11"/></symbol>
+<symbol id="ic-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.5L12 3.5l8.5 7"/><path d="M5.5 9.5v10h13v-10"/><path d="M10 19.5v-5.5h4v5.5"/></symbol>
+<symbol id="ic-dumbbell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></symbol>
+<symbol id="ic-helmet" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 17a8.5 8.5 0 0 1 17 0"/><path d="M2.5 17h19v2.5h-19Z"/><path d="M12 8.5v-3"/></symbol>
+<symbol id="ic-truck" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.5h11v10h-11Z"/><path d="M13.5 10h4l3 3v3.5h-7Z"/><circle cx="7" cy="18.5" r="1.6"/><circle cx="17" cy="18.5" r="1.6"/></symbol>
+<symbol id="ic-heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7.5-4.4-7.5-9.4A4.1 4.1 0 0 1 12 8a4.1 4.1 0 0 1 7.5 2.6C19.5 15.6 12 20 12 20Z"/></symbol>
+<symbol id="ic-bag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5h16l-1.2 12.5H5.2Z"/><path d="M8.5 10V6.5a3.5 3.5 0 0 1 7 0V10"/></symbol>
+<symbol id="ic-briefcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7.5" width="18" height="12" rx="2.5"/><path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3 12.5h18"/></symbol>
+<symbol id="ic-dots" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="5.5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="18.5" cy="12" r="1.2"/></symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top">
+      <span class="brand-script">Leon Dev.</span>
+      <span class="brand-sub">Software &amp; AI Solutions</span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="#services">Services</a>
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#process">Process</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-sm btn-primary" href="#contact">Book a free consult</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="top">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="dot"></span>Available for new projects — Bay Area &amp; remote</p>
+      <h1 class="display">
+        Custom software.<br>
+        <span class="accent">Real results.</span>
+      </h1>
+      <div class="rule" aria-hidden="true"></div>
+      <p class="lede">
+        I build the websites, apps, AI agents and automations that businesses actually run on —
+        designed around your workflow instead of bent to fit a template.
+      </p>
+      <p class="script-line">Built for your business. Not a template.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#contact">Book a free consultation<svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn btn-ghost" href="#services">See what I build</a>
+      </div>
+      <ul class="trust">
+        <li><svg class="ic"><use href="#ic-user"/></svg><span>Custom built  <br>for you</span></li>
+        <li><svg class="ic"><use href="#ic-bolt"/></svg><span>Fast, reliable  <br>&amp; scalable</span></li>
+        <li><svg class="ic"><use href="#ic-chat"/></svg><span>Ongoing support  <br>you can count on</span></li>
+      </ul>
+    </div>
+
+    <aside class="hero-panel" aria-label="Highlights">
+      <p class="panel-label">Shipped, not slideware</p>
+      <ul class="panel-list">
+        <li>
+          <strong>A consumer iOS app, live on the US App Store</strong>
+          <span>Built solo end to end — native shell, backend, subscriptions, four languages.</span>
+        </li>
+        <li>
+          <strong>An ordering app running 22 real businesses</strong>
+          <span>One cart across every kitchen, split into a separate ticket and payout per vendor.</span>
+        </li>
+        <li>
+          <strong>Market intelligence over 33,772 US ZIP codes</strong>
+          <span>Nine external data sources scored into one "should we open here" answer.</span>
+        </li>
+        <li>
+          <strong>An AI assistant that has to cite its sources</strong>
+          <span>Retrieval over company documents, with output checks before anything reaches a customer.</span>
+        </li>
+      </ul>
+      <p class="panel-foot">Details in <a href="#work">recent work</a>.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ═══ SERVICES ═══ -->
+<section class="section" id="services">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Services</p>
+      <h2 class="h2">What I can build for you</h2>
+      <p class="sub">
+        Prices are honest starting points for a typical build in that category, not a menu you have to
+        order from. Most projects mix three or four of these. Tell me the problem and I'll quote the shape of it.
+      </p>
+    </div>
+
+    <div class="filters" role="tablist" aria-label="Filter services">
+      <button class="chip is-on" role="tab" aria-selected="true" data-filter="all">Everything</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="web">Web &amp; Apps</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="ai">AI Systems</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="ops">Automation &amp; Ops</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="growth">Growth &amp; Content</button>
+      <button class="chip" role="tab" aria-selected="false" data-filter="data">Data &amp; Intelligence</button>
+    </div>
+
+    <div class="svc-grid" id="svcGrid">
+
+      <!-- WEB & APPS -->
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-globe"/></svg>
+        <h3>Business Websites</h3>
+        <p>Modern, fast, SEO-ready sites that load on a phone in a parking lot and still look right.</p>
+        <span class="price">$650+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-refresh"/></svg>
+        <h3>Redesign &amp; Rescue</h3>
+        <p>Already have a site? Keep what works, replace what doesn't. Full rebuilds only when they're genuinely cheaper.</p>
+        <span class="price">$900+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-mobile"/></svg>
+        <h3>iOS &amp; Android Apps</h3>
+        <p>Real apps taken all the way through review and onto the store — not a demo build on your laptop.</p>
+        <span class="price">$5,000+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-cart"/></svg>
+        <h3>Online Ordering &amp; Delivery</h3>
+        <p>Menus with real choice groups, one cart, per-vendor tickets, per-vendor payouts, live order states.</p>
+        <span class="price">$4,000+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-calendar"/></svg>
+        <h3>Booking &amp; Scheduling</h3>
+        <p>Appointments, staff calendars, reminders, deposits, and the follow-up that cuts no-shows.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-user"/></svg>
+        <h3>Customer &amp; Staff Portals</h3>
+        <p>Secure logins where each person sees exactly their own jobs, files, invoices and history.</p>
+        <span class="price">$3,000+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-card"/></svg>
+        <h3>E-commerce &amp; Payments</h3>
+        <p>Stripe checkout, subscriptions, invoices, refunds and receipts — wired so the money reconciles.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="web">
+        <svg class="ic ic-lg"><use href="#ic-flag"/></svg>
+        <h3>Landing &amp; Campaign Pages</h3>
+        <p>One page, one audience, one action. Built to be measured, so you learn something either way.</p>
+        <span class="price">$450+</span>
+      </article>
+
+      <!-- AI -->
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-phone"/></svg>
+        <h3>AI Call Agents</h3>
+        <p>A 24/7 receptionist that answers, qualifies, books, and hands off to a human when it should.</p>
+        <span class="price">$2,000+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-chat"/></svg>
+        <h3>AI Chatbots</h3>
+        <p>Trained on your business, not the internet. Answers hours, pricing and policy without inventing any.</p>
+        <span class="price">$1,000+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-book"/></svg>
+        <h3>AI Knowledge Base (RAG)</h3>
+        <p>Your docs, SOPs, manuals and training turned into an assistant that answers with the source attached.</p>
+        <span class="price">$3,000+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-doc"/></svg>
+        <h3>AI Document Processing</h3>
+        <p>OCR, extraction, classification and routing for invoices, forms, waivers and PDFs nobody wants to retype.</p>
+        <span class="price">$2,000+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-video"/></svg>
+        <h3>AI Content Engines</h3>
+        <p>Scripted, narrated, captioned short-form video and posts produced on a schedule, with a quality gate before publish.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-shield"/></svg>
+        <h3>AI Guardrails &amp; Review</h3>
+        <p>Rules the model cannot talk its way past: banned claims, escalation paths, citation checks, human approval before anything public.</p>
+        <span class="price">$2,500+</span>
+      </article>
+      <article class="svc" data-cat="ai">
+        <svg class="ic ic-lg"><use href="#ic-language"/></svg>
+        <h3>Multilingual &amp; Localization</h3>
+        <p>The same product in English, Spanish, Portuguese and Chinese — translated properly, not machine-dumped.</p>
+        <span class="price">$800+</span>
+      </article>
+
+      <!-- OPS -->
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-flow"/></svg>
+        <h3>Workflow Automation</h3>
+        <p>The repeat work — follow-ups, handoffs, reminders, status updates — done by software instead of memory.</p>
+        <span class="price">$2,000+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-users"/></svg>
+        <h3>CRM &amp; Business Systems</h3>
+        <p>Leads, customers, jobs, quotes and invoicing in one place your team will actually keep updated.</p>
+        <span class="price">$3,000+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-box"/></svg>
+        <h3>Inventory Management</h3>
+        <p>Stock levels, orders, suppliers, low-stock alerts, and a count that survives a busy week.</p>
+        <span class="price">$3,000+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-sheet"/></svg>
+        <h3>Google Workspace Automation</h3>
+        <p>Form to Sheet to Doc to Drive to email, wired end to end with Apps Script. No more manual copying.</p>
+        <span class="price">$1,200+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-node"/></svg>
+        <h3>n8n &amp; No-Code Pipelines</h3>
+        <p>Automations built where your team can read and edit them without calling me first.</p>
+        <span class="price">$1,200+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-layers"/></svg>
+        <h3>Notion &amp; Ops Hubs</h3>
+        <p>One workspace where requests, approvals, documents and version history actually live and stay current.</p>
+        <span class="price">$900+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-puzzle"/></svg>
+        <h3>Chrome Extensions &amp; Internal Tools</h3>
+        <p>Small tools that delete the copy-paste out of a job someone does forty times a day.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="ops">
+        <svg class="ic ic-lg"><use href="#ic-link"/></svg>
+        <h3>API &amp; Software Integrations</h3>
+        <p>Stripe, QuickBooks, Google, Meta, Slack, Twilio, your POS, your ATS — talking to each other properly.</p>
+        <span class="price">$500+</span>
+      </article>
+
+      <!-- GROWTH -->
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-search"/></svg>
+        <h3>SEO &amp; AI Search (GEO)</h3>
+        <p>Found on Google, and found by the AI assistants people now ask instead of Google.</p>
+        <span class="price">$900+</span>
+      </article>
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-star"/></svg>
+        <h3>App Store Launch</h3>
+        <p>Listing copy, screenshots, subscription products, review submission — and the appeal when review gets it wrong.</p>
+        <span class="price">$1,200+</span>
+      </article>
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-megaphone"/></svg>
+        <h3>Paid Ads Setup &amp; Tracking</h3>
+        <p>Meta, Google and Reddit campaigns with the tracking that tells you which dollar did the work.</p>
+        <span class="price">$750+</span>
+      </article>
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-heart"/></svg>
+        <h3>Review &amp; Reputation Automation</h3>
+        <p>Every review read, classified and drafted for you. A human still presses send — deliberately.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-bolt"/></svg>
+        <h3>Social Media Automation</h3>
+        <p>Posts and short-form video that go out daily whether or not anyone remembered to make them.</p>
+        <span class="price">$900+</span>
+      </article>
+      <article class="svc" data-cat="growth">
+        <svg class="ic ic-lg"><use href="#ic-bag"/></svg>
+        <h3>Brand Assets &amp; Sticker Packs</h3>
+        <p>Logos, illustration sets, mascots, and messaging sticker packs — including WeChat, in two languages.</p>
+        <span class="price">$600+</span>
+      </article>
+
+      <!-- DATA -->
+      <article class="svc" data-cat="data">
+        <svg class="ic ic-lg"><use href="#ic-chart"/></svg>
+        <h3>Analytics &amp; Dashboards</h3>
+        <p>The four numbers that decide your week, live, on one screen, instead of five exports and a guess.</p>
+        <span class="price">$2,000+</span>
+      </article>
+      <article class="svc" data-cat="data">
+        <svg class="ic ic-lg"><use href="#ic-map"/></svg>
+        <h3>Location &amp; Market Intelligence</h3>
+        <p>Where to open, staff and expand — scored from real data, with the uncertainty shown instead of hidden.</p>
+        <span class="price">$4,000+</span>
+      </article>
+      <article class="svc" data-cat="data">
+        <svg class="ic ic-lg"><use href="#ic-database"/></svg>
+        <h3>Data Scraping &amp; Enrichment</h3>
+        <p>Public data collected, cleaned, deduplicated and joined onto your records so it's usable.</p>
+        <span class="price">$1,500+</span>
+      </article>
+      <article class="svc" data-cat="data">
+        <svg class="ic ic-lg"><use href="#ic-brain"/></svg>
+        <h3>Forecasting &amp; ML Models</h3>
+        <p>Demand, churn, staffing, pricing. Validated on data the model has never seen, and reported honestly.</p>
+        <span class="price">Custom</span>
+      </article>
+      <article class="svc" data-cat="data">
+        <svg class="ic ic-lg"><use href="#ic-cube3d"/></svg>
+        <h3>3D Scanning &amp; Photogrammetry</h3>
+        <p>Rooms, sites and products turned into clean 3D models you can put on a website or in a walkthrough.</p>
+        <span class="price">Custom</span>
+      </article>
+      <article class="svc svc-wide" data-cat="web ai ops growth data">
+        <svg class="ic ic-lg"><use href="#ic-code"/></svg>
+        <h3>Custom Software</h3>
+        <p>When nothing above is the shape of your problem. Full-stack, built specifically for how your business runs — which is most of the interesting work.</p>
+        <span class="price">Custom</span>
+      </article>
+
+    </div>
+    <p class="svc-note" id="svcNote" hidden></p>
+  </div>
+</section>
+
+<!-- ═══ WORK ═══ -->
+<section class="section section-alt" id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Recent work</p>
+      <h2 class="h2">Things I've actually shipped</h2>
+      <p class="sub">Real systems, in production, with the parts that were hard named honestly.</p>
+    </div>
+
+    <div class="work-grid">
+      <article class="work">
+        <header>
+          <h3>Curio</h3>
+          <span class="tag">iOS app · live on the App Store</span>
+        </header>
+        <p>
+          A consumer iOS app: a full-screen swipe feed of short, source-backed knowledge cards with an AI layer
+          that opens any card up. Built solo end to end — native shell, React/TypeScript client, Express and
+          PostgreSQL backend, subscriptions through StoreKit, and a content pipeline in four languages.
+        </p>
+        <ul class="meta">
+          <li>Capacitor + SPM iOS</li><li>React / TypeScript</li><li>Postgres on Render</li><li>StoreKit subscriptions</li><li>4 languages</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Multi-brand ordering app</h3>
+          <span class="tag">Ghost kitchen operator</span>
+        </header>
+        <p>
+          A web app that behaves like an iPhone home screen: every icon is a restaurant, tapping it opens that
+          menu. One cart spans every kitchen and one checkout covers them all, while the server re-prices every
+          line, splits the order into a separate ticket per vendor, and computes each vendor's fee.
+        </p>
+        <ul class="meta">
+          <li>22 businesses</li><li>Choice groups &amp; item notes</li><li>Per-vendor payouts</li><li>Live ticket states</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Site intelligence engine</h3>
+          <span class="tag">CPR training company</span>
+        </header>
+        <p>
+          Decision support for where to open, staff and grow, covering all 33,772 US ZIP codes and nine external
+          data sources. Every score carries an uncertainty range instead of false precision — and the first thing
+          it did was expose that the previous model's headline accuracy was reading its own answer sheet.
+        </p>
+        <ul class="meta">
+          <li>Python / FastAPI</li><li>~1,290 tests</li><li>Leak-free validation</li><li>Excel export for the team</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Review response desk</h3>
+          <span class="tag">Reputation automation</span>
+        </header>
+        <p>
+          Watches the inbox for review notifications, classifies each one against an issue taxonomy, drafts a
+          reply grounded only in the business's own verified facts, and routes it to a human as a mail draft, a
+          Slack card and a spreadsheet row. A companion Chrome extension pre-fills the approved reply on the
+          review site. It never presses send — that line is drawn on purpose.
+        </p>
+        <ul class="meta">
+          <li>Gmail + Slack + Sheets</li><li>Chrome extension</li><li>Draft-only by design</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Document control system</h3>
+          <span class="tag">Operations · internal</span>
+        </header>
+        <p>
+          A request in Notion names a template; seconds later the Google Doc exists, filed in the right
+          department folder, linked back to the request, with the right people on it. Approval locks the file,
+          publishing bumps the version, writes the change log and exports the external PDF. Built twice — once
+          in Apps Script, once as six n8n workflows the team can edit themselves.
+        </p>
+        <ul class="meta">
+          <li>Notion API</li><li>Google Apps Script</li><li>n8n</li><li>Versioning &amp; approvals</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Compliance-aware AI assistant</h3>
+          <span class="tag">Chinese-language RAG</span>
+        </header>
+        <p>
+          A health-education assistant built for a regulated market. Warning symptoms are caught by
+          deterministic rules before any model runs; answers must cite the retrieved source by number; and a
+          final validator rejects any wording the local advertising and food-safety law forbids. If a rewrite
+          still fails, it declines to answer.
+        </p>
+        <ul class="meta">
+          <li>Hybrid BM25 + vector retrieval</li><li>Evidence tiering</li><li>Output validation</li><li>Fails closed</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Short-form video factory</h3>
+          <span class="tag">Content automation</span>
+        </header>
+        <p>
+          Topic in, finished vertical video out: script and hooks written, claims fact-checked, a judge scoring
+          hook, captions and brand fit before anything renders, AI narration, captions burned locally, and a
+          loudness gate that hard-fails any file outside broadcast range. Analytics feed back into the next run.
+        </p>
+        <ul class="meta">
+          <li>TypeScript + ffmpeg</li><li>Quality gates</li><li>AI narration</li><li>Learning loop</li>
+        </ul>
+      </article>
+
+      <article class="work">
+        <header>
+          <h3>Bilingual brand sites</h3>
+          <span class="tag">Marketing &amp; nonprofit</span>
+        </header>
+        <p>
+          Static, dependency-free sites that stay fast and cheap to host: an English/Chinese incubator landing
+          page with four live interactive product mockups, a nonprofit homepage where the whole site is driven
+          by one config file, and an artist release page with in-place streaming players.
+        </p>
+        <ul class="meta">
+          <li>No build step</li><li>EN / 中文</li><li>Accessible &amp; reduced-motion aware</li>
+        </ul>
+      </article>
+    </div>
+
+    <p class="work-more">
+      More at <a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">noctilucenty.github.io</a>
+      and <a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github.com/Noctilucenty</a>.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ INDUSTRIES ═══ -->
+<section class="section section-tight" id="industries">
+  <div class="wrap">
+    <p class="script-head">Industries I work with <span class="arrow-line" aria-hidden="true"></span></p>
+    <ul class="ind">
+      <li><svg class="ic ic-lg"><use href="#ic-fork"/></svg><span>Restaurants <br>&amp; food trucks</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-car"/></svg><span>Auto repair <br>&amp; mechanics</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-tooth"/></svg><span>Medical <br>&amp; dental</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-home"/></svg><span>Real estate <br>&amp; property</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-dumbbell"/></svg><span>Gyms <br>&amp; fitness</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-helmet"/></svg><span>Construction <br>&amp; trades</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-truck"/></svg><span>Logistics <br>&amp; warehousing</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-bag"/></svg><span>Retail <br>&amp; e-commerce</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-briefcase"/></svg><span>Professional <br>services</span></li>
+      <li><svg class="ic ic-lg"><use href="#ic-dots"/></svg><span>And <br>more</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ ABOUT ═══ -->
+<section class="section" id="about">
+  <div class="wrap about">
+    <div>
+      <p class="kicker">Who you're hiring</p>
+      <h2 class="h2">One person, and that's the point</h2>
+      <p class="lede">
+        I'm Leon. I'm finishing a computer engineering degree at Cal State East Bay, I build software
+        day to day for a Bay Area training company, and the rest of the time I ship my own products —
+        including an iOS app that went through App Store review and came out the other side.
+      </p>
+      <p class="lede">
+        You talk to the person writing the code. Nothing gets handed to an offshore team, nothing gets
+        lost in a project manager, and if something breaks at 9pm you're messaging the one who built it.
+      </p>
+    </div>
+    <ul class="facts">
+      <li><span class="fact-k">Based</span><span class="fact-v">Hayward, CA — on site anywhere in the Bay Area, remote beyond it</span></li>
+      <li><span class="fact-k">Languages</span><span class="fact-v">English, Portuguese, Spanish, Chinese — so your customers can be served in theirs</span></li>
+      <li><span class="fact-k">Studying</span><span class="fact-v">BS Computer Engineering, Cal State East Bay</span></li>
+      <li><span class="fact-k">Day job</span><span class="fact-v">Sole developer on a company iOS app, its website, and its internal AI systems</span></li>
+      <li><span class="fact-k">Own work</span><span class="fact-v">A published iOS app, an ML research repo, and the automation engines behind them</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section class="section section-alt" id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">How it works</p>
+      <h2 class="h2">Four steps, no black box</h2>
+      <p class="sub">You know what it costs before it starts, and you see it working every week while it's built.</p>
+    </div>
+    <ol class="steps">
+      <li>
+        <span class="num">01</span>
+        <h3>Free consultation</h3>
+        <p>Twenty minutes on what your business does and where the hours disappear. Often the answer is smaller and cheaper than you expected, and I'll say so.</p>
+      </li>
+      <li>
+        <span class="num">02</span>
+        <h3>Scope and fixed quote</h3>
+        <p>Written down before anything is built: what's included, what isn't, what it costs, and roughly how long. No surprise line items later.</p>
+      </li>
+      <li>
+        <span class="num">03</span>
+        <h3>Build, with something to look at</h3>
+        <p>You get a working link every week, not a status email. Changing your mind early is free — that's the point of showing you early.</p>
+      </li>
+      <li>
+        <span class="num">04</span>
+        <h3>Launch and support</h3>
+        <p>Code, repository, domains and accounts go in your name. Then I stay reachable — fixes are included after launch, and I don't hold your business hostage.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Engagement</p>
+      <h2 class="h2">Three ways to work together</h2>
+      <p class="sub">Pricing follows scope, not headcount. Small businesses and bigger builds both fit somewhere here.</p>
+    </div>
+    <div class="tiers">
+      <article class="tier">
+        <h3>Fixed project</h3>
+        <p class="tier-price"><span>from</span> $650</p>
+        <p class="tier-for">One clear thing, built and handed over.</p>
+        <ul>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Fixed quote agreed before any work starts</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Weekly working demo</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Launch, handover and training</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>30 days of fixes included</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#contact">Get a quote</a>
+      </article>
+
+      <article class="tier tier-hot">
+        <span class="tier-flag">Most projects</span>
+        <h3>Full build</h3>
+        <p class="tier-price"><span>from</span> $5,000</p>
+        <p class="tier-for">An app or a full system, end to end.</p>
+        <ul>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Discovery, design, build and launch</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>App Store or Play submission handled</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Integrations, payments and admin tools</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>90 days of support after launch</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Staged payments tied to milestones</li>
+        </ul>
+        <a class="btn btn-primary btn-block" href="#contact">Start a build</a>
+      </article>
+
+      <article class="tier">
+        <h3>Ongoing partner</h3>
+        <p class="tier-price"><span>from</span> $900<small>/mo</small></p>
+        <p class="tier-for">You need a developer, not a project.</p>
+        <ul>
+          <li><svg class="ic"><use href="#ic-check"/></svg>A standing block of hours each month</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Priority turnaround on changes</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Hosting, monitoring and updates</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>New features without a new quote each time</li>
+          <li><svg class="ic"><use href="#ic-check"/></svg>Cancel any month</li>
+        </ul>
+        <a class="btn btn-ghost btn-block" href="#contact">Talk it through</a>
+      </article>
+    </div>
+    <p class="tier-note">
+      Not sure which one you're in? That's normal, and it's what the free consultation is for.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="section section-alt" id="faq">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="kicker">Questions</p>
+      <h2 class="h2">The things people ask first</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>I already have a website. Do I have to start over?</summary>
+        <p>Usually not. Most sites have one real problem — it's slow, it doesn't work on a phone, nobody can update it, or it doesn't take bookings. I'll tell you which parts are worth keeping. A rebuild only makes sense when fixing costs more than replacing, and I'll show you the comparison rather than assert it.</p>
+      </details>
+      <details>
+        <summary>Who owns the code and the accounts?</summary>
+        <p>You do. The repository, the domain, the hosting, the API keys and the app store listing all go in your name. If we stop working together, nothing switches off and nothing has to be rebuilt to get away from me.</p>
+      </details>
+      <details>
+        <summary>How long does it take?</summary>
+        <p>A business website is typically one to two weeks. An automation or an integration, a few days to two weeks. A booking system or portal, three to six weeks. A full mobile app, longer — that depends more on what it does than on how fast anyone types. You get a real estimate with the quote, not a number invented on this page.</p>
+      </details>
+      <details>
+        <summary>Do you disappear after launch?</summary>
+        <p>Fixes are included for 30 days on a fixed project and 90 on a full build. After that you can keep me on a monthly block or just message me when something comes up. Plenty of clients do the second one.</p>
+      </details>
+      <details>
+        <summary>Can you work with the tools we already use?</summary>
+        <p>Yes, and normally that's the cheaper answer. Square, Toast, QuickBooks, Stripe, Shopify, Google Workspace, Notion, Slack, Twilio, your POS or your ATS — connecting what you already pay for usually beats replacing it.</p>
+      </details>
+      <details>
+        <summary>Is AI actually worth it for a business my size?</summary>
+        <p>Sometimes. It's genuinely good at reading, drafting, classifying and answering from your own documents. It's a bad idea anywhere a confident wrong answer costs you a customer — which is why the systems I build put a person in front of anything public, and why I'll talk you out of the AI version when a boring script does the job better.</p>
+      </details>
+      <details>
+        <summary>I don't know what I need. Is that a problem?</summary>
+        <p>No — it's the most common starting point. Describe the part of the week that annoys you most and we'll work backwards from there.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="cta" id="contact">
+  <div class="wrap cta-in">
+    <div>
+      <p class="script-head">Have an idea?</p>
+      <h2 class="display cta-display">Let's build it.</h2>
+      <p class="lede">
+        Tell me what your business does and what's slowing it down. First conversation is free, and you'll
+        leave it with a straight answer about whether software is even the right fix.
+      </p>
+      <div class="contact-rows">
+        <a class="crow" href="mailto:leondragon3798@gmail.com?subject=Project%20enquiry">
+          <span class="crow-k">Email</span>
+          <span class="crow-v">leondragon3798@gmail.com</span>
+          <svg class="ic"><use href="#ic-arrow"/></svg>
+        </a>
+        <a class="crow" href="tel:+15108267735">
+          <span class="crow-k">Phone</span>
+          <span class="crow-v">(510) 826-7735</span>
+          <svg class="ic"><use href="#ic-arrow"/></svg>
+        </a>
+        <a class="crow" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="noopener">
+          <span class="crow-k">LinkedIn</span>
+          <span class="crow-v">leon-kelvin-li</span>
+          <svg class="ic"><use href="#ic-arrow"/></svg>
+        </a>
+        <div class="crow crow-static">
+          <span class="crow-k">Based in</span>
+          <span class="crow-v">Hayward, CA — Bay Area on site, remote anywhere</span>
+        </div>
+      </div>
+    </div>
+    <a class="cta-circle" href="mailto:leondragon3798@gmail.com?subject=Project%20enquiry" aria-label="Email Leon">
+      <svg class="ic"><use href="#ic-arrow"/></svg>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <span class="brand-script">Leon Dev.</span>
+      <p>Custom software and AI systems for businesses that would rather own their tools than rent someone else's.</p>
+      <p class="status"><span class="dot"></span>Available for new projects</p>
+    </div>
+    <div class="foot-col">
+      <h4>Build</h4>
+      <a href="#services">Websites</a>
+      <a href="#services">Mobile apps</a>
+      <a href="#services">AI agents &amp; chatbots</a>
+      <a href="#services">Knowledge bases</a>
+      <a href="#services">Ordering systems</a>
+    </div>
+    <div class="foot-col">
+      <h4>Automate</h4>
+      <a href="#services">Workflow automation</a>
+      <a href="#services">CRM &amp; inventory</a>
+      <a href="#services">Integrations</a>
+      <a href="#services">Dashboards</a>
+      <a href="#services">Internal tools</a>
+    </div>
+    <div class="foot-col">
+      <h4>Company</h4>
+      <a href="#work">Recent work</a>
+      <a href="#about">About Leon</a>
+      <a href="#process">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">Portfolio</a>
+      <a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+  <div class="wrap foot-bar">
+    <p>&copy; <span id="yr">2026</span> Leon Kelvin Li · Hayward, California</p>
+    <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
+  </div>
+</footer>
+
+<script src="app.js" defer></script>
+</body>
+</html>
