@@ -56,8 +56,9 @@ chip is picked. `data-cat` takes several, space-separated — that is how *custo
 appears under every filter. The `<span class="n">` numbers are manual; renumber if you
 insert one.
 
-**Prices** live in the `<b>` at the end of each cell. The fourteen from the flyer are
-unchanged; the twenty-one added ones sit at the same scale.
+**Prices** live in the `<b>` at the end of each cell and in `.amt` on the tiers. They are all
+half the original flyer figures — halved once, in one pass, so the whole list stays internally
+consistent. If you change one, check it still sits sensibly against its neighbours.
 
 **Icons** are `<symbol>`s in the sprite at the top of `index.html`, used as
 `<svg class="ic"><use href="#ic-name"/></svg>`. Copy the nearest one, keep the 24x24
