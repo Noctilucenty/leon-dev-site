@@ -74,14 +74,25 @@ would be happy to be asked about on a call.
 
 ## Deploying
 
-Three static files, so anything works. It is set up for a Render static site:
-root directory `.`, no build command, publish directory `.`.
+Live at **https://leonkelvinli.onrender.com** — a Render static site on
+`Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, no build command,
+publish directory `.`. Pushing to `main` redeploys it.
 
-Before it goes live:
+`canonical`, `og:url` and `og:image` are all absolute against that host. If a custom domain
+is added later, those three need updating — a relative `og:image` is not followed by Facebook
+or iMessage, so it has to stay absolute.
 
-- `<link rel="canonical">` still points at `https://leondev.example/`.
-- `og:image` is relative. Facebook and iMessage will not follow a relative one — make it
-  absolute (`https://…/assets/og.png`) once there is a real domain.
+## Listing image
+
+`assets/facebook.png` is the square (1200x1200) Marketplace image, built by
+`tools/make_fb.py`. Square because Marketplace crops the thumbnail to a square. Its price
+table is a hand-picked twelve — **if the prices on the page change, change them there too**;
+nothing links the two.
+
+```bash
+python3 tools/make_fb.py    # listing image
+python3 tools/make_og.py    # link preview
+```
 
 ## Things that will bite you
 
