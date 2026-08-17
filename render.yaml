@@ -1,0 +1,26 @@
+# Blueprint for the assistant API (the static site stays as its own Render
+# static site — this adds ONLY the backend service the chatbot talks to).
+#
+# Setup on Render:
+#   New + -> Blueprint -> pick this repo -> apply
+#   (or New + -> Web Service -> this repo -> settings below by hand)
+# Then open the service -> Environment -> add OPENAI_API_KEY yourself.
+# The frontend expects the service URL in assist.js (API_BASE) — if Render
+# gives you a different URL than https://leon-assist.onrender.com, change
+# that one constant and push.
+
+services:
+  - type: web
+    name: leon-assist
+    runtime: node
+    plan: free            # free spins down when idle (~30-60s first reply); starter ($7/mo) stays warm
+    buildCommand: npm install
+    startCommand: node server/index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false        # paste the real key in the dashboard, never in git
+      - key: OPENAI_MODEL
+        value: gpt-5-mini
+      - key: OPENAI_MAX_OUTPUT
+        value: "700"

@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Leon Kelvin Li — software &amp; ai for your business</title>
-<meta name="description" content="Websites, apps, AI agents and the automation underneath them. Built for how your business actually runs. Fixed quotes, weekly demos, you own the code. Hayward, CA and remote.">
+<title>Custom Software, AI &amp; Automation for U.S. Businesses | Leon Kelvin Li</title>
+<meta name="description" content="Websites, mobile apps, AI systems and business automation built directly by Leon Kelvin Li for companies across the United States. Fixed quotes, weekly demos, you own everything. California-based, remote nationwide.">
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://leonkelvinli.onrender.com/">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leonkelvinli.onrender.com/">
-<meta property="og:title" content="Leon Kelvin Li — software &amp; ai for your business">
-<meta property="og:description" content="I build the thing your business is still doing by hand. Websites, apps, AI agents, automation.">
+<meta property="og:title" content="Custom Software, AI &amp; Automation for U.S. Businesses | Leon Kelvin Li">
+<meta property="og:description" content="I build the part of your business you still do by hand. Websites, apps, AI and automation — for businesses anywhere in the U.S.">
 <meta property="og:image" content="https://leonkelvinli.onrender.com/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
@@ -21,16 +21,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assist.css">
 
 <script type="application/ld+json">
+[
 {
   "@context":"https://schema.org","@type":"ProfessionalService",
   "name":"Leon Kelvin Li — software & AI",
-  "description":"Custom websites, mobile apps, AI agents and business automation.",
-  "areaServed":["San Francisco Bay Area","United States","Remote"],
+  "url":"https://leonkelvinli.onrender.com/",
+  "description":"Custom websites, mobile apps, AI systems and business automation, built directly by one developer for businesses across the United States.",
+  "areaServed":[{"@type":"Country","name":"United States"},"San Francisco Bay Area"],
   "address":{"@type":"PostalAddress","addressLocality":"Hayward","addressRegion":"CA","addressCountry":"US"},
-  "email":"leondragon3798@gmail.com","telephone":"+1-510-826-7735","priceRange":"$$"
+  "email":"leondragon3798@gmail.com","telephone":"+1-510-826-7735","priceRange":"$$",
+  "founder":{"@type":"Person","name":"Leon Kelvin Li"},
+  "knowsLanguage":["en","zh","es","pt"]
+},
+{
+  "@context":"https://schema.org","@type":"Person",
+  "name":"Leon Kelvin Li","url":"https://leonkelvinli.onrender.com/",
+  "jobTitle":"Software Developer",
+  "sameAs":["https://www.linkedin.com/in/leon-kelvin-li","https://github.com/Noctilucenty"]
+},
+{
+  "@context":"https://schema.org","@type":"WebSite",
+  "name":"Leon Kelvin Li — software & AI",
+  "url":"https://leonkelvinli.onrender.com/"
 }
+]
 </script>
 </head>
 <body>
@@ -86,14 +103,15 @@
     <span class="mark-handle">/ Noctilucenty</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">
+    <a href="#fix" data-x="fix"><i>[</i><span>start here</span><i>]</i></a>
     <a href="#services" data-x="services"><i>[</i><span>services</span><i>]</i></a>
+    <a href="industries/"><i>[</i><span>industries</span><i>]</i></a>
     <a href="#work" data-x="work"><i>[</i><span>work</span><i>]</i></a>
-    <a href="#process" data-x="process"><i>[</i><span>process</span><i>]</i></a>
     <a href="#pricing" data-x="pricing"><i>[</i><span>pricing</span><i>]</i></a>
     <a href="#faq" data-x="faq"><i>[</i><span>faq</span><i>]</i></a>
   </nav>
   <div class="nav-end">
-    <a class="btn btn-solid magnet" href="#contact"><span>book a call</span></a>
+    <a class="btn btn-solid magnet" href="quote" data-evt="hero_quote_click"><span>get a quote</span></a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
   </div>
 </header>
@@ -112,15 +130,17 @@
         <em data-scramble>still do by hand.</em>
       </h1>
       <p class="lede">
-        websites, apps, ai agents, and the automation underneath them — built around how your
-        business actually works, instead of how a template guessed it would.
+        websites, apps, ai and automation for businesses across the u.s. — built around how your
+        company actually works, instead of how a template guessed it would. you don't have to know
+        what software you need. tell me what's still manual, broken, or missing.
       </p>
       <div class="term" id="term" aria-hidden="true">
         <span class="term-p">$</span><span class="term-t" id="termT"></span><span class="caret"></span>
       </div>
       <div class="hero-cta">
-        <a class="btn btn-solid magnet" href="#contact"><span>book a free call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn btn-solid magnet" href="quote" data-evt="hero_quote_click"><span>tell me what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
         <a class="btn magnet" href="#work"><span>see the work</span></a>
+        <button class="btn magnet" type="button" data-assist-open><span>ask the ai about your project</span></button>
       </div>
       <ul class="hero-facts">
         <li><b data-count="35">35</b><span>things i can build</span></li>
@@ -159,6 +179,27 @@
         <span>retail</span><span>e-commerce</span><span>salons</span><span>nonprofits</span>
         <span>training companies</span><span>ghost kitchens</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ problem-first entry ══ -->
+<section class="sec" id="fix">
+  <div class="rail">
+    <header class="sec-head">
+      <p class="label">leon --diagnose</p>
+      <h2 class="dsp" data-scramble>what are you <em>trying to fix?</em></h2>
+      <p class="sub">nobody wakes up wanting "custom software". they wake up annoyed at one of these. pick yours.</p>
+    </header>
+    <div class="fixgrid">
+      <a href="services/websites"><h3><i>01</i>my website is outdated — or doesn't exist</h3><p>fast, phone-first, editable by you. redesign or from scratch.</p></a>
+      <a href="services/business-automation"><h3><i>02</i>my team repeats the same work every week</h3><p>retyping, forwarding, copying between systems — automated away.</p></a>
+      <a href="services/ai-chatbots"><h3><i>03</i>customers keep asking the same questions</h3><p>a chatbot or phone agent that answers instantly and hands off to a human.</p></a>
+      <a href="services/mobile-apps"><h3><i>04</i>i want an app</h3><p>ios and android, through store review, with the backend behind it.</p></a>
+      <a href="services/integrations"><h3><i>05</i>our systems don't talk to each other</h3><p>quickbooks, your pos, sheets, slack — connected instead of replaced.</p></a>
+      <a href="services/booking-systems"><h3><i>06</i>customers can't book or order online</h3><p>booking and ordering you own, with the reminders that kill no-shows.</p></a>
+      <a href="services/seo"><h3><i>07</i>i need more leads</h3><p>found on google and by the ai assistants people ask instead.</p></a>
+      <button type="button" data-assist-open data-assist-starter="i don't know what i need — here's what my business does: "><h3><i>08</i>i don't know what i need</h3><p>the most common answer. describe the problem to the ai assistant →</p></button>
     </div>
   </div>
 </section>
@@ -226,6 +267,7 @@
       <article class="cell wide" data-cat="web ai ops growth data"><span class="n">35</span><svg class="ic ic-l"><use href="#ic-code"/></svg><h3>custom software</h3><p>when nothing above is the shape of your problem. built from scratch around how your business actually runs — which is most of the interesting work anyway.</p><b>custom</b></article>
     </div>
     <p class="gridnote" id="gridnote" hidden></p>
+    <p class="sub" style="margin-top:2rem">starting prices are honest floors, not instant quotes — the real number is agreed in writing before anything starts. the big ones have their own pages: <a class="cx-mini" href="services/">all services →</a> <a class="cx-mini" href="industries/">by industry →</a></p>
   </div>
 </section>
 
@@ -258,6 +300,8 @@
           <p class="label">[ ios · live on the app store ]</p>
           <h3>curio</h3>
           <p>a consumer app: a full-screen swipe feed of short, source-backed cards with an ai layer that opens any of them up. built solo, end to end — native shell, react/typescript client, express and postgres backend, subscriptions through storekit, content pipeline in four languages.</p>
+          <p class="rowkv"><b>problem</b>people doomscroll; nothing they scroll teaches them anything.</p>
+          <p class="rowkv"><b>the hard part</b>a solo developer shipping the entire stack — client, backend, subscriptions, four languages — through app store review without a team to hide behind.</p>
           <ul class="tags"><li>capacitor + spm</li><li>react / ts</li><li>postgres</li><li>storekit</li><li>en / 中文 / es / pt</li></ul>
         </div>
       </article>
@@ -277,6 +321,8 @@
           <p class="label">[ ghost kitchen operator ]</p>
           <h3>multi-brand ordering</h3>
           <p>a web app that behaves like an iphone home screen — every icon is a restaurant, tapping it opens that menu. one cart spans every kitchen and one checkout covers them all, while the server re-prices each line, splits the order into a ticket per vendor and computes each vendor's fee.</p>
+          <p class="rowkv"><b>problem</b>one ghost kitchen, many brands — and no ordering product that could sell them in one cart.</p>
+          <p class="rowkv"><b>the hard part</b>the money: one checkout has to become a correct ticket and a correct payout per vendor, priced on the server so the browser can’t lie.</p>
           <ul class="tags"><li>22 businesses</li><li>choice groups</li><li>per-vendor payouts</li><li>live ticket states</li></ul>
         </div>
       </article>
@@ -298,6 +344,8 @@
           <p class="label">[ cpr training company ]</p>
           <h3>site intelligence</h3>
           <p>decision support for where to open, staff and grow, across all 33,772 us zip codes and nine external data sources. every score carries an uncertainty band instead of false precision. the first thing it did was prove the previous model's headline correlation was reading its own answer sheet.</p>
+          <p class="rowkv"><b>problem</b>a training company had to choose where in the u.s. to expand next, with real money on the guess.</p>
+          <p class="rowkv"><b>the hard part</b>the previous model’s 0.81 correlation was leakage — it was grading itself with the answer key. the honest number was 0.21, and saying so.</p>
           <ul class="tags"><li>python / fastapi</li><li>~1,290 tests</li><li>leak-free validation</li><li>excel export</li></ul>
         </div>
       </article>
@@ -316,6 +364,8 @@
           <p class="label">[ reputation automation ]</p>
           <h3>review desk</h3>
           <p>watches the inbox for review notifications, classifies each one against an issue taxonomy, drafts a reply grounded only in the business's own verified facts, then routes it to a person as a mail draft, a slack card and a spreadsheet row. a chrome extension pre-fills the approved reply on the review site.</p>
+          <p class="rowkv"><b>problem</b>reviews decide local revenue, and answering them well takes an hour nobody has.</p>
+          <p class="rowkv"><b>the hard part</b>grounding: every drafted reply may only use the business’s verified facts — and the machine never gets the send button.</p>
           <ul class="tags"><li>gmail + slack + sheets</li><li>chrome extension</li><li>never auto-posts</li></ul>
         </div>
       </article>
@@ -334,6 +384,8 @@
           <p class="label">[ operations · internal ]</p>
           <h3>document control</h3>
           <p>a request names a template; seconds later the google doc exists, filed in the right department folder, linked back, with the right people on it. approval locks the file. publishing bumps the version, writes the change log and exports the external pdf. built twice — once in apps script, once as six n8n workflows the team can edit themselves.</p>
+          <p class="rowkv"><b>problem</b>company documents lived wherever the last person saved them; approvals lived in memory.</p>
+          <p class="rowkv"><b>the hard part</b>making the approval step physically enforceable — a locked file, a version bump, a change log — instead of a policy nobody checks.</p>
           <ul class="tags"><li>notion api</li><li>apps script</li><li>n8n</li><li>approvals enforced</li></ul>
         </div>
       </article>
@@ -354,6 +406,8 @@
           <p class="label">[ chinese-language rag ]</p>
           <h3>compliance-aware assistant</h3>
           <p>a health-education assistant for a regulated market. warning symptoms are caught by deterministic rules before any model runs. every claim must cite a retrieved source by number. a final validator rejects wording the local advertising and food-safety law forbids, and if the rewrite still fails, it declines to answer.</p>
+          <p class="rowkv"><b>problem</b>health questions in a market where a wrong sentence in the answer breaks advertising law.</p>
+          <p class="rowkv"><b>the hard part</b>teaching a system when not to answer: deterministic safety rules before any model, citations on every claim, and failing closed.</p>
           <ul class="tags"><li>hybrid retrieval</li><li>evidence tiering</li><li>output validation</li><li>fails closed</li></ul>
         </div>
       </article>
@@ -380,14 +434,39 @@
   </div>
 </section>
 
+<!-- ══ ownership / trust ══ -->
+<section class="sec" id="own">
+  <div class="rail">
+    <header class="sec-head">
+      <p class="label">leon --ownership</p>
+      <h2 class="dsp" data-scramble>you own <em>what i build</em></h2>
+      <p class="sub">the biggest fear in hiring one remote developer is "what if he disappears?" — so everything is set up from day one as if i might.</p>
+    </header>
+    <ul class="own">
+      <li><b>your repository</b><span>the code, in your github</span></li>
+      <li><b>your domain</b><span>registered to you, not me</span></li>
+      <li><b>your accounts</b><span>hosting, stores, dashboards</span></li>
+      <li><b>your api keys</b><span>every service, your billing</span></li>
+      <li><b>your data</b><span>exportable, documented, yours</span></li>
+    </ul>
+    <p class="ownnote"><b>no technical hostage situation.</b> if we stop working together, nothing switches off, and any competent developer can pick it up where i left it.</p>
+  </div>
+</section>
+
 <!-- ══ pricing ══ -->
 <section class="sec" id="pricing">
   <div class="rail">
     <header class="sec-head">
       <p class="label">leon --price</p>
       <h2 class="dsp" data-scramble>three ways to <em>work together</em></h2>
-      <p class="sub">price follows scope, not hours. a one-page site and a full system both fit somewhere on here.</p>
+      <p class="sub">price follows scope, not hours. a one-page site and a full system both fit somewhere on here. starting prices are examples, not instant quotes — the real number is written down before work starts, and doesn't move after.</p>
     </header>
+    <div class="pricebanner">
+      <span class="amt-sm">$49+</span>
+      <b>small fixes</b>
+      <span>the broken thing, the one integration, the change your last developer never answered about — the kind of job that takes a day, not a month.</span>
+      <a class="cx-mini" href="quote" data-evt="pricing_cta_click">send it over →</a>
+    </div>
     <div class="tiers">
       <article class="tier">
         <h3>fixed project</h3>
@@ -450,7 +529,8 @@
       </p>
     </div>
     <ul class="facts">
-      <li><span>based</span><b>hayward, ca — on site around the bay, remote past it</b></li>
+      <li><span>based</span><b>california — building for businesses across the u.s.</b></li>
+      <li><span>on site</span><b>sf bay area when it helps; most projects never need it</b></li>
       <li><span>speaks</span><b>english, portuguese, spanish, chinese</b></li>
       <li><span>studying</span><b>bs computer engineering, cal state east bay</b></li>
       <li><span>day job</span><b>sole developer on a company ios app, its site, and its internal ai</b></li>
@@ -473,7 +553,9 @@
       <details><summary>do you disappear after launch?<i></i></summary><p>fixes are included for 30 days on a fixed project and 90 on a full build. after that you can keep me on a monthly block or just message me when something comes up. plenty of people do the second one.</p></details>
       <details><summary>can you work with the tools we already use?<i></i></summary><p>yes, and it's usually cheaper. square, toast, quickbooks, stripe, shopify, google workspace, notion, slack, twilio, your pos or your ats. connecting what you already pay for normally beats replacing it.</p></details>
       <details><summary>is ai actually worth it for a business my size?<i></i></summary><p>sometimes. it's genuinely good at reading, drafting, classifying and answering from your own documents. it's a bad idea anywhere a confident wrong answer costs you a customer, which is why the systems i build put a person in front of anything public, and why i'll talk you out of the ai version when a boring script does the job better.</p></details>
-      <details><summary>i don't know what i need. is that a problem?<i></i></summary><p>no. it's the most common starting point. describe the part of the week that annoys you most and we'll work backwards from there.</p></details>
+      <details><summary>do you only work in the bay area?<i></i></summary><p>no — i'm based in california and work remotely with businesses anywhere in the u.s. most software projects never need anyone on site; everything runs on weekly working demos you open in a browser. if you're around the bay and want to meet in person, that's possible too.</p></details>
+      <details><summary>we're not technical at all. is that a problem?<i></i></summary><p>most of my clients aren't. you describe the week in plain words — who calls, what gets retyped, where things get lost — and i translate that into software. you never have to learn the vocabulary, and everything is handed over working, with training.</p></details>
+      <details><summary>i don't know what i need. is that a problem?<i></i></summary><p>no. it's the most common starting point. describe the part of the week that annoys you most and we'll work backwards from there — the assistant in the corner is built for exactly that conversation.</p></details>
       <details><summary>why is everything on this site lowercase?<i></i></summary><p>because i like it. the estimates, the invoices and the code are punctuated normally.</p></details>
     </div>
   </div>
@@ -493,8 +575,9 @@
       <a class="cx" href="mailto:leondragon3798@gmail.com?subject=project"><span>email</span><b>leondragon3798@gmail.com</b><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="cx" href="tel:+15108267735"><span>phone</span><b>(510) 826-7735</b><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="cx" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="noopener"><span>linkedin</span><b>leon-kelvin-li</b><svg class="ic"><use href="#ic-arrow"/></svg></a>
-      <div class="cx st"><span>based</span><b>hayward, ca · bay area on site, remote anywhere</b></div>
+      <div class="cx st"><span>based</span><b>california · remote projects anywhere in the u.s. · bay area on site when needed</b></div>
     </div>
+    <p class="sub" style="margin-top:1.6rem">or skip the inbox: <a class="cx-mini" href="quote" data-evt="hero_quote_click">describe the project in the quote form →</a></p>
   </div>
 </section>
 
@@ -504,19 +587,20 @@
   <div class="rail foot-in">
     <div class="foot-brand">
       <a class="mark" href="#top"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Kelvin Li</span><span class="mark-handle">/ Noctilucenty</span></a>
-      <p>custom software and ai for businesses that would rather own their tools than rent someone else's.</p>
+      <p>custom software and ai, built directly by one developer for businesses across the united states.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
-    <nav><h4>build</h4><a href="#services">websites</a><a href="#services">mobile apps</a><a href="#services">ai agents</a><a href="#services">knowledge bases</a><a href="#services">ordering systems</a></nav>
-    <nav><h4>automate</h4><a href="#services">workflows</a><a href="#services">crm &amp; inventory</a><a href="#services">integrations</a><a href="#services">dashboards</a><a href="#services">internal tools</a></nav>
-    <nav><h4>elsewhere</h4><a href="#work">recent work</a><a href="#about">about</a><a href="#pricing">pricing</a><a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">portfolio</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>services</h4><a href="services/websites">websites</a><a href="services/mobile-apps">mobile apps</a><a href="services/ai-chatbots">ai chatbots</a><a href="services/ai-phone-agents">ai phone agents</a><a href="services/business-automation">automation</a><a href="services/">all services</a></nav>
+    <nav><h4>industries</h4><a href="industries/restaurants">restaurants</a><a href="industries/contractors">contractors</a><a href="industries/automotive">auto repair</a><a href="industries/healthcare">medical &amp; dental</a><a href="industries/startups">startups</a><a href="industries/">all industries</a></nav>
+    <nav><h4>site</h4><a href="#work">work</a><a href="#pricing">pricing</a><a href="quote">get a quote</a><a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">portfolio</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
-    <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · hayward, california</p>
+    <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
     <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
   </div>
 </footer>
 
 <script src="app.js" defer></script>
+<script src="assist.js" defer></script>
 </body>
 </html>

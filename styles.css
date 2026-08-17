@@ -453,3 +453,94 @@ a{ color:inherit; text-decoration:none; }
   .cursor{ display:none!important; }
   .has-cursor, .has-cursor *{ cursor:auto!important; }
 }
+
+/* ═══ nationwide upgrade: subpages, problem cards, trust, quote ═══ */
+
+.crumbs{ font-size:11px; letter-spacing:.08em; color:var(--faint); margin:0 0 1.6rem; }
+.crumbs a{ color:var(--dim); }
+.crumbs a:hover{ color:var(--ac); }
+.crumbs i{ font-style:normal; color:var(--line-2); padding:0 .35rem; }
+.crumbs span{ color:var(--mid); }
+
+.page-hero{ padding-top:clamp(7rem,12vw,9.5rem); }
+.page-hero h1{ font-size:clamp(1.8rem,4.2vw,3.4rem); }
+
+.pricetag{ margin:1.6rem 0 0; font-size:12.5px; letter-spacing:.03em; color:var(--dim); border-left:2px solid var(--ac); padding-left:.9rem; line-height:1.7; }
+.pricetag b{ color:var(--fg); font-weight:500; }
+
+.ctarow{ display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin-top:2rem; }
+.cx-mini{ font-size:12px; color:var(--dim); letter-spacing:.03em; text-underline-offset:3px; }
+.cx-mini:hover{ color:var(--ac); }
+.linklike{ background:none; border:none; padding:0; font:inherit; color:var(--ac); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
+
+.two-col{ display:grid; grid-template-columns:1fr 1fr; gap:clamp(2rem,5vw,4.5rem); }
+@media (max-width:760px){ .two-col{ grid-template-columns:1fr; } }
+
+.plist{ list-style:none; margin:1.2rem 0 0; padding:0; display:grid; gap:.65rem; }
+.plist li{ color:var(--mid); font-size:13.5px; line-height:1.6; padding-left:1.2rem; position:relative; }
+.plist li::before{ content:'×'; position:absolute; left:0; color:var(--faint); }
+.plist.wide{ grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:.8rem 2.5rem; max-width:64rem; }
+
+.blist{ list-style:none; margin:1.2rem 0 0; padding:0; display:grid; gap:.65rem; }
+.blist li{ color:var(--mid); font-size:13.5px; line-height:1.6; display:flex; gap:.6rem; }
+.blist .ic{ width:14px; height:14px; margin-top:.28rem; color:var(--ac); }
+
+.proofcard{ border:1px solid var(--line-2); border-left:2px solid var(--ac); border-radius:12px; padding:1.4rem 1.6rem; margin-top:1.2rem; max-width:46rem; background:var(--panel); }
+.proofcard h2{ margin:0; font-size:1.05rem; font-weight:500; color:var(--fg); letter-spacing:.01em; }
+.proofcard .sub{ margin-top:.6rem; }
+.proofcard .cx-mini{ display:inline-block; margin-top:.9rem; }
+
+.fixrow{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:.8rem; margin-top:1.4rem; }
+.fixcard{ border:1px solid var(--line); border-radius:12px; padding:1.1rem 1.2rem; background:var(--panel); transition:border-color .25s, transform .25s; }
+.fixcard h3{ margin:0; font-size:.95rem; font-weight:500; color:var(--fg); letter-spacing:.01em; }
+.fixcard p{ margin:.5rem 0 0; font-size:12.5px; line-height:1.65; color:var(--dim); }
+.fixcard .go{ display:inline-block; margin-top:.7rem; font-size:11.5px; color:var(--ac); letter-spacing:.05em; }
+.fixcard.link:hover, .fixgrid a:hover{ border-color:var(--ac); transform:translateY(-2px); }
+
+.relrow{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1rem; }
+.rel{ font-size:12px; color:var(--mid); border:1px solid var(--line-2); border-radius:999px; padding:.45rem .85rem; transition:border-color .2s,color .2s; }
+.rel:hover{ color:var(--fg); border-color:var(--ac); }
+
+/* index: problem-first entry cards */
+.fixgrid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:.8rem; margin-top:1.6rem; }
+.fixgrid a, .fixgrid button{ display:block; text-align:left; border:1px solid var(--line); border-radius:12px; background:var(--panel); padding:1.1rem 1.2rem; cursor:pointer; font-family:inherit; transition:border-color .25s, transform .25s; }
+.fixgrid h3{ margin:0; font-size:.95rem; font-weight:500; color:var(--fg); letter-spacing:.01em; line-height:1.45; }
+.fixgrid h3 i{ font-style:normal; color:var(--ac); margin-right:.5rem; }
+.fixgrid p{ margin:.5rem 0 0; font-size:12.5px; line-height:1.6; color:var(--dim); }
+.fixgrid button:hover{ border-color:var(--ac); transform:translateY(-2px); }
+
+/* index: work rows, case-study lines */
+.rowkv{ margin:.7rem 0 0; font-size:12.5px; line-height:1.65; color:var(--dim); }
+.rowkv b{ color:var(--ac); font-weight:500; letter-spacing:.06em; font-size:11px; margin-right:.45rem; }
+
+/* index: ownership / trust */
+.own{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.8rem; margin-top:1.6rem; max-width:60rem; }
+.own li{ list-style:none; border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem; background:var(--panel); }
+.own li b{ display:block; color:var(--fg); font-weight:500; font-size:.9rem; letter-spacing:.01em; }
+.own li span{ display:block; margin-top:.35rem; font-size:11.5px; color:var(--faint); letter-spacing:.04em; }
+.ownnote{ margin-top:1.2rem; font-size:12.5px; color:var(--dim); letter-spacing:.02em; }
+.ownnote b{ color:var(--ac); font-weight:500; }
+
+/* index: small-fix banner above pricing tiers */
+.pricebanner{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.6rem 1rem; border:1px dashed var(--line-2); border-radius:12px; padding:.9rem 1.2rem; margin:0 0 1.4rem; }
+.pricebanner b{ color:var(--fg); font-weight:500; }
+.pricebanner span{ color:var(--dim); font-size:12.5px; }
+.pricebanner .amt-sm{ font-family:var(--dsp); color:var(--ac); font-size:1.15rem; }
+
+/* quote form */
+.qform{ display:grid; gap:1.1rem; max-width:44rem; }
+.qform label{ display:grid; gap:.45rem; font-size:12px; letter-spacing:.05em; color:var(--dim); }
+.qform label i{ font-style:normal; color:var(--faint); }
+.qform input, .qform textarea, .qform select{
+  width:100%; background:#0b0b0e; border:1px solid var(--line-2); border-radius:10px;
+  color:var(--fg); font-family:inherit; font-size:13.5px; line-height:1.5; padding:.7rem .8rem;
+}
+.qform input:focus, .qform textarea:focus, .qform select:focus{ outline:none; border-color:var(--ac); }
+.qform textarea{ resize:vertical; min-height:96px; }
+.qrow{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+@media (max-width:560px){ .qrow{ grid-template-columns:1fr; } }
+.qerr{ margin:0; min-height:1.1em; font-size:12px; color:#ff9b9b; }
+.qsend{ justify-self:start; }
+.qnote{ font-size:11.5px; color:var(--faint); line-height:1.7; letter-spacing:.03em; }
+.qnote a{ color:var(--dim); }
+.qok h2{ font-size:clamp(1.5rem,3.5vw,2.4rem); }

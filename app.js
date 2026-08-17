@@ -189,6 +189,7 @@
     var lines = [
       'leon --services | wc -l   → 35',
       'leon --quote "booking system"',
+      'leon --serve --remote all-50-states',
       'leon --stack ios android web ai',
       'leon --owns-the-code you'
     ];

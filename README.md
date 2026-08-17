@@ -1,7 +1,9 @@
-# Leon Kelvin Li / Noctilucenty — services site
+# Leon Kelvin Li / Noctilucenty — services site + assistant
 
-The site behind the Marketplace listing: what I build, what it starts at, what is
-actually running, and how to book the free call.
+What I build, what it starts at, what is actually running — plus a **nationwide
+lead-generation layer**: problem-first homepage entry, a generated service/industry
+page fleet, a quote flow, and an AI project assistant with its own secure backend.
+Positioning: based in California, building for businesses across the U.S.
 
 **Style references.** [ultracontext.com](https://ultracontext.com) for structure and motion —
 floating nav pill, bracket-hover links, an orbit graphic in the hero, alternating
@@ -11,24 +13,76 @@ huge side rails, ordered-dither pixel canvases, `details` FAQ. The accent is a
 slightly purple `#9b8cff`, which is the only colour on the page.
 
 ```
-index.html      one page, 9 sections, inline SVG icon sprite
-styles.css      tokens + layout + the CSS-driven motion
-app.js          13 isolated behaviours (see below)
-assets/
-  favicon.svg   monogram
-  og.png        1200x630 social preview — regenerate with tools/make_og.py
-tools/make_og.py
+index.html          the homepage — hand-written; 12 sections incl. problem cards + trust
+services/*.html     GENERATED — 13 service pages + index (tools/build_pages.py)
+industries/*.html   GENERATED — 10 industry pages + index
+quote.html          GENERATED — quote form, posts to the API
+sitemap.xml robots.txt  GENERATED
+styles.css          tokens + layout (+ subpage/widget styles appended at the bottom)
+app.js              13 isolated behaviours (see below)
+assist.js/.css      floating AI assistant + event beacon + UTM capture
+server/             the API: chat (OpenAI), leads, events — its own Render web service
+tools/build_pages.py  regenerates everything marked GENERATED (edit its in-file data)
+render.yaml         blueprint for the API service (leon-assist)
 ```
 
-No build step, no dependencies, no framework. Fonts come from Google Fonts
-(JetBrains Mono + Space Grotesk); everything else is in these three files.
+The **site** is still no-build static files. The **API** is the only thing with
+dependencies (`npm install`), and it deploys as a separate Render web service.
 
 ## Run it
 
 ```bash
-cd ~/Desktop/dev/freelancing && python3 -m http.server 4599
-# http://localhost:4599
+cd ~/Desktop/dev/freelancing
+npm install
+OPENAI_API_KEY=sk-... npm run dev      # site + API together on http://localhost:8787
+python3 tools/build_pages.py           # regenerate the page fleet after editing its data
 ```
+
+## Two deployments, one repo
+
+1. **Static site (existing, unchanged):** Render static site → leonkelvinli.onrender.com,
+   publish dir `.`, auto-deploys on push. Pretty URLs serve `/services/websites` from
+   `services/websites.html`.
+2. **Assistant API (new):** Render **web service** from this same repo — *New + →
+   Blueprint* picks up `render.yaml` (name `leon-assist`, `npm install`,
+   `node server/index.js`, health `/api/health`). Then add `OPENAI_API_KEY` in that
+   service's **Environment tab yourself** — it is never in git; `render.yaml` marks it
+   `sync:false` on purpose.
+
+The frontend finds the API through **one constant**: `API_BASE` at the top of
+`assist.js` (default `https://leon-assist.onrender.com`; on localhost it targets
+`:8787`). If Render assigns a different URL, change that constant and push.
+
+| env var | required | notes |
+|---|---|---|
+| `OPENAI_API_KEY` | **yes** | dashboard only, never git |
+| `OPENAI_MODEL` | no | default `gpt-5-mini` |
+| `OPENAI_MAX_OUTPUT` | no | default 700 tokens/reply |
+| `DAILY_MODEL_CAP` | no | default 500 calls/day, then chat politely closes |
+| `SMTP_HOST/PORT/USER/PASS` + `LEAD_TO_EMAIL` | no | set all five to email each lead (Gmail app password works) |
+| `EXTRA_ORIGIN` | no | one extra allowed browser origin |
+
+Free plan idles: first chat reply can take ~30–60s. The widget warns the visitor and
+warms the API when the panel opens; starter ($7/mo) removes the nap entirely.
+
+## The assistant
+
+Browser → `POST /api/chat` on our server → OpenAI Responses API → streamed back as plain
+text. The key exists **only** in server env; browser and model context never see it.
+`server/prompt.js` is the whole personality: plain words, one question per reply, prices
+only as published floors, recommends *against* AI when a script is cheaper, never quotes
+finals, never claims to be Leon. Protections: CORS locked to the site, per-IP rate
+limits, body-size caps, daily model-call ceiling, bounded history (older turns
+summarized server-side), 90s timeout, `/server` `/tools` `/data` unservable.
+
+**Leads** (`POST /api/lead`, from chat handoff + quote form): logged to stdout as
+`LEAD {...}` (grep Render logs — the durable sink), appended to `data/leads.jsonl`
+(ephemeral on free), emailed if SMTP is set. Chat leads include a model-written
+conversation summary. UTM/referrer/first-page ride along via `localStorage.leon_attr`.
+
+**Analytics**: first-party, log-only — `EVT {...}` lines from `data-evt` clicks
+(hero_quote_click, pricing_cta_click, email_click, phone_click, quote_form_*) and the
+widget (chat_open, chat_first_message, lead_submit). No cookies, no third parties.
 
 ## What moves
 
@@ -58,7 +112,13 @@ insert one.
 
 **Prices** live in the `<b>` at the end of each cell and in `.amt` on the tiers. They are all
 half the original flyer figures — halved once, in one pass, so the whole list stays internally
-consistent. If you change one, check it still sits sensibly against its neighbours.
+consistent. If you change one, check it still sits sensibly against its neighbours — **and
+update the other three copies nothing syncs for you**: the fleet data in
+`tools/build_pages.py` (then rerun it), the assistant's price list in `server/prompt.js`,
+and `assets/facebook.png` via `tools/make_fb.py`.
+
+**The page fleet** (`services/`, `industries/`, `quote.html`) is generated — copy edits go
+in `tools/build_pages.py`'s SERVICES/INDUSTRIES data, never in the output files.
 
 **Icons** are `<symbol>`s in the sprite at the top of `index.html`, used as
 `<svg class="ic"><use href="#ic-name"/></svg>`. Copy the nearest one, keep the 24x24

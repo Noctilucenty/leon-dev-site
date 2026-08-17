@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://leonkelvinli.onrender.com/sitemap.xml
