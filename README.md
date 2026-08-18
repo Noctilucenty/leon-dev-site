@@ -138,6 +138,10 @@ Live at **https://leonkelvinli.onrender.com** — a Render static site on
 `Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, no build command,
 publish directory `.`. Pushing to `main` redeploys it.
 
+The 32-hex `*.txt` file at the root is the IndexNow key — Bing/DuckDuckGo/Yahoo read
+it to trust our URL submissions. Keep it deployed; resubmit URLs after big content
+changes with a POST to api.indexnow.org (see git log for the exact call).
+
 `canonical`, `og:url` and `og:image` are all absolute against that host. If a custom domain
 is added later, those three need updating — a relative `og:image` is not followed by Facebook
 or iMessage, so it has to stay absolute.
