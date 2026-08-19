@@ -187,7 +187,7 @@
     var out = $('#termT');
     if (!out) return;
     var lines = [
-      'leon --services | wc -l   → 35',
+      'leon --services | wc -l   → 9',
       'leon --quote "booking system"',
       'leon --serve --remote all-50-states',
       'leon --stack ios android web ai',

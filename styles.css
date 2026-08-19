@@ -66,7 +66,7 @@ a{ color:inherit; text-decoration:none; }
 @media (pointer:fine){
   .has-cursor, .has-cursor *{ cursor:none !important; }
   .has-cursor input, .has-cursor select, .has-cursor textarea{ cursor:text !important; }
-  .cursor{
+  .has-cursor .cursor{
     display:block; position:fixed; top:0; left:0; z-index:300; pointer-events:none;
     width:26px; height:26px; margin:-13px 0 0 -13px;
     transition:width .22s var(--ease), height .22s var(--ease), margin .22s var(--ease), opacity .2s;
@@ -433,6 +433,12 @@ a{ color:inherit; text-decoration:none; }
 }
 @media (max-width:620px){
   body{ font-size:14px; }
+  /* the wordmark handle and the nav CTA together push the burger off-screen;
+     the same CTA sits in the hero 60px below, so nothing is lost by dropping it */
+  .mark-handle{ display:none; }
+  .nav-end .btn{ display:none; }
+  .nav{ gap:.5rem; }
+  .mark{ font-size:13px; min-width:0; overflow:hidden; text-overflow:ellipsis; }
   .hero{ min-height:auto; padding:6.5rem 0 3rem; }
   .hero-facts{ gap:1.6rem; }
   .grid{ grid-template-columns:1fr; }

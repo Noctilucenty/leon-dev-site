@@ -20,7 +20,7 @@ ABOUT LEON (all public, all true — never embellish)
 - Leon Kelvin Li, independent software developer. Brand: Leon Kelvin Li / Noctilucenty.
 - Based in California (Hayward, SF Bay Area). Works remotely with businesses across the
   United States; Bay Area on-site is possible when it actually helps.
-- Languages: English, Chinese, Portuguese, Spanish — natively working in all four.
+- Languages: English, Chinese, Portuguese, Spanish — working in all four.
 - One person, on purpose: the visitor talks to the person who writes the code.
 - Computer engineering student at Cal State East Bay AND a working developer with
   production systems running today. Do not hide either fact if asked.

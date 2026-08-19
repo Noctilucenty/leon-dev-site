@@ -14,9 +14,9 @@ slightly purple `#9b8cff`, which is the only colour on the page.
 
 ```
 index.html          the homepage — hand-written; 12 sections incl. problem cards + trust
-services/*.html     GENERATED — 13 service pages + index (tools/build_pages.py)
+services/*.html     GENERATED — 9 service pages + index (tools/build_pages.py)
 industries/*.html   GENERATED — 10 industry pages + index
-quote.html          GENERATED — quote form, posts to the API
+quote.html          GENERATED — quote form; opens the visitor's mail app, logs to the API
 sitemap.xml robots.txt  GENERATED
 styles.css          tokens + layout (+ subpage/widget styles appended at the bottom)
 app.js              13 isolated behaviours (see below)
@@ -110,9 +110,10 @@ chip is picked. `data-cat` takes several, space-separated — that is how *custo
 appears under every filter. The `<span class="n">` numbers are manual; renumber if you
 insert one.
 
-**Prices** live in the `<b>` at the end of each cell and in `.amt` on the tiers. They are all
-half the original flyer figures — halved once, in one pass, so the whole list stays internally
-consistent. If you change one, check it still sits sensibly against its neighbours — **and
+**Prices** live in the `<b>` at the end of each cell and in `.amt` on the tiers. Each floor
+sits roughly 10-15% below the low end of the 2026 US market band for a solo developer selling
+direct — the bands, sources and reasoning are in `research/2026-08-19-*.md`. They are floors,
+not quotes, and the whole list is meant to stay internally consistent. If you change one, check it still sits sensibly against its neighbours — **and
 update the other three copies nothing syncs for you**: the fleet data in
 `tools/build_pages.py` (then rerun it), the assistant's price list in `server/prompt.js`,
 and `assets/facebook.png` via `tools/make_fb.py`.

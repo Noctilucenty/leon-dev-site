@@ -12,14 +12,23 @@ const path = require('path');
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.jsonl');
 
-const clean = (v, max) => {
+/* Single-line by default: every control character goes, including the CR/LF that
+   would otherwise ride into an SMTP header. Pass multiline for the long free-text
+   fields, where newlines are the whole point — those never reach a header. */
+const clean = (v, max, multiline) => {
   if (typeof v !== 'string') return '';
-  return v.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, '').trim().slice(0, max);
+  const stripped = multiline
+    ? v.replace(/\r\n?/g, '\n').replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g, ' ')
+    : v.replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/[^\S\n]+/g, ' ');
+  return stripped.trim().slice(0, max);
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function validateLead(body) {
+  // Bots fill the hidden `website` field. Checked before anything else so the
+  // response cannot be used to tell which check rejected them.
+  if (body.website) return { bot: true };
   const lead = {
     ts: new Date().toISOString(),
     name: clean(body.name, 120),
@@ -27,9 +36,9 @@ function validateLead(body) {
     phone: clean(body.phone, 40),
     company: clean(body.company, 160),
     industry: clean(body.industry, 120),
-    problem: clean(body.problem, 4000),
+    problem: clean(body.problem, 4000, true),
     currentTools: clean(body.currentTools, 500),
-    desiredOutcome: clean(body.desiredOutcome, 1000),
+    desiredOutcome: clean(body.desiredOutcome, 1000, true),
     timeline: clean(body.timeline, 120),
     budget: clean(body.budget, 60),
     sourcePage: clean(body.sourcePage, 300),
@@ -38,11 +47,10 @@ function validateLead(body) {
     utmMedium: clean(body.utmMedium, 120),
     utmCampaign: clean(body.utmCampaign, 120),
     via: clean(body.via, 30) || 'site',           // 'chat' | 'quote-form' | 'site'
-    conversationSummary: clean(body.conversationSummary, 8000)
+    conversationSummary: clean(body.conversationSummary, 8000, true)
   };
   if (!lead.email || !EMAIL_RE.test(lead.email)) return { error: 'a valid email is required' };
   if (!lead.problem && !lead.conversationSummary) return { error: 'tell me at least a sentence about the project' };
-  if (body.website) return { error: 'rejected' }; // honeypot field — bots fill it
   return { lead };
 }
 

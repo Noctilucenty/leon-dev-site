@@ -47,6 +47,7 @@ app.use((req, res, next) => {
     res.setHeader('Vary', 'Origin');
     res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Max-Age', '86400');
   }
   if (req.method === 'OPTIONS') return res.sendStatus(204);
@@ -100,13 +101,14 @@ async function summarize(messages) {
   if (!client) return '';
   try {
     const text = messages.map(m => `${m.role}: ${m.content}`).join('\n').slice(0, 12000);
+    if (overDailyCap()) return '';
     const r = await client.responses.create({
       model: MODEL,
       instructions: 'Summarize this website chat into <=120 words of plain facts a consultant needs: business type, problem, current workflow/tools, desired outcome, timeline, budget, contact details if given. No commentary.',
       input: text,
       max_output_tokens: 220,
       ...(reasoningOpts())
-    });
+    }, { timeout: 8000, maxRetries: 0 });
     return (r.output_text || '').trim();
   } catch (e) { return ''; }
 }
@@ -189,18 +191,24 @@ app.post('/api/lead', async (req, res) => {
   if (limited('l:' + ip, 6, 10 * 60_000)) return res.status(429).json({ error: 'too many submissions — give it a few minutes.' });
 
   const body = req.body || {};
-  // If the widget sent a transcript instead of a summary, condense it server-side.
-  if (!body.conversationSummary && Array.isArray(body.messages) && body.messages.length) {
-    body.conversationSummary = await summarize(normalizeHistory(body.messages));
-    if (!body.conversationSummary) {
-      body.conversationSummary = normalizeHistory(body.messages)
-        .map(m => `${m.role}: ${m.content}`).join('\n').slice(0, 6000);
-    }
+  // A transcript stands in for a summary immediately. Waiting on the model here is
+  // what used to hold the request open for minutes on a slow or cold OpenAI call.
+  const history = Array.isArray(body.messages) && body.messages.length ? normalizeHistory(body.messages) : null;
+  if (!body.conversationSummary && history) {
+    body.conversationSummary = history.map(m => `${m.role}: ${m.content}`).join('\n').slice(0, 6000);
   }
-  const { lead, error } = validateLead(body);
+  const { lead, error, bot } = validateLead(body);
+  if (bot) return res.json({ ok: true });   // looks identical to a real submission
   if (error) return res.status(400).json({ error });
   persistLead(lead);
   res.json({ ok: true });
+
+  // The condensed version is a nicety; it lands in the log after the answer went out.
+  if (history) {
+    summarize(history)
+      .then(sum => { if (sum) console.log('LEAD_SUMMARY ' + JSON.stringify({ ts: lead.ts, email: lead.email, summary: sum })); })
+      .catch(() => {});
+  }
 });
 
 /* ── reading the leads back ──
@@ -209,12 +217,14 @@ app.post('/api/lead', async (req, res) => {
 app.get('/api/leads', (req, res) => {
   const key = process.env.LEADS_KEY || '';
   if (!key) return res.status(404).json({ error: 'not enabled' });
-  if (String(req.query.key || '') !== key) return res.status(401).json({ error: 'wrong key' });
+  const given = String(req.get('x-leads-key') || req.query.key || '');
+  if (given.length !== key.length || given !== key) return res.status(401).json({ error: 'wrong key' });
 
-  const leads = readLeads(Number(req.query.limit) || 200);
+  const asked = Math.floor(Number(req.query.limit));
+  const leads = readLeads(Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200);
   if (req.query.format === 'json') return res.json({ count: leads.length, leads });
 
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const card = l => '<article><h2>' + esc(l.name || l.email) + ' <small>' + esc(l.via) + ' · ' + esc(l.ts) + '</small></h2>'
     + '<p><a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>'
     + (l.phone ? ' · <a href="tel:' + esc(l.phone) + '">' + esc(l.phone) + '</a>' : '') + '</p>'
@@ -256,7 +266,10 @@ app.post('/api/event', (req, res) => {
 /* ── static site (lets one service host everything if ever wanted) ── */
 const ROOT = path.join(__dirname, '..');
 app.use((req, res, next) => {
-  if (/^\/(server|tools|data|node_modules)(\/|$)|^\/\.|\/\.env/.test(req.path)) return res.sendStatus(404);
+  if (/^\/(server|tools|data|node_modules|research)(\/|$)|^\/\.|\/\.env/.test(req.path)
+      || /^\/(README|readme)|\.(md|ya?ml|lock|log|bak|zip|py)$|^\/package(-lock)?\.json$/.test(req.path)) {
+    return res.sendStatus(404);
+  }
   next();
 });
 app.use(express.static(ROOT, { extensions: ['html'], index: 'index.html', maxAge: '10m' }));

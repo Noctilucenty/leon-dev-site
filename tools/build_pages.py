@@ -19,7 +19,7 @@ TODAY = datetime.date.today().isoformat()
 
 SERVICES = [
  dict(slug="websites", name="business websites", h1=("a website that", "works as hard as you do"),
-  price="$1,200", title="Business Website Design & Development — from $1,200 | Leon Kelvin Li",
+  price="$1,200", title="Business Website Design — from $1,200 | Leon Kelvin Li",
   desc="Fast business websites built directly by one developer. Fixed quote before work starts, you own everything. Serving businesses across the U.S.",
   intro=["a lot of good businesses still have no website, or one from 2016 that nobody can update. customers check online before they call — if they find nothing, or something broken on a phone, they call the next place.",
    "i build sites that load fast, read clearly on a phone in a parking lot, and that you can update yourself without calling me. price agreed in writing before i start."],
@@ -45,7 +45,7 @@ SERVICES = [
   related=["custom-software","websites","mobile-apps"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
-  price="$1,000", title="Custom AI Chatbot for Your Business — from $1,000 | Leon Kelvin Li",
+  price="$1,000", title="AI Chatbot for Your Business — from $1,000 | Leon Kelvin Li",
   desc="AI chatbots trained on your business that answer customer questions on your website 24/7 — and say 'I don't know' instead of making things up.",
   intro=["most of what customers ask is the same twenty questions: hours, prices, availability, 'do you do X'. a chatbot trained on your business answers those instantly, at 2am, in multiple languages.",
    "the difference between a good one and a lawsuit is restraint: mine cite your real information and say 'i don't know — here's how to reach a person' instead of inventing a price you'll have to honour. the assistant on this site is one i built."],
@@ -58,7 +58,7 @@ SERVICES = [
   related=["ai-phone-agents","business-automation","websites"]),
 
  dict(slug="ai-phone-agents", name="ai phone agents", h1=("your phone, answered", "at 2am and during the rush"),
-  price="$1,200", title="AI Phone Agent / AI Receptionist — from $1,200 | Leon Kelvin Li",
+  price="$1,200", title="AI Phone Agent — from $1,200 | Leon Kelvin Li",
   desc="An AI that answers your business phone, handles the repetitive calls, books appointments and hands anything unusual to a person. Built with written handoff rules.",
   intro=["missed calls are missed revenue: every call that rings out while your team is busy is a customer calling the next name on the list.",
    "an ai phone agent answers instantly, handles the repetitive calls — hours, booking, status checks — and transfers to a person the moment the call isn't routine. that handoff rule gets written down with you, not guessed."],
@@ -78,13 +78,13 @@ SERVICES = [
   pains=["data gets copied between systems by hand","new leads and form submissions sit unanswered","reports take hours of exporting and pasting","approvals and handoffs live in someone's memory","five tools, none of them talking to each other"],
   build=["form → sheet → document → email chains, end to end","n8n pipelines your team can edit without calling me","integrations: quickbooks, stripe, google, slack, twilio, your pos","automatic reports that build themselves on schedule","document workflows: created, filed, approved, versioned"],
   proof=("document control","a request names a template; seconds later the google doc exists, filed and shared correctly. approval locks it, publishing versions it. built in apps script, then again as six n8n workflows the team edits themselves."),
-  faqs=[("what should i automate first?","the thing a person does most often with the least judgement — retyping, forwarding, filing. we find it in the free call; it's usually obvious within ten minutes."),
+  faqs=[("what should i automate first?","the thing a person does most often with the least judgment — retyping, forwarding, filing. we find it in the free call; it's usually obvious within ten minutes."),
    ("is this ai?","mostly not, and that's a feature. deterministic automations are cheaper and more reliable. ai enters only where reading or drafting is involved."),
    ("what does it cost?","simple integrations start at $600 and workflow automation around $600–$1,200. the saved hours usually repay it within months.")],
   related=["business-dashboards","ai-chatbots","custom-software"]),
 
  dict(slug="custom-software", name="custom software", h1=("built around how your", "business actually runs"),
-  price="$3,500", title="Custom Software Development for Businesses | Leon Kelvin Li",
+  price="$3,500", title="Custom Software Development | Leon Kelvin Li",
   desc="Custom business software built end to end by one developer: portals, platforms, operations systems. Fixed written quotes. U.S.-wide, remote.",
   intro=["off-the-shelf software fits the average business. yours isn't average — that's why there's still a spreadsheet holding part of it together.",
    "custom software is for when nothing on the menu is the shape of your problem: the multi-brand ordering system on my work page exists because no ordering product could split one cart into a ticket and payout per kitchen. that unusual middle part is most of what i build."],
@@ -97,7 +97,7 @@ SERVICES = [
   related=["mobile-apps","business-automation","business-dashboards"]),
 
  dict(slug="booking-systems", name="booking & online ordering", h1=("customers book and order themselves —", "the reminder does the rest"),
-  price="$600", title="Online Booking & Ordering Systems — from $600 | Leon Kelvin Li",
+  price="$600", title="Booking & Online Ordering — from $600 | Leon Kelvin Li",
   desc="Booking and online ordering built into your own website: appointments, deposits, no-show-killing reminders, and a cart that keeps the commission. Owned by you, no per-booking fees.",
   intro=["every booking that happens over the phone costs staff time, and every no-show costs the whole slot. online booking fixes the first; automatic reminders fix the second — the reminder is the part that pays for the build.",
    "i build booking into your own site — your calendar, your rules, deposits if you want them — rather than renting a generic widget with someone else's branding and a per-booking fee.",
@@ -111,12 +111,12 @@ SERVICES = [
   related=["websites","ai-phone-agents","business-automation"]),
 
  dict(slug="business-dashboards", name="dashboards & internal tools", h1=("the four numbers that decide", "your week, on one screen"),
-  price="$750", title="Business Dashboards & Internal Tools — from $750 | Leon Kelvin Li",
+  price="$750", title="Dashboards & Internal Tools — from $750 | Leon Kelvin Li",
   desc="Live dashboards that replace the Friday export ritual, plus the small internal tools and Chrome extensions that delete the copy-paste out of a job your team does forty times a day.",
   intro=["somebody on your team spends part of every week exporting, pasting and reformatting the same report. and by the time it's read, it's old.",
    "a dashboard pulls those numbers live from the systems that already have them — sales, bookings, stock, ad spend — onto one screen you check in ten seconds.",
    "the same goes for the job somebody does forty times a day in six clicks. a small internal tool or chrome extension that makes it one click is the highest return-per-dollar software i build."],
-  pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","a repetitive task eats hours across the team","the answer to 'how do we know x' is 'ask maria'"],
+  pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","a repetitive task eats hours across the team","the answer to 'how do we know this number' is 'ask the one person who knows'"],
   build=["live dashboards fed straight from your real systems","the handful of numbers that matter, not eighty charts","alerts when a number crosses a line you set","scheduled email summaries for people who won't open a dashboard","clean history so trends are visible, not remembered","chrome extensions and small tools built for the exact job, nothing else"],
   proof=("site intelligence","decision support scoring all 33,772 us zip codes across nine data sources — with every score carrying an uncertainty band instead of false precision. dashboards are the small sibling of that discipline."),
   faqs=[("what does a dashboard cost?","a small internal tool starts at $750 and a dashboard at $1,000, depending on how many systems feed it. fixed quote before work starts."),
@@ -125,7 +125,7 @@ SERVICES = [
   related=["business-dashboards","ai-chatbots","custom-software"]),
 
  dict(slug="seo", name="seo & ai search", h1=("found on google — and by", "the ais people ask instead"),
-  price="$450", title="SEO & AI Search Optimization for Small Business | Leon Kelvin Li",
+  price="$450", title="SEO & AI Search Optimization | Leon Kelvin Li",
   desc="Technical SEO plus AI-search optimization: be found on Google and recommended by the AI assistants customers increasingly ask instead.",
   intro=["search is splitting in two: google on one side, and ai assistants — chatgpt, gemini, perplexity — on the other. your customers already use both to decide who to call.",
    "i do the technical side honestly: structured data, speed, clean pages that answer real questions — no doorway-page spam, no thousand junk articles. the same work that ranks you also makes ais recommend you, because both read the same web."],
@@ -140,7 +140,7 @@ SERVICES = [
 
 INDUSTRIES = [
  dict(slug="restaurants", name="restaurants & food", h1=("software for", "restaurants & food businesses"),
-  title="Websites, Online Ordering & AI for Restaurants | Leon Kelvin Li",
+  title="Software for Restaurants & Food | Leon Kelvin Li",
   desc="Online ordering without the 30% commission, AI phone agents for the rush, and websites customers can order from. Built by one developer, U.S.-wide.",
   intro=["restaurants run on thin margins while delivery apps take up to 30% and the phone rings through every rush. most of that is fixable with software you own instead of rent.",
    "i built a multi-brand ordering platform where one cart spans several kitchens and the server splits every order into per-vendor tickets and payouts — so the ordinary single-restaurant version is well-trodden ground."],
@@ -156,7 +156,7 @@ INDUSTRIES = [
   related_services=["booking-systems","ai-phone-agents","websites"]),
 
  dict(slug="contractors", name="contractors & home services", h1=("software for", "contractors & home services"),
-  title="Software for Contractors: Leads, Scheduling, Job Tracking | Leon Kelvin Li",
+  title="Software for Contractors | Leon Kelvin Li",
   desc="Lead follow-up automation, scheduling, job tracking and customer portals for contractors and home-service businesses across the U.S.",
   intro=["contracting work is won and lost in the follow-up: the lead that came in while you were on a roof, the estimate that never went out, the customer who called someone else because you answered second.",
    "software fixes the boring half of that — instant lead responses, scheduling, job status a customer can check without calling you."],
@@ -172,7 +172,7 @@ INDUSTRIES = [
   related_services=["business-automation","custom-software","websites"]),
 
  dict(slug="automotive", name="auto repair & automotive", h1=("software for", "auto shops & automotive"),
-  title="Software for Auto Repair Shops: Status Calls, Booking, AI Phone | Leon Kelvin Li",
+  title="Software for Auto Repair Shops | Leon Kelvin Li",
   desc="Kill the 'is my car ready?' calls: AI phone agents, status updates, online booking and shop dashboards for automotive businesses.",
   intro=["every shop knows the two calls: 'can i bring it in?' and 'is it ready yet?'. both interrupt the person doing the actual work.",
    "booking can go straight into your calendar. status can text the customer automatically the moment a job changes state — and an ai phone agent can answer the rest."],
@@ -188,7 +188,7 @@ INDUSTRIES = [
   related_services=["ai-phone-agents","booking-systems","business-automation"]),
 
  dict(slug="healthcare", name="medical & dental", h1=("software for", "medical & dental practices"),
-  title="Software for Medical & Dental Offices: Booking, Reminders, FAQ AI | Leon Kelvin Li",
+  title="Software for Medical & Dental Offices | Leon Kelvin Li",
   desc="Online booking, no-show-killing reminders and after-hours question handling for clinics and dental practices. Careful, human-in-the-loop builds.",
   intro=["a practice front desk answers the same questions all day — insurance, hours, directions, 'can i move my appointment' — while the schedule fills with no-shows that reminders would have caught.",
    "health care deserves the careful version of software: reminders and booking that reduce the front desk load, an assistant that answers the routine and hands anything clinical straight to a human. i've built compliance-aware ai that declines to answer rather than overstep — that's the posture your patients get."],
@@ -204,7 +204,7 @@ INDUSTRIES = [
   related_services=["booking-systems","ai-chatbots","business-automation"]),
 
  dict(slug="real-estate", name="real estate & property", h1=("software for", "real estate & property management"),
-  title="Software for Real Estate & Property Management | Leon Kelvin Li",
+  title="Software for Real Estate & Property | Leon Kelvin Li",
   desc="Tenant portals, maintenance-request tracking, listing sites and follow-up automation for property managers and real-estate businesses.",
   intro=["property work is coordination: tenants, owners, vendors, showings, maintenance — most of it still happening over scattered calls and texts nobody can find later.",
    "a portal gives tenants somewhere to submit and track requests. automation gives owners their statements without you assembling them. your phone gets quieter."],
@@ -220,7 +220,7 @@ INDUSTRIES = [
   related_services=["custom-software","business-automation","websites"]),
 
  dict(slug="logistics", name="logistics & warehousing", h1=("software for", "logistics & warehousing"),
-  title="Software for Logistics, Trucking & Warehousing | Leon Kelvin Li",
+  title="Software for Logistics & Trucking | Leon Kelvin Li",
   desc="Dispatch boards, driver apps, document automation and customer tracking for logistics and warehouse operations.",
   intro=["logistics runs on information handoffs — and every handoff that happens by phone, email-forward or retyping is a delay and an error waiting to happen.",
    "dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem."],
@@ -236,7 +236,7 @@ INDUSTRIES = [
   related_services=["custom-software","business-dashboards","websites"]),
 
  dict(slug="gyms", name="gyms & fitness", h1=("software for", "gyms & fitness businesses"),
-  title="Software for Gyms & Fitness: Booking, Members, Reminders | Leon Kelvin Li",
+  title="Software for Gyms & Fitness | Leon Kelvin Li",
   desc="Class booking, membership management, reminder automation and websites for gyms, studios and trainers.",
   intro=["a gym's software problem is churn wearing a disguise: missed classes, lapsed cards, members who drift because nobody noticed they stopped coming.",
    "booking, reminders and a membership view fix the mechanics — you see who's fading while there's still time to wave them back."],
@@ -252,7 +252,7 @@ INDUSTRIES = [
   related_services=["booking-systems","websites","business-dashboards"]),
 
  dict(slug="retail", name="retail & e-commerce", h1=("software for", "retail & e-commerce"),
-  title="Software for Retail & E-commerce: Inventory, Orders, Automation | Leon Kelvin Li",
+  title="Software for Retail & E-commerce | Leon Kelvin Li",
   desc="Inventory that survives a busy Saturday, order automation, dashboards and storefronts for retailers and e-commerce operators.",
   intro=["retail dies by a thousand small syncs: the count that drifted, the online order nobody saw, the bestseller that sold out because reordering lived in someone's head.",
    "the fix is rarely a new platform — it's the connective tissue: inventory that matches reality, orders flowing into one queue, numbers you see daily without exporting anything."],
@@ -268,7 +268,7 @@ INDUSTRIES = [
   related_services=["business-automation","business-dashboards","websites"]),
 
  dict(slug="professional-services", name="professional services", h1=("software for", "professional services"),
-  title="Software for Law, Accounting & Consulting Firms | Leon Kelvin Li",
+  title="Software for Professional Firms | Leon Kelvin Li",
   desc="Client portals, intake automation, document workflows and dashboards for law, accounting, consulting and agency work.",
   intro=["service firms sell hours, then spend a shocking share of them on intake, status emails, document wrangling and 'just checking in' calls.",
    "a client portal, automated intake and document workflows give those hours back — and make the firm feel bigger and calmer than the inbox it replaced."],
@@ -292,7 +292,7 @@ INDUSTRIES = [
   fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500"),
    ("app + backend + payments","the whole stack, not just screens. from $4,500"),
    ("ai features","assistants, retrieval and pipelines with guardrails that hold. from $1,000"),
-   ("ongoing development","a standing block of hours as you find fit. from $450/mo")],
+   ("ongoing development","a standing block of hours as you see fit. from $450/mo")],
   proof=("curio","consumer ios app on the app store: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages — built alone."),
   faqs=[("how fast can an mvp ship?","weeks, not quarters — scope decides. we cut to the version that tests the idea, in writing, before building."),
    ("do i own the code?","completely — repo, accounts and infrastructure from day one. investors will ask; the answer is yes."),
@@ -371,6 +371,8 @@ def head(title, desc, path, schema):
 <meta property="og:image" content="{BASE}/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 {FONTS}
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assist.css">
@@ -552,7 +554,7 @@ def quote_page():
     path = '/quote'
     bc = [("home","/"),("get a quote", None)]
     schema = [breadcrumb_schema(bc, path)]
-    return head("Get a Fixed Quote — Custom Software, AI & Websites | Leon Kelvin Li",
+    return head("Get a Fixed Quote — Software & AI | Leon Kelvin Li",
         "Describe what your business needs in plain words. Leon reads every request himself and replies with real questions or a fixed quote — usually same day.",
         path, schema) + ICONS + nav() + '''
 <main id="main">
@@ -661,7 +663,7 @@ w('services/index.html', listing_page('services', SERVICES,
   "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and i'll quote the shape of it."))
 
 w('industries/index.html', listing_page('industries', INDUSTRIES,
-  "Industries — Software Built for How Your Business Runs | Leon Kelvin Li",
+  "Industries I Build Software For | Leon Kelvin Li",
   "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
   "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
 
