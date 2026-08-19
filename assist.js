@@ -24,17 +24,18 @@
     try {
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
       var qs = new URLSearchParams(location.search);
+      var tag = qs.get('utm_source') || qs.get('s') || '';
       if (!saved) {
         saved = {
           firstPage: location.pathname,
           referrer: (document.referrer || '').slice(0, 200),
-          utmSource: qs.get('utm_source') || '',
+          utmSource: tag,
           utmMedium: qs.get('utm_medium') || '',
           utmCampaign: qs.get('utm_campaign') || ''
         };
         localStorage.setItem(KEY, JSON.stringify(saved));
-      } else if (qs.get('utm_source')) {
-        saved.utmSource = qs.get('utm_source');
+      } else if (tag) {
+        saved.utmSource = tag;
         saved.utmMedium = qs.get('utm_medium') || saved.utmMedium;
         saved.utmCampaign = qs.get('utm_campaign') || saved.utmCampaign;
         localStorage.setItem(KEY, JSON.stringify(saved));
@@ -48,7 +49,8 @@
     try {
       var body = JSON.stringify({
         name: name, path: location.pathname,
-        ref: attribution.referrer || '', utm: attribution.utmSource || ''
+        ref: (document.referrer || attribution.referrer || '').slice(0, 200),
+        utm: attribution.utmSource || ''
       });
       if (navigator.sendBeacon) {
         navigator.sendBeacon(API_BASE + '/api/event', new Blob([body], { type: 'application/json' }));
@@ -58,6 +60,9 @@
     } catch (e) {}
   }
   window.leonEvt = evt;
+
+  // one page_view per load — this is what the /api/traffic sources table counts
+  run(function () { evt('page_view'); });
 
   // declarative events: any element with data-evt fires on click
   run(function () {

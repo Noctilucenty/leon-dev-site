@@ -20,6 +20,7 @@ try { OpenAI = require('openai'); } catch (e) { /* handled at call time */ }
 
 const { SYSTEM_PROMPT } = require('./prompt');
 const { validateLead, persistLead, readLeads, clean } = require('./leads');
+const { persistEvent, readEvents, sourceOf } = require('./events');
 
 const app = express();
 app.disable('x-powered-by');
@@ -252,15 +253,61 @@ app.post('/api/event', (req, res) => {
   if (limited('e:' + ip, 120, 10 * 60_000)) return res.sendStatus(204);
   const name = clean(String((req.body || {}).name || ''), 48);
   if (name) {
-    console.log('EVT ' + JSON.stringify({
+    persistEvent({
       ts: new Date().toISOString(),
       name,
       path: clean(String(req.body.path || ''), 200),
       ref: clean(String(req.body.ref || ''), 200),
       utm: clean(String(req.body.utm || ''), 200)
-    }));
+    });
   }
   res.sendStatus(204);
+});
+
+/* ── traffic dashboard — where visitors came from ──
+   Same key and same caveat as /api/leads: events.jsonl resets on deploy;
+   the permanent record is the "EVT " lines in Render logs. */
+app.get('/api/traffic', (req, res) => {
+  const key = process.env.LEADS_KEY || '';
+  if (!key) return res.status(404).send('set LEADS_KEY in the environment to enable this view');
+  const given = String(req.get('x-leads-key') || req.query.key || '');
+  if (given !== key) return res.status(403).send('wrong key');
+
+  const events = readEvents(5000);
+  if (req.query.format === 'json') return res.json({ count: events.length, events });
+
+  const count = (map, k) => { if (k) map.set(k, (map.get(k) || 0) + 1); };
+  const bySource = new Map(), byName = new Map(), byPath = new Map(), byDay = new Map(), byLang = new Map();
+  for (const ev of events) {
+    count(byName, ev.name);
+    count(byDay, String(ev.ts || '').slice(0, 10));
+    if (ev.name === 'page_view') {
+      count(bySource, sourceOf(ev));
+      count(byPath, ev.path || '/');
+      const lang = ev.path === '/pt' ? 'português' : ev.path === '/zh' ? '中文' : 'english';
+      count(byLang, lang);
+    }
+  }
+  const rows = (map) => [...map.entries()].sort((a, b) => b[1] - a[1])
+    .map(([k, v]) => `<tr><td>${String(k).replace(/</g, '&lt;')}</td><td>${v}</td></tr>`).join('')
+    || '<tr><td colspan="2">nothing yet</td></tr>';
+  const recent = events.slice(-40).reverse().map(ev =>
+    `<tr><td>${String(ev.ts || '').slice(5, 16).replace('T', ' ')}</td><td>${ev.name}</td><td>${(ev.path || '').replace(/</g, '&lt;')}</td><td>${sourceOf(ev).replace(/</g, '&lt;')}</td></tr>`).join('');
+
+  res.type('html').send('<!doctype html><meta charset="utf-8">'
+    + '<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>traffic</title>'
+    + '<style>body{background:#000;color:#fafafa;font:14px/1.6 "JetBrains Mono",monospace;padding:2rem;max-width:880px;margin:auto}'
+    + 'h1,h2{font-weight:500} h2{margin:2rem 0 .5rem;color:#9b8cff} table{width:100%;border-collapse:collapse}'
+    + 'td{border-bottom:1px solid #1a1a1a;padding:.35rem .5rem} td:last-child{text-align:right;color:#aaa}'
+    + '.recent td{text-align:left;color:#aaa;font-size:12px} p{color:#777}</style>'
+    + `<h1>traffic — ${events.length} events since last deploy</h1>`
+    + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. permanent history: "EVT " lines in render logs.</p>'
+    + `<h2>visits by source</h2><table>${rows(bySource)}</table>`
+    + `<h2>visits by language page</h2><table>${rows(byLang)}</table>`
+    + `<h2>visits by page</h2><table>${rows(byPath)}</table>`
+    + `<h2>events</h2><table>${rows(byName)}</table>`
+    + `<h2>by day</h2><table>${rows(byDay)}</table>`
+    + `<h2>last 40</h2><table class="recent">${recent}</table>`);
 });
 
 /* ── static site (lets one service host everything if ever wanted) ── */
