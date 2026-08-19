@@ -19,59 +19,46 @@ TODAY = datetime.date.today().isoformat()
 
 SERVICES = [
  dict(slug="websites", name="business websites", h1=("a website that", "works as hard as you do"),
-  price="$325", title="Business Website Design & Development — from $325 | Leon Kelvin Li",
+  price="$1,200", title="Business Website Design & Development — from $1,200 | Leon Kelvin Li",
   desc="Fast business websites built directly by one developer. Fixed quote before work starts, you own everything. Serving businesses across the U.S.",
   intro=["a lot of good businesses still have no website, or one from 2016 that nobody can update. customers check online before they call — if they find nothing, or something broken on a phone, they call the next place.",
    "i build sites that load fast, read clearly on a phone in a parking lot, and that you can update yourself without calling me. price agreed in writing before i start."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
   build=["a fast site you own completely — domain, hosting, code","editable by you: change hours, prices and photos yourself","booking, ordering or payments built in when you need them","found on google and by ai assistants people ask instead of google","english, spanish, portuguese or chinese — i speak all four"],
   proof=("curio + this site","the app store app, this site, and every system on the work page were built by the same person you'd be hiring."),
-  faqs=[("how much does a website cost?","business sites start at $325 and landing pages at $225. the real number depends on pages and features — you get a written fixed quote before anything starts, and it doesn't change after."),
-   ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. redesigns start at $450 and i'll tell you which parts are worth keeping."),
+  faqs=[("how much does a website cost?","business sites start at $1,200 and landing pages at $400. the real number depends on pages and features — you get a written fixed quote before anything starts, and it doesn't change after."),
+   ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. redesigns start at $1,500 and i'll tell you which parts are worth keeping."),
    ("how long does it take?","most business sites take one to two weeks, with a working link you can watch during the build.")],
-  related=["booking-systems","seo","integrations"]),
+  related=["booking-systems","seo","business-automation"]),
 
  dict(slug="mobile-apps", name="mobile apps", h1=("an app on the store,","not stuck in development"),
-  price="$2,500", title="iOS & Android App Development — from $2,500 | Leon Kelvin Li",
+  price="$4,500", title="iOS & Android App Development — from $4,500 | Leon Kelvin Li",
   desc="Custom iOS and Android apps built end to end by one developer — through App Store review and onto the store. Fixed quotes, nationwide.",
   intro=["most app projects die between the idea and the store. agencies quote six figures; freelancer marketplaces hand you code that never passes apple's review.",
    "i've taken my own app through app store review solo — design, code, backend, subscriptions, the review process, and the appeal when review got it wrong. that whole path is what you're buying."],
   pains=["you have an app idea and no technical team","your customers keep asking 'do you have an app?'","you got an agency quote with too many zeros","someone built you an app that never made it to the store","you need the backend, accounts and payments — not just screens"],
   build=["ios and android from one codebase where that's the right call","the backend, accounts, notifications and payments behind it","app store and play submission handled, including review problems","subscriptions and in-app purchases wired correctly","you own the developer accounts and the code from day one"],
   proof=("curio — live on the app store","a consumer ios app built solo end to end: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages."),
-  faqs=[("what does an app cost?","full builds start at $2,500. a simple internal app costs less than a consumer app with accounts, payments and push. you get a fixed written quote first — the number doesn't move after."),
+  faqs=[("what does an app cost?","full builds start at $4,500. a simple internal app costs less than a consumer app with accounts, payments and push. you get a fixed written quote first — the number doesn't move after."),
    ("ios first or both?","usually both from one codebase. if your customers are heavily iphone (common for consumer) or android (common for field crews), we start there."),
    ("who owns the app?","you. the developer accounts, the store listing, the code and the backend are all in your name.")],
-  related=["custom-software","customer-portals","websites"]),
-
- dict(slug="ai-automation", name="ai & automation", h1=("remove the work", "you repeat every week"),
-  price="$500", title="AI & Business Automation for Small Business | Leon Kelvin Li",
-  desc="Practical AI and automation for U.S. businesses: chatbots, phone agents, document processing, workflow automation. Honest advice on when AI is NOT the answer.",
-  intro=["somewhere in your week there's a job a person does over and over — retyping, forwarding, copying between systems, answering the same question. that job is usually automatable, and it's usually cheaper to automate than you think.",
-   "my rule: if a boring script solves it, i will not sell you ai. ai earns its place reading, drafting, classifying and answering from your own documents — with a person in front of anything public."],
-  pains=["your team retypes the same data into two or three systems","the same questions get answered by hand, all day","invoices, forms and waivers get processed manually","follow-ups only happen when someone remembers","you keep hearing 'use ai' but nobody says for what"],
-  build=["workflow automation for follow-ups, handoffs and reminders","document processing: ocr, extraction, classification, routing","chatbots and phone agents trained on your business, not the internet","knowledge bases that answer from your own documents, with sources","plain automations (apps script, n8n) when ai would be overkill"],
-  proof=("review desk + document control","a system that reads every incoming review and drafts the reply a human sends, and one that creates, files, approves and versions company documents automatically."),
-  faqs=[("is ai actually worth it for a business my size?","sometimes. it's genuinely good at reading, drafting and answering from your own material. it's a bad idea anywhere a confident wrong answer costs you a customer — so i put a person in front of anything public, and i'll tell you when a plain script is the better buy."),
-   ("what does automation cost?","small automations start around $500–$1,000. most pay for themselves in saved hours within a couple of months — we do that math together before you commit."),
-   ("do i need new software for this?","usually not. most automation connects tools you already pay for — google workspace, quickbooks, your pos, your crm.")],
-  related=["ai-chatbots","ai-phone-agents","business-automation"]),
+  related=["custom-software","websites","mobile-apps"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
-  price="$500", title="Custom AI Chatbot for Your Business — from $500 | Leon Kelvin Li",
+  price="$1,000", title="Custom AI Chatbot for Your Business — from $1,000 | Leon Kelvin Li",
   desc="AI chatbots trained on your business that answer customer questions on your website 24/7 — and say 'I don't know' instead of making things up.",
   intro=["most of what customers ask is the same twenty questions: hours, prices, availability, 'do you do X'. a chatbot trained on your business answers those instantly, at 2am, in multiple languages.",
    "the difference between a good one and a lawsuit is restraint: mine cite your real information and say 'i don't know — here's how to reach a person' instead of inventing a price you'll have to honour. the assistant on this site is one i built."],
   pains=["staff answer the same questions all day","after-hours visitors leave without answers","your website gets traffic but no messages","spanish or chinese-speaking customers get no help","you tried a chatbot builder and it made things up"],
   build=["a chatbot trained only on your verified business information","escalation to a human the moment it should","lead capture built in — conversations become contacts","multilingual: english, spanish, portuguese, chinese","guardrails: no invented prices, no promises you didn't make"],
   proof=("compliance-aware assistant","a chinese-language assistant for a regulated market: every claim must cite a source, and it declines to answer rather than break advertising law. try the one on this site — bottom right."),
-  faqs=[("what does a chatbot cost?","from $500 for a site chatbot trained on your business. connecting it to booking or your other systems adds scope — fixed quote before anything starts."),
+  faqs=[("what does a chatbot cost?","from $1,000 for a site chatbot trained on your business. connecting it to booking or your other systems adds scope — fixed quote before anything starts."),
    ("will it say something wrong to a customer?","that risk is the whole design problem. mine only answer from your approved information, cite it, and hand off to a human when unsure. i've built one for a market where a wrong sentence breaks the law."),
    ("can it capture leads?","yes — the good ones qualify a visitor and package the conversation for you, like the assistant on this page does.")],
-  related=["ai-phone-agents","ai-automation","websites"]),
+  related=["ai-phone-agents","business-automation","websites"]),
 
  dict(slug="ai-phone-agents", name="ai phone agents", h1=("your phone, answered", "at 2am and during the rush"),
-  price="$1,000", title="AI Phone Agent / AI Receptionist — from $1,000 | Leon Kelvin Li",
+  price="$1,200", title="AI Phone Agent / AI Receptionist — from $1,200 | Leon Kelvin Li",
   desc="An AI that answers your business phone, handles the repetitive calls, books appointments and hands anything unusual to a person. Built with written handoff rules.",
   intro=["missed calls are missed revenue: every call that rings out while your team is busy is a customer calling the next name on the list.",
    "an ai phone agent answers instantly, handles the repetitive calls — hours, booking, status checks — and transfers to a person the moment the call isn't routine. that handoff rule gets written down with you, not guessed."],
@@ -79,9 +66,9 @@ SERVICES = [
   build=["an agent that answers every call, immediately","booking wired into your real calendar or scheduling system","status lookups from your own systems where they expose data","instant transfer to staff on anything unusual — rules in writing","call summaries so you see what customers actually ask"],
   proof=("built with the same discipline as the review desk","every ai system i ship keeps a human in the loop by design — the review desk drafts replies but a person presses send. phone agents get the same treatment."),
   faqs=[("what happens when the ai can't handle a call?","it transfers to a person, following escalation rules we write down together before launch. the goal is removing repetitive calls, not removing humans."),
-   ("what does it cost?","from $1,000 depending on what the agent needs to do — answering and booking is simpler than pulling live order status from your systems."),
+   ("what does it cost?","from $1,200 depending on what the agent needs to do — answering and booking is simpler than pulling live order status from your systems."),
    ("does it work with my scheduling software?","often, if your system exposes the data. i verify the specific integration before quoting rather than promising first.")],
-  related=["ai-chatbots","booking-systems","integrations"]),
+  related=["ai-chatbots","booking-systems","business-automation"]),
 
  dict(slug="business-automation", name="business automation", h1=("the follow-ups happen", "whether anyone remembers or not"),
   price="$600", title="Workflow & Business Automation — from $600 | Leon Kelvin Li",
@@ -93,11 +80,11 @@ SERVICES = [
   proof=("document control","a request names a template; seconds later the google doc exists, filed and shared correctly. approval locks it, publishing versions it. built in apps script, then again as six n8n workflows the team edits themselves."),
   faqs=[("what should i automate first?","the thing a person does most often with the least judgement — retyping, forwarding, filing. we find it in the free call; it's usually obvious within ten minutes."),
    ("is this ai?","mostly not, and that's a feature. deterministic automations are cheaper and more reliable. ai enters only where reading or drafting is involved."),
-   ("what does it cost?","simple integrations start at $250 and workflow automation around $600–$1,000. the saved hours usually repay it within months.")],
-  related=["integrations","internal-tools","ai-automation"]),
+   ("what does it cost?","simple integrations start at $600 and workflow automation around $600–$1,200. the saved hours usually repay it within months.")],
+  related=["business-dashboards","ai-chatbots","custom-software"]),
 
  dict(slug="custom-software", name="custom software", h1=("built around how your", "business actually runs"),
-  price="$2,500", title="Custom Software Development for Businesses | Leon Kelvin Li",
+  price="$3,500", title="Custom Software Development for Businesses | Leon Kelvin Li",
   desc="Custom business software built end to end by one developer: portals, platforms, operations systems. Fixed written quotes. U.S.-wide, remote.",
   intro=["off-the-shelf software fits the average business. yours isn't average — that's why there's still a spreadsheet holding part of it together.",
    "custom software is for when nothing on the menu is the shape of your problem: the multi-brand ordering system on my work page exists because no ordering product could split one cart into a ticket and payout per kitchen. that unusual middle part is most of what i build."],
@@ -105,74 +92,37 @@ SERVICES = [
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
   proof=("multi-brand ordering","one cart across many restaurant brands; the server re-prices every line, splits a ticket per vendor and computes each vendor's fee. no off-the-shelf product does that."),
   faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — i'll tell you so in the free call. custom wins when the missing 30% is the part your business actually runs on."),
-   ("what does custom software cost?","full builds start at $2,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
+   ("what does custom software cost?","full builds start at $3,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
    ("what happens if you get hit by a bus?","the code, repo, accounts and documentation are in your name from day one. any competent developer can pick it up — nothing is set up to make me irreplaceable.")],
-  related=["internal-tools","customer-portals","mobile-apps"]),
+  related=["mobile-apps","business-automation","business-dashboards"]),
 
- dict(slug="internal-tools", name="internal tools", h1=("delete the copy-paste", "out of the job"),
-  price="$750", title="Internal Tools & Chrome Extensions for Your Team | Leon Kelvin Li",
-  desc="Small internal tools and Chrome extensions that remove repetitive work your team does forty times a day. Built fast, owned by you.",
-  intro=["there's a job someone on your team does forty times a day that takes six clicks and should take one. multiply it out and it's real payroll.",
-   "internal tools are small, fast builds — a chrome extension that pre-fills the form, a dashboard that replaces the friday export, a lookup that saves a phone call. they're the highest return-per-dollar software i build."],
-  pains=["a repetitive task eats hours across the team","staff alt-tab between systems to do one job","the answer to 'how do we know x' is 'ask maria'","training new hires takes weeks because the process lives in heads"],
-  build=["chrome extensions that pre-fill, look up and post for you","small web tools for the exact job, nothing else","dashboards that replace manual weekly reports","admin panels for the system you already have","tools your team adopts because they're faster than the old way"],
-  proof=("review desk extension","part of the review automation: a chrome extension that pre-fills the approved reply on the review site, cutting a multi-step job to one click."),
-  faqs=[("what does an internal tool cost?","from $750, and small fixes from $49. these are usually days of work, not months."),
-   ("we're not a tech company — can we maintain it?","that's why i build them plainly and hand over the code, docs and accounts. and i stay reachable."),
-   ("can it connect to our existing systems?","usually yes — that's the point. i verify the specific integration before quoting.")],
-  related=["business-automation","integrations","business-dashboards"]),
-
- dict(slug="integrations", name="integrations", h1=("make the tools you pay for", "finally talk to each other"),
-  price="$250", title="Software Integrations — QuickBooks, Stripe, POS & More | Leon Kelvin Li",
-  desc="Integrations between the systems you already use: QuickBooks, Stripe, Google Workspace, Slack, Twilio, your POS. Connecting beats replacing.",
-  intro=["you probably don't need new software. you need the software you already pay for to pass information along instead of making a person do it.",
-   "integrations are the cheapest fix i sell: stripe to quickbooks, forms to your crm, your pos to a dashboard, slack alerts from anything. connecting what exists normally beats replacing it."],
-  pains=["sales data gets re-entered into accounting by hand","leads from the website never reach the crm","inventory lives in one system and orders in another","'did anyone follow up on that?' has no answer"],
-  build=["two-way syncs between the systems that matter","webhooks and alerts so people find out immediately","clean apis around systems that never had one","scheduled imports and exports that just happen","one source of truth instead of four conflicting ones"],
-  proof=("review desk","gmail, slack, google sheets and a chrome extension working as one system — classification in the middle, human approval at the end."),
-  faqs=[("can you integrate with our specific software?","if it exposes data — most modern tools do — usually yes. i check the actual api before quoting rather than promising first."),
-   ("what does an integration cost?","from $250 for a simple connection. complex two-way syncs cost more; you get a fixed quote first."),
-   ("will it break when the other software updates?","i build against stable apis and stay reachable. ongoing plans from $450/mo cover monitoring if you want it watched.")],
-  related=["business-automation","internal-tools","custom-software"]),
-
- dict(slug="booking-systems", name="booking systems", h1=("customers book themselves —", "the reminder does the rest"),
-  price="$750", title="Online Booking & Scheduling Systems — from $750 | Leon Kelvin Li",
-  desc="Online booking built into your website: appointments, staff calendars, deposits and the no-show-killing reminders. Owned by you, no per-booking fees.",
+ dict(slug="booking-systems", name="booking & online ordering", h1=("customers book and order themselves —", "the reminder does the rest"),
+  price="$600", title="Online Booking & Ordering Systems — from $600 | Leon Kelvin Li",
+  desc="Booking and online ordering built into your own website: appointments, deposits, no-show-killing reminders, and a cart that keeps the commission. Owned by you, no per-booking fees.",
   intro=["every booking that happens over the phone costs staff time, and every no-show costs the whole slot. online booking fixes the first; automatic reminders fix the second — the reminder is the part that pays for the build.",
-   "i build booking into your own site — your calendar, your rules, deposits if you want them — rather than renting a generic widget with someone else's branding and a per-booking fee."],
-  pains=["booking happens by phone and eats front-desk time","no-shows are killing your calendar","after-hours visitors can't book and don't call back","your current booking tool takes a cut or looks like an ad for itself"],
-  build=["booking pages that match your site, not a widget's brand","staff calendars, service durations, buffer rules","deposits and card-on-file through stripe","automatic sms/email reminders and easy rescheduling","sync with the calendar your team already lives in"],
+   "i build booking into your own site — your calendar, your rules, deposits if you want them — rather than renting a generic widget with someone else's branding and a per-booking fee.",
+   "ordering works the same way. a cart on your own site keeps the 15-30% a delivery app takes on every order, and the customer stays yours instead of theirs."],
+  pains=["booking happens by phone and eats front-desk time","no-shows are killing your calendar","after-hours visitors can't book and don't call back","a delivery app takes a cut of every order and owns your customer","your current booking tool takes a cut or looks like an ad for itself"],
+  build=["booking pages that match your site, not a widget's brand","staff calendars, service durations, buffer rules","deposits and card-on-file through stripe","automatic sms/email reminders and easy rescheduling","sync with the calendar your team already lives in","commission-free ordering: cart, payment, and a ticket that reaches the kitchen"],
   proof=("built like the ordering system","the same server-side discipline as the multi-brand ordering platform: rules enforced where customers can't edit them."),
-  faqs=[("what does a booking system cost?","from $750 built into your site. no monthly per-booking cut — you own it."),
+  faqs=[("what does a booking system cost?","from $600 built into your site, and commission-free online ordering from $2,000. no monthly per-booking cut — you own it."),
    ("can customers pay a deposit when they book?","yes — deposits, full prepayment or card-on-file, through stripe, with receipts handled."),
    ("we already use a scheduling tool. keep it?","if it works, keep it — sometimes the right build is your website talking to it. i'll tell you which in the free call.")],
-  related=["websites","ai-phone-agents","integrations"]),
+  related=["websites","ai-phone-agents","business-automation"]),
 
- dict(slug="customer-portals", name="customer portals", h1=("every customer sees their own —", "and only their own"),
-  price="$1,500", title="Customer Portal Development — from $1,500 | Leon Kelvin Li",
-  desc="Custom customer portals: logins where clients see their own jobs, files, invoices and status. Fewer 'any update?' calls, more trust.",
-  intro=["half your inbound calls are some version of 'any update on mine?'. a portal answers that question before it's asked: each customer logs in and sees their own jobs, files, invoices and history — and nobody sees anyone else's.",
-   "portals fit any business where work happens over days or weeks: contractors, shops, clinics, property managers, agencies."],
-  pains=["customers call for status because they have no other way","documents get emailed around and lost","invoices, approvals and updates live in three different threads","tenants or clients have no self-serve anything"],
-  build=["secure logins with per-customer visibility","status tracking customers check themselves","file uploads and document sharing per account","invoices and payments in the same place","staff-side admin to update everything once"],
-  proof=("multi-brand ordering","the same permission discipline: 22 businesses on one platform, each seeing exactly their own orders, tickets and payouts."),
-  faqs=[("what does a portal cost?","from $1,500 depending on what customers need to see and do. fixed written quote first."),
-   ("is it secure?","per-account permissions are the core of the build — enforced on the server, not hidden in the browser. you own the code and can have it audited."),
-   ("can it send updates automatically?","yes — status changes can email or text the customer so they stop needing to ask.")],
-  related=["custom-software","booking-systems","mobile-apps"]),
-
- dict(slug="business-dashboards", name="business dashboards", h1=("the four numbers that decide", "your week, on one screen"),
-  price="$1,000", title="Business Dashboards & Reporting — from $1,000 | Leon Kelvin Li",
-  desc="Live dashboards that replace the Friday export ritual: your sales, jobs, stock and staffing numbers pulled automatically from the systems you already use.",
+ dict(slug="business-dashboards", name="dashboards & internal tools", h1=("the four numbers that decide", "your week, on one screen"),
+  price="$750", title="Business Dashboards & Internal Tools — from $750 | Leon Kelvin Li",
+  desc="Live dashboards that replace the Friday export ritual, plus the small internal tools and Chrome extensions that delete the copy-paste out of a job your team does forty times a day.",
   intro=["somebody on your team spends part of every week exporting, pasting and reformatting the same report. and by the time it's read, it's old.",
-   "a dashboard pulls those numbers live from the systems that already have them — sales, bookings, stock, ad spend — onto one screen you check in ten seconds."],
-  pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","decisions get made on gut feel because data is annoying to reach"],
-  build=["live dashboards fed straight from your real systems","the handful of numbers that matter, not eighty charts","alerts when a number crosses a line you set","scheduled email summaries for people who won't open a dashboard","clean history so trends are visible, not remembered"],
+   "a dashboard pulls those numbers live from the systems that already have them — sales, bookings, stock, ad spend — onto one screen you check in ten seconds.",
+   "the same goes for the job somebody does forty times a day in six clicks. a small internal tool or chrome extension that makes it one click is the highest return-per-dollar software i build."],
+  pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","a repetitive task eats hours across the team","the answer to 'how do we know x' is 'ask maria'"],
+  build=["live dashboards fed straight from your real systems","the handful of numbers that matter, not eighty charts","alerts when a number crosses a line you set","scheduled email summaries for people who won't open a dashboard","clean history so trends are visible, not remembered","chrome extensions and small tools built for the exact job, nothing else"],
   proof=("site intelligence","decision support scoring all 33,772 us zip codes across nine data sources — with every score carrying an uncertainty band instead of false precision. dashboards are the small sibling of that discipline."),
-  faqs=[("what does a dashboard cost?","from $1,000 depending on how many systems feed it. fixed quote before work starts."),
+  faqs=[("what does a dashboard cost?","a small internal tool starts at $750 and a dashboard at $1,000, depending on how many systems feed it. fixed quote before work starts."),
    ("our data is a mess. does that matter?","that's normal — cleaning and joining it is part of the build, not a surcharge surprise."),
    ("can it pull from our pos / quickbooks / sheets?","usually yes. i verify your specific systems before quoting.")],
-  related=["integrations","internal-tools","ai-automation"]),
+  related=["business-dashboards","ai-chatbots","custom-software"]),
 
  dict(slug="seo", name="seo & ai search", h1=("found on google — and by", "the ais people ask instead"),
   price="$450", title="SEO & AI Search Optimization for Small Business | Leon Kelvin Li",
@@ -196,8 +146,8 @@ INDUSTRIES = [
    "i built a multi-brand ordering platform where one cart spans several kitchens and the server splits every order into per-vendor tickets and payouts — so the ordinary single-restaurant version is well-trodden ground."],
   pains=["delivery apps take a commission on orders that were already yours","the phone rings out during every rush","your menu is a pdf nobody can read on a phone","'are you open' and 'do you have parking' — forty times a day","multiple locations or brands, zero shared systems"],
   fixes=[("online ordering you own","commission-free ordering on your own site — cart, payment, kitchen ticket. from $2,000"),
-   ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000"),
-   ("a menu-first website","fast, phone-first, editable by you when prices change. from $325"),
+   ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,200"),
+   ("a menu-first website","fast, phone-first, editable by you when prices change. from $1,200"),
    ("review desk","every review read and a reply drafted for you — a human presses send. from $750")],
   proof=("multi-brand ordering","one cart across many kitchens; the server re-prices every line, splits tickets per vendor, computes fees. running for a 22-business operation."),
   faqs=[("can i stop paying delivery-app commissions?","for pickup and your own delivery, yes — ordering on your own site has no per-order cut. marketplaces still bring discovery; the goal is moving your regulars to the channel you own."),
@@ -213,13 +163,13 @@ INDUSTRIES = [
   pains=["leads arrive while you're on site and go cold","estimates and invoices happen at 9pm from the truck","customers call constantly for status updates","jobs live on a whiteboard or in one person's head","reviews never get asked for, so the profile looks dead"],
   fixes=[("lead follow-up automation","every web lead gets an instant text/email and lands in one list. from $600"),
    ("scheduling & job tracking","jobs, crews and dates in one system the whole team sees. from $1,500"),
-   ("customer portal","clients see their own job status, photos and invoices. from $1,500"),
-   ("a website that sells","before/after work, service areas, instant quote requests. from $325")],
+   ("customer portal","clients see their own job status, photos and invoices. from $2,500"),
+   ("a website that sells","before/after work, service areas, instant quote requests. from $1,200")],
   proof=("document control","approvals, versioned documents and automatic filing — the same machinery that keeps a contracting back office from living in someone's memory."),
   faqs=[("i'm not technical at all. is that a problem?","no. you describe the week, i build around it, and everything is handed over working with training included."),
    ("what pays for itself fastest?","almost always lead follow-up — answering first wins jobs. usually from $600 and live within days."),
    ("do you work outside california?","yes — remote across the u.s. this kind of build never needs me on site.")],
-  related_services=["business-automation","customer-portals","websites"]),
+  related_services=["business-automation","custom-software","websites"]),
 
  dict(slug="automotive", name="auto repair & automotive", h1=("software for", "auto shops & automotive"),
   title="Software for Auto Repair Shops: Status Calls, Booking, AI Phone | Leon Kelvin Li",
@@ -228,14 +178,14 @@ INDUSTRIES = [
    "booking can go straight into your calendar. status can text the customer automatically the moment a job changes state — and an ai phone agent can answer the rest."],
   pains=["'is my car ready' calls interrupt the bay all day","booking happens by phone and gets double-entered","customers wait on hold, then show up at the wrong time","your shop software has the data but customers can't see it"],
   fixes=[("automatic status updates","'your car is ready' sends itself when the job closes. from $600"),
-   ("online booking","customers pick a slot; your calendar stays sane. from $750"),
-   ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000"),
+   ("online booking","customers pick a slot; your calendar stays sane. from $600"),
+   ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,200"),
    ("shop dashboard","cars in, cars out, revenue and comebacks on one screen. from $1,000")],
   proof=("review desk","built for exactly this kind of local business: every review read, classified, and a reply drafted from your real facts — a human presses send."),
   faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. i verify yours specifically before quoting anything."),
    ("what's the fastest win?","status notifications. one integration, and the most annoying call category mostly disappears."),
    ("multiple locations?","yes — shared platform, per-location calendars and numbers is a normal build.")],
-  related_services=["ai-phone-agents","booking-systems","integrations"]),
+  related_services=["ai-phone-agents","booking-systems","business-automation"]),
 
  dict(slug="healthcare", name="medical & dental", h1=("software for", "medical & dental practices"),
   title="Software for Medical & Dental Offices: Booking, Reminders, FAQ AI | Leon Kelvin Li",
@@ -244,13 +194,13 @@ INDUSTRIES = [
    "health care deserves the careful version of software: reminders and booking that reduce the front desk load, an assistant that answers the routine and hands anything clinical straight to a human. i've built compliance-aware ai that declines to answer rather than overstep — that's the posture your patients get."],
   pains=["no-shows burn schedule and revenue","the phone queue is insurance and reschedule questions","after-hours callers reach voicemail and book elsewhere","forms are still paper or pdf-by-email"],
   fixes=[("appointment reminders","sms/email sequences that actually cut no-shows. from $600"),
-   ("online booking & rescheduling","patients handle the routine moves themselves. from $750"),
-   ("after-hours question handling","routine questions answered; anything clinical goes to staff. from $500"),
+   ("online booking & rescheduling","patients handle the routine moves themselves. from $600"),
+   ("after-hours question handling","routine questions answered; anything clinical goes to staff. from $1,000"),
    ("digital intake forms","filled on a phone before the visit, filed automatically. from $600")],
   proof=("compliance-aware assistant","a health-education assistant for a regulated market: deterministic safety rules run before any model, every claim cites a source, and it declines rather than break the rules. that is the standard of care i bring near medicine."),
   faqs=[("is this hipaa compliant?","builds are designed so sensitive data stays in your existing systems wherever possible, and i'm direct about what i will and won't touch. compliance requirements get scoped in writing before anything starts — never assumed."),
    ("will ai talk to my patients about medical questions?","no. routine logistics only — anything clinical routes to your staff. i build assistants that decline rather than guess."),
-   ("what does this cost?","reminders and intake from about $600; booking from $750. fixed written quotes.")],
+   ("what does this cost?","reminders and intake from about $600; booking from $600. fixed written quotes.")],
   related_services=["booking-systems","ai-chatbots","business-automation"]),
 
  dict(slug="real-estate", name="real estate & property", h1=("software for", "real estate & property management"),
@@ -259,15 +209,15 @@ INDUSTRIES = [
   intro=["property work is coordination: tenants, owners, vendors, showings, maintenance — most of it still happening over scattered calls and texts nobody can find later.",
    "a portal gives tenants somewhere to submit and track requests. automation gives owners their statements without you assembling them. your phone gets quieter."],
   pains=["maintenance requests arrive by call and text, then get lost","tenants call for updates because there's nowhere to look","owner statements are assembled by hand every month","showings and applications live in three inboxes"],
-  fixes=[("tenant portal","submit a request, attach a photo, watch the status change. from $1,500"),
+  fixes=[("tenant portal","submit a request, attach a photo, watch the status change. from $2,500"),
    ("maintenance tracking","requests routed to vendors, updates sent automatically. from $1,000"),
    ("owner reporting","statements that build themselves from your real data. from $1,000"),
-   ("listing website","fast property pages with inquiry capture that reaches you instantly. from $450")],
+   ("listing website","fast property pages with inquiry capture that reaches you instantly. from $1,200")],
   proof=("customer-portal discipline","the multi-brand platform runs strict per-account visibility for 22 businesses — the same permission model a tenant/owner portal needs."),
   faqs=[("can tenants see each other's information?","no — per-account visibility is enforced on the server, which is the core of the build."),
    ("we use appfolio / buildium / yardi.","keep it if it works — often the right build is a portal or automation talking to your existing system. i verify the integration before quoting."),
-   ("what does a tenant portal cost?","from $1,500 depending on what tenants and owners need to see and do.")],
-  related_services=["customer-portals","business-automation","websites"]),
+   ("what does a tenant portal cost?","from $2,500 depending on what tenants and owners need to see and do.")],
+  related_services=["custom-software","business-automation","websites"]),
 
  dict(slug="logistics", name="logistics & warehousing", h1=("software for", "logistics & warehousing"),
   title="Software for Logistics, Trucking & Warehousing | Leon Kelvin Li",
@@ -276,14 +226,14 @@ INDUSTRIES = [
    "dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem."],
   pains=["dispatch copies the same info between email, sheets and texts","drivers hand in paperwork that gets retyped","customers call for status because they can't see it","inventory counts drift from reality"],
   fixes=[("dispatch board","loads, drivers and statuses on one live screen. from $1,500"),
-   ("driver app","photos, signatures and status from the cab — no retyping. from $2,500"),
-   ("document automation","pods, bols and invoices extracted and filed automatically. from $1,000"),
-   ("customer tracking portal","they look it up instead of calling you. from $1,500")],
+   ("driver app","photos, signatures and status from the cab — no retyping. from $4,500"),
+   ("document automation","pods, bols and invoices extracted and filed automatically. from $1,200"),
+   ("customer tracking portal","they look it up instead of calling you. from $2,500")],
   proof=("site intelligence","a decision system across 33,772 zip codes and nine data sources — the data discipline logistics operations run on, applied end to end."),
   faqs=[("our process is unusual. can software fit it?","unusual processes are the reason custom exists — the build is shaped around your real workflow, not a template's guess."),
    ("what's the first thing to fix?","usually the dispatch copy-paste loop — highest error rate, easiest automation."),
    ("do drivers need new hardware?","no — driver tools run on the phones they already carry.")],
-  related_services=["custom-software","internal-tools","business-dashboards"]),
+  related_services=["custom-software","business-dashboards","websites"]),
 
  dict(slug="gyms", name="gyms & fitness", h1=("software for", "gyms & fitness businesses"),
   title="Software for Gyms & Fitness: Booking, Members, Reminders | Leon Kelvin Li",
@@ -291,14 +241,14 @@ INDUSTRIES = [
   intro=["a gym's software problem is churn wearing a disguise: missed classes, lapsed cards, members who drift because nobody noticed they stopped coming.",
    "booking, reminders and a membership view fix the mechanics — you see who's fading while there's still time to wave them back."],
   pains=["class booking happens by dm and spreadsheet","no-shows leave paid slots empty","failed card payments quietly become lost members","you can't see who's about to churn until they're gone"],
-  fixes=[("class booking","members book, waitlist and cancel themselves. from $750"),
+  fixes=[("class booking","members book, waitlist and cancel themselves. from $600"),
    ("membership dashboard","attendance, payments and fade-outs on one screen. from $1,000"),
    ("reminder automation","class reminders and win-back nudges that send themselves. from $600"),
-   ("a site that converts","schedule, pricing and signup without a phone call. from $325")],
+   ("a site that converts","schedule, pricing and signup without a phone call. from $1,200")],
   proof=("curio","a consumer subscription app on the app store — retention mechanics, streaks and subscriptions are literally what it runs on."),
   faqs=[("we use mindbody / glofox. switch?","only if it's failing you. often the right move is automation around what you have — i'll say which in the free call."),
    ("can members pay online?","yes — stripe subscriptions, class packs and drop-ins, with receipts and failed-payment recovery."),
-   ("what does this cost?","booking from $750; most gym builds land between $750 and $2,500.")],
+   ("what does this cost?","booking from $600; most gym builds land between $600 and $3,500.")],
   related_services=["booking-systems","websites","business-dashboards"]),
 
  dict(slug="retail", name="retail & e-commerce", h1=("software for", "retail & e-commerce"),
@@ -310,12 +260,12 @@ INDUSTRIES = [
   fixes=[("inventory system","stock, suppliers and low-stock alerts that survive a rush. from $1,500"),
    ("order automation","every channel's orders into one queue with alerts. from $600"),
    ("sales dashboard","today's numbers without opening five systems. from $1,000"),
-   ("storefront","fast product pages, clean checkout, no template bloat. from $450")],
+   ("storefront","fast product pages, clean checkout, no template bloat. from $1,200")],
   proof=("multi-brand ordering","server-side pricing, per-vendor tickets and payouts across 22 businesses — retail-grade order handling in production."),
   faqs=[("we're on shopify / square. is that a problem?","no — keep them. most retail builds connect and automate around the platform you're on."),
    ("can inventory sync between online and the register?","usually yes, depending on your pos. i verify the specific integration before quoting."),
    ("what should we fix first?","whatever loses money silently — usually inventory drift or unwatched online orders.")],
-  related_services=["integrations","business-dashboards","websites"]),
+  related_services=["business-automation","business-dashboards","websites"]),
 
  dict(slug="professional-services", name="professional services", h1=("software for", "professional services"),
   title="Software for Law, Accounting & Consulting Firms | Leon Kelvin Li",
@@ -323,15 +273,15 @@ INDUSTRIES = [
   intro=["service firms sell hours, then spend a shocking share of them on intake, status emails, document wrangling and 'just checking in' calls.",
    "a client portal, automated intake and document workflows give those hours back — and make the firm feel bigger and calmer than the inbox it replaced."],
   pains=["intake is a pdf emailed back and forth","clients email for status because there's nowhere to look","documents have four versions in three inboxes","billable time leaks into administration"],
-  fixes=[("client portal","cases, files, invoices and status in one login. from $1,500"),
+  fixes=[("client portal","cases, files, invoices and status in one login. from $2,500"),
    ("intake automation","forms that fill in on a phone, file and notify automatically. from $600"),
-   ("document workflows","created, versioned, approved and filed — automatically. from $1,000"),
+   ("document workflows","created, versioned, approved and filed — automatically. from $1,200"),
    ("firm dashboard","matters, pipeline and billing on one screen. from $1,000")],
   proof=("document control","request → document created, filed, approved, locked, versioned and published — running today, built twice (apps script and n8n) so the team can edit it."),
   faqs=[("is client data safe?","per-client visibility is enforced server-side, and you own the code and hosting — auditable by anyone you choose."),
    ("we bill hourly. does this change that?","it removes the hours you can't bill — admin — and keeps the ones you can."),
-   ("what does a portal cost?","from $1,500; intake automation from $600. written fixed quotes.")],
-  related_services=["customer-portals","business-automation","internal-tools"]),
+   ("what does a portal cost?","from $2,500; intake automation from $600. written fixed quotes.")],
+  related_services=["custom-software","business-automation","business-dashboards"]),
 
  dict(slug="startups", name="startups", h1=("software for", "startups & founders"),
   title="MVP & Product Development for Startups | Leon Kelvin Li",
@@ -339,15 +289,15 @@ INDUSTRIES = [
   intro=["a founder with an idea needs the version of the product that can meet users — not a six-month engagement, not a no-code demo that collapses at the first real feature.",
    "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs, and you keep the repo."],
   pains=["you have the idea and the users, not the technical team","agency quotes start at six figures","the no-code prototype hit its ceiling","your technical co-founder search is month six"],
-  fixes=[("mvp build","the smallest version that real users can use — app or web. from $2,500"),
-   ("app + backend + payments","the whole stack, not just screens. from $2,500"),
+  fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500"),
+   ("app + backend + payments","the whole stack, not just screens. from $4,500"),
    ("ai features","assistants, retrieval and pipelines with guardrails that hold. from $1,000"),
    ("ongoing development","a standing block of hours as you find fit. from $450/mo")],
   proof=("curio","consumer ios app on the app store: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages — built alone."),
   faqs=[("how fast can an mvp ship?","weeks, not quarters — scope decides. we cut to the version that tests the idea, in writing, before building."),
    ("do i own the code?","completely — repo, accounts and infrastructure from day one. investors will ask; the answer is yes."),
    ("can you keep building after launch?","yes — ongoing from $450/mo, or fixed quotes per milestone as you raise.")],
-  related_services=["mobile-apps","custom-software","ai-automation"]),
+  related_services=["mobile-apps","custom-software","ai-chatbots"]),
 ]
 
 # ══════════════════════════════════════════════════════════════════
@@ -627,7 +577,7 @@ def quote_page():
           <select name="timeline"><option value="">choose…</option><option>as soon as possible</option><option>within a month</option><option>next few months</option><option>just exploring</option></select>
         </label>
         <label>rough budget <i>(optional)</i>
-          <select name="budget"><option value="">not sure yet</option><option>under $500</option><option>$500–$1,500</option><option>$1,500–$5,000</option><option>$5,000–$15,000</option><option>$15,000+</option></select>
+          <select name="budget"><option value="">not sure yet</option><option>under $1,000</option><option>$1,000–$2,500</option><option>$2,500–$5,000</option><option>$5,000–$15,000</option><option>$15,000+</option></select>
         </label>
       </div>
       <div class="qrow">
@@ -641,9 +591,9 @@ def quote_page():
       <p class="qnote">goes straight to leon — no sales team exists. you'll hear back at the email above. or skip the form: <a href="mailto:leondragon3798@gmail.com" data-evt="email_click">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a></p>
     </form>
     <div class="qok" id="qok" hidden>
-      <p class="label">sent</p>
-      <h2 class="dsp">got it. <em>leon will read it himself.</em></h2>
-      <p class="sub">you'll hear back at the email you gave — usually the same day. if it's urgent, call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+      <p class="label">almost there</p>
+      <h2 class="dsp">your email app just opened. <em>hit send and it comes straight to leon.</em></h2>
+      <p class="sub">everything you wrote is already in the message — nothing to retype. if nothing opened, <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="email_click">open it here</a> or write to <a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a>. urgent? call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
     </div>
   </div>
 </section>
@@ -662,15 +612,32 @@ def quote_page():
     if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(d.email||'')){err.textContent='that email does not look right.';return;}
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
     d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||''; d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||'';
-    err.textContent='sending…';
-    fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
-      .then(function(r){
-        if(!r.ok){err.textContent=(r.j&&r.j.error)||'could not send.';return;}
-        f.hidden=true; ok.hidden=false; window.scrollTo({top:0});
-      })
-      .catch(function(){ err.textContent='network problem — email leondragon3798@gmail.com and it still counts.'; });
+    // Logged server-side as a backup, but the person never waits on it: the
+    // browser hands the message straight to their mail app instead.
+    try{ fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true}).catch(function(){}); }catch(e){}
+    var href=mailtoFor(d);
+    document.getElementById('qmail').href=href;
+    f.hidden=true; ok.hidden=false; window.scrollTo({top:0});
+    if(window.leonEvt)window.leonEvt('quote_form_submit');
+    window.location.href=href;
   });
+  function line(label,val){ return val&&String(val).trim() ? label+': '+String(val).trim()+'\\n' : ''; }
+  function mailtoFor(d){
+    var body=''
+      + line('name',d.name)
+      + line('email',d.email)
+      + line('phone',d.phone)
+      + line('business',d.company)
+      + line('currently using',d.currentTools)
+      + line('timeline',d.timeline)
+      + line('budget',d.budget)
+      + '\\nwhat i need:\\n' + String(d.problem||'').trim() + '\\n'
+      + (d.desiredOutcome ? '\\nwhat would make it worth paying for:\\n'+String(d.desiredOutcome).trim()+'\\n' : '')
+      + '\\n— sent from leonkelvinli.onrender.com'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
+    if(body.length>1600) body=body.slice(0,1600)+'\\n…';
+    var subject='project inquiry'+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
+    return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  }
 })();
 </script>''' + footer() + '</body></html>'
 

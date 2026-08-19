@@ -196,7 +196,7 @@
       <a href="services/business-automation"><h3><i>02</i>my team repeats the same work every week</h3><p>retyping, forwarding, copying between systems — automated away.</p></a>
       <a href="services/ai-chatbots"><h3><i>03</i>customers keep asking the same questions</h3><p>a chatbot or phone agent that answers instantly and hands off to a human.</p></a>
       <a href="services/mobile-apps"><h3><i>04</i>i want an app</h3><p>ios and android, through store review, with the backend behind it.</p></a>
-      <a href="services/integrations"><h3><i>05</i>our systems don't talk to each other</h3><p>quickbooks, your pos, sheets, slack — connected instead of replaced.</p></a>
+      <a href="services/business-automation"><h3><i>05</i>our systems don't talk to each other</h3><p>quickbooks, your pos, sheets, slack — connected instead of replaced.</p></a>
       <a href="services/booking-systems"><h3><i>06</i>customers can't book or order online</h3><p>booking and ordering you own, with the reminders that kill no-shows.</p></a>
       <a href="services/seo"><h3><i>07</i>i need more leads</h3><p>found on google and by the ai assistants people ask instead.</p></a>
       <button type="button" data-assist-open data-assist-starter="i don't know what i need — here's what my business does: "><h3><i>08</i>i don't know what i need</h3><p>the most common answer. describe the problem to the ai assistant →</p></button>
@@ -216,55 +216,16 @@
       </p>
     </header>
 
-    <div class="chips" role="tablist" aria-label="filter">
-      <button class="chip on" role="tab" aria-selected="true" data-filter="all">all</button>
-      <button class="chip" role="tab" aria-selected="false" data-filter="web">web &amp; apps</button>
-      <button class="chip" role="tab" aria-selected="false" data-filter="ai">ai</button>
-      <button class="chip" role="tab" aria-selected="false" data-filter="ops">automation</button>
-      <button class="chip" role="tab" aria-selected="false" data-filter="growth">growth</button>
-      <button class="chip" role="tab" aria-selected="false" data-filter="data">data</button>
-    </div>
-
     <div class="grid" id="grid">
-      <article class="cell" data-cat="web"><span class="n">01</span><svg class="ic ic-l"><use href="#ic-globe"/></svg><h3>business websites</h3><p>fast, works on a phone in a parking lot, and you can change the text yourself without calling me.</p><b>$325+</b></article>
-      <article class="cell" data-cat="web"><span class="n">02</span><svg class="ic ic-l"><use href="#ic-refresh"/></svg><h3>redesign &amp; rescue</h3><p>most sites have one real problem, not five. i'll tell you which parts are worth keeping before you pay to replace them.</p><b>$450+</b></article>
-      <article class="cell" data-cat="web"><span class="n">03</span><svg class="ic ic-l"><use href="#ic-mobile"/></svg><h3>ios &amp; android apps</h3><p>through review and onto the store. i've had an app rejected under a guideline it didn't violate, and argued it back on the same binary.</p><b>$2,500+</b></article>
-      <article class="cell" data-cat="web"><span class="n">04</span><svg class="ic ic-l"><use href="#ic-cart"/></svg><h3>online ordering</h3><p>one cart across every kitchen, split into a separate ticket and payout per vendor, re-priced on the server so the total can't be edited in the browser.</p><b>$2,000+</b></article>
-      <article class="cell" data-cat="web"><span class="n">05</span><svg class="ic ic-l"><use href="#ic-calendar"/></svg><h3>booking &amp; scheduling</h3><p>appointments, staff calendars, deposits, reminders. the reminder is the part that pays for the build.</p><b>$750+</b></article>
-      <article class="cell" data-cat="web"><span class="n">06</span><svg class="ic ic-l"><use href="#ic-user"/></svg><h3>customer portals</h3><p>everyone logs in and sees only their own jobs, files, invoices and history. nobody sees anyone else's.</p><b>$1,500+</b></article>
-      <article class="cell" data-cat="web"><span class="n">07</span><svg class="ic ic-l"><use href="#ic-card"/></svg><h3>payments &amp; checkout</h3><p>stripe, subscriptions, refunds, receipts — wired so the money still reconciles at the end of the month.</p><b>$750+</b></article>
-      <article class="cell" data-cat="web"><span class="n">08</span><svg class="ic ic-l"><use href="#ic-flag"/></svg><h3>landing pages</h3><p>one page, one audience, one action, measured — so you learn something even when it doesn't work.</p><b>$225+</b></article>
-
-      <article class="cell" data-cat="ai"><span class="n">09</span><svg class="ic ic-l"><use href="#ic-phone"/></svg><h3>ai call agents</h3><p>answers at 2am, qualifies the caller, books the job, and hands off to a person the moment it should. that handoff rule is written down, not guessed.</p><b>$1,000+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">10</span><svg class="ic ic-l"><use href="#ic-chat"/></svg><h3>ai chatbots</h3><p>trained on your business, not the internet. it says "i don't know" instead of inventing a price you'll have to honour.</p><b>$500+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">11</span><svg class="ic ic-l"><use href="#ic-book"/></svg><h3>knowledge base (rag)</h3><p>your sops, manuals and training answered with the source attached. an answer with no source is just a confident guess.</p><b>$1,500+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">12</span><svg class="ic ic-l"><use href="#ic-doc"/></svg><h3>document processing</h3><p>ocr, extraction, classification and routing for the invoices, waivers and forms nobody should be retyping.</p><b>$1,000+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">13</span><svg class="ic ic-l"><use href="#ic-video"/></svg><h3>ai content engines</h3><p>script, narration and captions produced on a schedule, with a scoring gate that throws out the weak ones before you ever see them.</p><b>$750+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">14</span><svg class="ic ic-l"><use href="#ic-shield"/></svg><h3>guardrails &amp; review</h3><p>banned claims, escalation paths, citation checks. i've shipped one that declines to answer rather than break advertising law.</p><b>$1,250+</b></article>
-      <article class="cell" data-cat="ai"><span class="n">15</span><svg class="ic ic-l"><use href="#ic-language"/></svg><h3>multilingual</h3><p>english, spanish, portuguese and chinese. i speak all four, so nothing ships machine-translated and unread.</p><b>$400+</b></article>
-
-      <article class="cell" data-cat="ops"><span class="n">16</span><svg class="ic ic-l"><use href="#ic-flow"/></svg><h3>workflow automation</h3><p>the follow-ups, handoffs and reminders currently held together by one person remembering to do them.</p><b>$1,000+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">17</span><svg class="ic ic-l"><use href="#ic-users"/></svg><h3>crm &amp; business systems</h3><p>leads, jobs, quotes and invoices in one place your team will actually keep updated, which is the only test that matters.</p><b>$1,500+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">18</span><svg class="ic ic-l"><use href="#ic-box"/></svg><h3>inventory</h3><p>stock, orders, suppliers, low-stock alerts, and a count that survives a busy saturday.</p><b>$1,500+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">19</span><svg class="ic ic-l"><use href="#ic-sheet"/></svg><h3>google workspace</h3><p>form → sheet → doc → drive → email, wired end to end in apps script. no more copying between tabs.</p><b>$600+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">20</span><svg class="ic ic-l"><use href="#ic-node"/></svg><h3>n8n pipelines</h3><p>automations built where your team can read and edit them without calling me first.</p><b>$600+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">21</span><svg class="ic ic-l"><use href="#ic-layers"/></svg><h3>notion &amp; ops hubs</h3><p>requests, approvals, documents and version history in one workspace, with the approval step actually enforced instead of assumed.</p><b>$450+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">22</span><svg class="ic ic-l"><use href="#ic-puzzle"/></svg><h3>internal tools</h3><p>chrome extensions and small tools that delete the copy-paste out of a job someone does forty times a day.</p><b>$750+</b></article>
-      <article class="cell" data-cat="ops"><span class="n">23</span><svg class="ic ic-l"><use href="#ic-link"/></svg><h3>integrations</h3><p>stripe, quickbooks, google, meta, slack, twilio, your pos, your ats. connecting what you already pay for usually beats replacing it.</p><b>$250+</b></article>
-
-      <article class="cell" data-cat="growth"><span class="n">24</span><svg class="ic ic-l"><use href="#ic-search"/></svg><h3>seo &amp; ai search</h3><p>found on google, and found by the ai assistants people increasingly ask instead of google.</p><b>$450+</b></article>
-      <article class="cell" data-cat="growth"><span class="n">25</span><svg class="ic ic-l"><use href="#ic-star"/></svg><h3>app store launch</h3><p>listing, screenshots, subscription products, submission — and writing the appeal when review gets it wrong.</p><b>$600+</b></article>
-      <article class="cell" data-cat="growth"><span class="n">26</span><svg class="ic ic-l"><use href="#ic-megaphone"/></svg><h3>paid ads</h3><p>meta, google and reddit with tracking that says which dollar worked. i run campaigns with my own money, so the numbers i quote are ones i've paid for.</p><b>$375+</b></article>
-      <article class="cell" data-cat="growth"><span class="n">27</span><svg class="ic ic-l"><use href="#ic-check"/></svg><h3>review automation</h3><p>every review read, classified and drafted for you. a human still presses send — that line is drawn on purpose, not because it was hard.</p><b>$750+</b></article>
-      <article class="cell" data-cat="growth"><span class="n">28</span><svg class="ic ic-l"><use href="#ic-bolt"/></svg><h3>social automation</h3><p>posts and short-form video that go out on schedule whether or not anyone remembered to make them.</p><b>$450+</b></article>
-      <article class="cell" data-cat="growth"><span class="n">29</span><svg class="ic ic-l"><use href="#ic-bag"/></svg><h3>brand &amp; sticker packs</h3><p>logos, illustration sets, mascots, and messaging packs — including wechat, in two languages, typeset in code so the second one is free.</p><b>$300+</b></article>
-
-      <article class="cell" data-cat="data"><span class="n">30</span><svg class="ic ic-l"><use href="#ic-chart"/></svg><h3>dashboards</h3><p>the four numbers that decide your week, live, on one screen — instead of five exports and a guess.</p><b>$1,000+</b></article>
-      <article class="cell" data-cat="data"><span class="n">31</span><svg class="ic ic-l"><use href="#ic-map"/></svg><h3>market intelligence</h3><p>where to open, staff and expand, scored from real data with the uncertainty left visible instead of rounded away.</p><b>$2,000+</b></article>
-      <article class="cell" data-cat="data"><span class="n">32</span><svg class="ic ic-l"><use href="#ic-database"/></svg><h3>scraping &amp; enrichment</h3><p>public data collected, cleaned, deduplicated and joined onto your own records so it's actually usable.</p><b>$750+</b></article>
-      <article class="cell" data-cat="data"><span class="n">33</span><svg class="ic ic-l"><use href="#ic-brain"/></svg><h3>forecasting &amp; ml</h3><p>validated on data the model has never seen. i've watched a headline number fall from 79% to 57% on a proper holdout, and reported the 57%.</p><b>custom</b></article>
-      <article class="cell" data-cat="data"><span class="n">34</span><svg class="ic ic-l"><use href="#ic-cube3d"/></svg><h3>3d scanning</h3><p>rooms, sites and products turned into clean 3d models you can put on a page or walk a customer through.</p><b>custom</b></article>
-      <article class="cell wide" data-cat="web ai ops growth data"><span class="n">35</span><svg class="ic ic-l"><use href="#ic-code"/></svg><h3>custom software</h3><p>when nothing above is the shape of your problem. built from scratch around how your business actually runs — which is most of the interesting work anyway.</p><b>custom</b></article>
+      <article class="cell" data-cat="web"><span class="n">01</span><svg class="ic ic-l"><use href="#ic-globe"/></svg><h3>business websites</h3><p>fast, works on a phone in a parking lot, and you can change the text yourself without calling me. redesigns and rescues of a site you already have count here too.</p><b>$1,200+</b></article>
+      <article class="cell" data-cat="web"><span class="n">02</span><svg class="ic ic-l"><use href="#ic-calendar"/></svg><h3>booking &amp; online ordering</h3><p>appointments, staff calendars, deposits, reminders — or a cart that takes orders without handing a commission to a delivery app. the reminder is the part that pays for the build.</p><b>$600+</b></article>
+      <article class="cell" data-cat="web"><span class="n">03</span><svg class="ic ic-l"><use href="#ic-mobile"/></svg><h3>ios &amp; android apps</h3><p>through review and onto the store, including the listing and the subscription plumbing. i've had an app rejected under a guideline it didn't violate, and argued it back on the same binary.</p><b>$4,500+</b></article>
+      <article class="cell" data-cat="ai"><span class="n">04</span><svg class="ic ic-l"><use href="#ic-chat"/></svg><h3>ai chatbots</h3><p>trained on your business, not the internet. it says "i don't know" instead of inventing a price you'll have to honour, and hands off to a person the moment it should.</p><b>$1,000+</b></article>
+      <article class="cell" data-cat="ai"><span class="n">05</span><svg class="ic ic-l"><use href="#ic-phone"/></svg><h3>ai phone agents</h3><p>answers at 2am, qualifies the caller, books the job. the rule for when it stops talking and fetches a human is written down, not guessed.</p><b>$1,200+</b></article>
+      <article class="cell" data-cat="ops"><span class="n">06</span><svg class="ic ic-l"><use href="#ic-flow"/></svg><h3>workflow automation</h3><p>the retyping, follow-ups and handoffs currently held together by one person remembering to do them — including the invoices and forms nobody should be keying in by hand.</p><b>$600+</b></article>
+      <article class="cell" data-cat="ops"><span class="n">07</span><svg class="ic ic-l"><use href="#ic-chart"/></svg><h3>dashboards &amp; internal tools</h3><p>the four numbers that decide your week on one screen, and the small tools that delete the copy-paste out of a job someone does forty times a day.</p><b>$750+</b></article>
+      <article class="cell" data-cat="growth"><span class="n">08</span><svg class="ic ic-l"><use href="#ic-search"/></svg><h3>seo &amp; ai search</h3><p>found on google, and found by the ai assistants people increasingly ask instead of google.</p><b>$450+</b></article>
+      <article class="cell wide" data-cat="web ai ops growth data"><span class="n">09</span><svg class="ic ic-l"><use href="#ic-code"/></svg><h3>custom software</h3><p>customer portals, crm, inventory, document systems — and the problems that aren't the shape of anything above. built around how your business actually runs, which is most of the interesting work anyway.</p><b>custom</b></article>
     </div>
     <p class="gridnote" id="gridnote" hidden></p>
     <p class="sub" style="margin-top:2rem">starting prices are honest floors, not instant quotes — the real number is agreed in writing before anything starts. the big ones have their own pages: <a class="cx-mini" href="services/">all services →</a> <a class="cx-mini" href="industries/">by industry →</a></p>
@@ -470,7 +431,7 @@
     <div class="tiers">
       <article class="tier">
         <h3>fixed project</h3>
-        <p class="amt"><i>from</i>$325</p>
+        <p class="amt"><i>from</i>$400</p>
         <p class="for">one clear thing, built and handed over.</p>
         <ul>
           <li>quote agreed before any work starts</li>
@@ -483,7 +444,7 @@
       <article class="tier hot">
         <span class="flag">most jobs</span>
         <h3>full build</h3>
-        <p class="amt"><i>from</i>$2,500</p>
+        <p class="amt"><i>from</i>$3,500</p>
         <p class="for">an app or a whole system, end to end.</p>
         <ul>
           <li>discovery, design, build, launch</li>

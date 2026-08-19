@@ -29,18 +29,18 @@ out = os.path.join(root, "assets", "facebook.png")
 
 # prices here are the site's prices — keep the two in step
 SERVICES = [
-    ("business websites",      "$325+"),
-    ("ios & android apps",     "$2,500+"),
-    ("ai chatbots",            "$500+"),
-    ("ai call agents",         "$1,000+"),
-    ("knowledge base (rag)",   "$1,500+"),
+    ("small fixes",            "$49+"),
+    ("workflow automation",    "$600+"),
+    ("booking & ordering",     "$600+"),
+    ("dashboards & tools",     "$750+"),
+    ("ai chatbots",            "$1,000+"),
+    ("business websites",      "$1,200+"),
+    ("ai phone agents",        "$1,200+"),
+    ("crm & inventory",        "$1,500+"),
     ("online ordering",        "$2,000+"),
-    ("booking & scheduling",   "$750+"),
-    ("customer portals",       "$1,500+"),
-    ("crm & business systems", "$1,500+"),
-    ("inventory management",   "$1,500+"),
-    ("workflow automation",    "$1,000+"),
-    ("api integrations",       "$250+"),
+    ("customer portals",       "$2,500+"),
+    ("custom software",        "$3,500+"),
+    ("ios & android apps",     "$4,500+"),
 ]
 
 img = Image.new("RGB", (S, S), BG)
@@ -111,7 +111,7 @@ for i, (name, price) in enumerate(SERVICES):
     d.line([(cx, cy + 40), (cx + COL_W, cy + 40)], fill=LINE, width=1)
 
 d.text((PAD, ROW_Y + 6 * ROW_H + 14),
-       "+ 23 more — ai agents, automation, dashboards, data, 3d",
+       "every price is a floor — you get a fixed written quote before any work starts",
        font=f_note, fill=DIM)
 
 # ── footer ──
