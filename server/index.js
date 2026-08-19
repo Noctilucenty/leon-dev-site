@@ -19,7 +19,7 @@ let OpenAI = null;
 try { OpenAI = require('openai'); } catch (e) { /* handled at call time */ }
 
 const { SYSTEM_PROMPT } = require('./prompt');
-const { validateLead, persistLead, clean } = require('./leads');
+const { validateLead, persistLead, readLeads, clean } = require('./leads');
 
 const app = express();
 app.disable('x-powered-by');
@@ -201,6 +201,39 @@ app.post('/api/lead', async (req, res) => {
   if (error) return res.status(400).json({ error });
   persistLead(lead);
   res.json({ ok: true });
+});
+
+/* ── reading the leads back ──
+   Leads live on Render's ephemeral disk, so this shows everything since the last
+   deploy. Off unless LEADS_KEY is set; ?format=json for the raw records. */
+app.get('/api/leads', (req, res) => {
+  const key = process.env.LEADS_KEY || '';
+  if (!key) return res.status(404).json({ error: 'not enabled' });
+  if (String(req.query.key || '') !== key) return res.status(401).json({ error: 'wrong key' });
+
+  const leads = readLeads(Number(req.query.limit) || 200);
+  if (req.query.format === 'json') return res.json({ count: leads.length, leads });
+
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const card = l => '<article><h2>' + esc(l.name || l.email) + ' <small>' + esc(l.via) + ' · ' + esc(l.ts) + '</small></h2>'
+    + '<p><a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>'
+    + (l.phone ? ' · <a href="tel:' + esc(l.phone) + '">' + esc(l.phone) + '</a>' : '') + '</p>'
+    + (l.company ? '<p><b>business:</b> ' + esc(l.company) + '</p>' : '')
+    + (l.problem ? '<pre>' + esc(l.problem) + '</pre>' : '')
+    + (l.conversationSummary ? '<pre>' + esc(l.conversationSummary) + '</pre>' : '')
+    + (l.budget || l.timeline ? '<p><b>budget:</b> ' + esc(l.budget || '—') + ' · <b>timeline:</b> ' + esc(l.timeline || '—') + '</p>' : '')
+    + '<p class="src">' + esc(l.sourcePage || '') + ' ' + esc(l.utmSource || '') + '</p></article>';
+
+  res.type('html').send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<meta name="robots" content="noindex"><title>leads (' + leads.length + ')</title>'
+    + '<style>body{background:#0b0b0c;color:#e7e7ea;font:15px/1.55 ui-monospace,Menlo,monospace;margin:0;padding:24px}'
+    + 'h1{font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#8a8a93}'
+    + 'article{border:1px solid #26262b;border-radius:12px;padding:16px;margin:14px 0;max-width:760px}'
+    + 'h2{font-size:16px;margin:0 0 6px}small{color:#8a8a93;font-weight:400}'
+    + 'pre{white-space:pre-wrap;background:#141416;padding:12px;border-radius:8px;margin:8px 0}'
+    + 'a{color:#a78bfa}.src{color:#6b6b73;font-size:12px}p{margin:6px 0}</style>'
+    + '<h1>' + leads.length + ' leads since last deploy</h1>'
+    + (leads.length ? leads.map(card).join('') : '<p>nothing yet. leads reset whenever the service redeploys.</p>'));
 });
 
 /* ── event beacon ── */

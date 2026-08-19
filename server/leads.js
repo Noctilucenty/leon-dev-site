@@ -77,4 +77,18 @@ function persistLead(lead) {
   }
 }
 
-module.exports = { validateLead, persistLead, clean };
+/* Everything captured since the last deploy, newest first. Backs GET /api/leads,
+   which is the only way to read them without digging through Render's log tail. */
+function readLeads(limit) {
+  let raw = '';
+  try { raw = fs.readFileSync(LEADS_FILE, 'utf8'); } catch (e) { return []; }
+  const out = [];
+  for (const line of raw.split('\n')) {
+    if (!line.trim()) continue;
+    try { out.push(JSON.parse(line)); } catch (e) { /* skip a torn line */ }
+  }
+  out.reverse();
+  return out.slice(0, limit || 200);
+}
+
+module.exports = { validateLead, persistLead, readLeads, clean };
