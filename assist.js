@@ -152,7 +152,7 @@
       '<div class="as-log" data-as-log aria-live="polite"></div>' +
       '<div class="as-starts" data-as-starts></div>' +
       '<form class="as-lead" data-as-lead hidden>' +
-        '<p><b>send this conversation to leon.</b> he reads every one and replies himself — usually same day.</p>' +
+        '<p><b>send this conversation to leon.</b> your email app opens with it already written — you just hit send. he replies himself, usually same day.</p>' +
         '<input name="name" type="text" placeholder="name" autocomplete="name">' +
         '<div class="row2">' +
           '<input name="email" type="email" placeholder="email (required)" autocomplete="email" required>' +
@@ -160,7 +160,7 @@
         '</div>' +
         '<input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">' +
         '<p class="as-err" data-as-err></p>' +
-        '<div class="acts"><button class="go" type="submit">send it</button><button class="no" type="button" data-as-lead-close>not yet</button></div>' +
+        '<div class="acts"><button class="go" type="submit">write the email</button><button class="no" type="button" data-as-lead-close>not yet</button></div>' +
       '</form>' +
       '<footer class="as-foot">' +
         '<div class="as-inrow">' +
@@ -321,32 +321,41 @@
       var f = new FormData(leadForm);
       var email = String(f.get('email') || '').trim();
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { leadErr.textContent = 'that email does not look right.'; return; }
-      leadErr.textContent = 'sending…';
-      fetch(API_BASE + '/api/lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          via: 'chat',
-          name: String(f.get('name') || ''),
-          email: email,
-          phone: String(f.get('phone') || ''),
-          website: String(f.get('website') || ''),
-          messages: state.history.slice(-40),
-          problem: (state.history.filter(function (m) { return m.role === 'user'; })[0] || {}).content || '',
-          sourcePage: location.pathname,
-          referrer: attribution.referrer || '',
-          utmSource: attribution.utmSource || '',
-          utmMedium: attribution.utmMedium || '',
-          utmCampaign: attribution.utmCampaign || ''
-        })
-      }).then(function (res) { return res.json().then(function (j) { return { ok: res.ok, j: j }; }); })
-        .then(function (r) {
-          if (!r.ok) { leadErr.textContent = r.j.error || 'could not send — email leon instead.'; return; }
-          leadForm.hidden = true;
-          evt('lead_submit');
-          msgEl('sys', 'sent. leon will get back to you at ' + email + '.');
-        })
-        .catch(function () { leadErr.textContent = 'network problem — email leondragon3798@gmail.com instead.'; });
+      leadErr.textContent = '';
+      var name = String(f.get('name') || ''), phone = String(f.get('phone') || '');
+      // Logged server-side as a backup, but nobody waits on it — the browser
+      // hands the conversation straight to their own mail app.
+      try {
+        fetch(API_BASE + '/api/lead', {
+          method: 'POST',
+          keepalive: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            via: 'chat', name: name, email: email, phone: phone,
+            website: String(f.get('website') || ''),
+            messages: state.history.slice(-40),
+            problem: (state.history.filter(function (m) { return m.role === 'user'; })[0] || {}).content || '',
+            sourcePage: location.pathname,
+            referrer: attribution.referrer || '',
+            utmSource: attribution.utmSource || '',
+            utmMedium: attribution.utmMedium || '',
+            utmCampaign: attribution.utmCampaign || ''
+          })
+        }).catch(function () {});
+      } catch (e) {}
+      var talk = state.history.slice(-20).map(function (m) {
+        return (m.role === 'user' ? 'me: ' : 'assistant: ') + String(m.content || '').trim();
+      }).join('\n\n');
+      var body = 'name: ' + (name || '(not given)') + '\nemail: ' + email + (phone ? '\nphone: ' + phone : '')
+        + '\n\nwhat we talked about on the site:\n\n' + talk
+        + '\n\n— sent from leonkelvinli.onrender.com' + (location.pathname !== '/' ? ' (' + location.pathname + ')' : '');
+      if (body.length > 1600) body = body.slice(0, 1600) + '\n…';
+      var href = 'mailto:leondragon3798@gmail.com?subject=' + encodeURIComponent('project inquiry' + (name ? ' — ' + name : ''))
+        + '&body=' + encodeURIComponent(body);
+      leadForm.hidden = true;
+      evt('lead_submit');
+      msgEl('sys', 'your email app is opening with this conversation in it — hit send and it comes straight to leon. if nothing opened, email leondragon3798@gmail.com.');
+      window.location.href = href;
     });
 
     /* wiring */

@@ -77,9 +77,9 @@
       <p class="qnote">goes straight to leon — no sales team exists. you'll hear back at the email above. or skip the form: <a href="mailto:leondragon3798@gmail.com" data-evt="email_click">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a></p>
     </form>
     <div class="qok" id="qok" hidden>
-      <p class="label">sent</p>
-      <h2 class="dsp">got it. <em>leon will read it himself.</em></h2>
-      <p class="sub">you'll hear back at the email you gave — usually the same day. if it's urgent, call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+      <p class="label">almost there</p>
+      <h2 class="dsp">your email app just opened. <em>hit send and it comes straight to leon.</em></h2>
+      <p class="sub">everything you wrote is already in the message — nothing to retype. if nothing opened, <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="email_click">open it here</a> or write to <a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a>. urgent? call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
     </div>
   </div>
 </section>
@@ -98,15 +98,32 @@
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email||'')){err.textContent='that email does not look right.';return;}
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
     d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||''; d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||'';
-    err.textContent='sending…';
-    fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
-      .then(function(r){
-        if(!r.ok){err.textContent=(r.j&&r.j.error)||'could not send.';return;}
-        f.hidden=true; ok.hidden=false; window.scrollTo({top:0});
-      })
-      .catch(function(){ err.textContent='network problem — email leondragon3798@gmail.com and it still counts.'; });
+    // Logged server-side as a backup, but the person never waits on it: the
+    // browser hands the message straight to their mail app instead.
+    try{ fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true}).catch(function(){}); }catch(e){}
+    var href=mailtoFor(d);
+    document.getElementById('qmail').href=href;
+    f.hidden=true; ok.hidden=false; window.scrollTo({top:0});
+    if(window.leonEvt)window.leonEvt('quote_form_submit');
+    window.location.href=href;
   });
+  function line(label,val){ return val&&String(val).trim() ? label+': '+String(val).trim()+'\n' : ''; }
+  function mailtoFor(d){
+    var body=''
+      + line('name',d.name)
+      + line('email',d.email)
+      + line('phone',d.phone)
+      + line('business',d.company)
+      + line('currently using',d.currentTools)
+      + line('timeline',d.timeline)
+      + line('budget',d.budget)
+      + '\nwhat i need:\n' + String(d.problem||'').trim() + '\n'
+      + (d.desiredOutcome ? '\nwhat would make it worth paying for:\n'+String(d.desiredOutcome).trim()+'\n' : '')
+      + '\n— sent from leonkelvinli.onrender.com'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
+    if(body.length>1600) body=body.slice(0,1600)+'\n…';
+    var subject='project inquiry'+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
+    return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  }
 })();
 </script><footer class="foot">
   <div class="rail foot-in">
