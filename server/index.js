@@ -136,6 +136,18 @@ function langLine(v) {
   return `\n\nREPLY LANGUAGE\nAnswer in ${name}, no matter which language the visitor writes in, unless they explicitly ask you to switch. Keep the same short, plain, one-question-at-most style. Prices stay in US dollars.`;
 }
 
+/* What the visitor is told when the model call fails for any reason. Always
+   names a human channel — email and phone — in their own language. */
+const DOWN_MSG = {
+  en: "the assistant is down for a moment. email leondragon3798@gmail.com or call (510) 826-7735 and leon will answer you directly.",
+  pt: "o assistente est\u00e1 fora do ar por um momento. manda um email para leondragon3798@gmail.com ou liga (510) 826-7735 que o leon te responde direto.",
+  zh: "\u52a9\u624b\u6682\u65f6\u7528\u4e0d\u4e86\u3002\u53ef\u4ee5\u53d1\u90ae\u4ef6\u5230 leondragon3798@gmail.com \uff0c\u6216\u8005\u6253 (510) 826-7735\uff0cleon \u4f1a\u76f4\u63a5\u56de\u4f60\u3002",
+  es: "el asistente est\u00e1 ca\u00eddo por un momento. escribe a leondragon3798@gmail.com o llama al (510) 826-7735 y leon te responde directamente.",
+};
+function downMessage(lang) {
+  return DOWN_MSG[String(lang || '').slice(0, 2).toLowerCase()] || DOWN_MSG.en;
+}
+
 app.post('/api/chat', async (req, res) => {
   const ip = req.ip || 'x';
   if (limited('c:' + ip, 20, 5 * 60_000)) return res.status(429).json({ error: 'slow down a little — try again in a few minutes.' });
@@ -191,8 +203,11 @@ app.post('/api/chat', async (req, res) => {
   } catch (e) {
     console.error('chat error:', e.status || '', e.message);
     try {
-      if (!res.headersSent) res.status(502).json({ error: 'assistant unavailable right now.' });
-      else res.end("\n\n[i lost the connection — send that again, or email leondragon3798@gmail.com]");
+      // A dead assistant must still hand the visitor a way to reach a human —
+      // on /pt and /zh the chat button is the PRIMARY call to action, so an
+      // unexplained failure there is a lost lead, not a cosmetic bug.
+      if (!res.headersSent) res.status(502).json({ error: downMessage(req.body.lang) });
+      else res.end('\n\n' + downMessage(req.body.lang));
     } catch (e2) {}
   } finally {
     clearTimeout(timeout);
