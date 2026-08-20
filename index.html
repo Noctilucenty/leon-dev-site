@@ -21,40 +21,67 @@
 <meta property="og:image" content="https://leonbuilds.org/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
 
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="assist.css">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/assist.css">
 
 <script type="application/ld+json">
-[
 {
-  "@context":"https://schema.org","@type":"ProfessionalService",
-  "name":"Leon Kelvin Li — software & AI",
-  "url":"https://leonbuilds.org/",
-  "description":"Custom websites, mobile apps, AI systems and business automation, built directly by one developer for businesses across the United States.",
-  "areaServed":[{"@type":"Country","name":"United States"}],
-  "address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US"},
-  "email":"leondragon3798@gmail.com","telephone":"+1-510-826-7735","priceRange":"$$",
-  "founder":{"@type":"Person","name":"Leon Kelvin Li"},
-  "knowsLanguage":["en","zh","es","pt"]
-},
-{
-  "@context":"https://schema.org","@type":"Person",
-  "name":"Leon Kelvin Li","url":"https://leonbuilds.org/",
-  "jobTitle":"Software Developer",
-  "sameAs":["https://www.linkedin.com/in/leon-kelvin-li","https://github.com/Noctilucenty"]
-},
-{
-  "@context":"https://schema.org","@type":"WebSite",
-  "name":"Leon Kelvin Li — software & AI",
-  "url":"https://leonbuilds.org/"
+  "@context":"https://schema.org",
+  "@graph":[
+    {
+      "@type":"Person",
+      "@id":"https://leonbuilds.org/#leon",
+      "name":"Leon Kelvin Li",
+      "alternateName":["Leon Li","Noctilucenty"],
+      "url":"https://leonbuilds.org/about",
+      "mainEntityOfPage":{"@id":"https://leonbuilds.org/about"},
+      "jobTitle":"Software Developer",
+      "description":"Independent software developer. Builds websites, mobile apps, online ordering, booking systems, AI assistants and business automation for companies across the United States, working directly with the owner rather than through an agency.",
+      "knowsLanguage":["English","Chinese","Portuguese","Spanish"],
+      "knowsAbout":["web development","iOS development","Android development","online ordering systems","booking systems","AI chatbots","business automation","custom software"],
+      "email":"leondragon3798@gmail.com",
+      "telephone":"+1-510-826-7735",
+      "address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US"},
+      "alumniOf":{"@type":"CollegeOrUniversity","name":"California State University, East Bay"},
+      "sameAs":[
+        "https://www.linkedin.com/in/leon-kelvin-li",
+        "https://github.com/Noctilucenty",
+        "https://noctilucenty.github.io/"
+      ]
+    },
+    {
+      "@type":"ProfessionalService",
+      "@id":"https://leonbuilds.org/#business",
+      "name":"Leon Kelvin Li — software & AI",
+      "url":"https://leonbuilds.org/",
+      "description":"Custom websites, mobile apps, AI systems and business automation, built directly by one developer for businesses across the United States.",
+      "founder":{"@id":"https://leonbuilds.org/#leon"},
+      "employee":{"@id":"https://leonbuilds.org/#leon"},
+      "areaServed":{"@type":"Country","name":"United States"},
+      "address":{"@type":"PostalAddress","addressRegion":"CA","addressCountry":"US"},
+      "email":"leondragon3798@gmail.com",
+      "telephone":"+1-510-826-7735",
+      "priceRange":"$49-$4500",
+      "knowsLanguage":["English","Chinese","Portuguese","Spanish"],
+      "availableLanguage":["English","Chinese","Portuguese","Spanish"],
+      "sameAs":["https://github.com/Noctilucenty"]
+    },
+    {
+      "@type":"WebSite",
+      "@id":"https://leonbuilds.org/#website",
+      "name":"Leon Kelvin Li — software & AI",
+      "url":"https://leonbuilds.org/",
+      "publisher":{"@id":"https://leonbuilds.org/#business"},
+      "inLanguage":["en","es","pt-BR","zh"]
+    }
+  ]
 }
-]
 </script>
 </head>
 <body>
@@ -112,13 +139,13 @@
   <nav class="nav-mid" id="navMid" aria-label="site">
     <a href="#fix" data-x="fix"><i>[</i><span>start here</span><i>]</i></a>
     <a href="#services" data-x="services"><i>[</i><span>services</span><i>]</i></a>
-    <a href="industries/"><i>[</i><span>industries</span><i>]</i></a>
+    <a href="/industries/"><i>[</i><span>industries</span><i>]</i></a>
     <a href="#work" data-x="work"><i>[</i><span>work</span><i>]</i></a>
     <a href="#pricing" data-x="pricing"><i>[</i><span>pricing</span><i>]</i></a>
     <a href="#faq" data-x="faq"><i>[</i><span>faq</span><i>]</i></a>
   </nav>
   <div class="nav-end">
-    <a class="btn btn-solid magnet" href="quote" data-evt="hero_quote_click"><span>get a quote</span></a>
+    <a class="btn btn-solid magnet" href="/quote" data-evt="hero_quote_click"><span>get a quote</span></a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
   </div>
 </header>
@@ -145,7 +172,7 @@
         <span class="term-p">$</span><span class="term-t" id="termT"></span><span class="caret"></span>
       </div>
       <div class="hero-cta">
-        <a class="btn btn-solid magnet" href="quote" data-evt="hero_quote_click"><span>tell me what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn btn-solid magnet" href="/quote" data-evt="hero_quote_click"><span>tell me what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
         <a class="btn magnet" href="#work"><span>see the work</span></a>
         <button class="btn magnet" type="button" data-assist-open><span>ask the ai about your project</span></button>
       </div>
@@ -199,13 +226,13 @@
       <p class="sub">nobody wakes up wanting "custom software". they wake up annoyed at one of these. pick yours.</p>
     </header>
     <div class="fixgrid">
-      <a href="services/websites"><h3><i>01</i>my website is outdated — or doesn't exist</h3><p>fast, phone-first, editable by you. redesign or from scratch.</p></a>
-      <a href="services/business-automation"><h3><i>02</i>my team repeats the same work every week</h3><p>retyping, forwarding, copying between systems — automated away.</p></a>
-      <a href="services/ai-chatbots"><h3><i>03</i>customers keep asking the same questions</h3><p>a chatbot or phone agent that answers instantly and hands off to a human.</p></a>
-      <a href="services/mobile-apps"><h3><i>04</i>i want an app</h3><p>ios and android, through store review, with the backend behind it.</p></a>
-      <a href="services/business-automation"><h3><i>05</i>our systems don't talk to each other</h3><p>quickbooks, your pos, sheets, slack — connected instead of replaced.</p></a>
-      <a href="services/booking-systems"><h3><i>06</i>customers can't book or order online</h3><p>booking and ordering you own, with the reminders that kill no-shows.</p></a>
-      <a href="services/seo"><h3><i>07</i>i need more leads</h3><p>found on google and by the ai assistants people ask instead.</p></a>
+      <a href="/services/websites"><h3><i>01</i>my website is outdated — or doesn't exist</h3><p>fast, phone-first, editable by you. redesign or from scratch.</p></a>
+      <a href="/services/business-automation"><h3><i>02</i>my team repeats the same work every week</h3><p>retyping, forwarding, copying between systems — automated away.</p></a>
+      <a href="/services/ai-chatbots"><h3><i>03</i>customers keep asking the same questions</h3><p>a chatbot or phone agent that answers instantly and hands off to a human.</p></a>
+      <a href="/services/mobile-apps"><h3><i>04</i>i want an app</h3><p>ios and android, through store review, with the backend behind it.</p></a>
+      <a href="/services/business-automation"><h3><i>05</i>our systems don't talk to each other</h3><p>quickbooks, your pos, sheets, slack — connected instead of replaced.</p></a>
+      <a href="/services/booking-systems"><h3><i>06</i>customers can't book or order online</h3><p>booking and ordering you own, with the reminders that kill no-shows.</p></a>
+      <a href="/services/seo"><h3><i>07</i>i need more leads</h3><p>found on google and by the ai assistants people ask instead.</p></a>
       <button type="button" data-assist-open data-assist-starter="i don't know what i need — here's what my business does: "><h3><i>08</i>i don't know what i need</h3><p>the most common answer. describe the problem to the ai assistant →</p></button>
     </div>
   </div>
@@ -235,7 +262,7 @@
       <article class="cell wide" data-cat="web ai ops growth data"><span class="n">09</span><svg class="ic ic-l"><use href="#ic-code"/></svg><h3>custom software</h3><p>customer portals, crm, inventory, document systems — and the problems that aren't the shape of anything above. built around how your business actually runs, which is most of the interesting work anyway.</p><b>custom</b></article>
     </div>
     <p class="gridnote" id="gridnote" hidden></p>
-    <p class="sub" style="margin-top:2rem">starting prices are honest floors, not instant quotes — the real number is agreed in writing before anything starts. the big ones have their own pages: <a class="cx-mini" href="services/">all services →</a> <a class="cx-mini" href="industries/">by industry →</a></p>
+    <p class="sub" style="margin-top:2rem">starting prices are honest floors, not instant quotes — the real number is agreed in writing before anything starts. the big ones have their own pages: <a class="cx-mini" href="/services/">all services →</a> <a class="cx-mini" href="/industries/">by industry →</a></p>
   </div>
 </section>
 
@@ -433,7 +460,7 @@
       <span class="amt-sm">$49+</span>
       <b>small fixes</b>
       <span>the broken thing, the one integration, the change your last developer never answered about — the kind of job that takes a day, not a month.</span>
-      <a class="cx-mini" href="quote" data-evt="pricing_cta_click">send it over →</a>
+      <a class="cx-mini" href="/quote" data-evt="pricing_cta_click">send it over →</a>
     </div>
     <div class="tiers">
       <article class="tier">
@@ -546,7 +573,7 @@
       <a class="cx" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="noopener"><span>linkedin</span><b>leon-kelvin-li</b><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <div class="cx st"><span>based</span><b>california · remote projects anywhere in the u.s.</b></div>
     </div>
-    <p class="sub" style="margin-top:1.6rem">or skip the inbox: <a class="cx-mini" href="quote" data-evt="hero_quote_click">describe the project in the quote form →</a></p>
+    <p class="sub" style="margin-top:1.6rem">or skip the inbox: <a class="cx-mini" href="/quote" data-evt="hero_quote_click">describe the project in the quote form →</a></p>
   </div>
 </section>
 
@@ -559,9 +586,9 @@
       <p>custom software and ai, built directly by one developer for businesses across the united states.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
-    <nav><h4>services</h4><a href="services/websites">websites</a><a href="services/mobile-apps">mobile apps</a><a href="services/ai-chatbots">ai chatbots</a><a href="services/ai-phone-agents">ai phone agents</a><a href="services/business-automation">automation</a><a href="services/">all services</a></nav>
-    <nav><h4>industries</h4><a href="industries/restaurants">restaurants</a><a href="industries/contractors">contractors</a><a href="industries/automotive">auto repair</a><a href="industries/healthcare">medical &amp; dental</a><a href="industries/startups">startups</a><a href="industries/">all industries</a></nav>
-    <nav><h4>site</h4><a href="#work">work</a><a href="#pricing">pricing</a><a href="quote">get a quote</a><a href="es">en español</a><a href="pt">em português</a><a href="zh">中文页面</a><a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">portfolio</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>services</h4><a href="/services/websites">websites</a><a href="/services/mobile-apps">mobile apps</a><a href="/services/ai-chatbots">ai chatbots</a><a href="/services/ai-phone-agents">ai phone agents</a><a href="/services/business-automation">automation</a><a href="/services/">all services</a></nav>
+    <nav><h4>industries</h4><a href="/industries/restaurants">restaurants</a><a href="/industries/contractors">contractors</a><a href="/industries/automotive">auto repair</a><a href="/industries/healthcare">medical &amp; dental</a><a href="/industries/startups">startups</a><a href="/industries/">all industries</a></nav>
+    <nav><h4>site</h4><a href="/about">about leon</a><a href="#work">work</a><a href="#pricing">pricing</a><a href="/quote">get a quote</a><a href="/es">en español</a><a href="/pt">em português</a><a href="/zh">中文页面</a><a href="https://noctilucenty.github.io/" target="_blank" rel="noopener">portfolio</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
@@ -569,7 +596,7 @@
   </div>
 </footer>
 
-<script src="app.js" defer></script>
-<script src="assist.js" defer></script>
+<script src="/app.js" defer></script>
+<script src="/assist.js" defer></script>
 </body>
 </html>

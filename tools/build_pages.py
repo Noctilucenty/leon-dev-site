@@ -42,7 +42,7 @@ SERVICES = [
   faqs=[("what does an app cost?","full builds start at $4,500. a simple internal app costs less than a consumer app with accounts, payments and push. you get a fixed written quote first — the number doesn't move after."),
    ("ios first or both?","usually both from one codebase. if your customers are heavily iphone (common for consumer) or android (common for field crews), we start there."),
    ("who owns the app?","you. the developer accounts, the store listing, the code and the backend are all in your name.")],
-  related=["custom-software","websites","mobile-apps"]),
+  related=["custom-software","websites","booking-systems"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
   price="$1,000", title="AI Chatbot for Your Business — from $1,000 | Leon Kelvin Li",
@@ -122,7 +122,7 @@ SERVICES = [
   faqs=[("what does a dashboard cost?","a small internal tool starts at $750 and a dashboard at $1,000, depending on how many systems feed it. fixed quote before work starts."),
    ("our data is a mess. does that matter?","that's normal — cleaning and joining it is part of the build, not a surcharge surprise."),
    ("can it pull from our pos / quickbooks / sheets?","usually yes. i verify your specific systems before quoting.")],
-  related=["business-dashboards","ai-chatbots","custom-software"]),
+  related=["business-automation","ai-chatbots","custom-software"]),
 
  dict(slug="seo", name="seo & ai search", h1=("found on google — and by", "the ais people ask instead"),
   price="$450", title="SEO & AI Search Optimization | Leon Kelvin Li",
@@ -332,8 +332,8 @@ def nav():
 </header>'''
 
 def footer():
-    slinks = ''.join(f'<a href="/services/{s["slug"]}">{e(s["name"])}</a>' for s in SERVICES[:7])
-    ilinks = ''.join(f'<a href="/industries/{i["slug"]}">{e(i["name"])}</a>' for i in INDUSTRIES[:7])
+    slinks = ''.join(f'<a href="/services/{s["slug"]}">{e(s["name"])}</a>' for s in SERVICES)
+    ilinks = ''.join(f'<a href="/industries/{i["slug"]}">{e(i["name"])}</a>' for i in INDUSTRIES)
     return f'''<footer class="foot">
   <div class="rail foot-in">
     <div class="foot-brand">
@@ -343,7 +343,7 @@ def footer():
     </div>
     <nav><h4>services</h4>{slinks}</nav>
     <nav><h4>industries</h4>{ilinks}</nav>
-    <nav><h4>site</h4><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>site</h4><a href="/about">about leon</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
@@ -550,6 +550,94 @@ def listing_page(kind, items, title, desc, blurb):
 </section>
 </main>''' + footer() + '</body></html>'
 
+def about_page():
+    """The page that answers "who is Leon Kelvin Li". Nothing on the internet
+       did before this existed, which is why the name query had nothing to
+       resolve to. Every fact here is checkable and every claim is one he
+       would be happy to be asked about on a call."""
+    path = '/about'
+    bc = [("home","/"),("about", None)]
+    person = {
+        "@type": "Person",
+        "@id": f"{BASE}/#leon",
+        "name": "Leon Kelvin Li",
+        "alternateName": ["Leon Li", "Noctilucenty"],
+        "url": f"{BASE}/about",
+        "mainEntityOfPage": {"@id": f"{BASE}/about"},
+        "jobTitle": "Software Developer",
+        "description": ("Independent software developer. Builds websites, mobile apps, online ordering, "
+                        "booking systems, AI assistants and business automation for companies across the "
+                        "United States, working directly with the owner rather than through an agency."),
+        "knowsLanguage": ["English", "Chinese", "Portuguese", "Spanish"],
+        "knowsAbout": ["web development", "iOS development", "Android development",
+                       "online ordering systems", "booking systems", "AI chatbots",
+                       "business automation", "custom software"],
+        "email": "leondragon3798@gmail.com",
+        "telephone": "+1-510-826-7735",
+        "address": {"@type": "PostalAddress", "addressRegion": "CA", "addressCountry": "US"},
+        "alumniOf": {"@type": "CollegeOrUniversity", "name": "California State University, East Bay"},
+        "worksFor": {"@id": f"{BASE}/#business"},
+        "sameAs": ["https://www.linkedin.com/in/leon-kelvin-li",
+                   "https://github.com/Noctilucenty",
+                   "https://noctilucenty.github.io/"],
+    }
+    schema = [{"@context": "https://schema.org", "@graph": [person]}, breadcrumb_schema(bc, path)]
+    return head("About Leon Kelvin Li — Software Developer | Leon Kelvin Li",
+        "Leon Kelvin Li is an independent software developer working with businesses across the United States. "
+        "He builds websites, apps, online ordering, booking systems and AI automation, and works in English, "
+        "Chinese, Portuguese and Spanish.",
+        path, schema) + ICONS + nav() + '''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    ''' + crumbs(bc) + '''
+    <p class="label">leon --about</p>
+    <h1 class="dsp"><span class="keepcase">Leon Kelvin Li</span> — <em>the person who writes the code</em></h1>
+    <p class="sub"><span class="keepcase">Leon Kelvin Li</span> is an independent software developer working with businesses across the united states. he builds business websites, iphone and android apps, online ordering, booking systems, ai assistants and the automation that runs behind them — and he does the work himself, so the person you talk to is the person writing the code.</p>
+    <p class="sub">he works in english, chinese, portuguese and spanish. that matters more than it sounds: a lot of owners can describe their problem precisely in their own language and only roughly in english, and the rough version is where projects go wrong.</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="rail two-col">
+    <div>
+      <p class="label">what he has actually built</p>
+      <ul class="blist">
+        <li><svg class="ic"><use href="#ic-check"/></svg>an iphone app that is on the app store today — built solo end to end, including subscriptions and app store review</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>an online ordering system where one kitchen runs several brands and a single cart splits itself per brand, with each brand's accounting kept separate</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a market scoring system covering all 33,772 us zip codes across nine data sources, every score carrying an uncertainty band instead of false precision</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a compliance-aware assistant in chinese where deterministic safety rules run before any model does, and it declines to answer rather than break advertising law</li>
+      </ul>
+    </div>
+    <div>
+      <p class="label">how he works</p>
+      <ul class="blist">
+        <li><svg class="ic"><use href="#ic-check"/></svg>one person, on purpose — no account manager, no handoff to a junior</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a written fixed price before any work starts, and it does not change after</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a working demo you can open in a browser every week, not a status email</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>you own everything: domain, hosting, code, accounts and data, in your name from day one</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>he will tell you when you don't need him — a script or an off-the-shelf tool is often the right answer, and saying so is cheaper than being wrong</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="rail">
+    <p class="label">background</p>
+    <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span> and a working developer with production systems running today. both are true at once, and he would rather say so than hide either.</p>
+    <p class="sub">he writes under the name <span class="keepcase">Noctilucenty</span>, which is where his code lives on github.</p>
+    <div class="ctarow">
+      <a class="btn btn-solid magnet" href="/quote" data-evt="pricing_cta_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+      <a class="btn magnet" href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_about"><span>whatsapp</span></a>
+      <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
+    </div>
+  </div>
+</section>
+</main>
+''' + footer()
+
 def quote_page():
     path = '/quote'
     bc = [("home","/"),("get a quote", None)]
@@ -668,9 +756,10 @@ w('industries/index.html', listing_page('industries', INDUSTRIES,
   "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
 
 w('quote.html', quote_page())
+w('about.html', about_page())
 
 # sitemap + robots
-urls = ['/', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
