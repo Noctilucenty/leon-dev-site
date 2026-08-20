@@ -10,7 +10,7 @@ Render static sites serve pretty URLs, so /services/websites -> websites.html.
 import html, json, os, datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-BASE = "https://leonkelvinli.onrender.com"
+BASE = "https://leonbuilds.org"
 TODAY = datetime.date.today().isoformat()
 
 # ══════════════════════════════════════════════════════════════════
@@ -635,7 +635,7 @@ def quote_page():
       + line('budget',d.budget)
       + '\\nwhat i need:\\n' + String(d.problem||'').trim() + '\\n'
       + (d.desiredOutcome ? '\\nwhat would make it worth paying for:\\n'+String(d.desiredOutcome).trim()+'\\n' : '')
-      + '\\n— sent from leonkelvinli.onrender.com'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
+      + '\\n— sent from leonbuilds.org'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
     if(body.length>1600) body=body.slice(0,1600)+'\\n…';
     var subject='project inquiry'+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
     return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);

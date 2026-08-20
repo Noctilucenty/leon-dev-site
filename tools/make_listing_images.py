@@ -55,7 +55,7 @@ L = {
         ],
         "proof_note": "i speak english, chinese, portuguese and spanish",
         "foot": "free consultation  ·  working with businesses across the u.s.",
-        "url": "leonkelvinli.onrender.com",
+        "url": "leonbuilds.org",
         "services": [
             ("small fixes", ""), ("workflow automation", ""),
             ("booking & ordering", ""), ("dashboards & tools", ""),
@@ -81,7 +81,7 @@ L = {
         ],
         "proof_note": "falo português, inglês, chinês e espanhol",
         "foot": "consulta grátis  ·  atendo os estados unidos inteiros",
-        "url": "leonkelvinli.onrender.com/pt",
+        "url": "leonbuilds.org/pt",
         "services": [
             ("consertos pequenos", ""), ("automação de tarefas", ""),
             ("agendamento e pedidos", ""), ("painéis e ferramentas", ""),
@@ -107,7 +107,7 @@ L = {
         ],
         "proof_note": "中文、英文、葡萄牙文、西班牙文都可以说",
         "foot": "免费咨询  ·  全美国都接，线上做",
-        "url": "leonkelvinli.onrender.com/zh",
+        "url": "leonbuilds.org/zh",
         "services": [
             ("小修小改", ""), ("流程自动化", ""),
             ("预约和点单", ""), ("数据看板", ""),

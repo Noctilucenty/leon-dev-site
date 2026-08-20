@@ -40,7 +40,7 @@ python3 tools/build_pages.py           # regenerate the page fleet after editing
 
 ## Two deployments, one repo
 
-1. **Static site (existing, unchanged):** Render static site → leonkelvinli.onrender.com,
+1. **Static site (existing, unchanged):** Render static site → leonbuilds.org,
    publish dir `.`, auto-deploys on push. Pretty URLs serve `/services/websites` from
    `services/websites.html`.
 2. **Assistant API (new):** Render **web service** from this same repo — *New + →
@@ -135,7 +135,7 @@ would be happy to be asked about on a call.
 
 ## Deploying
 
-Live at **https://leonkelvinli.onrender.com** — a Render static site on
+Live at **https://leonbuilds.org** — a Render static site on
 `Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, no build command,
 publish directory `.`. Pushing to `main` redeploys it.
 

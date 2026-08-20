@@ -2,7 +2,7 @@
   "name": "leon-site",
   "private": true,
   "version": "1.0.0",
-  "description": "leonkelvinli.onrender.com — static site + assistant API",
+  "description": "leonbuilds.org — static site + assistant API",
   "type": "commonjs",
   "engines": { "node": ">=20" },
   "scripts": {

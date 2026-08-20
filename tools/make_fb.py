@@ -119,7 +119,7 @@ d.text((PAD, ROW_Y + 6 * ROW_H + 14),
 d.line([(PAD, 1012), (S - PAD, 1012)], fill=LINE, width=1)
 d.text((PAD, 1044), "free consultation  ·  working with businesses across the u.s.",
        font=f_foot, fill=MID)
-d.text((PAD, 1086), "leonkelvinli.onrender.com", font=f_url, fill=AC)
+d.text((PAD, 1086), "leonbuilds.org", font=f_url, fill=AC)
 
 img.save(out, optimize=True)
 print("wrote", out, img.size)

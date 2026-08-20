@@ -86,7 +86,7 @@ def footer(d):
     d.line([(PAD, H - 190), (W - PAD, H - 190)], fill=LINE, width=1)
     d.text((PAD, H - 155), "remote  ·  businesses across the u.s.",
            font=ImageFont.truetype(MONO, 22), fill=MID)
-    d.text((PAD, H - 110), "leonkelvinli.onrender.com",
+    d.text((PAD, H - 110), "leonbuilds.org",
            font=ImageFont.truetype(MONO, 26), fill=AC)
 
 

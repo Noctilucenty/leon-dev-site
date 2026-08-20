@@ -35,6 +35,10 @@ const client = KEY && OpenAI ? new OpenAI({ apiKey: KEY }) : null;
 
 /* ── CORS: only the site, localhost, and one optional extra origin ── */
 const ORIGINS = new Set([
+  'https://leonbuilds.org',
+  'https://www.leonbuilds.org',
+  // the old host stays allowed: every Marketplace listing and group post in the
+  // wild still links to it, and Render keeps serving it alongside the domain.
   'https://leonkelvinli.onrender.com',
   'http://localhost:8787', 'http://127.0.0.1:8787',
   'http://localhost:4599', 'http://127.0.0.1:4599'

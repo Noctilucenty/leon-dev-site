@@ -37,7 +37,7 @@ function sourceOf(ev) {
   if (ev.ref) {
     try {
       const h = new URL(ev.ref).hostname.replace(/^www\./, '');
-      if (h && !h.includes('leonkelvinli')) return h;
+      if (h && !h.includes('leonbuilds') && !h.includes('leonkelvinli')) return h;
       return 'internal';
     } catch (e) { return 'unknown-ref'; }
   }

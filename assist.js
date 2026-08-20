@@ -523,7 +523,7 @@
       }).join('\n\n');
       var body = 'name: ' + (name || '(not given)') + '\nemail: ' + email + (phone ? '\nphone: ' + phone : '')
         + '\n\nwhat we talked about on the site:\n\n' + talk
-        + '\n\n— sent from leonkelvinli.onrender.com' + (location.pathname !== '/' ? ' (' + location.pathname + ')' : '');
+        + '\n\n— sent from leonbuilds.org' + (location.pathname !== '/' ? ' (' + location.pathname + ')' : '');
       if (body.length > 1600) body = body.slice(0, 1600) + '\n…';
       var href = 'mailto:leondragon3798@gmail.com?subject=' + encodeURIComponent('project inquiry' + (name ? ' — ' + name : ''))
         + '&body=' + encodeURIComponent(body);
