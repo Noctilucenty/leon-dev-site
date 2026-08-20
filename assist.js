@@ -79,7 +79,7 @@
      read something other than the page they landed on. */
   var LANG_KEY = 'leon_lang';
   var PAGE_LANG = ((document.documentElement.getAttribute('lang') || 'en').slice(0, 2)).toLowerCase();
-  var LANG_PAGE = { en: '/', pt: '/pt', zh: '/zh' };
+  var LANG_PAGE = { en: '/', pt: '/pt', zh: '/zh', es: '/es' };
   var LANG_NAME = { en: 'english', pt: 'português', zh: '中文', es: 'español' };
   var LANG_ASK = 'what language do you prefer? · qual idioma? · 用什么语言？';
   var LANG_SWITCH = {
@@ -154,6 +154,35 @@
     document.body.appendChild(bar);
     langBar = bar;
     evt('lang_prompt_shown');
+  });
+
+  /* ══ language switcher, in the nav of every page ═════════
+     Always visible, not just when we guess the visitor needs it. Pages that
+     have no translation yet send the visitor to that language's home page
+     rather than a dead end, and ?s= attribution rides along. */
+  var LANG_SHORT = { en: 'en', es: 'es', pt: 'pt', zh: '中文' };
+  run(function () {
+    var nav = $('.nav-end');
+    if (!nav) return;
+    var cur = storedLang() || PAGE_LANG;
+    var wrap = document.createElement('div');
+    wrap.className = 'as-langpick';
+    wrap.setAttribute('role', 'group');
+    wrap.setAttribute('aria-label', 'language');
+    ['en', 'es', 'pt', 'zh'].forEach(function (v) {
+      var a = document.createElement('a');
+      a.href = langHref(v);
+      a.textContent = LANG_SHORT[v];
+      a.setAttribute('lang', v);
+      a.title = LANG_NAME[v];
+      if (v === cur) a.className = 'on';
+      a.addEventListener('click', function () {
+        setLang(v);
+        evt('lang_switch_' + v);
+      });
+      wrap.appendChild(a);
+    });
+    nav.insertBefore(wrap, nav.firstChild);
   });
 
   /* ══ contextual starter prompts ══════════════════════════ */

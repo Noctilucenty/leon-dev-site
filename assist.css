@@ -173,3 +173,23 @@
   padding:.55rem .7rem; text-decoration:none; transition:border-color .2s;
 }
 .as-log .as-starts a:hover{ border-color:var(--ac,#9b8cff); }
+
+/* ═══ language switcher in the site nav (injected by assist.js) ═══ */
+.as-langpick{
+  display:inline-flex; align-items:center; gap:.1rem;
+  margin-right:.7rem; padding:.18rem;
+  border:1px solid var(--line,#1a1a1a); border-radius:999px;
+  font-family:var(--mono,'JetBrains Mono',monospace);
+}
+.as-langpick a{
+  display:inline-block; padding:.26rem .5rem; border-radius:999px;
+  font-size:11px; letter-spacing:.03em; line-height:1;
+  color:var(--dim,#777); text-decoration:none; text-transform:none;
+  transition:color .2s, background .2s;
+}
+.as-langpick a:hover{ color:var(--fg,#fafafa); }
+.as-langpick a.on{ color:#000; background:var(--ac,#9b8cff); }
+@media (max-width:860px){
+  .as-langpick{ margin-right:.4rem; }
+  .as-langpick a{ padding:.24rem .38rem; font-size:10.5px; }
+}

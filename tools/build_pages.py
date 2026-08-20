@@ -670,7 +670,7 @@ w('industries/index.html', listing_page('industries', INDUSTRIES,
 w('quote.html', quote_page())
 
 # sitemap + robots
-urls = ['/', '/quote', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
