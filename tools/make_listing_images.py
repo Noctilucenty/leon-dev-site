@@ -5,14 +5,15 @@ Why three images per listing instead of one price table:
   1. HOOK    — the thumbnail. It is the only thing most people ever see, so it
                asks the buyer's own problem back at them and names the next
                step ("message me"). No price wall.
-  2. PRICES  — the table, in their language, with the floors spelled out.
-  3. PROOF   — the systems that are actually running, so the price is credible.
+  2. BUILD   — what he makes, in their language. No figures: price comes
+               after a conversation, in writing.
+  3. PROOF   — the systems that are actually running.
 
 Every string is written per language, not translated at render time — the
 Portuguese and Chinese listings must read like a person wrote them.
 
 Run from the repo root:  python3 tools/make_listing_images.py
-Writes assets/listings/fb_<lang>_{1hook,2prices,3proof}.png (1200x1200 each).
+Writes assets/listings/fb_<lang>_{1hook,2build,3proof}.png (1200x1200 each).
 """
 
 import math
@@ -42,10 +43,10 @@ L = {
         "hook": ["still taking orders", "by phone? still", "writing bookings", "in a notebook?"],
         "hook_a": "i turn that into software.",
         "hook_b": "websites · online ordering · booking · apps · automation",
-        "anchor": "small jobs from $49",
+        "anchor": "free look at what you have now",
         "cta": "message me — i'll look at what you have now, free",
-        "prices_lab": "W H A T   I   B U I L D   ·   S T A R T I N G   A T",
-        "prices_note": "every price is a floor — you get a fixed written quote before any work starts",
+        "prices_lab": "W H A T   I   B U I L D",
+        "prices_note": "you get a fixed written price before any work starts, and it does not change after",
         "proof_lab": "T H I N G S   T H A T   A R E   A C T U A L L Y   R U N N I N G",
         "proof": [
             ("an iphone app", "on the app store today"),
@@ -53,25 +54,25 @@ L = {
             ("a review tool", "reads the reviews a business gets and writes the replies"),
         ],
         "proof_note": "i speak english, chinese, portuguese and spanish",
-        "foot": "free consultation  ·  hayward, ca  ·  remote anywhere in the u.s.",
+        "foot": "free consultation  ·  working with businesses across the u.s.",
         "url": "leonkelvinli.onrender.com",
         "services": [
-            ("small fixes", "$49+"), ("workflow automation", "$600+"),
-            ("booking & ordering", "$600+"), ("dashboards & tools", "$750+"),
-            ("ai chatbots", "$1,000+"), ("business websites", "$1,200+"),
-            ("ai phone agents", "$1,200+"), ("crm & inventory", "$1,500+"),
-            ("online ordering", "$2,000+"), ("customer portals", "$2,500+"),
-            ("custom software", "$3,500+"), ("ios & android apps", "$4,500+"),
+            ("small fixes", ""), ("workflow automation", ""),
+            ("booking & ordering", ""), ("dashboards & tools", ""),
+            ("ai chatbots", ""), ("business websites", ""),
+            ("ai phone agents", ""), ("crm & inventory", ""),
+            ("online ordering", ""), ("customer portals", ""),
+            ("custom software", ""), ("ios & android apps", ""),
         ],
     },
     "pt": {
         "hook": ["ainda anota pedido", "no papel? ainda", "atende telefone", "o dia inteiro?"],
         "hook_a": "eu transformo isso em sistema.",
         "hook_b": "site · pedido online · agendamento · aplicativo · automação",
-        "anchor": "serviço pequeno a partir de $49",
+        "anchor": "eu olho o que você tem hoje, de graça",
         "cta": "me manda mensagem — eu olho o que você tem hoje, de graça",
-        "prices_lab": "O   Q U E   E U   F A Ç O   ·   A   P A R T I R   D E",
-        "prices_note": "todo preço é um valor de partida — você recebe o preço fechado por escrito antes de eu começar",
+        "prices_lab": "O   Q U E   E U   F A Ç O",
+        "prices_note": "você recebe o preço fechado por escrito antes de eu começar, e ele não muda depois",
         "proof_lab": "C O I S A S   Q U E   E S T Ã O   R O D A N D O   D E   V E R D A D E",
         "proof": [
             ("um aplicativo de iphone", "está na app store hoje"),
@@ -79,25 +80,25 @@ L = {
             ("uma ferramenta de avaliações", "lê as avaliações do negócio e já escreve a resposta"),
         ],
         "proof_note": "falo português, inglês, chinês e espanhol",
-        "foot": "consulta grátis  ·  hayward, ca  ·  atendo os estados unidos inteiros",
+        "foot": "consulta grátis  ·  atendo os estados unidos inteiros",
         "url": "leonkelvinli.onrender.com/pt",
         "services": [
-            ("consertos pequenos", "$49+"), ("automação de tarefas", "$600+"),
-            ("agendamento e pedidos", "$600+"), ("painéis e ferramentas", "$750+"),
-            ("robô de atendimento", "$1,000+"), ("site do negócio", "$1,200+"),
-            ("atendente de telefone ia", "$1,200+"), ("crm e estoque", "$1,500+"),
-            ("pedido online", "$2,000+"), ("portal do cliente", "$2,500+"),
-            ("software sob medida", "$3,500+"), ("aplicativo ios e android", "$4,500+"),
+            ("consertos pequenos", ""), ("automação de tarefas", ""),
+            ("agendamento e pedidos", ""), ("painéis e ferramentas", ""),
+            ("robô de atendimento", ""), ("site do negócio", ""),
+            ("atendente de telefone ia", ""), ("crm e estoque", ""),
+            ("pedido online", ""), ("portal do cliente", ""),
+            ("software sob medida", ""), ("aplicativo ios e android", ""),
         ],
     },
     "zh": {
         "hook": ["还在用本子记单？", "还在整天接电话", "回答同样的问题？"],
         "hook_a": "我把这些变成系统。",
         "hook_b": "网站 · 网上点单 · 预约系统 · 手机 App · 自动化",
-        "anchor": "小活 $49 起",
+        "anchor": "先免费看看你现在的东西",
         "cta": "发消息给我 — 我先免费看看你现在的东西",
-        "prices_lab": "我 能 做 什 么 · 起 步 价",
-        "prices_note": "以上都是起步价 — 开工前先把价钱白纸黑字写下来，做完不会变",
+        "prices_lab": "我 能 做 什 么",
+        "prices_note": "开工前先把价钱白纸黑字写下来，做完不会变",
         "proof_lab": "已 经 在 跑 的 东 西",
         "proof": [
             ("一个 iPhone App", "现在就在 App Store 上"),
@@ -105,15 +106,15 @@ L = {
             ("一个评论工具", "自动读客人的评论，并且写好回复"),
         ],
         "proof_note": "中文、英文、葡萄牙文、西班牙文都可以说",
-        "foot": "免费咨询  ·  加州 hayward  ·  全美国都接，线上做",
+        "foot": "免费咨询  ·  全美国都接，线上做",
         "url": "leonkelvinli.onrender.com/zh",
         "services": [
-            ("小修小改", "$49+"), ("流程自动化", "$600+"),
-            ("预约和点单", "$600+"), ("数据看板", "$750+"),
-            ("智能客服机器人", "$1,000+"), ("公司网站", "$1,200+"),
-            ("AI 电话客服", "$1,200+"), ("客户管理和库存", "$1,500+"),
-            ("网上点单系统", "$2,000+"), ("客户专属后台", "$2,500+"),
-            ("定制软件", "$3,500+"), ("iOS 和安卓 App", "$4,500+"),
+            ("小修小改", ""), ("流程自动化", ""),
+            ("预约和点单", ""), ("数据看板", ""),
+            ("智能客服机器人", ""), ("公司网站", ""),
+            ("AI 电话客服", ""), ("客户管理和库存", ""),
+            ("网上点单系统", ""), ("客户专属后台", ""),
+            ("定制软件", ""), ("iOS 和安卓 App", ""),
         ],
     },
 }
@@ -213,8 +214,9 @@ def prices(lang):
         cx = COL_X[i % 2]
         cy = ROW_Y + (i // 2) * ROW_H
         d.text((cx, cy), name, font=f["svc"], fill=FG)
-        d.text((cx + COL_W - d.textlength(price, font=f["price"]), cy + 2), price,
-               font=f["price"], fill=AC)
+        if price:
+            d.text((cx + COL_W - d.textlength(price, font=f["price"]), cy + 2), price,
+                   font=f["price"], fill=AC)
         d.line([(cx, cy + 42), (cx + COL_W, cy + 42)], fill=LINE, width=1)
     ny = ROW_Y + 6 * ROW_H + 24
     d.text((PAD, ny), c["prices_note"], font=f["note"], fill=DIM)
@@ -244,7 +246,7 @@ def proof(lang):
 
 os.makedirs(outdir, exist_ok=True)
 for lang in L:
-    for name, fn in (("1hook", hook), ("2prices", prices), ("3proof", proof)):
+    for name, fn in (("1hook", hook), ("2build", prices), ("3proof", proof)):
         p = os.path.join(outdir, f"fb_{lang}_{name}.png")
         im = fn(lang)
         im = im.quantize(colors=256, method=Image.MEDIANCUT)
