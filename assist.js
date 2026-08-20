@@ -443,13 +443,46 @@
       }).catch(function (err) {
         clearTimeout(slowNote);
         think.remove();
-        var m = (err && err.name === 'AbortError') ? 'that took too long — try once more.' : (err.message || 'connection failed.');
-        msgEl('sys', m + " you can always email leon directly: leondragon3798@gmail.com");
+        var m = (err && err.name === 'AbortError') ? TIMEOUT_MSG[lang()] || TIMEOUT_MSG.en : (err.message || '');
+        msgEl('sys', m);
+        // A failed reply must not end the conversation. Give them the channels
+        // that always work, as buttons — not an address to copy by hand.
+        handoffRow();
       }).finally(function () {
         clearTimeout(timeout);
         setBusy(false);
         input.focus();
       });
+    }
+
+    /* ══ handoff: what the panel offers when the model cannot answer ══ */
+    var TIMEOUT_MSG = {
+      en: 'that took too long. rather than keep you waiting, here is leon directly:',
+      pt: 'demorou demais. em vez de te deixar esperando, fala direto com o leon:',
+      zh: '太慢了。别等了，直接联系 leon：',
+      es: 'tardó demasiado. en vez de hacerte esperar, habla directo con leon:'
+    };
+    var HANDOFF = {
+      en: [['whatsapp', 'https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20'], ['call (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com?subject=project']],
+      pt: [['whatsapp', 'https://wa.me/15108267735?text=Oi%20Leon%2C%20vi%20o%20seu%20site.%20Meu%20neg%C3%B3cio%20%C3%A9%3A%20'], ['ligar (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com?subject=projeto']],
+      zh: [['打电话 (510) 826-7735', 'tel:+15108267735'], ['whatsapp', 'https://wa.me/15108267735'], ['发邮件', 'mailto:leondragon3798@gmail.com?subject=项目']],
+      es: [['whatsapp', 'https://wa.me/15108267735'], ['llamar (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com']]
+    };
+    function lang() { return storedLang() || PAGE_LANG; }
+    function handoffRow() {
+      var opts = HANDOFF[lang()] || HANDOFF.en;
+      var box = document.createElement('div');
+      box.className = 'as-starts';
+      opts.forEach(function (o) {
+        var a = document.createElement('a');
+        a.href = o[1];
+        a.textContent = o[0];
+        if (o[1].indexOf('http') === 0) { a.target = '_blank'; a.rel = 'noopener'; }
+        a.addEventListener('click', function () { evt('handoff_' + lang()); });
+        box.appendChild(a);
+      });
+      log.appendChild(box);
+      log.scrollTop = log.scrollHeight;
     }
 
     /* lead form */

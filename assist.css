@@ -164,3 +164,12 @@
 @media (max-width:640px){
   .as-langbar{ left:14px; right:14px; width:auto; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
 }
+
+/* handoff links rendered inside the chat log reuse the starter-button look */
+.as-log .as-starts a{
+  display:block; text-align:left;
+  background:none; border:1px solid var(--line,#1a1a1a); border-radius:9px;
+  color:var(--fg,#fafafa); font-family:inherit; font-size:12.5px; letter-spacing:.02em;
+  padding:.55rem .7rem; text-decoration:none; transition:border-color .2s;
+}
+.as-log .as-starts a:hover{ border-color:var(--ac,#9b8cff); }
