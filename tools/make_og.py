@@ -77,7 +77,7 @@ d.text((PAD, 452), "websites · apps · ai agents · automation", font=f_body, f
 d.text((PAD, 484), "built for how your business actually works", font=f_body, fill=(150, 150, 150))
 
 d.line([(PAD, 546), (PAD + 86, 546)], fill=AC, width=3)
-d.text((PAD, 566), "H A Y W A R D ,  C A   ·   R E M O T E   A N Y W H E R E", font=f_label, fill=FAINT)
+d.text((PAD, 566), "R E M O T E   ·   B U S I N E S S E S   A C R O S S   T H E   U . S .", font=f_label, fill=FAINT)
 
 img.save(out, optimize=True)
 print("wrote", out)

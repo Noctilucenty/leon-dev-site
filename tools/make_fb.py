@@ -27,20 +27,20 @@ SANS = "/System/Library/Fonts/HelveticaNeue.ttc"   # index 7 = Light, upright
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 out = os.path.join(root, "assets", "facebook.png")
 
-# prices here are the site's prices — keep the two in step
+# names only — no figures on listing creative (see make_listing_images.py)
 SERVICES = [
-    ("small fixes",            "$49+"),
-    ("workflow automation",    "$600+"),
-    ("booking & ordering",     "$600+"),
-    ("dashboards & tools",     "$750+"),
-    ("ai chatbots",            "$1,000+"),
-    ("business websites",      "$1,200+"),
-    ("ai phone agents",        "$1,200+"),
-    ("crm & inventory",        "$1,500+"),
-    ("online ordering",        "$2,000+"),
-    ("customer portals",       "$2,500+"),
-    ("custom software",        "$3,500+"),
-    ("ios & android apps",     "$4,500+"),
+    ("small fixes", ""),
+    ("workflow automation", ""),
+    ("booking & ordering", ""),
+    ("dashboards & tools", ""),
+    ("ai chatbots", ""),
+    ("business websites", ""),
+    ("ai phone agents", ""),
+    ("crm & inventory", ""),
+    ("online ordering", ""),
+    ("customer portals", ""),
+    ("custom software", ""),
+    ("ios & android apps", ""),
 ]
 
 img = Image.new("RGB", (S, S), BG)
@@ -96,7 +96,7 @@ d.text((PAD, 298), "still do by hand.", font=f_disp, fill=FG)
 d.line([(PAD, 400), (PAD + 86, 400)], fill=AC, width=3)
 
 # ── service table ──
-d.text((PAD, 432), "W H A T   I   B U I L D   ·   S T A R T I N G   A T", font=f_lab, fill=FAINT)
+d.text((PAD, 432), "W H A T   I   B U I L D", font=f_lab, fill=FAINT)
 
 COL_W = 466
 COL_X = [PAD, PAD + COL_W + 100]
@@ -107,16 +107,17 @@ for i, (name, price) in enumerate(SERVICES):
     cx = COL_X[i % 2]
     cy = ROW_Y + (i // 2) * ROW_H
     d.text((cx, cy), name, font=f_svc, fill=FG)
-    d.text((cx + COL_W - d.textlength(price, font=f_svc), cy), price, font=f_svc, fill=AC)
+    if price:
+        d.text((cx + COL_W - d.textlength(price, font=f_svc), cy), price, font=f_svc, fill=AC)
     d.line([(cx, cy + 40), (cx + COL_W, cy + 40)], fill=LINE, width=1)
 
 d.text((PAD, ROW_Y + 6 * ROW_H + 14),
-       "every price is a floor — you get a fixed written quote before any work starts",
+       "you get a fixed written price before any work starts, and it does not change after",
        font=f_note, fill=DIM)
 
 # ── footer ──
 d.line([(PAD, 1012), (S - PAD, 1012)], fill=LINE, width=1)
-d.text((PAD, 1044), "free consultation  ·  hayward, ca  ·  remote anywhere",
+d.text((PAD, 1044), "free consultation  ·  working with businesses across the u.s.",
        font=f_foot, fill=MID)
 d.text((PAD, 1086), "leonkelvinli.onrender.com", font=f_url, fill=AC)
 

@@ -196,9 +196,7 @@ into the head, serve it locally and capture at `--window-size=1600,14000`, then 
 | file | what it is |
 |---|---|
 | `01_hero.png` | the positioning line |
-| `02_services_grid.png` | every service with its starting price |
 | `03_work_running.png` | the four live systems and their diagrams |
-| `04_pricing_tiers.png` | the three tiers |
 | `05_curio_appstore.png` | three Curio App Store slides on cream |
 
 Everything else on the page is near-black, which renders as an empty rectangle at
