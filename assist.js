@@ -114,6 +114,11 @@
   var langBar = null;
   run(function () {
     if (storedLang()) return;
+    // Already on a translated page? They picked by clicking the ad that sent
+    // them here. Asking again at the door is friction — most Brazilians and
+    // Chinese speakers in the US carry english-set phones, so locale sniffing
+    // would prompt literally everyone. The chat still offers the choice.
+    if (PAGE_LANG !== 'en') return;
     var want = detectLang();
     // spanish has no page of its own yet; the assistant still speaks it
     var target = want === 'es' ? '' : want;
