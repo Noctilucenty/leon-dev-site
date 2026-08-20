@@ -117,3 +117,50 @@
 
 .as-lead[hidden]{ display:none; }
 .as-starts[hidden]{ display:none; }
+
+/* ═══ language: a nudge on the page, a chooser inside the chat ═══
+   Shown only when we have reason to think the visitor reads another
+   language (browser locale) — never as a blocking interstitial. */
+.as-langbar{
+  position:fixed; left:18px; bottom:18px; z-index:125;
+  width:min(310px, calc(100vw - 36px));
+  background:#050505; color:var(--fg,#fafafa);
+  border:1px solid var(--line-2,#262626); border-radius:12px;
+  padding:.85rem .95rem;
+  box-shadow:0 16px 50px rgba(0,0,0,.6);
+  font-family:var(--mono,'JetBrains Mono',monospace);
+  animation:as-langin .3s ease-out;
+}
+@keyframes as-langin{ from{ opacity:0; transform:translateY(8px); } }
+.as-langbar[hidden]{ display:none; }
+.as-langbar p{ margin:0 0 .6rem; font-size:11.5px; line-height:1.55; color:var(--mid,#aaa); }
+.as-langbar .opts{ display:flex; flex-wrap:wrap; gap:.4rem; }
+.as-langbar button{
+  flex:1 1 auto; text-align:center;
+  background:none; border:1px solid var(--line-2,#262626); border-radius:8px;
+  color:var(--fg,#fafafa); font-family:inherit; font-size:12px; letter-spacing:.02em;
+  padding:.45rem .6rem; cursor:pointer; transition:border-color .2s, color .2s;
+}
+.as-langbar button:hover{ border-color:var(--ac,#9b8cff); }
+.as-langbar button.go{ border-color:var(--ac,#9b8cff); color:var(--ac,#9b8cff); }
+.as-langbar .x{
+  position:absolute; top:.45rem; right:.5rem;
+  background:none; border:none; color:var(--faint,#5a5a5a);
+  font-family:inherit; font-size:13px; padding:.2rem .35rem; cursor:pointer; flex:none;
+}
+.as-langbar .x:hover{ color:var(--fg,#fafafa); }
+
+.as-lang{ padding:0 1rem .7rem; flex:none; }
+.as-lang[hidden]{ display:none; }
+.as-lang p{ margin:0 0 .5rem; font-size:11.5px; line-height:1.5; color:var(--faint,#5a5a5a); }
+.as-lang .opts{ display:flex; gap:.4rem; flex-wrap:wrap; }
+.as-lang button{
+  background:none; border:1px solid var(--line,#1a1a1a); border-radius:8px;
+  color:var(--mid,#aaa); font-family:inherit; font-size:12px;
+  padding:.45rem .7rem; cursor:pointer; transition:border-color .2s, color .2s;
+}
+.as-lang button:hover{ border-color:var(--ac,#9b8cff); color:var(--fg,#fafafa); }
+
+@media (max-width:640px){
+  .as-langbar{ left:14px; right:14px; width:auto; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
+}

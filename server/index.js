@@ -123,6 +123,19 @@ function reasoningOpts() {
 app.get('/api/health', (req, res) => res.json({ ok: true, model: client ? MODEL : null }));
 
 /* ── chat (streams plain text chunks) ── */
+/* The visitor picks a language in the widget; honour it even when they type
+   in a different one (a Brazilian owner writing broken english still wants the
+   answer in portuguese). Unknown values fall through to the prompt's default. */
+const REPLY_LANG = {
+  pt: 'Brazilian Portuguese', zh: 'Simplified Chinese',
+  es: 'Spanish', en: 'English'
+};
+function langLine(v) {
+  const name = REPLY_LANG[String(v || '').slice(0, 2).toLowerCase()];
+  if (!name) return '';
+  return `\n\nREPLY LANGUAGE\nAnswer in ${name}, no matter which language the visitor writes in, unless they explicitly ask you to switch. Keep the same short, plain, one-question-at-most style. Prices stay in US dollars.`;
+}
+
 app.post('/api/chat', async (req, res) => {
   const ip = req.ip || 'x';
   if (limited('c:' + ip, 20, 5 * 60_000)) return res.status(429).json({ error: 'slow down a little — try again in a few minutes.' });
@@ -164,7 +177,7 @@ app.post('/api/chat', async (req, res) => {
   try {
     const stream = await client.responses.create({
       model: MODEL,
-      instructions: SYSTEM_PROMPT,
+      instructions: SYSTEM_PROMPT + langLine(req.body.lang),
       input,
       max_output_tokens: MAX_OUTPUT,
       stream: true,

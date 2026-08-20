@@ -72,8 +72,106 @@
     }, { passive: true });
   });
 
+  /* ══ language ════════════════════════════════════════════
+     Three places care: which page we send them to, which starters we
+     show, and which language the assistant answers in. One stored
+     choice drives all three. We only ask when the browser says they
+     read something other than the page they landed on. */
+  var LANG_KEY = 'leon_lang';
+  var PAGE_LANG = ((document.documentElement.getAttribute('lang') || 'en').slice(0, 2)).toLowerCase();
+  var LANG_PAGE = { en: '/', pt: '/pt', zh: '/zh' };
+  var LANG_NAME = { en: 'english', pt: 'português', zh: '中文', es: 'español' };
+  var LANG_ASK = 'what language do you prefer? · qual idioma? · 用什么语言？';
+  var LANG_SWITCH = {
+    pt: 'esta página também existe em português',
+    zh: '这个页面也有中文版',
+    en: 'this page is also in english'
+  };
+
+  function storedLang() {
+    try { return localStorage.getItem(LANG_KEY) || ''; } catch (e) { return ''; }
+  }
+  function setLang(v) {
+    try { localStorage.setItem(LANG_KEY, v); } catch (e) {}
+  }
+  function detectLang() {
+    var list = navigator.languages || [navigator.language || ''];
+    for (var i = 0; i < list.length; i++) {
+      var t = String(list[i] || '').toLowerCase();
+      if (t.indexOf('pt') === 0) return 'pt';
+      if (t.indexOf('zh') === 0) return 'zh';
+      if (t.indexOf('es') === 0) return 'es';
+      if (t.indexOf('en') === 0) return 'en';
+    }
+    return '';
+  }
+  // keep ?s= / utm attribution across a language switch
+  function langHref(v) {
+    return (LANG_PAGE[v] || '/') + (location.search || '');
+  }
+
+  /* the page-level nudge — only when the browser disagrees with the page */
+  var langBar = null;
+  run(function () {
+    if (storedLang()) return;
+    var want = detectLang();
+    // spanish has no page of its own yet; the assistant still speaks it
+    var target = want === 'es' ? '' : want;
+    if (!target || target === PAGE_LANG) return;
+    try { if (sessionStorage.getItem('leon_lang_dismissed')) return; } catch (e) {}
+
+    var bar = document.createElement('div');
+    bar.className = 'as-langbar';
+    bar.setAttribute('role', 'dialog');
+    bar.setAttribute('aria-label', 'language');
+    bar.style.position = 'fixed';
+    bar.innerHTML = '<button class="x" type="button" aria-label="close">✕</button>'
+      + '<p>' + LANG_ASK + '</p><div class="opts"></div>';
+    var opts = bar.querySelector('.opts');
+
+    ['en', 'pt', 'zh'].forEach(function (v) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = LANG_NAME[v];
+      if (v === target) b.className = 'go';
+      b.addEventListener('click', function () {
+        setLang(v);
+        evt('lang_pick_' + v);
+        if (v === PAGE_LANG) { bar.remove(); return; }
+        location.href = langHref(v);
+      });
+      opts.appendChild(b);
+    });
+    bar.querySelector('.x').addEventListener('click', function () {
+      try { sessionStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
+      bar.remove();
+    });
+    document.body.appendChild(bar);
+    langBar = bar;
+    evt('lang_prompt_shown');
+  });
+
   /* ══ contextual starter prompts ══════════════════════════ */
+  var STARTERS_L = {
+    pt: [
+      'ainda anoto tudo no papel — dá pra melhorar?',
+      'quero que o cliente peça pelo site',
+      'quanto custa um site pro meu negócio?'
+    ],
+    zh: [
+      '现在还靠本子和微信记单，能改吗？',
+      '我想让客人自己在网上下单',
+      '做一个店里的网站要多少钱？'
+    ],
+    es: [
+      'todavía anoto todo a mano — ¿se puede mejorar?',
+      'quiero que el cliente pida por internet',
+      '¿cuánto cuesta una página para mi negocio?'
+    ]
+  };
   function starters() {
+    var pref = storedLang() || PAGE_LANG;
+    if (STARTERS_L[pref]) return STARTERS_L[pref];
     var p = location.pathname;
     if (p.indexOf('/industries/restaurants') === 0) return [
       'nobody answers our phone during a rush',
@@ -155,6 +253,7 @@
         '<button class="as-hbtn" type="button" data-as-close aria-label="close chat">✕</button>' +
       '</header>' +
       '<div class="as-log" data-as-log aria-live="polite"></div>' +
+      '<div class="as-lang" data-as-lang hidden><p></p><div class="opts"></div></div>' +
       '<div class="as-starts" data-as-starts></div>' +
       '<form class="as-lead" data-as-lead hidden>' +
         '<p><b>send this conversation to leon.</b> your email app opens with it already written — you just hit send. he replies himself, usually same day.</p>' +
@@ -203,6 +302,7 @@
       }
       state.history.forEach(function (m) { msgEl(m.role, m.content); });
       renderStarters();
+      renderLangChoice();
     }
     function renderStarters() {
       startsBox.innerHTML = '';
@@ -212,6 +312,35 @@
         b.type = 'button'; b.textContent = s;
         b.addEventListener('click', function () { send(s); });
         startsBox.appendChild(b);
+      });
+    }
+
+    /* asked once, at the top of the first conversation, so the reply comes
+       back in their language instead of making them ask for it */
+    function renderLangChoice() {
+      var box = $('[data-as-lang]', panel);
+      if (!box) return;
+      if (storedLang() || state.history.length) { box.hidden = true; return; }
+      box.hidden = false;
+      box.querySelector('p').textContent = LANG_ASK;
+      var opts = box.querySelector('.opts');
+      opts.innerHTML = '';
+      ['en', 'pt', 'zh', 'es'].forEach(function (v) {
+        var b = document.createElement('button');
+        b.type = 'button'; b.textContent = LANG_NAME[v];
+        b.addEventListener('click', function () {
+          setLang(v);
+          evt('lang_pick_' + v);
+          box.hidden = true;
+          renderStarters();
+          // a page in their language exists — offer it, don't force it
+          if (LANG_PAGE[v] && v !== PAGE_LANG) {
+            var d = msgEl('assistant', '');
+            d.innerHTML = LANG_SWITCH[v] + ' — <a href="' + langHref(v) + '">'
+              + LANG_PAGE[v] + '</a>';
+          }
+        });
+        opts.appendChild(b);
       });
     }
 
@@ -228,6 +357,7 @@
       if (window.matchMedia('(max-width:640px)').matches) document.documentElement.style.overflow = 'hidden';
       renderHistory();
       warm();
+      if (langBar) { langBar.remove(); langBar = null; }
       evt('chat_open');
       setTimeout(function () { input.focus(); }, 60);
       if (starter) send(starter);
@@ -250,6 +380,7 @@
       if (!text || state.busy) return;
       input.value = ''; input.style.height = '';
       startsBox.innerHTML = '';
+      var lbox = $('[data-as-lang]', panel); if (lbox) lbox.hidden = true;
       if (!state.firstSent) { state.firstSent = true; evt('chat_first_message'); }
 
       state.history.push({ role: 'user', content: text });
@@ -276,6 +407,7 @@
         body: JSON.stringify({
           sessionId: state.sessionId,
           page: location.pathname,
+          lang: storedLang() || PAGE_LANG,
           messages: state.history.slice(-40)
         })
       }).then(function (res) {
