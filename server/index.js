@@ -196,7 +196,13 @@ app.get('/api/health', (req, res) => res.json({
   ok: true,
   model: client ? MODEL : null,
   vision: !!client,
-  leadEmail: !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL),
+  // Green only when mail can actually authenticate. Reporting true on a
+  // half-configured SMTP block would be a check that lies in the one direction
+  // that costs a lead.
+  leadEmail: !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
+                && process.env.SMTP_USER && process.env.SMTP_PASS),
+  leadEmailMissing: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+    .filter(k => !process.env[k]),
   leadEmailTo: process.env.LEAD_TO_EMAIL ? String(process.env.LEAD_TO_EMAIL).replace(/^(.).*(@.*)$/, '$1***$2') : null
 }));
 

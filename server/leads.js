@@ -63,14 +63,23 @@ function persistLead(lead) {
     fs.appendFileSync(LEADS_FILE, JSON.stringify(lead) + '\n');
   } catch (e) { console.error('lead file write failed:', e.message); }
   // 3. email — the only sink the owner actually watches
-  if (!process.env.SMTP_HOST || !process.env.LEAD_TO_EMAIL) {
+  // All FOUR are required. Host + recipient alone looked like enough and is not:
+  // nodemailer will happily connect unauthenticated, Gmail will refuse it, and
+  // the lead is lost while every readiness check reports green. Half-configured
+  // has to read as OFF, or the check is worse than no check.
+  const mailReady = !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
+                       && process.env.SMTP_USER && process.env.SMTP_PASS);
+  if (!mailReady) {
     // LOUD, once per lead. This was silent, and silence read as "no leads yet"
     // when it actually meant "leads arrived and nobody was told". stdout is
     // Render's log tail, so this is visible without digging.
     console.error(
-      'LEAD_NOT_EMAILED — SMTP_HOST and LEAD_TO_EMAIL are not both set, so this ' +
-      'lead exists only in this log and in an ephemeral file that the next deploy ' +
-      'erases. Set them in the Render dashboard.');
+      'LEAD_NOT_EMAILED — need all of SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS ' +
+      'and LEAD_TO_EMAIL. Missing: ' +
+      ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+        .filter(k => !process.env[k]).join(', ') +
+      '. Until then this lead exists only in this log and in an ephemeral file ' +
+      'that the next deploy erases.');
   } else {
     try {
       const nodemailer = require('nodemailer');
