@@ -76,8 +76,16 @@ LANGS = {
         nav=[('/zh#zuo', '我能做什么'), ('/zh#jiage', '价格'),
              ('/zh#zuoguo', '做过的东西'), ('/call', '预约 15 分钟'),
              ('/', 'english')],
-        contact_kind='email',
-        contact_label='联系 leon',
+        # WeChat, not WhatsApp. Every other language page leads with WhatsApp
+        # and the Chinese pages inherited it, which is a button a Chinese owner
+        # in the US will never press — while the copy told them to 发微信 and
+        # then gave them no ID to add. Tap-to-copy rather than a deep link,
+        # because no WeChat URL scheme reliably opens an add-friend screen from
+        # mobile Safari, and a button that silently does nothing is worse than
+        # an ID they can paste.
+        contact_kind='wechat',
+        wechat_id='leon34695820',
+        contact_label='微信 leon34695820',
         skip='跳到正文',
         crumb_home='首页',
         other_label='其他服务',
@@ -99,7 +107,21 @@ MAIL = 'mailto:leondragon3798@gmail.com'
 
 
 def _contact_href(L):
-    return WA + L['wa_text'] if L['contact_kind'] == 'wa' else MAIL + '?subject=project'
+    if L['contact_kind'] == 'wa':
+        return WA + L['wa_text']
+    if L['contact_kind'] == 'wechat':
+        return '#wechat'          # handled by the copy button, never followed
+    return MAIL + '?subject=project'
+
+
+def _contact_attrs(L):
+    """The markup differences between a link out and a tap-to-copy button."""
+    if L['contact_kind'] == 'wa':
+        return ' target="_blank" rel="noopener"'
+    if L['contact_kind'] == 'wechat':
+        return (f' data-copy="{L["wechat_id"]}" data-copied="已复制，去微信粘贴添加"'
+                ' onclick="return false"')
+    return ''
 
 
 def _alternates(key, path):
@@ -190,7 +212,7 @@ def render(lang, key, page, ctx):
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
   <div class="nav-end">
-    <a class="btn btn-solid magnet" href="{contact}"{' target="_blank" rel="noopener"' if L['contact_kind'] == 'wa' else ''} data-evt="contact_click_{lang}_nav"><span>{e(L['contact_label'])}</span></a>
+    <a class="btn btn-solid magnet" href="{contact}"{_contact_attrs(L)} data-evt="contact_click_{lang}_nav"><span>{e(L['contact_label'])}</span></a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
   </div>
 </header>'''
@@ -208,7 +230,11 @@ def render(lang, key, page, ctx):
         f'<details><summary>{e(q)}<i></i></summary><p>{e(a)}</p></details>'
         for q, a in faqs) + '</div>'
 
-    wa_attr = ' target="_blank" rel="noopener"' if L['contact_kind'] == 'wa' else ''
+    wa_attr = _contact_attrs(L)
+    # A button that copies a WeChat ID must be labelled with that ID. Using the
+    # page's own CTA line here would leave a Chinese visitor tapping "tell me
+    # what you need" and getting a clipboard they did not ask for.
+    primary_label = L['contact_label'] if L['contact_kind'] == 'wechat' else page['cta_primary']
 
     body = f'''
 <main id="main">
@@ -219,7 +245,7 @@ def render(lang, key, page, ctx):
     {intro}
     <p class="pricetag">{e(page['pricetag'])}</p>
     <div class="ctarow">
-      <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}"><span>{e(page['cta_primary'])}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+      <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}"><span>{e(primary_label)}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="{call_href(lang)}" data-evt="call_click_{lang}_{key}"><span>{e(L['call_label'])}</span></a>
       <button class="btn magnet" type="button" data-assist-open data-assist-starter="{e(L['assist_starter'])}" data-evt="assist_open_{lang}_{key}"><span>{e(page['cta_secondary'])}</span></button>
     </div>
@@ -260,7 +286,7 @@ def render(lang, key, page, ctx):
   <div class="rail">
     <p class="sub">{e(page['close'])}</p>
     <div class="ctarow">
-      <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}_end"><span>{e(page['cta_primary'])}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+      <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}_end"><span>{e(primary_label)}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="{call_href(lang)}" data-evt="call_click_{lang}_{key}_end"><span>{e(L['call_label'])}</span></a>
     </div>
     <p class="label" style="margin-top:2.5rem">{e(L['other_label'])}</p>
@@ -381,7 +407,7 @@ def render_call(lang, booker, ctx):
     L, C = LANGS[lang], CALL_COPY[lang]
     path = f"/{lang}/{C['slug']}"
     contact = _contact_href(L)
-    wa_attr = ' target="_blank" rel="noopener"' if L['contact_kind'] == 'wa' else ''
+    wa_attr = _contact_attrs(L)
 
     alts = ''.join(f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
                    for hl, href in call_alternates())

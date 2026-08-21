@@ -7,6 +7,39 @@
 
   var run = function (fn) { try { fn(); } catch (e) { /* fail soft */ } };
 
+  /* ══ tap to copy ═════════════════════════════════════════
+     For the WeChat ID on the Chinese pages. There is no URL scheme that
+     reliably opens WeChat's add-friend screen from mobile Safari, so the honest
+     interaction is: put the ID on the clipboard, say so in Chinese, and let the
+     visitor paste it. The ID stays visible as the button's own label, so the
+     button still works with JavaScript off — it just does not copy. */
+  run(function () {
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-copy]');
+      if (!b) return;
+      e.preventDefault();
+      var val = b.getAttribute('data-copy');
+      var said = b.getAttribute('data-copied') || 'copied';
+      var span = b.querySelector('span') || b;
+      var was = span.textContent;
+      var done = function () {
+        span.textContent = said;
+        setTimeout(function () { span.textContent = was; }, 2200);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).then(done, done);
+      } else {
+        var t = document.createElement('textarea');
+        t.value = val; t.setAttribute('readonly', '');
+        t.style.position = 'fixed'; t.style.left = '-9999px';
+        document.body.appendChild(t); t.select();
+        try { document.execCommand('copy'); } catch (err) {}
+        document.body.removeChild(t);
+        done();
+      }
+    });
+  });
+
   /* ══ the old host ════════════════════════════════════════
      The site moved to leonbuilds.org but leonkelvinli.onrender.com still
      serves every page with a 200, including ones created after the move. Two
