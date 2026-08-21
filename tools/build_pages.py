@@ -326,7 +326,7 @@ def nav():
     <a href="/#pricing"><i>[</i><span>pricing</span><i>]</i></a>
   </nav>
   <div class="nav-end">
-    <a class="btn btn-solid magnet" href="/quote" data-evt="hero_quote_click"><span>get a quote</span></a>
+    <a class="btn btn-solid magnet" href="/call" data-evt="nav_call_click"><span>book a 15-min call</span></a>
     <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
   </div>
 </header>'''
@@ -343,7 +343,7 @@ def footer():
     </div>
     <nav><h4>services</h4>{slinks}</nav>
     <nav><h4>industries</h4>{ilinks}</nav>
-    <nav><h4>site</h4><a href="/about">about leon</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
@@ -638,6 +638,105 @@ def about_page():
 </main>
 ''' + footer()
 
+CAL_LINK = ""   # <- paste the cal.com / calendar link here; the page switches
+                #    from the request form to a real embedded booker when set.
+
+def call_page():
+    """Book a 15-minute call. Until CAL_LINK is set this posts a request to the
+       same lead API the quote form uses, so the page converts from day one
+       instead of waiting on a third-party signup."""
+    path = '/call'
+    bc = [("home","/"),("book a call", None)]
+    schema = [breadcrumb_schema(bc, path), {
+        "@context": "https://schema.org", "@type": "Service",
+        "name": "Free 15-minute consultation",
+        "provider": {"@id": f"{BASE}/#leon"},
+        "areaServed": {"@type": "Country", "name": "United States"},
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
+    }]
+    booker = (f'<div class="calwrap"><iframe src="{CAL_LINK}" title="book a 15-minute call" '
+              'loading="lazy" style="width:100%;min-height:680px;border:0"></iframe></div>') if CAL_LINK else \
+    '''<form class="qform" id="callform" novalidate>
+      <label>name<input name="name" type="text" autocomplete="name"></label>
+      <div class="qrow">
+        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
+        <label>phone or whatsapp<input name="phone" type="tel" autocomplete="tel"></label>
+      </div>
+      <label>what do you want to talk about? <i>(required)</i><textarea name="problem" rows="3" required placeholder="the part of the week that is still manual, the thing that is broken, or the thing you wish existed…"></textarea></label>
+      <div class="qrow">
+        <label>which days suit you?
+          <select name="timeline"><option value="">any day</option><option>weekdays</option><option>weekends</option><option>today or tomorrow</option></select>
+        </label>
+        <label>what time of day?
+          <select name="currentTools"><option value="">any time 11am-11pm pacific</option><option>late morning</option><option>afternoon</option><option>evening</option><option>late evening</option></select>
+        </label>
+      </div>
+      <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+      <p class="qerr" id="callerr" role="alert"></p>
+      <button class="btn btn-solid magnet qsend" type="submit" data-evt="call_form_submit"><span>request the call</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <p class="qnote">leon replies with a video link and a time, usually the same day. want it faster? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20I%27d%20like%20to%20book%20a%2015%20minute%20call.%20I%27m%20free%3A%20" target="_blank" rel="noopener" data-evt="wa_click_call">whatsapp him</a> or call <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a>.</p>
+    </form>
+    <div class="qok" id="callok" hidden>
+      <p class="label">got it</p>
+      <p class="sub">leon will email you a video link and a time. if you would rather not wait, message him on <a href="https://wa.me/15108267735" target="_blank" rel="noopener">whatsapp</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+    </div>'''
+
+    return head("Book a Free 15-Minute Call | Leon Kelvin Li",
+        "Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.",
+        path, schema) + ICONS + nav() + '''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    ''' + crumbs(bc) + '''
+    <p class="label">leon --call</p>
+    <h1 class="dsp">book a free <em>15-minute call</em></h1>
+    <p class="sub">fifteen minutes is enough to know whether there is a project here. you describe what is slow or manual in your week, and leon tells you what he would build, roughly what it starts at, and just as readily when you do not need him at all.</p>
+    <p class="pricetag">free · 15 minutes · slots 11am-11pm pacific · you talk to the person who writes the code</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="rail two-col">
+    <div>
+      <p class="label">what happens on the call</p>
+      <ul class="blist">
+        <li><svg class="ic"><use href="#ic-check"/></svg>you describe the problem in plain words — no technical vocabulary needed</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>he asks about what you use today and where it actually breaks</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>you get a straight answer on what it would take and what it starts at</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>if a cheaper tool or a small script solves it, he says so — that ends the call early and saves you money</li>
+      </ul>
+      <p class="sub">english, spanish, portuguese or chinese — whichever you would rather think in.</p>
+    </div>
+    <div>
+      ''' + booker + '''
+    </div>
+  </div>
+</section>
+</main>
+''' + footer() + CALL_JS
+
+
+CALL_JS = '''<script>
+(function(){
+  var f=document.getElementById('callform'), err=document.getElementById('callerr'), ok=document.getElementById('callok');
+  if(!f) return;
+  var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
+  f.addEventListener('submit',function(ev){
+    ev.preventDefault(); err.textContent='';
+    var d={}; new FormData(f).forEach(function(v,k){ d[k]=String(v||'').trim(); });
+    if(!d.email||!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(d.email)){ err.textContent='a valid email, so leon can send you the link.'; return; }
+    if(!d.problem){ err.textContent='one line about what you want to talk about.'; return; }
+    d.via='call-request';
+    try{ var a=JSON.parse(localStorage.getItem('leon_attr')||'null'); if(a){ d.utmSource=a.utmSource; d.referrer=a.referrer; d.firstPage=a.firstPage; } }catch(e){}
+    var b=f.querySelector('button[type=submit]'); b.disabled=true;
+    fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
+      .then(function(r){ if(!r.ok) throw new Error('failed'); f.hidden=true; ok.hidden=false; if(window.leonEvt)window.leonEvt('call_request_sent'); })
+      .catch(function(){ b.disabled=false; err.innerHTML='that did not send. message him on <a href="https://wa.me/15108267735">whatsapp</a> or call (510) 826-7735.'; });
+  });
+})();
+</script>'''
+
 def quote_page():
     path = '/quote'
     bc = [("home","/"),("get a quote", None)]
@@ -757,9 +856,10 @@ w('industries/index.html', listing_page('industries', INDUSTRIES,
 
 w('quote.html', quote_page())
 w('about.html', about_page())
+w('call.html', call_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
