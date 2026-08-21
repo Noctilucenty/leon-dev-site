@@ -316,7 +316,8 @@ app.get('/api/traffic', (req, res) => {
     if (ev.name === 'page_view') {
       count(bySource, sourceOf(ev));
       count(byPath, ev.path || '/');
-      const lang = ev.path === '/pt' ? 'português' : ev.path === '/zh' ? '中文' : 'english';
+      const LANG_OF = { '/es': 'español', '/pt': 'português', '/zh': '中文' };
+      const lang = LANG_OF[ev.path] || 'english';
       count(byLang, lang);
     }
   }

@@ -83,6 +83,7 @@
   var LANG_NAME = { en: 'english', pt: 'português', zh: '中文', es: 'español' };
   var LANG_ASK = 'what language do you prefer? · qual idioma? · 用什么语言？';
   var LANG_SWITCH = {
+    es: 'esta página también existe en español',
     pt: 'esta página também existe em português',
     zh: '这个页面也有中文版',
     en: 'this page is also in english'
@@ -120,8 +121,7 @@
     // would prompt literally everyone. The chat still offers the choice.
     if (PAGE_LANG !== 'en') return;
     var want = detectLang();
-    // spanish has no page of its own yet; the assistant still speaks it
-    var target = want === 'es' ? '' : want;
+    var target = want;
     if (!target || target === PAGE_LANG) return;
     try { if (sessionStorage.getItem('leon_lang_dismissed')) return; } catch (e) {}
 
@@ -134,7 +134,7 @@
       + '<p>' + LANG_ASK + '</p><div class="opts"></div>';
     var opts = bar.querySelector('.opts');
 
-    ['en', 'pt', 'zh'].forEach(function (v) {
+    ['en', 'es', 'pt', 'zh'].forEach(function (v) {
       var b = document.createElement('button');
       b.type = 'button';
       b.textContent = LANG_NAME[v];
