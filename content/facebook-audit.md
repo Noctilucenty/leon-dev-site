@@ -31,13 +31,20 @@ attempt, so Facebook appears to accept roughly one edit per pending post and the
 freeze it.
 
 ### Checked, nothing to fix
-洛杉矶华人交流群 (46.1K) · Comunidade Brasileira nos EUA — no posts, published or pending.
+洛杉矶华人交流群 (46.1K) · Comunidade Brasileira nos EUA · 美国华人圈 · 美国华人群 ·
+Brasileiros Nos EUA · Brasileiros Na Bay-Area · 巴西🇧🇷华人交流群 · 巴西华人 —
+no posts at all, in any state.
+
+Useful shape: the stale posts were NOT spread across 51 groups. They were
+concentrated in the six groups he actually posted to, and every one of those six
+was wrong. The other groups are simply empty — which makes them places to post
+rather than places to fix.
 
 ### Not yet checked
-美国华人圈 · 美国华人群 · 巴西🇧🇷华人交流群 · 巴西华人群 · 巴西华人 · Brasileiros Nos EUA ·
-Brasileiros Na Bay-Area · 🇧🇷 Brasileiros em SF e Bay Area · 湾区华人群 · 湾区生活资讯 ·
-湾区租房二手 · ANUNCIOS CLASSIFICADOS BRASILEIROS · Gringos Buy & Sell Sao Paulo.
-He is in 51 groups in total; these are the ones with recent activity.
+巴西华人群 · 🇧🇷 Brasileiros em SF e Bay Area · 湾区华人群 · 湾区生活资讯 · 湾区租房二手 ·
+ANUNCIOS CLASSIFICADOS BRASILEIROS · Gringos Buy & Sell Sao Paulo. Mostly local
+Bay-Area and classifieds groups, and none showed recent activity in the joined
+list. Facebook's group list stopped rendering before their IDs could be read.
 
 The check for each is two URLs:
   facebook.com/groups/<id>/my_posted_content    (live — fix these first)
