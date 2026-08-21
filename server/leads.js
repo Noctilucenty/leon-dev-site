@@ -87,6 +87,27 @@ function persistLead(lead) {
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT || 587),
         secure: Number(process.env.SMTP_PORT) === 465,
+        /* IPv4 ONLY, AND THIS IS NOT A PREFERENCE (2026-08-21).
+         *
+         * Every lead silently failed to send for the first hours after SMTP was
+         * configured, with the health endpoint reporting leadEmail:true the whole
+         * time. Two different errors, one cause:
+         *
+         *   LEAD_MAIL_FAILED Connection timeout
+         *   LEAD_MAIL_FAILED connect ENETUNREACH 2607:f8b0:400e:c02::6c:587
+         *
+         * That address is smtp.gmail.com's AAAA record. Node 20 resolves both
+         * families and will happily pick IPv6; this container has no IPv6 route,
+         * so the connect is unreachable. Whether it fails fast (ENETUNREACH) or
+         * hangs for the full two-minute timeout is down to which record DNS
+         * returned first that run — which is why it looked intermittent.
+         *
+         * `family: 4` is passed through to net.connect and takes IPv6 out of the
+         * running entirely. Do not "clean this up": without it the mailer works
+         * on any laptop and fails on the host that actually matters, and it fails
+         * in the worst possible way, which is quietly.
+         */
+        family: 4,
         auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined
       });
       const subj = `New website lead — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
@@ -125,4 +146,42 @@ function readLeads(limit) {
   return out.slice(0, limit || 200);
 }
 
-module.exports = { validateLead, persistLead, readLeads, clean };
+/* Opens a real connection to the SMTP host and authenticates, using the SAME
+ * settings the sender uses — including family:4.
+ *
+ * WHY THIS EXISTS. /api/health reported leadEmail:true for hours while every
+ * single send failed, because it only ever counted environment variables. Five
+ * variables being present says nothing about whether the host is reachable or
+ * the credentials are accepted; the first real lead is a terrible place to find
+ * that out, and on an ephemeral disk it is also the last place, because the
+ * record is gone at the next deploy.
+ *
+ * Deliberately NOT run on every /api/health call: this opens a TCP connection
+ * and does a full SMTP auth handshake, and health is polled. It runs on
+ * /api/health?deep=1, which is the thing to curl after changing any SMTP
+ * setting. */
+async function verifyMail() {
+  const missing = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+    .filter(k => !process.env[k]);
+  if (missing.length) return { ok: false, reason: 'not configured — missing ' + missing.join(', ') };
+  try {
+    const nodemailer = require('nodemailer');
+    const t = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: Number(process.env.SMTP_PORT) === 465,
+      family: 4,                 // see the long note on the sender's transport
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      connectionTimeout: 15000,  // fail the check fast; the sender may take longer
+      greetingTimeout: 15000
+    });
+    await t.verify();
+    return { ok: true, reason: 'connected and authenticated' };
+  } catch (e) {
+    // The message is the diagnosis and belongs in the response: ENETUNREACH is a
+    // routing problem, 535 is a wrong password, and they need opposite fixes.
+    return { ok: false, reason: String(e && e.message || e).slice(0, 200) };
+  }
+}
+
+module.exports = { validateLead, persistLead, readLeads, clean, verifyMail };

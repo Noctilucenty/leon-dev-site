@@ -19,7 +19,7 @@ let OpenAI = null;
 try { OpenAI = require('openai'); } catch (e) { /* handled at call time */ }
 
 const { SYSTEM_PROMPT } = require('./prompt');
-const { validateLead, persistLead, readLeads, clean } = require('./leads');
+const { validateLead, persistLead, readLeads, clean, verifyMail } = require('./leads');
 const { persistEvent, readEvents, sourceOf } = require('./events');
 
 const app = express();
@@ -192,19 +192,34 @@ function reasoningOpts() {
    production for weeks and nothing said so: leads landed in stdout and an
    ephemeral file while the owner assumed his inbox was the record. A capability
    that fails silently is worse than one that is missing. */
-app.get('/api/health', (req, res) => res.json({
-  ok: true,
-  model: client ? MODEL : null,
-  vision: !!client,
-  // Green only when mail can actually authenticate. Reporting true on a
-  // half-configured SMTP block would be a check that lies in the one direction
-  // that costs a lead.
-  leadEmail: !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
-                && process.env.SMTP_USER && process.env.SMTP_PASS),
-  leadEmailMissing: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
-    .filter(k => !process.env[k]),
-  leadEmailTo: process.env.LEAD_TO_EMAIL ? String(process.env.LEAD_TO_EMAIL).replace(/^(.).*(@.*)$/, '$1***$2') : null
-}));
+app.get('/api/health', async (req, res) => {
+  // `leadEmail` answers "is it configured", NOT "does it work" — it counts
+  // variables and nothing more. That distinction is not pedantic: it reported
+  // true for hours on 2026-08-21 while every send died on
+  // `connect ENETUNREACH 2607:f8b0:400e:c02::6c:587`, because five variables
+  // were indeed present and the host was simply unreachable over IPv6.
+  //
+  // ?deep=1 is the one that actually connects and authenticates. Use it after
+  // touching any SMTP setting; the cheap field is for uptime polling.
+  const configured = !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
+                        && process.env.SMTP_USER && process.env.SMTP_PASS);
+  const body = {
+    ok: true,
+    model: client ? MODEL : null,
+    vision: !!client,
+    leadEmailConfigured: configured,
+    leadEmail: configured,   // kept for anything already reading this name
+    leadEmailMissing: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+      .filter(k => !process.env[k]),
+    leadEmailTo: process.env.LEAD_TO_EMAIL ? String(process.env.LEAD_TO_EMAIL).replace(/^(.).*(@.*)$/, '$1***$2') : null
+  };
+  if (req.query.deep) {
+    const v = await verifyMail();
+    body.leadEmailWorks = v.ok;
+    body.leadEmailCheck = v.reason;
+  }
+  res.json(body);
+});
 
 /* ── chat (streams plain text chunks) ── */
 /* The visitor picks a language in the widget; honour it even when they type
