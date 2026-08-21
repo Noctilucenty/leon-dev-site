@@ -550,3 +550,9 @@ a{ color:inherit; text-decoration:none; }
 .qnote{ font-size:11.5px; color:var(--faint); line-height:1.7; letter-spacing:.03em; }
 .qnote a{ color:var(--dim); }
 .qok h2{ font-size:clamp(1.5rem,3.5vw,2.4rem); }
+
+/* ═══ /call — booking page ═══ */
+.callgrid{ display:grid; grid-template-columns:minmax(260px,.85fr) minmax(320px,1.15fr); gap:2.4rem; align-items:start; }
+.calwrap{ border:1px solid var(--line-2,#262626); border-radius:14px; overflow:hidden; background:#050505; }
+.calwrap iframe{ display:block; }
+@media (max-width:900px){ .callgrid{ grid-template-columns:1fr; gap:1.6rem; } }

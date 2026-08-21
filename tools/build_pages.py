@@ -638,7 +638,7 @@ def about_page():
 </main>
 ''' + footer()
 
-CAL_LINK = ""   # <- paste the cal.com / calendar link here; the page switches
+CAL_LINK = "https://cal.com/noctilucente-wzvdey/15min?theme=dark"  # live booker; the page switches
                 #    from the request form to a real embedded booker when set.
 
 def call_page():
@@ -697,7 +697,8 @@ def call_page():
 </section>
 
 <section class="sec">
-  <div class="rail two-col">
+  <div class="rail">
+    <div class="callgrid">
     <div>
       <p class="label">what happens on the call</p>
       <ul class="blist">
@@ -710,6 +711,7 @@ def call_page():
     </div>
     <div>
       ''' + booker + '''
+    </div>
     </div>
   </div>
 </section>

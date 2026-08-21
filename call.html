@@ -55,7 +55,8 @@
 </section>
 
 <section class="sec">
-  <div class="rail two-col">
+  <div class="rail">
+    <div class="callgrid">
     <div>
       <p class="label">what happens on the call</p>
       <ul class="blist">
@@ -67,29 +68,7 @@
       <p class="sub">english, spanish, portuguese or chinese — whichever you would rather think in.</p>
     </div>
     <div>
-      <form class="qform" id="callform" novalidate>
-      <label>name<input name="name" type="text" autocomplete="name"></label>
-      <div class="qrow">
-        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
-        <label>phone or whatsapp<input name="phone" type="tel" autocomplete="tel"></label>
-      </div>
-      <label>what do you want to talk about? <i>(required)</i><textarea name="problem" rows="3" required placeholder="the part of the week that is still manual, the thing that is broken, or the thing you wish existed…"></textarea></label>
-      <div class="qrow">
-        <label>which days suit you?
-          <select name="timeline"><option value="">any day</option><option>weekdays</option><option>weekends</option><option>today or tomorrow</option></select>
-        </label>
-        <label>what time of day?
-          <select name="currentTools"><option value="">any time 11am-11pm pacific</option><option>late morning</option><option>afternoon</option><option>evening</option><option>late evening</option></select>
-        </label>
-      </div>
-      <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-      <p class="qerr" id="callerr" role="alert"></p>
-      <button class="btn btn-solid magnet qsend" type="submit" data-evt="call_form_submit"><span>request the call</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <p class="qnote">leon replies with a video link and a time, usually the same day. want it faster? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20I%27d%20like%20to%20book%20a%2015%20minute%20call.%20I%27m%20free%3A%20" target="_blank" rel="noopener" data-evt="wa_click_call">whatsapp him</a> or call <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a>.</p>
-    </form>
-    <div class="qok" id="callok" hidden>
-      <p class="label">got it</p>
-      <p class="sub">leon will email you a video link and a time. if you would rather not wait, message him on <a href="https://wa.me/15108267735" target="_blank" rel="noopener">whatsapp</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+      <div class="calwrap"><iframe src="https://cal.com/noctilucente-wzvdey/15min?theme=dark" title="book a 15-minute call" loading="lazy" style="width:100%;min-height:680px;border:0"></iframe></div>
     </div>
     </div>
   </div>
