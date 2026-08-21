@@ -12,6 +12,26 @@
 
 'use strict';
 
+/* IPv4 FIRST, PROCESS-WIDE, BEFORE ANYTHING OPENS A SOCKET (2026-08-21).
+ *
+ * This container has no IPv6 route. Node 20 resolves both families and will
+ * hand back the AAAA record often enough that outbound connections fail most of
+ * the time and succeed occasionally, which is the worst of both worlds: it
+ * looks intermittent rather than broken, so it reads as "flaky network" instead
+ * of a fixed, findable fault.
+ *
+ * Measured on the SMTP path, where `family: 4` on the nodemailer transport was
+ * NOT enough — nodemailer 9 does not reliably pass it down to net.connect, and
+ * the deep check still failed nine times out of ten with
+ * `connect ENETUNREACH 2607:f8b0:400e:c07::6c:465` before happening to get an
+ * A record on the tenth. The one success was luck, not a fix.
+ *
+ * setDefaultResultOrder is the layer that actually decides, and it applies to
+ * every outbound connection this process makes, not just mail. It must run
+ * before the first socket is opened, hence the position at the top of the file.
+ */
+require('dns').setDefaultResultOrder('ipv4first');
+
 const path = require('path');
 const express = require('express');
 
