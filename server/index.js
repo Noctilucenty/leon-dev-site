@@ -390,8 +390,17 @@ app.get('/api/traffic', (req, res) => {
     if (ev.name === 'page_view') {
       count(bySource, sourceOf(ev));
       count(byPath, ev.path || '/');
-      const LANG_OF = { '/es': 'español', '/pt': 'português', '/zh': '中文' };
-      const lang = LANG_OF[ev.path] || 'english';
+      // PREFIX, not exact match. This was a lookup keyed on the whole path,
+      // which was right when the only translated URLs were /es, /pt and /zh.
+      // The moment service and booking pages appeared underneath them —
+      // /pt/criar-site, /zh/zaixian-diandan — nine of the twelve language pages
+      // started counting as english, and the language table became the exact
+      // opposite of the thing it exists to measure.
+      const p = ev.path || '/';
+      const lang = p.startsWith('/es') ? 'español'
+                 : p.startsWith('/pt') ? 'português'
+                 : p.startsWith('/zh') ? '中文'
+                 : 'english';
       count(byLang, lang);
     }
   }

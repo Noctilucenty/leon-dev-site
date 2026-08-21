@@ -621,7 +621,12 @@ def about_page():
         "worksFor": {"@id": f"{BASE}/#business"},
         "sameAs": ["https://www.linkedin.com/in/leon-kelvin-li",
                    "https://github.com/Noctilucenty",
-                   "https://noctilucenty.github.io/"],
+                   "https://noctilucenty.github.io/",
+                   # The App Store listing. A stranger deciding whether this is a
+                   # real developer can tap it and see a shipped product with a
+                   # publisher name on it — the one claim on this site that a
+                   # third party underwrites.
+                   "https://apps.apple.com/app/id6781121127"],
     }
     schema = [{"@context": "https://schema.org", "@graph": [person]}, breadcrumb_schema(bc, path)]
     return head("About Leon Kelvin Li — Software Developer | Leon Kelvin Li",

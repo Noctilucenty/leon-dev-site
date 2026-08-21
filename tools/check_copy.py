@@ -58,8 +58,18 @@ EXEMPT = re.compile(r'\(\d{3}\)\s*\d{3}-\d{4}|\$[\d.,]+|https?://\S+|[A-Za-z0-9_
 
 # Never, in any language. "cal state east bay" is his actual school and is allowed
 # on /about; nothing else may name a place, because the whole offer is nationwide.
-CITY = re.compile(r'hayward|bay area|湾区|灣區|área da baía|área de la bahía|h\s?a\s?y\s?w\s?a\s?r\s?d', re.I)
-CITY_OK = re.compile(r'cal state east bay', re.I)
+# "around the bay" slipped past a pattern that only knew "bay area" — it was
+# live on the homepage FAQ, in the very answer about working with businesses
+# anywhere in the US, offering to meet in person. The rule is not "no city
+# names", it is "no geography that narrows the offer", so the pattern matches
+# the bay in any phrasing. A repair bay is not geography, hence the exception.
+CITY = re.compile(
+    r'hayward|bay area|around the bay|in the bay|the east bay|湾区|灣區|'
+    r'área da baía|área de la bahía|h\s?a\s?y\s?w\s?a\s?r\s?d|'
+    r'meet in person|come to your (?:shop|office|store|business)',
+    re.I)
+# His actual school, and the automotive page's "repair bay", are both legitimate.
+CITY_OK = re.compile(r'cal state east bay|repair bay|service bay|bay door', re.I)
 
 
 def visible_text(html_src):

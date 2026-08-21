@@ -56,7 +56,8 @@ ownership is the default rather than an upgrade. repository, domain, hosting, st
 
 these are the systems that actually exist and are running. nothing beyond this list should be attributed to him.
 
-- Curio — a consumer iOS app, live on the App Store, built solo end to end: native shell, React and TypeScript client, Express and Postgres backend, subscriptions through StoreKit, content in four languages.
+- Curio — a consumer iOS app, live on the App Store at
+  https://apps.apple.com/app/id6781121127, built solo end to end: native shell, React and TypeScript client, Express and Postgres backend, subscriptions through StoreKit, content in four languages.
 - multi-brand online ordering — a web app for a ghost-kitchen operator where one cart spans many restaurant brands. the server re-prices every line, splits the order into a ticket per vendor and computes each vendor's fee.
 - a review reply tool — it reads a business's incoming reviews, classifies each one and drafts a reply grounded only in that business's verified facts, then routes it to a person. it never posts anything on its own.
 - market scoring across 33,772 U.S. zip codes — decision support for where a company should open, staff and grow, with an uncertainty band on every score instead of false precision.
