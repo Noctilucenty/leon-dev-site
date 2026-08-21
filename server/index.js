@@ -59,6 +59,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// A lead carries the whole conversation, so it needs more room than a chat
+// turn. Mounted BEFORE the global parser — express's json parser is a no-op
+// once req.body is set, so the first matching one wins.
+app.use('/api/lead', express.json({ limit: '256kb' }));
 app.use(express.json({ limit: '48kb' }));
 
 /* ── rate limiting: in-memory buckets, plus a daily model-call ceiling ── */

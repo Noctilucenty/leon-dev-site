@@ -72,6 +72,26 @@
     }, { passive: true });
   });
 
+  /* A transcript is bounded by MESSAGE COUNT everywhere else, which says
+     nothing about bytes: forty turns at 4k each is 160kb against a 48kb body
+     limit, and `keepalive` is capped at 64KiB by the fetch spec. Budget by
+     characters instead, keeping the most recent turns — those are the ones
+     that say what the visitor actually wants. */
+  function budgetedHistory(history, maxChars) {
+    var out = [], total = 0;
+    for (var i = history.length - 1; i >= 0; i--) {
+      var m = history[i];
+      var c = String(m.content || '');
+      if (total + c.length > maxChars) {
+        if (!out.length) out.unshift({ role: m.role, content: c.slice(-maxChars) });
+        break;
+      }
+      out.unshift({ role: m.role, content: c });
+      total += c.length;
+    }
+    return out;
+  }
+
   /* ══ language ════════════════════════════════════════════
      Three places care: which page we send them to, which starters we
      show, and which language the assistant answers in. One stored
@@ -530,22 +550,37 @@
       // Logged server-side as a backup, but nobody waits on it — the browser
       // hands the conversation straight to their own mail app.
       try {
-        fetch(API_BASE + '/api/lead', {
-          method: 'POST',
-          keepalive: true,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
+        var leadBody = {
             via: 'chat', name: name, email: email, phone: phone,
             website: String(f.get('website') || ''),
-            messages: state.history.slice(-40),
+            messages: budgetedHistory(state.history, 20000),
             problem: (state.history.filter(function (m) { return m.role === 'user'; })[0] || {}).content || '',
             sourcePage: location.pathname,
             referrer: attribution.referrer || '',
             utmSource: attribution.utmSource || '',
             utmMedium: attribution.utmMedium || '',
             utmCampaign: attribution.utmCampaign || ''
-          })
-        }).catch(function () {});
+        };
+        // A rejected promise is not the only failure: a 413 RESOLVES, so a bare
+        // .catch() would let the most engaged visitor's lead vanish in silence.
+        // Retry once without the transcript — the contact details are the part
+        // that must survive.
+        var send = function (payload, isRetry) {
+          return fetch(API_BASE + '/api/lead', {
+            method: 'POST', keepalive: true,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).then(function (res) {
+            if (!res.ok && !isRetry) {
+              var slim = {}; for (var k in payload) if (k !== 'messages') slim[k] = payload[k];
+              slim.problem = (payload.problem || '').slice(0, 1500);
+              evt('lead_post_retry');
+              return send(slim, true);
+            }
+            if (!res.ok) evt('lead_post_failed');
+          }).catch(function () { evt('lead_post_failed'); });
+        };
+        send(leadBody, false);
       } catch (e) {}
       var talk = state.history.slice(-20).map(function (m) {
         return (m.role === 'user' ? 'me: ' : 'assistant: ') + String(m.content || '').trim();
