@@ -91,25 +91,55 @@ Leon today, and it is the path with the most ways to fail silently. Once
 `SMTP_PASS` is set, the server copy arrives regardless of what the visitor's
 mail client does, and the mailto becomes a bonus rather than the mechanism.
 
-## Fixed today, before the audit ran
+## Fixed today
 
 - **`leon@leonbuilds.org` did not exist.** Namecheap showed *"You haven't defined
   any Email Redirect yet"*. The MX records were Namecheap's defaults, present on
-  every domain, which is what made it look configured. Created `leon` →
-  `lkelvi3798@gmail.com` and verified after a reload.
-- **`SMTP_USER`** set to `leondragon3798@gmail.com` on leon-assist. Deliberately
-  a different account from the forward target, so Gmail cannot file the message
-  as one Leon sent to himself.
+  every domain, which is what made it look configured.
+- **`SMTP_USER`** set to `leondragon3798@gmail.com` on leon-assist. Send-only —
+  it is an SMTP login, not an inbox anyone opens.
+- **`LEAD_TO_EMAIL` changed to `splk3798@gmail.com`.** It was
+  `leon@leonbuilds.org`, which meant every lead crossed a Namecheap forwarding
+  hop to reach a real mailbox. Leon's assessment of that hop — *"never works
+  efficiently 100%"* — matches how free forwarding actually behaves: it
+  re-sends from a different server than the domain's SPF authorises, so a
+  forwarded message is structurally more likely to be filtered or dropped than
+  the same message delivered directly, and when it is dropped nobody is told.
+  A lead is the wrong payload to route through a channel with silent losses.
+  The hop is now out of the path entirely: Gmail SMTP → Gmail inbox, no relay.
+- **The `leon` forwarder was kept, and repointed** to `splk3798@gmail.com`.
+  Deleting it would make `leon@leonbuilds.org` bounce for anyone who guesses the
+  address, which is worse than an unreliable forward. Nothing depends on it now
+  — it is a courtesy catch, and it lands in the same single inbox as everything
+  else.
+
+Verified from the health endpoint rather than the dashboard:
+`"leadEmailTo":"s***@gmail.com"`, `"leadEmailMissing":["SMTP_PASS"]`.
 
 ## Left for Leon
 
 1. **`SMTP_PASS`** — a Gmail app password generated on `leondragon3798@gmail.com`.
    Then `curl -s https://leon-assist.onrender.com/api/health` should read
    `"leadEmail":true` and `"leadEmailMissing":[]`.
+
+   Note that Apple Mail on the Mac currently **cannot send through Google
+   either** — it failed with *"Cannot send message using the server Google"* on
+   `splk3798@gmail.com` during this audit. Same root cause: Google no longer
+   accepts a plain account password from a mail client. Worth fixing separately,
+   because until it is, every `mailto:` link on every site dead-ends into an
+   Outbox.
 2. **Consider a persistent store for leads.** Even with email working, the only
    durable record is Leon's inbox. A Render disk, or appending each lead to a
    Google Sheet, would mean a lead survives an SMTP outage as well as a deploy.
-3. **Delete the audit lead** from the inbox when it arrives, if it arrives.
+3. **Decide the public contact address.** The site publishes
+   `leondragon3798@gmail.com` in 41 built pages, and the quote form's `mailto:`
+   goes there. Leads now arrive at `splk3798@gmail.com`, so as things stand
+   there are two inboxes to watch: one for form submissions, one for anyone who
+   clicks "email leon directly". Consolidating is a find-and-replace in
+   `tools/build_pages.py` and `tools/lang_pages.py` plus a rebuild — held
+   because it changes what customers see across the whole site, which is a
+   brand call rather than a correctness fix.
+4. **Delete the audit lead** from the inbox when it arrives, if it arrives.
 
 ## Incidental, and worth watching rather than concluding from
 
