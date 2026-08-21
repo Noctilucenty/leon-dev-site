@@ -62,8 +62,16 @@ function persistLead(lead) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.appendFileSync(LEADS_FILE, JSON.stringify(lead) + '\n');
   } catch (e) { console.error('lead file write failed:', e.message); }
-  // 3. email — optional
-  if (process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL) {
+  // 3. email — the only sink the owner actually watches
+  if (!process.env.SMTP_HOST || !process.env.LEAD_TO_EMAIL) {
+    // LOUD, once per lead. This was silent, and silence read as "no leads yet"
+    // when it actually meant "leads arrived and nobody was told". stdout is
+    // Render's log tail, so this is visible without digging.
+    console.error(
+      'LEAD_NOT_EMAILED — SMTP_HOST and LEAD_TO_EMAIL are not both set, so this ' +
+      'lead exists only in this log and in an ephemeral file that the next deploy ' +
+      'erases. Set them in the Render dashboard.');
+  } else {
     try {
       const nodemailer = require('nodemailer');
       const t = nodemailer.createTransport({
@@ -78,8 +86,17 @@ function persistLead(lead) {
         .map(([k, v]) => `${k}: ${v}`)
         .join('\n');
       t.sendMail(
-        { from: process.env.SMTP_USER, to: process.env.LEAD_TO_EMAIL, subject: subj, text: rows },
-        err => { if (err) console.error('lead mail failed:', err.message); }
+        {
+          from: process.env.LEAD_FROM_EMAIL || process.env.SMTP_USER,
+          to: process.env.LEAD_TO_EMAIL,
+          replyTo: lead.email || undefined,   // hit reply and it goes to the visitor
+          subject: subj,
+          text: rows
+        },
+        err => {
+          if (err) console.error('LEAD_MAIL_FAILED', err.message);
+          else console.log('LEAD_MAILED to ' + process.env.LEAD_TO_EMAIL);
+        }
       );
     } catch (e) { console.error('lead mail failed:', e.message); }
   }

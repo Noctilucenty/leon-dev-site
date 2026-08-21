@@ -62,6 +62,11 @@ app.use((req, res, next) => {
 // A lead carries the whole conversation, so it needs more room than a chat
 // turn. Mounted BEFORE the global parser — express's json parser is a no-op
 // once req.body is set, so the first matching one wins.
+// Images ride inside the chat payload as data: URLs, so this route needs far
+// more headroom than the 48kb the rest of the API gets. The widget downscales
+// to 1280px JPEG before sending and the server re-checks the size below, so a
+// normal photo lands around 150-350kb and three of them still fit.
+app.use('/api/chat', express.json({ limit: '3mb' }));
 app.use('/api/lead', express.json({ limit: '256kb' }));
 app.use(express.json({ limit: '48kb' }));
 
@@ -98,18 +103,73 @@ setInterval(() => {
 const RECENT_WINDOW = 14;   // messages passed verbatim
 const HARD_MSG_CAP = 60;    // absolute conversation cap
 
+/* A visitor may attach photos — the menu taped to the counter, the spreadsheet
+   someone updates every night, the booking notebook. Those are the fastest way
+   to explain a business, and the assistant used to offer to look at them while
+   the widget had no way to send one. */
+const IMG_OK = /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/;
+const MAX_IMG_BYTES = 1_400_000;   // one downscaled photo, generously
+const MAX_IMGS_PER_MSG = 3;
+
+function normalizePart(part) {
+  if (!part || typeof part !== 'object') return null;
+  if (part.type === 'input_text' && typeof part.text === 'string') {
+    return { type: 'input_text', text: part.text.slice(0, 4000) };
+  }
+  if (part.type === 'input_image' && typeof part.image_url === 'string') {
+    const url = part.image_url;
+    // Only inline data: URLs. A remote URL would make the server fetch whatever
+    // a stranger points it at, which is a request-forgery hole, not a feature.
+    if (!IMG_OK.test(url)) return null;
+    if (url.length > MAX_IMG_BYTES) return null;
+    return { type: 'input_image', image_url: url, detail: 'auto' };
+  }
+  return null;
+}
+
 function normalizeHistory(raw) {
   if (!Array.isArray(raw)) return [];
-  return raw
-    .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
-    .map(m => ({ role: m.role, content: m.content.slice(0, 4000) }))
-    .slice(-HARD_MSG_CAP);
+  const out = [];
+  for (const m of raw) {
+    if (!m || (m.role !== 'user' && m.role !== 'assistant')) continue;
+    if (typeof m.content === 'string') {
+      out.push({ role: m.role, content: m.content.slice(0, 4000) });
+      continue;
+    }
+    if (Array.isArray(m.content)) {
+      // Only a user turn can carry an image; an assistant turn is text we sent.
+      if (m.role !== 'user') continue;
+      let imgs = 0;
+      const parts = [];
+      for (const p of m.content) {
+        const np = normalizePart(p);
+        if (!np) continue;
+        if (np.type === 'input_image') {
+          if (++imgs > MAX_IMGS_PER_MSG) continue;
+        }
+        parts.push(np);
+      }
+      if (parts.length) out.push({ role: 'user', content: parts });
+    }
+  }
+  return out.slice(-HARD_MSG_CAP);
+}
+
+/* Text only — for the summarizer and the lead record, where a base64 photo would
+   blow the budget and tell a reader nothing. */
+function textOf(m) {
+  if (typeof m.content === 'string') return m.content;
+  if (!Array.isArray(m.content)) return '';
+  return m.content
+    .map(p => (p.type === 'input_text' ? p.text : '[photo attached]'))
+    .join(' ')
+    .trim();
 }
 
 async function summarize(messages) {
   if (!client) return '';
   try {
-    const text = messages.map(m => `${m.role}: ${m.content}`).join('\n').slice(0, 12000);
+    const text = messages.map(m => `${m.role}: ${textOf(m)}`).join('\n').slice(0, 12000);
     if (overDailyCap()) return '';
     const r = await client.responses.create({
       model: MODEL,
@@ -128,7 +188,17 @@ function reasoningOpts() {
 }
 
 /* ── health ── */
-app.get('/api/health', (req, res) => res.json({ ok: true, model: client ? MODEL : null }));
+/* Reports what is CONFIGURED, never a secret value. Lead email was off in
+   production for weeks and nothing said so: leads landed in stdout and an
+   ephemeral file while the owner assumed his inbox was the record. A capability
+   that fails silently is worse than one that is missing. */
+app.get('/api/health', (req, res) => res.json({
+  ok: true,
+  model: client ? MODEL : null,
+  vision: !!client,
+  leadEmail: !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL),
+  leadEmailTo: process.env.LEAD_TO_EMAIL ? String(process.env.LEAD_TO_EMAIL).replace(/^(.).*(@.*)$/, '$1***$2') : null
+}));
 
 /* ── chat (streams plain text chunks) ── */
 /* The visitor picks a language in the widget; honour it even when they type
@@ -232,7 +302,7 @@ app.post('/api/lead', async (req, res) => {
   // what used to hold the request open for minutes on a slow or cold OpenAI call.
   const history = Array.isArray(body.messages) && body.messages.length ? normalizeHistory(body.messages) : null;
   if (!body.conversationSummary && history) {
-    body.conversationSummary = history.map(m => `${m.role}: ${m.content}`).join('\n').slice(0, 6000);
+    body.conversationSummary = history.map(m => `${m.role}: ${textOf(m)}`).join('\n').slice(0, 6000);
   }
   const { lead, error, bot } = validateLead(body);
   if (bot) return res.json({ ok: true });   // looks identical to a real submission

@@ -77,11 +77,29 @@
      limit, and `keepalive` is capped at 64KiB by the fetch spec. Budget by
      characters instead, keeping the most recent turns — those are the ones
      that say what the visitor actually wants. */
+  /* A message is either a string or an array of parts once photos exist. This
+     is the single place that flattens it, so the lead payload, sessionStorage
+     and the transcript can never disagree about what was said. */
+  function plainText(content) {
+    if (typeof content === 'string') return content;
+    if (!Array.isArray(content)) return '';
+    var out = [];
+    for (var i = 0; i < content.length; i++) {
+      var p = content[i];
+      if (!p) continue;
+      if (p.type === 'input_text' && p.text) out.push(p.text);
+      else if (p.type === 'input_image') out.push('[photo attached]');
+    }
+    return out.join(' ');
+  }
+
   function budgetedHistory(history, maxChars) {
     var out = [], total = 0;
     for (var i = history.length - 1; i >= 0; i--) {
       var m = history[i];
-      var c = String(m.content || '');
+      // Never a base64 photo: one would consume the whole budget and tell the
+      // reader of the lead nothing a marker does not.
+      var c = plainText(m.content);
       if (total + c.length > maxChars) {
         if (!out.length) out.unshift({ role: m.role, content: c.slice(-maxChars) });
         break;
@@ -340,7 +358,15 @@
       state.sessionId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
     }
     function save() {
-      try { sessionStorage.setItem(SS, JSON.stringify({ history: state.history.slice(-60), sessionId: state.sessionId })); } catch (e) {}
+      // Photos are dropped to a marker before storing. sessionStorage caps around
+      // 5MB and three downscaled photos would come close on their own — a quota
+      // error here would throw away the whole transcript, not just the images.
+      try {
+        var slim = state.history.slice(-60).map(function (m) {
+          return { role: m.role, content: plainText(m.content) };
+        });
+        sessionStorage.setItem(SS, JSON.stringify({ history: slim, sessionId: state.sessionId }));
+      } catch (e) {}
     }
 
     /* dom */
@@ -380,8 +406,14 @@
         '<div class="acts"><button class="go" type="submit">write the email</button><button class="no" type="button" data-as-lead-close>not yet</button></div>' +
       '</form>' +
       '<footer class="as-foot">' +
+        '<div class="as-shots" data-as-shots hidden></div>' +
         '<div class="as-inrow">' +
-          '<textarea class="as-in" data-as-in rows="1" placeholder="describe your business or your problem…" aria-label="message"></textarea>' +
+          '<button class="as-clip" data-as-clip type="button" aria-label="attach a photo" title="attach a photo">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8-8"/></svg>' +
+          '</button>' +
+          '<input type="file" data-as-file accept="image/png,image/jpeg,image/webp" multiple hidden>' +
+          '<textarea class="as-in" data-as-in rows="1" placeholder="describe your business, or attach a photo of it…" aria-label="message"></textarea>' +
           '<button class="as-send" data-as-send type="button" aria-label="send">↵</button>' +
         '</div>' +
         '<p class="as-note">ai assistant — may process messages to answer and scope your project. no passwords or payment details. ' +
@@ -395,15 +427,28 @@
     var startsBox = $('[data-as-starts]', panel);
     var input = $('[data-as-in]', panel);
     var sendBtn = $('[data-as-send]', panel);
+    var fileIn = $('[data-as-file]', panel);
+    var shotTray = $('[data-as-shots]', panel);
     var statusEl = $('[data-as-status]', panel);
     var leadForm = $('[data-as-lead]', panel);
     var leadErr = $('[data-as-err]', panel);
     var lastFocus = null;
 
-    function msgEl(role, text) {
+    function msgEl(role, text, pics) {
       var d = document.createElement('div');
       d.className = 'as-msg ' + (role === 'user' ? 'u' : role === 'sys' ? 'sys' : 'a');
-      d.textContent = text;
+      d.textContent = text || '';
+      if (pics && pics.length) {
+        var row = document.createElement('div');
+        row.className = 'as-msgpics';
+        pics.forEach(function (sh) {
+          var im = document.createElement('img');
+          im.src = sh.dataUrl || sh;
+          im.alt = 'attached photo';
+          row.appendChild(im);
+        });
+        d.appendChild(row);
+      }
       log.appendChild(d);
       log.scrollTop = log.scrollHeight;
       return d;
@@ -413,7 +458,7 @@
       if (!state.history.length) {
         msgEl('assistant', "tell me what your business does and what part of the week is still done by hand — i'll tell you what software could take off your plate, what it roughly starts at, and just as readily when you don't need me.");
       }
-      state.history.forEach(function (m) { msgEl(m.role, m.content); });
+      state.history.forEach(function (m) { msgEl(m.role, plainText(m.content)); });
       renderStarters();
       renderLangChoice();
     }
@@ -488,16 +533,126 @@
       statusEl.textContent = b ? 'thinking…' : 'ai project assistant';
     }
 
+
+    /* ══ photo attachments ═══════════════════════════════════════
+       The assistant kept offering to look at a photo of a menu or a
+       spreadsheet while the widget had no way to send one — it was inventing a
+       capability, and the visitor who took it up hit nothing. Now it is real.
+
+       Downscaled in the browser before it ever leaves the phone: a modern
+       camera JPEG is 3-8MB, which is slow on the restaurant wifi this is used
+       on and pointless for a model that reads it at ~1024px anyway. 1280px on
+       the long edge at quality .72 lands around 150-350kb. */
+    var statusTimer = null;
+    function status(msg) {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      clearTimeout(statusTimer);
+      statusTimer = setTimeout(function () {
+        if (!state.busy) statusEl.textContent = 'ai project assistant';
+      }, 3200);
+    }
+
+    var MAX_SHOTS = 3;
+    var shots = [];   // [{ id, name, dataUrl }]
+
+    function downscale(file) {
+      return new Promise(function (resolve, reject) {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var max = 1280;
+            var w = img.naturalWidth, h = img.naturalHeight;
+            var scale = Math.min(1, max / Math.max(w, h));
+            var cw = Math.max(1, Math.round(w * scale));
+            var ch = Math.max(1, Math.round(h * scale));
+            var c = document.createElement('canvas');
+            c.width = cw; c.height = ch;
+            c.getContext('2d').drawImage(img, 0, 0, cw, ch);
+            var out = c.toDataURL('image/jpeg', 0.72);
+            URL.revokeObjectURL(url);
+            resolve(out);
+          } catch (e) { URL.revokeObjectURL(url); reject(e); }
+        };
+        img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('not an image')); };
+        img.src = url;
+      });
+    }
+
+    function renderShots() {
+      shotTray.innerHTML = '';
+      shotTray.hidden = !shots.length;
+      shots.forEach(function (sh) {
+        var chip = document.createElement('div');
+        chip.className = 'as-shot';
+        var im = document.createElement('img');
+        im.src = sh.dataUrl; im.alt = sh.name || 'attached photo';
+        var x = document.createElement('button');
+        x.type = 'button'; x.setAttribute('aria-label', 'remove photo'); x.textContent = '\u2715';
+        x.addEventListener('click', function () {
+          shots = shots.filter(function (o) { return o.id !== sh.id; });
+          renderShots();
+        });
+        chip.appendChild(im); chip.appendChild(x);
+        shotTray.appendChild(chip);
+      });
+    }
+
+    function addFiles(list) {
+      var files = Array.prototype.slice.call(list || []);
+      if (!files.length) return;
+      var room = MAX_SHOTS - shots.length;
+      if (room <= 0) { status('you can attach up to ' + MAX_SHOTS + ' photos'); return; }
+      files.slice(0, room).forEach(function (f) {
+        if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { status('that file is not a photo'); return; }
+        downscale(f).then(function (dataUrl) {
+          shots.push({ id: String(Date.now()) + Math.random(), name: f.name, dataUrl: dataUrl });
+          renderShots();
+          evt('chat_photo_attached');
+        }).catch(function () { status('could not read that photo'); });
+      });
+      fileIn.value = '';
+    }
+
+    fileIn.addEventListener('change', function () { addFiles(fileIn.files); });
+
+    // paste a screenshot straight into the box
+    input.addEventListener('paste', function (e) {
+      var items = (e.clipboardData && e.clipboardData.items) || [];
+      var imgs = [];
+      for (var i = 0; i < items.length; i++) {
+        if (items[i].kind === 'file' && /^image\//.test(items[i].type)) {
+          var f = items[i].getAsFile(); if (f) imgs.push(f);
+        }
+      }
+      if (imgs.length) { e.preventDefault(); addFiles(imgs); }
+    });
+
     function send(text) {
       text = (text || input.value || '').trim();
-      if (!text || state.busy) return;
+      // A photo on its own is a complete message — "here is my menu" needs no
+      // sentence — so an empty box with an attachment must still send.
+      if ((!text && !shots.length) || state.busy) return;
       input.value = ''; input.style.height = '';
       startsBox.innerHTML = '';
       var lbox = $('[data-as-lang]', panel); if (lbox) lbox.hidden = true;
       if (!state.firstSent) { state.firstSent = true; evt('chat_first_message'); }
 
-      state.history.push({ role: 'user', content: text });
-      msgEl('user', text);
+      var sending = shots.slice();
+      shots = []; renderShots();
+
+      if (sending.length) {
+        var parts = [{ type: 'input_text', text: text || 'here is a photo of what i have now.' }];
+        sending.forEach(function (sh) {
+          parts.push({ type: 'input_image', image_url: sh.dataUrl });
+        });
+        state.history.push({ role: 'user', content: parts });
+        msgEl('user', text, sending);
+      } else {
+        state.history.push({ role: 'user', content: text });
+        msgEl('user', text);
+      }
       save();
       setBusy(true);
 
@@ -664,6 +819,7 @@
       if (e.target.closest('[data-as-lead-open]')) openLead();
       if (e.target.closest('[data-as-lead-close]')) leadForm.hidden = true;
       if (e.target.closest('[data-as-new]')) { state.history = []; save(); leadForm.hidden = true; renderHistory(); }
+      if (e.target.closest('[data-as-clip]')) { fileIn.click(); return; }
       if (e.target.closest('[data-as-send]')) send();
     });
     input.addEventListener('keydown', function (e) {
