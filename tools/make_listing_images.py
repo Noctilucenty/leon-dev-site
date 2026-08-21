@@ -171,7 +171,13 @@ def fonts(lang):
         "body": ImageFont.truetype(CJK if cjk else MONO, 21 if cjk else 20),
         "note": ImageFont.truetype(CJK if cjk else MONO, 17 if cjk else 16),
         "foot": ImageFont.truetype(CJK if cjk else MONO, 18 if cjk else 18),
-        "url": ImageFont.truetype(MONO, 21),
+        # THE PROMISE. Leon's read of the Marketplace preview, 2026-08-21: the
+        # hook question landed but "i turn that into software" sat at the same
+        # weight as everything else and the service list under it was unreadable
+        # at thumbnail size. The image has about two seconds to say one thing.
+        "promise": ImageFont.truetype(CJK_B if cjk else SANS, 54 if cjk else 58,
+                                      **({} if cjk else {"index": 7})),
+        "url": ImageFont.truetype(MONO, 25),
         "cta": ImageFont.truetype(CJK if cjk else MONO, 22 if cjk else 21),
     }
 
@@ -208,23 +214,35 @@ def footer(d, f, c, cta=None):
 
 
 def hook(lang):
+    """The thumbnail. It gets about two seconds and must carry the whole pitch.
+
+    The earlier version put the question, the promise, a service list and a
+    boxed CTA on one square. At the size Marketplace actually renders it, the
+    service list and the footer were unreadable, and they stole weight from the
+    one line that has to land: I turn that into software.
+
+    So: the question, the promise at nearly the size of the question, the box,
+    and a URL. Nothing else. hook_b still exists in the copy and is used by the
+    build image, where there is room to read it.
+    """
     c, f = L[lang], fonts(lang)
     img, d = canvas()
     wordmark(d, f)
-    y = 172
+    y = 186
     for i, line in enumerate(c["hook"]):
         d.text((PAD, y), line, font=f["disp"], fill=FG if i >= len(c["hook"]) - 1 else DIM)
-        y += 80
-    d.line([(PAD, y + 22), (PAD + 86, y + 22)], fill=AC, width=3)
-    d.text((PAD, y + 56), c["hook_a"], font=f["lead"], fill=AC)
-    d.text((PAD, y + 128), c["hook_b"], font=f["body"], fill=MID)
-    # the next step, boxed: on Marketplace the whole game is getting a message,
-    # and the footer line alone was getting lost under the fold of the crop.
-    bx0, by0, bx1, by1 = PAD, 782, S - PAD, 952
+        y += 82
+    d.line([(PAD, y + 30), (PAD + 86, y + 30)], fill=AC, width=3)
+    d.text((PAD, y + 72), c["hook_a"], font=f["promise"], fill=AC)
+    # The next step, boxed: on Marketplace the whole game is getting a message.
+    # Sized to the one line it holds. It used to carry a second, smaller line
+    # and keeping the old height around a single line left a hole in the card.
+    bx0, by0, bx1, by1 = PAD, 742, S - PAD, 856
     d.rectangle([bx0, by0, bx1, by1], outline=AC, width=2)
-    d.text((bx0 + 34, by0 + 36), c["anchor"], font=f["lead"], fill=FG)
-    d.text((bx0 + 34, by0 + 106), c["cta"], font=f["cta"], fill=AC)
-    footer(d, f, c)
+    d.text((bx0 + 34, by0 + 30), c["anchor"], font=f["lead"], fill=FG)
+    # One line under the box, not three. The old footer stacked a tagline over a
+    # URL in 16px type that nobody could read and that made the card look busy.
+    d.text((PAD, 908), c["url"], font=f["url"], fill=AC)
     return img
 
 

@@ -12,122 +12,127 @@ Links carry `?s=` so the traffic dashboard can tell these apart. Do not strip it
 
 ## 1. Facebook Marketplace listings
 
-Category: Miscellaneous. Condition: New. Price: $0 if it is allowed to stay, else $49.
-Photos: `assets/listings/fb_<lang>_1hook.png`, `2build.png`, `3proof.png`, in that order —
-the hook is the thumbnail and it is the only image most people ever see.
+Structure per Leon's read of the live listings, 2026-08-21: lead with the pain,
+then a concrete list of what gets built, then a CTA that asks for nothing the
+buyer has to figure out first. Most Marketplace buyers do not know whether they
+need a website, an app, a CRM or a booking system — so the last line must not
+make them qualify themselves before messaging.
 
-### EN — title: `Websites, Online Ordering, Apps & Automation — built by one developer`
-Link: `https://leonbuilds.org/?s=fbmkt-en`
+Price is **$300**, not $0. $0 reads as spam and attracts people who want free
+work; $300 is the real entry price and filters for buyers. Category
+Miscellaneous, Condition New. Photos in order: `1hook`, `2build`, `3proof`.
 
-> i build the part of your business that is still done by hand.
->
-> a website you are not embarrassed to send. online ordering and booking on your own
-> site, so the order lands on your phone instead of costing you a commission. an iphone
-> or android app. and the boring automation behind it — the retyping, the follow-ups,
-> the spreadsheet somebody updates every night.
->
-> you talk to the person who writes the code. no agency, no account manager, no handoff.
->
-> starting prices, in writing before any work begins, and they do not change afterward:
-> small fixes from $75 · a business website from $300 · a website with logins and a
-> database from $625 · online ordering and booking from $600 · workflow automation from
-> $500 · a dashboard from $750 · an ai chatbot from $750 · an ai phone agent from $1,000
-> · custom software from $1,500 · an iphone or android app from $3,500.
->
-> you own everything when it is done — domain, hosting, code, accounts.
->
-> already have a website? send me the link and i will look at it for free and tell you
-> whether it is worth changing. sometimes the answer is no, and i will say so.
->
-> i speak english, portuguese, spanish and chinese. message me here or on whatsapp
-> (510) 826-7735.
->
-> https://leonbuilds.org/?s=fbmkt-en
+"Serving the whole US" moved to the last line. A buyer's first thought is
+"can this person fix my problem", not "what states does he cover".
 
-### PT — title: `Sites, Pedido Online, Aplicativos e Automação — feito direto comigo`
-Link: `https://leonbuilds.org/pt?s=fbmkt-pt`
+### EN — title: `I Build Websites & Automate Small Businesses`
+Price `300` · link `https://leonbuilds.org/?s=fbmkt-en`
 
-> eu faço a parte do seu negócio que ainda é feita na mão.
+> Still handling orders, bookings, customer questions, or paperwork by hand?
 >
-> um site que você não tem vergonha de mandar no whatsapp. pedido online e agendamento
-> no seu próprio site, com o pedido caindo no seu celular em vez de sair comissão de
-> cada venda. aplicativo de iphone e android. e a automação chata que fica por trás — o
-> que alguém redigita, a cobrança que some, a planilha que alguém arruma toda noite.
+> I build simple software that replaces that work.
 >
-> você fala direto com quem escreve o código. sem agência, sem gerente de conta, sem
-> ficar passando de mão em mão.
+> WHAT I CAN BUILD FOR YOU
+> • Business websites — from $300
+> • Online ordering + card payments
+> • Appointment and booking systems
+> • iPhone and Android apps
+> • AI chatbots that answer customer questions
+> • Automations for repetitive office work
+> • Custom tools to replace paper, spreadsheets and repeat typing
 >
-> preços de partida, por escrito antes de eu começar, e não mudam no final:
-> conserto pequeno a partir de $75 · site do seu negócio a partir de $300 · site com
-> login e banco de dados a partir de $625 · pedido online e agendamento a partir de $600
-> · automação a partir de $500 · painel de controle a partir de $750 · robô de
-> atendimento a partir de $750 · atendente de telefone com ia a partir de $1,000 ·
-> sistema sob medida a partir de $1,500 · aplicativo a partir de $3,500.
+> You talk to the person who writes the code. No agency, no account manager.
+> Fixed price in writing before any work starts, and it does not change after.
+> When it is done you own everything — domain, hosting, code, accounts.
 >
-> quando termina, tudo fica no seu nome: domínio, hospedagem, código e as contas.
+> Not sure what you need?
+> Message me what your business still does by hand. I will tell you what I would
+> automate and roughly what it starts at — free, and I will say so when the
+> answer is that you do not need me.
 >
-> já tem site? me manda o link que eu olho de graça e falo se vale a pena mexer. às
-> vezes a resposta é não mexer, e eu falo isso também.
->
-> falo português, inglês, espanhol e chinês. me chama aqui ou no whatsapp
-> (510) 826-7735.
->
-> https://leonbuilds.org/pt?s=fbmkt-pt
+> leonbuilds.org
+> Remote · available across the U.S. · English, Português, Español, 中文
 
-### ES — title: `Páginas Web, Pedidos en Línea, Apps y Automatización — hablo español`
-Link: `https://leonbuilds.org/es?s=fbmkt-es`
+### PT — title: `Faço Sites e Automatizo o seu Negócio`
+Price `300` · link `https://leonbuilds.org/pt?s=fbmkt-pt`
 
-> yo hago la parte de tu negocio que todavía haces a mano.
+> Ainda anota pedido, agendamento, pergunta de cliente ou papelada na mão?
 >
-> una página que no te dé pena mandar. pedidos en línea y citas en tu propia página, con
-> el pedido llegando a tu celular en vez de irse en comisión. aplicación de iphone y
-> android. y la automatización aburrida de atrás — lo que alguien vuelve a teclear, el
-> cobro que se olvida, la hoja de excel que alguien arregla de noche.
+> Eu faço o sistema que tira esse trabalho de você.
 >
-> hablas directo con la persona que escribe el código. sin agencia, sin ejecutivo de
-> cuenta, sin que te pasen de una persona a otra.
+> O QUE EU POSSO FAZER PRA VOCÊ
+> • Site do seu negócio — a partir de $300
+> • Pedido online + pagamento no cartão
+> • Sistema de agendamento
+> • Aplicativo de iPhone e Android
+> • Robô que responde as perguntas que você repete todo dia
+> • Automação do trabalho que se repete toda semana
+> • Sistema sob medida pra substituir papel, planilha e redigitação
 >
-> precios de partida, por escrito antes de empezar, y no cambian al final:
-> arreglos pequeños desde $75 · página de tu negocio desde $300 · página con cuentas y
-> base de datos desde $625 · pedidos en línea y citas desde $600 · automatización desde
-> $500 · panel de control desde $750 · bot de atención desde $750 · contestador con ia
-> desde $1,000 · software a la medida desde $1,500 · aplicación desde $3,500.
+> Você fala direto com quem escreve o código. Sem agência, sem gerente de conta.
+> Preço fechado por escrito antes de começar, e não muda no final. Quando termina,
+> tudo fica no seu nome: domínio, hospedagem, código e as contas.
 >
-> cuando termino, todo queda a tu nombre: dominio, hosting, código y las cuentas.
+> Não sabe do que precisa?
+> Me manda o que o seu negócio ainda faz na mão. Eu falo o que dá pra automatizar
+> e a partir de quanto sai — de graça, e falo também quando você não precisa de mim.
 >
-> ¿ya tienes página? mándame el link y la reviso gratis y te digo si vale la pena
-> cambiarla. a veces la respuesta es que no, y también te lo digo.
->
-> hablo español, inglés, portugués y chino. escríbeme aquí o por whatsapp
-> (510) 826-7735.
->
-> https://leonbuilds.org/es?s=fbmkt-es
+> leonbuilds.org/pt
+> Online · atendo os Estados Unidos inteiros · Português, English, Español, 中文
 
-### ZH — title: `做网站、网上点单、手机App、自动化 — 会说中文，直接跟写代码的人聊`
-Link: `https://leonbuilds.org/zh?s=fbmkt-zh`
+### ES — title: `Hago Páginas Web y Automatizo tu Negocio`
+Price `300` · link `https://leonbuilds.org/es?s=fbmkt-es`
 
-> 你生意里还在靠人工做的那一块，我帮你做成系统。
+> ¿Todavía tomas pedidos, citas, preguntas de clientes o papeleo a mano?
 >
-> 一个你敢直接发给客人的网站。在你自己的网站上做点单和预约，单子直接进你手机，不用被平台
-> 抽成。iPhone 和安卓的 App。还有后面那些又烦又重复的活儿——要重新输一遍的东西、老是忘记
-> 的跟进、每天晚上有人手动改的那张表。
+> Yo hago el sistema que reemplaza ese trabajo.
 >
-> 你直接跟写代码的人聊，没有中介，没有客户经理，不用一层层转。
+> LO QUE PUEDO HACER PARA TI
+> • Página de tu negocio — desde $300
+> • Pedidos en línea + pago con tarjeta
+> • Sistema de citas y reservaciones
+> • Aplicación de iPhone y Android
+> • Bot que contesta las preguntas que repites todos los días
+> • Automatización del trabajo que se repite cada semana
+> • Sistema a la medida para reemplazar papel, Excel y volver a teclear lo mismo
 >
-> 起步价，开工之前白纸黑字写下来，做完不变：
-> 小修改 $75 起 · 商家网站 $300 起 · 带登录和数据库的网站 $625 起 · 网上点单和预约
-> $600 起 · 流程自动化 $500 起 · 后台管理面板 $750 起 · 智能客服 $750 起 · AI 电话
-> 接线 $1,000 起 · 定制系统 $1,500 起 · 手机 App $3,500 起。
+> Hablas directo con la persona que escribe el código. Sin agencia, sin ejecutivo
+> de cuenta. Precio cerrado por escrito antes de empezar, y no cambia al final.
+> Al terminar todo queda a tu nombre: dominio, hosting, código y las cuentas.
 >
-> 做完之后所有东西都在你名下：域名、服务器、代码、账号，全部交给你。
+> ¿No sabes qué necesitas?
+> Escríbeme qué hace tu negocio a mano todavía. Te digo qué automatizaría y desde
+> cuánto sale — gratis, y también te digo cuando no me necesitas.
 >
-> 已经有网站了？把网址发给我，我免费看一眼，告诉你值不值得改。不值得我也会直接说。
->
-> 中文、英文、葡萄牙文、西班牙文都可以。加微信 leon34695820，或者打电话 (510) 826-7735。
->
-> https://leonbuilds.org/zh?s=fbmkt-zh
+> leonbuilds.org/es
+> En línea · atiendo negocios en todo Estados Unidos · Español, English, Português, 中文
 
----
+### ZH — title: `做网站 + 帮小生意做自动化`
+Price `300` · link `https://leonbuilds.org/zh?s=fbmkt-zh`
+
+> 点单、预约、客人问的那些问题、店里的表格，是不是现在还都靠人工在做？
+>
+> 我把这些做成系统，让它自己跑。
+>
+> 我能帮你做的
+> • 商家网站 — $300 起
+> • 网上点单 + 刷卡收款
+> • 预约系统
+> • iPhone 和安卓 App
+> • 智能客服，自动回答天天重复的问题
+> • 每周重复的活儿，做成自动的
+> • 定制系统，替掉纸本子、Excel 和重复输入
+>
+> 你直接跟写代码的人聊，没有中介，也没有客户经理。开工之前把价钱白纸黑字写下来，
+> 做完不变。做完之后域名、服务器、代码和账号全部在你自己名下。
+>
+> 不确定自己需要什么？
+> 把你现在还靠人工做的事情发给我，我告诉你哪一块能自动化、大概从多少钱起 —— 不收钱，
+> 不值得做我也会直接说。
+>
+> 微信 leon34695820
+> leonbuilds.org/zh
+> 线上做 · 全美国都接 · 中文、English、Português、Español
 
 ## 2. Facebook group posts
 
