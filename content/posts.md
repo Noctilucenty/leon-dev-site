@@ -310,7 +310,14 @@ anyone who checks both.
 | group | what is wrong | why it is stuck |
 |---|---|---|
 | 加州华人(美国) …生意广告 (pending) | 住在加州, 小修小改 $49, 完整网站 $1,200 | Facebook shows "Your review is still pending — admins review new participants before their content is published". His MEMBERSHIP is under review, and the pending post will not accept an edit. Save silently fails and the page reports unsaved changes. Delete and repost once the membership clears. |
-| Profissionais Brasileiros nos EUA (pending) | "moro em Hayward (CA)", $49 · $400 · $1,200, old domain | Not blocked — the browser session became unstable before it was done. Same edit as the other two. |
+| Profissionais Brasileiros nos EUA (pending) | "moro em Hayward (CA)", $49 · $400 · $1,200, old domain | Edit will not commit. Tried twice: the dialog accepts the new text, Save appears to succeed, and the post is unchanged on reload while the page reports unsaved changes. Same symptom as the group above, without the membership-review banner to explain it. |
+
+**Both stuck posts have the same fix: delete the pending post and post again**, using
+the corrected text in section 2 of this file. Deleting a pending post is one click
+for Leon and costs nothing — it has not been published, so no reach is lost. Two of
+the four edits DID save (Empresas, Empreendedores), and both only took on a second
+attempt, so Facebook appears to accept roughly one edit per pending post and then
+freeze it.
 
 ### Checked, nothing to fix
 洛杉矶华人交流群 (46.1K) · Comunidade Brasileira nos EUA — no posts, published or pending.
