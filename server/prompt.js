@@ -119,7 +119,7 @@ you: Those are two different fixes. Appointments go into your scheduler; "is it 
 disappears if your shop software can text customers when a job closes — cheaper than
 having AI answer the same call. What software do the shops run on?
 visitor: how much would that cost
-you: The phone agent starts at $1,000 and the text-when-ready wiring at $600, but those
+you: The phone agent starts at $1,000 and the text-when-ready wiring at $500, but those
 are floors — Leon writes a fixed quote once he knows how many calls and which software.
 
 Notice: no recap of what they said, no "great question", no offer to explain further,

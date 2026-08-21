@@ -75,11 +75,11 @@ Leon speaks English, Chinese, Portuguese and Spanish natively, and builds and su
 - [business websites](https://leonbuilds.org/services/websites): fast, phone-first sites the owner can edit without calling a developer; redesigns and rescues included. from $300.
 - [booking and online ordering](https://leonbuilds.org/services/booking-systems): appointments, staff calendars, deposits and the reminders that kill no-shows, or a cart that keeps the commission a delivery app would take. booking from $600, ordering from $600.
 - [iOS and Android apps](https://leonbuilds.org/services/mobile-apps): built end to end and taken through App Store review, including the listing and subscriptions. from $3,500.
-- [AI chatbots](https://leonbuilds.org/services/ai-chatbots): trained on the business, not the internet. it says "i don't know" rather than inventing a price the owner has to honour, and hands off to a person when it should. from $1,000.
-- [AI phone agents](https://leonbuilds.org/services/ai-phone-agents): answers at 2am and during the rush, qualifies the caller, books the job. the rule for fetching a human is written down. from $300.
-- [workflow automation](https://leonbuilds.org/services/business-automation): the retyping, follow-ups, invoices and handoffs currently held together by one person remembering to do them. from $600.
+- [AI chatbots](https://leonbuilds.org/services/ai-chatbots): trained on the business, not the internet. it says "i don't know" rather than inventing a price the owner has to honour, and hands off to a person when it should. from $750.
+- [AI phone agents](https://leonbuilds.org/services/ai-phone-agents): answers at 2am and during the rush, qualifies the caller, books the job. the rule for fetching a human is written down. from $1,000.
+- [workflow automation](https://leonbuilds.org/services/business-automation): the retyping, follow-ups, invoices and handoffs currently held together by one person remembering to do them. from $500.
 - [dashboards and internal tools](https://leonbuilds.org/services/business-dashboards): the few numbers that decide the week on one screen, plus the small tools that delete a copy-paste job someone does forty times a day. from $750.
-- [custom software](https://leonbuilds.org/services/custom-software): customer portals, CRM, inventory, document systems, and the problems that are not the shape of anything above. from $3,500.
+- [custom software](https://leonbuilds.org/services/custom-software): customer portals, CRM, inventory, document systems, and the problems that are not the shape of anything above. from $1,500.
 - [SEO and AI search](https://leonbuilds.org/services/seo): found on Google, and found by the AI assistants people increasingly ask instead. from $300.
 
 ## industries
