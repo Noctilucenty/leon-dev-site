@@ -872,13 +872,61 @@ w('industries/index.html', listing_page('industries', INDUSTRIES,
   "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
   "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
 
+# ── language service pages ────────────────────────────────────────
+# The one thing an agency cannot copy: the developer speaks the language the
+# owner explains the problem in. Copy is native, never translated, and lives
+# in data/lang_pages.json.
+import lang_pages
+
+LANG_COPY = {}
+_copy_path = os.path.join(ROOT, 'content', 'lang_pages.json')
+if os.path.exists(_copy_path):
+    with open(_copy_path, encoding='utf-8') as f:
+        for row in json.load(f)['pages']:
+            LANG_COPY[(row['lang'], row['service'])] = row['page']
+
+def _siblings(lang, key):
+    return [(k, LANG_COPY[(lang, k)]) for (l, k) in LANG_COPY
+            if l == lang and k != key]
+
+LANG_CTX = dict(e=e, BASE=BASE, FONTS=FONTS, ICONS=ICONS, siblings=_siblings)
+LANG_URLS = []
+for (lang, key), page in sorted(LANG_COPY.items()):
+    slug = lang_pages.SLUGS[(lang, key)]
+    w(f'{lang}/{slug}.html', lang_pages.render(lang, key, page, LANG_CTX))
+    LANG_URLS.append(f'/{lang}/{slug}')
+
+# Refill the link block on each language home so the service pages are not
+# orphans. Sentinels live in the hand-written homes; everything between them
+# is generated, everything around them is Leon's own copy.
+for _lang in sorted({l for (l, _k) in LANG_COPY}):
+    _p = os.path.join(ROOT, _lang, 'index.html')
+    if not os.path.exists(_p):
+        continue
+    with open(_p, encoding='utf-8') as f:
+        _s = f.read()
+    _links = ''.join(
+        f'<a href="/{_lang}/{lang_pages.SLUGS[(_lang, k)]}">'
+        f'{e(LANG_COPY[(_lang, k)]["h1_plain"])} {e(LANG_COPY[(_lang, k)]["h1_em"])}</a>'
+        for k in ['websites', 'ordering', 'automation'] if (_lang, k) in LANG_COPY)
+    _a, _b = '<!-- LANGSERVICES:START -->', '<!-- LANGSERVICES:END -->'
+    if _a in _s and _b in _s:
+        _pre, _rest = _s.split(_a, 1)
+        _mid, _post = _rest.split(_b, 1)
+        _new = _pre + _a + _links + _b + _post
+        if _new != _s:
+            with open(_p, 'w', encoding='utf-8') as f:
+                f.write(_new)
+            print('relinked', _lang + '/index.html')
+
 w('quote.html', quote_page())
 w('about.html', about_page())
 w('call.html', call_page())
 
 # sitemap + robots
 urls = ['/', '/about', '/call', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
-     + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]
+     + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
+     + LANG_URLS
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
     sm += f'  <url><loc>{BASE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n'
