@@ -242,3 +242,38 @@ For a 微信群 or a one-to-one. WeChat strips most formatting, so this is plain
 Read them at `https://leon-assist.onrender.com/api/traffic?key=<LEADS_KEY>` — the key is
 in the Render dashboard under the leon-assist service, Environment tab. That file resets
 on every deploy, so snapshot it before pushing anything.
+
+---
+
+## IMPORTANT: Marketplace prohibits service listings
+
+Verified from Facebook's own rejection notice, 2026-08-21:
+
+> **We rejected your Marketplace listing**
+> Why this happened: *It looks like your listing promotes services or offers of work.*
+> This goes against our Commerce Policies on **Services**.
+
+Two listings were not merely "flagged" — they were **removed**, visible only to
+Leon. "I Build Websites and Apps for Small Businesses" (9 clicks, his best-clicked
+service listing) and "AI & Custom Software Development for your Business".
+
+This is a category rule, not a wording problem. Marketplace sells items, not
+labour. No rewrite of a service listing makes it compliant, so the remaining four
+language listings are living on borrowed time, and each additional service
+listing raises the odds of an account-level restriction — Facebook's own notice
+links to "How to prevent further restrictions".
+
+Which kills the intent-split plan ON MARKETPLACE. Four listings for restaurant
+ordering, booking, websites and automation would be four more rejections, and
+the risk is not the listings — it is Marketplace access itself, which is where
+the one paying client came from.
+
+Where service posts ARE allowed on Facebook:
+- **Groups.** Buy/sell and local-business groups routinely permit service posts;
+  each group's own rules govern. The group copy in section 2 is the asset here.
+- **A Facebook Page** plus posts, which is the surface Meta intends for a business.
+- **Messenger conversations** that begin in a group or from the site.
+
+What NOT to do: request a review on the rejected listings. The listing does
+promote a service, so a review would uphold the decision, and appeals that are
+denied are a worse signal than a listing quietly left alone.
