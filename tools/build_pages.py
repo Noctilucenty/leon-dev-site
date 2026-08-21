@@ -646,25 +646,14 @@ def about_page():
 CAL_SLUG = "noctilucente-wzvdey/15min"   # cal.com user/event; empty string falls back to the request form
                 #    from the request form to a real embedded booker when set.
 
-def call_page():
-    """Book a 15-minute call. Until CAL_SLUG is set this posts a request to the
-       same lead API the quote form uses, so the page converts from day one
-       instead of waiting on a third-party signup."""
-    path = '/call'
-    bc = [("home","/"),("book a call", None)]
-    schema = [breadcrumb_schema(bc, path), {
-        "@context": "https://schema.org", "@type": "Service",
-        "name": "Free 15-minute consultation",
-        "provider": {"@id": f"{BASE}/#leon"},
-        "areaServed": {"@type": "Country", "name": "United States"},
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
-    }]
-    # Cal.com's OFFICIAL inline embed, not a raw iframe. A raw iframe of the
-    # public booking URL inherits the visitor's cal.com session, so a logged-in
-    # user — i.e. Leon himself — sees his own bookings dashboard instead of the
-    # booker. The embed script renders in an isolated context and cannot.
-    booker = (
+# Cal.com's OFFICIAL inline embed, not a raw iframe. A raw iframe of the
+# public booking URL inherits the visitor's cal.com session, so a logged-in
+# user — i.e. Leon himself — sees his own bookings dashboard instead of the
+# booker. The embed script renders in an isolated context and cannot.
+def booker():
+    """The one Cal.com embed. Shared so the English page and the three
+    translated ones can never drift into different widgets."""
+    return (
       '<div class="calwrap"><div id="leon-cal"></div></div>'
       '<script>(function(C,A,L){var p=function(a,ar){a.q.push(ar)};var d=C.document;'
       'C.Cal=C.Cal||function(){var cal=C.Cal;var ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];'
@@ -679,33 +668,53 @@ def call_page():
       '</script>'
     ) if CAL_SLUG else \
     '''<form class="qform" id="callform" novalidate>
-      <label>name<input name="name" type="text" autocomplete="name"></label>
-      <div class="qrow">
-        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
-        <label>phone or whatsapp<input name="phone" type="tel" autocomplete="tel"></label>
-      </div>
-      <label>what do you want to talk about? <i>(required)</i><textarea name="problem" rows="3" required placeholder="the part of the week that is still manual, the thing that is broken, or the thing you wish existed…"></textarea></label>
-      <div class="qrow">
-        <label>which days suit you?
-          <select name="timeline"><option value="">any day</option><option>weekdays</option><option>weekends</option><option>today or tomorrow</option></select>
-        </label>
-        <label>what time of day?
-          <select name="currentTools"><option value="">any time 11am-11pm pacific</option><option>late morning</option><option>afternoon</option><option>evening</option><option>late evening</option></select>
-        </label>
-      </div>
-      <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-      <p class="qerr" id="callerr" role="alert"></p>
-      <button class="btn btn-solid magnet qsend" type="submit" data-evt="call_form_submit"><span>request the call</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <p class="qnote">leon replies with a video link and a time, usually the same day. want it faster? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20I%27d%20like%20to%20book%20a%2015%20minute%20call.%20I%27m%20free%3A%20" target="_blank" rel="noopener" data-evt="wa_click_call">whatsapp him</a> or call <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a>.</p>
+  <label>name<input name="name" type="text" autocomplete="name"></label>
+  <div class="qrow">
+    <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
+    <label>phone or whatsapp<input name="phone" type="tel" autocomplete="tel"></label>
+  </div>
+  <label>what do you want to talk about? <i>(required)</i><textarea name="problem" rows="3" required placeholder="the part of the week that is still manual, the thing that is broken, or the thing you wish existed…"></textarea></label>
+  <div class="qrow">
+    <label>which days suit you?
+      <select name="timeline"><option value="">any day</option><option>weekdays</option><option>weekends</option><option>today or tomorrow</option></select>
+    </label>
+    <label>what time of day?
+      <select name="currentTools"><option value="">any time 11am-11pm pacific</option><option>late morning</option><option>afternoon</option><option>evening</option><option>late evening</option></select>
+    </label>
+  </div>
+  <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
+  <p class="qerr" id="callerr" role="alert"></p>
+  <button class="btn btn-solid magnet qsend" type="submit" data-evt="call_form_submit"><span>request the call</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+  <p class="qnote">leon replies with a video link and a time, usually the same day. want it faster? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20I%27d%20like%20to%20book%20a%2015%20minute%20call.%20I%27m%20free%3A%20" target="_blank" rel="noopener" data-evt="wa_click_call">whatsapp him</a> or call <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a>.</p>
     </form>
     <div class="qok" id="callok" hidden>
-      <p class="label">got it</p>
-      <p class="sub">leon will email you a video link and a time. if you would rather not wait, message him on <a href="https://wa.me/15108267735" target="_blank" rel="noopener">whatsapp</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+  <p class="label">got it</p>
+  <p class="sub">leon will email you a video link and a time. if you would rather not wait, message him on <a href="https://wa.me/15108267735" target="_blank" rel="noopener">whatsapp</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
     </div>'''
 
+
+
+def call_page():
+    """Book a 15-minute call. Until CAL_SLUG is set this posts a request to the
+       same lead API the quote form uses, so the page converts from day one
+       instead of waiting on a third-party signup."""
+    path = '/call'
+    bc = [("home","/"),("book a call", None)]
+    schema = [breadcrumb_schema(bc, path), {
+        "@context": "https://schema.org", "@type": "Service",
+        "name": "Free 15-minute consultation",
+        "provider": {"@id": f"{BASE}/#leon"},
+        "areaServed": {"@type": "Country", "name": "United States"},
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+        "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
+    }]
+    booker_html = booker()
+    call_alts = ''.join(
+        f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
+        for hl, href in lang_pages.call_alternates())
     return head("Book a Free 15-Minute Call | Leon Kelvin Li",
         "Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.",
-        path, schema) + ICONS + nav() + '''
+        path, schema, call_alts) + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
@@ -731,7 +740,7 @@ def call_page():
       <p class="sub">english, spanish, portuguese or chinese — whichever you would rather think in.</p>
     </div>
     <div>
-      ''' + booker + '''
+      ''' + booker_html + '''
     </div>
     </div>
   </div>
@@ -918,6 +927,14 @@ for (lang, key), page in sorted(LANG_COPY.items()):
     slug = lang_pages.SLUGS[(lang, key)]
     w(f'{lang}/{slug}.html', lang_pages.render(lang, key, page, LANG_CTX))
     LANG_URLS.append(f'/{lang}/{slug}')
+
+# The booking page in each language. The English /call is where a translated
+# funnel used to end: three paragraphs in Portuguese, then a wall of English at
+# the moment of deciding. Same Cal.com embed, translated page around it.
+for _lang in sorted(lang_pages.CALL_COPY):
+    _c = lang_pages.CALL_COPY[_lang]
+    w(f"{_lang}/{_c['slug']}.html", lang_pages.render_call(_lang, booker(), LANG_CTX))
+    LANG_URLS.append(f"/{_lang}/{_c['slug']}")
 
 # Refill the link block on each language home so the service pages are not
 # orphans. Sentinels live in the hand-written homes; everything between them

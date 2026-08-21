@@ -87,6 +87,13 @@ LANGS = {
     ),
 }
 
+
+def call_href(lang):
+    """Where "book 15 minutes" points in this language. One function, so a
+    service page and the nav above it can never disagree."""
+    return f"/{lang}/{CALL_COPY[lang]['slug']}"
+
+
 WA = 'https://wa.me/15108267735?text='
 MAIL = 'mailto:leondragon3798@gmail.com'
 
@@ -169,8 +176,9 @@ def render(lang, key, page, ctx):
 </head>
 <body>'''
 
-    navlinks = ''.join(f'<a href="{h}"><i>[</i><span>{e(t)}</span><i>]</i></a>'
-                       for h, t in L['nav'])
+    navlinks = ''.join(
+        f'<a href="{call_href(lang) if h == "/call" else h}"><i>[</i><span>{e(t)}</span><i>]</i></a>'
+        for h, t in L['nav'])
     nav = f'''{ICONS}<a class="skip" href="#main">{e(L['skip'])}</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
@@ -212,7 +220,7 @@ def render(lang, key, page, ctx):
     <p class="pricetag">{e(page['pricetag'])}</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}"><span>{e(page['cta_primary'])}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-      <a class="btn magnet" href="/call" data-evt="call_click_{lang}_{key}"><span>{e(L['call_label'])}</span></a>
+      <a class="btn magnet" href="{call_href(lang)}" data-evt="call_click_{lang}_{key}"><span>{e(L['call_label'])}</span></a>
       <button class="btn magnet" type="button" data-assist-open data-assist-starter="{e(L['assist_starter'])}" data-evt="assist_open_{lang}_{key}"><span>{e(page['cta_secondary'])}</span></button>
     </div>
   </div>
@@ -253,7 +261,7 @@ def render(lang, key, page, ctx):
     <p class="sub">{e(page['close'])}</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}_end"><span>{e(page['cta_primary'])}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-      <a class="btn magnet" href="/call" data-evt="call_click_{lang}_{key}_end"><span>{e(L['call_label'])}</span></a>
+      <a class="btn magnet" href="{call_href(lang)}" data-evt="call_click_{lang}_{key}_end"><span>{e(L['call_label'])}</span></a>
     </div>
     <p class="label" style="margin-top:2.5rem">{e(L['other_label'])}</p>
     <nav class="langmore">{others}</nav>
@@ -271,3 +279,210 @@ def render(lang, key, page, ctx):
 <script src="/assist.js" defer></script></body></html>'''
 
     return head + nav + body
+
+
+# ══════════════════════════════════════════════════════════════════
+# THE BOOKING PAGE, PER LANGUAGE
+# ══════════════════════════════════════════════════════════════════
+#
+# Every language service page ends with "book 15 minutes", and that button used
+# to land on the English /call. A Portuguese-speaking owner who read three
+# paragraphs in Portuguese hit an English page at the exact moment of deciding —
+# the most expensive place on the site to lose someone.
+#
+# Written here rather than generated, because it is short and it is the page
+# where a sentence that reads as translated costs the most.
+#
+# The Cal.com widget renders in its own locale; only the page around it is
+# translated. That is still the difference between "this person speaks my
+# language" and a wall of English at checkout.
+
+CALL_COPY = {
+    'pt': dict(
+        slug='agendar',
+        title='agendar uma conversa de 15 minutos | Leon Kelvin Li',
+        desc='quinze minutos, de graça, em português. você conta o que está lento ou manual no seu negócio e eu falo o que dá pra fazer e a partir de quanto sai.',
+        h1_plain='quinze minutos pra saber se',
+        h1_em='vale a pena fazer',
+        intro=[
+            'quinze minutos já dão pra saber se tem projeto aqui. você conta o que é lento ou manual na sua semana, e eu falo o que eu faria, a partir de quanto sai, e também quando você não precisa de mim.',
+            'a conversa é em português, com a pessoa que escreve o código. não tem vendedor, não tem gerente de conta, e não tem compromisso nenhum depois.',
+        ],
+        pricetag='de graça · 15 minutos · horários das 11h às 23h (horário do pacífico) · você fala direto comigo',
+        label='o que acontece na conversa',
+        bullets=[
+            'você explica o problema do seu jeito, sem precisar de palavra técnica',
+            'eu pergunto o que você usa hoje e onde é que trava de verdade',
+            'você sai com um número: o que dá pra fazer e a partir de quanto',
+            'se a resposta certa for não fazer nada, eu falo isso também',
+        ],
+        note='prefere não marcar horário? me chama no whatsapp ou liga: (510) 826-7735.',
+        crumb='agendar',
+    ),
+    'es': dict(
+        slug='agendar',
+        title='agendar una llamada de 15 minutos | Leon Kelvin Li',
+        desc='quince minutos, gratis, en español. me cuentas qué es lento o manual en tu negocio y te digo qué se puede hacer y desde cuánto sale.',
+        h1_plain='quince minutos para saber si',
+        h1_em='vale la pena hacerlo',
+        intro=[
+            'quince minutos alcanzan para saber si hay proyecto. me cuentas qué es lento o manual en tu semana, y te digo qué haría yo, desde cuánto sale, y también cuándo no me necesitas.',
+            'la llamada es en español, con la persona que escribe el código. no hay vendedor, no hay ejecutivo de cuenta, y no queda ningún compromiso después.',
+        ],
+        pricetag='gratis · 15 minutos · horarios de 11am a 11pm (hora del pacífico) · hablas directo conmigo',
+        label='qué pasa en la llamada',
+        bullets=[
+            'me explicas el problema a tu manera, sin necesidad de términos técnicos',
+            'te pregunto qué usas hoy y dónde se traba de verdad',
+            'sales con un número: qué se puede hacer y desde cuánto',
+            'si lo correcto es no hacer nada, también te lo digo',
+        ],
+        note='¿prefieres no agendar? escríbeme por whatsapp o llama al (510) 826-7735.',
+        crumb='agendar',
+    ),
+    'zh': dict(
+        slug='yuyue',
+        title='预约 15 分钟通话 | Leon Kelvin Li',
+        desc='免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工，我告诉你能怎么做、大概从多少钱起。',
+        h1_plain='十五分钟，先弄清楚',
+        h1_em='这件事值不值得做',
+        intro=[
+            '十五分钟就够判断有没有必要做了。你说说每周哪些事情又慢又费人,我告诉你我会怎么做、从多少钱起,以及什么时候你根本不需要找我。',
+            '全程中文,直接跟写代码的人聊。没有销售,没有客户经理,聊完也没有任何后续负担。',
+        ],
+        pricetag='免费 · 15 分钟 · 可约时间 上午11点到晚上11点(太平洋时间) · 直接跟我聊',
+        label='这十五分钟会聊什么',
+        bullets=[
+            '你用自己的话说问题就行,不用懂任何技术名词',
+            '我问你现在用什么、到底卡在哪一步',
+            '你会拿到一个数字:能做成什么样、从多少钱起',
+            '如果答案是不用改,我也会直接这么说',
+        ],
+        note='不想约时间?直接发微信或打电话:(510) 826-7735。',
+        crumb='预约',
+    ),
+}
+
+
+def call_alternates():
+    """/call and its three translations, all pointing at each other."""
+    out = [('en', '/call')]
+    for code, c in CALL_COPY.items():
+        out.append((LANGS[code]['hreflang'], f"/{code}/{c['slug']}"))
+    out.append(('x-default', '/call'))
+    return out
+
+
+def render_call(lang, booker, ctx):
+    """The booking page in one language, wrapped around the same Cal.com embed
+    the English page uses — the widget is the proven one, only the page is new."""
+    import json
+    e, BASE, FONTS, ICONS = ctx['e'], ctx['BASE'], ctx['FONTS'], ctx['ICONS']
+    L, C = LANGS[lang], CALL_COPY[lang]
+    path = f"/{lang}/{C['slug']}"
+    contact = _contact_href(L)
+    wa_attr = ' target="_blank" rel="noopener"' if L['contact_kind'] == 'wa' else ''
+
+    alts = ''.join(f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
+                   for hl, href in call_alternates())
+
+    schema = {"@context": "https://schema.org", "@graph": [
+        {"@type": "Service", "@id": f"{BASE}{path}#service",
+         "name": C['title'].split('|')[0].strip(),
+         "description": C['desc'], "inLanguage": L['hreflang'],
+         "provider": {"@id": f"{BASE}/#leon"},
+         "areaServed": {"@type": "Country", "name": "United States"},
+         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+         "url": f"{BASE}{path}"},
+        {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
+         "url": f"{BASE}/about"},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": L['crumb_home'],
+             "item": BASE + L['home']},
+            {"@type": "ListItem", "position": 2, "name": C['crumb'],
+             "item": BASE + path}]},
+    ]}
+
+    navlinks = ''.join(
+        f'<a href="{call_href(lang) if h == "/call" else h}"><i>[</i><span>{e(t)}</span><i>]</i></a>'
+        for h, t in L['nav'])
+    bullets = ''.join(f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(b)}</li>'
+                      for b in C['bullets'])
+    intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in C['intro'])
+
+    return f'''<!DOCTYPE html>
+<html lang="{L['html_lang']}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{e(C['title'])}</title>
+<meta name="description" content="{e(C['desc'])}">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="{BASE}{path}">
+{alts}
+<meta property="og:type" content="website">
+<meta property="og:url" content="{BASE}{path}">
+<meta property="og:title" content="{e(C['title'])}">
+<meta property="og:description" content="{e(C['desc'])}">
+<meta property="og:image" content="{BASE}/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+{FONTS}
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/assist.css">
+<script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
+</head>
+<body>{ICONS}<a class="skip" href="#main">{e(L['skip'])}</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
+<header class="nav" id="nav">
+  <a class="mark" href="{L['home']}">
+    <span class="mark-dot">[<span class="blink">•</span>]</span>
+    <span class="mark-name">Leon Kelvin Li</span>
+    <span class="mark-handle">/ Noctilucenty</span>
+  </a>
+  <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
+  <div class="nav-end">
+    <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_call_nav"><span>{e(L['contact_label'])}</span></a>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    <p class="crumbs"><a href="{L['home']}">{e(L['crumb_home'])}</a> <i>/</i> <span>{e(C['crumb'])}</span></p>
+    <h1 class="dsp">{e(C['h1_plain'])} <em>{e(C['h1_em'])}</em></h1>
+    {intro}
+    <p class="pricetag">{e(C['pricetag'])}</p>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="rail">
+    <div class="callgrid">
+    <div>
+      <p class="label">{e(C['label'])}</p>
+      <ul class="blist">{bullets}</ul>
+      <p class="sub">{e(C['note'])}</p>
+      <div class="ctarow">
+        <a class="btn magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_call"><span>{e(L['contact_label'])}</span></a>
+      </div>
+    </div>
+    <div>{booker}</div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="rail foot-bar">
+    <p>{L['foot']}</p>
+    <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
+  </div>
+</footer>
+<script src="/app.js" defer></script>
+<script src="/assist.js" defer></script></body></html>'''
