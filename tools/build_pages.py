@@ -145,10 +145,10 @@ INDUSTRIES = [
   intro=["restaurants run on thin margins while delivery apps take up to 30% and the phone rings through every rush. most of that is fixable with software you own instead of rent.",
    "i built a multi-brand ordering platform where one cart spans several kitchens and the server splits every order into per-vendor tickets and payouts — so the ordinary single-restaurant version is well-trodden ground."],
   pains=["delivery apps take a commission on orders that were already yours","the phone rings out during every rush","your menu is a pdf nobody can read on a phone","'are you open' and 'do you have parking' — forty times a day","multiple locations or brands, zero shared systems"],
-  fixes=[("online ordering you own","commission-free ordering on your own site — cart, payment, kitchen ticket. from $600"),
-   ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000"),
-   ("a menu-first website","fast, phone-first, editable by you when prices change. from $300"),
-   ("review desk","every review read and a reply drafted for you — a human presses send. from $750")],
+  fixes=[("online ordering you own","commission-free ordering on your own site — cart, payment, kitchen ticket. from $600","booking-systems"),
+   ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000","ai-phone-agents"),
+   ("a menu-first website","fast, phone-first, editable by you when prices change. from $300","websites"),
+   ("review desk","every review read and a reply drafted for you — a human presses send. from $750",None)],
   proof=("multi-brand ordering","one cart across many kitchens; the server re-prices every line, splits tickets per vendor, computes fees. running for a 22-business operation."),
   faqs=[("can i stop paying delivery-app commissions?","for pickup and your own delivery, yes — ordering on your own site has no per-order cut. marketplaces still bring discovery; the goal is moving your regulars to the channel you own."),
    ("what does online ordering cost?","from $600 one-time, on your site, you own it. compare that to a month of commissions."),
@@ -161,10 +161,10 @@ INDUSTRIES = [
   intro=["contracting work is won and lost in the follow-up: the lead that came in while you were on a roof, the estimate that never went out, the customer who called someone else because you answered second.",
    "software fixes the boring half of that — instant lead responses, scheduling, job status a customer can check without calling you."],
   pains=["leads arrive while you're on site and go cold","estimates and invoices happen at 9pm from the truck","customers call constantly for status updates","jobs live on a whiteboard or in one person's head","reviews never get asked for, so the profile looks dead"],
-  fixes=[("lead follow-up automation","every web lead gets an instant text/email and lands in one list. from $600"),
-   ("scheduling & job tracking","jobs, crews and dates in one system the whole team sees. from $1,500"),
-   ("customer portal","clients see their own job status, photos and invoices. from $1,500"),
-   ("a website that sells","before/after work, service areas, instant quote requests. from $300")],
+  fixes=[("lead follow-up automation","every web lead gets an instant text/email and lands in one list. from $600","business-automation"),
+   ("scheduling & job tracking","jobs, crews and dates in one system the whole team sees. from $1,500","custom-software"),
+   ("customer portal","clients see their own job status, photos and invoices. from $1,500","custom-software"),
+   ("a website that sells","before/after work, service areas, instant quote requests. from $300","websites")],
   proof=("document control","approvals, versioned documents and automatic filing — the same machinery that keeps a contracting back office from living in someone's memory."),
   faqs=[("i'm not technical at all. is that a problem?","no. you describe the week, i build around it, and everything is handed over working with training included."),
    ("what pays for itself fastest?","almost always lead follow-up — answering first wins jobs. usually from $600 and live within days."),
@@ -177,10 +177,10 @@ INDUSTRIES = [
   intro=["every shop knows the two calls: 'can i bring it in?' and 'is it ready yet?'. both interrupt the person doing the actual work.",
    "booking can go straight into your calendar. status can text the customer automatically the moment a job changes state — and an ai phone agent can answer the rest."],
   pains=["'is my car ready' calls interrupt the bay all day","booking happens by phone and gets double-entered","customers wait on hold, then show up at the wrong time","your shop software has the data but customers can't see it"],
-  fixes=[("automatic status updates","'your car is ready' sends itself when the job closes. from $600"),
-   ("online booking","customers pick a slot; your calendar stays sane. from $600"),
-   ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000"),
-   ("shop dashboard","cars in, cars out, revenue and comebacks on one screen. from $1,000")],
+  fixes=[("automatic status updates","'your car is ready' sends itself when the job closes. from $600","business-automation"),
+   ("online booking","customers pick a slot; your calendar stays sane. from $600","booking-systems"),
+   ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000","ai-phone-agents"),
+   ("shop dashboard","cars in, cars out, revenue and comebacks on one screen. from $1,000","business-dashboards")],
   proof=("review desk","built for exactly this kind of local business: every review read, classified, and a reply drafted from your real facts — a human presses send."),
   faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. i verify yours specifically before quoting anything."),
    ("what's the fastest win?","status notifications. one integration, and the most annoying call category mostly disappears."),
@@ -193,10 +193,10 @@ INDUSTRIES = [
   intro=["a practice front desk answers the same questions all day — insurance, hours, directions, 'can i move my appointment' — while the schedule fills with no-shows that reminders would have caught.",
    "health care deserves the careful version of software: reminders and booking that reduce the front desk load, an assistant that answers the routine and hands anything clinical straight to a human. i've built compliance-aware ai that declines to answer rather than overstep — that's the posture your patients get."],
   pains=["no-shows burn schedule and revenue","the phone queue is insurance and reschedule questions","after-hours callers reach voicemail and book elsewhere","forms are still paper or pdf-by-email"],
-  fixes=[("appointment reminders","sms/email sequences that actually cut no-shows. from $600"),
-   ("online booking & rescheduling","patients handle the routine moves themselves. from $600"),
-   ("after-hours question handling","routine questions answered; anything clinical goes to staff. from $1,000"),
-   ("digital intake forms","filled on a phone before the visit, filed automatically. from $600")],
+  fixes=[("appointment reminders","sms/email sequences that actually cut no-shows. from $600","booking-systems"),
+   ("online booking & rescheduling","patients handle the routine moves themselves. from $600","booking-systems"),
+   ("after-hours question handling","routine questions answered; anything clinical goes to staff. from $1,000","ai-phone-agents"),
+   ("digital intake forms","filled on a phone before the visit, filed automatically. from $600","business-automation")],
   proof=("compliance-aware assistant","a health-education assistant for a regulated market: deterministic safety rules run before any model, every claim cites a source, and it declines rather than break the rules. that is the standard of care i bring near medicine."),
   faqs=[("is this hipaa compliant?","builds are designed so sensitive data stays in your existing systems wherever possible, and i'm direct about what i will and won't touch. compliance requirements get scoped in writing before anything starts — never assumed."),
    ("will ai talk to my patients about medical questions?","no. routine logistics only — anything clinical routes to your staff. i build assistants that decline rather than guess."),
@@ -209,10 +209,10 @@ INDUSTRIES = [
   intro=["property work is coordination: tenants, owners, vendors, showings, maintenance — most of it still happening over scattered calls and texts nobody can find later.",
    "a portal gives tenants somewhere to submit and track requests. automation gives owners their statements without you assembling them. your phone gets quieter."],
   pains=["maintenance requests arrive by call and text, then get lost","tenants call for updates because there's nowhere to look","owner statements are assembled by hand every month","showings and applications live in three inboxes"],
-  fixes=[("tenant portal","submit a request, attach a photo, watch the status change. from $1,500"),
-   ("maintenance tracking","requests routed to vendors, updates sent automatically. from $1,000"),
-   ("owner reporting","statements that build themselves from your real data. from $1,000"),
-   ("listing website","fast property pages with inquiry capture that reaches you instantly. from $300")],
+  fixes=[("tenant portal","submit a request, attach a photo, watch the status change. from $1,500","custom-software"),
+   ("maintenance tracking","requests routed to vendors, updates sent automatically. from $1,000",None),
+   ("owner reporting","statements that build themselves from your real data. from $1,000","business-dashboards"),
+   ("listing website","fast property pages with inquiry capture that reaches you instantly. from $300","websites")],
   proof=("customer-portal discipline","the multi-brand platform runs strict per-account visibility for 22 businesses — the same permission model a tenant/owner portal needs."),
   faqs=[("can tenants see each other's information?","no — per-account visibility is enforced on the server, which is the core of the build."),
    ("we use appfolio / buildium / yardi.","keep it if it works — often the right build is a portal or automation talking to your existing system. i verify the integration before quoting."),
@@ -225,10 +225,10 @@ INDUSTRIES = [
   intro=["logistics runs on information handoffs — and every handoff that happens by phone, email-forward or retyping is a delay and an error waiting to happen.",
    "dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem."],
   pains=["dispatch copies the same info between email, sheets and texts","drivers hand in paperwork that gets retyped","customers call for status because they can't see it","inventory counts drift from reality"],
-  fixes=[("dispatch board","loads, drivers and statuses on one live screen. from $1,500"),
-   ("driver app","photos, signatures and status from the cab — no retyping. from $3,500"),
-   ("document automation","pods, bols and invoices extracted and filed automatically. from $500"),
-   ("customer tracking portal","they look it up instead of calling you. from $1,500")],
+  fixes=[("dispatch board","loads, drivers and statuses on one live screen. from $1,500","custom-software"),
+   ("driver app","photos, signatures and status from the cab — no retyping. from $3,500","mobile-apps"),
+   ("document automation","pods, bols and invoices extracted and filed automatically. from $500","business-automation"),
+   ("customer tracking portal","they look it up instead of calling you. from $1,500","custom-software")],
   proof=("site intelligence","a decision system across 33,772 zip codes and nine data sources — the data discipline logistics operations run on, applied end to end."),
   faqs=[("our process is unusual. can software fit it?","unusual processes are the reason custom exists — the build is shaped around your real workflow, not a template's guess."),
    ("what's the first thing to fix?","usually the dispatch copy-paste loop — highest error rate, easiest automation."),
@@ -241,10 +241,10 @@ INDUSTRIES = [
   intro=["a gym's software problem is churn wearing a disguise: missed classes, lapsed cards, members who drift because nobody noticed they stopped coming.",
    "booking, reminders and a membership view fix the mechanics — you see who's fading while there's still time to wave them back."],
   pains=["class booking happens by dm and spreadsheet","no-shows leave paid slots empty","failed card payments quietly become lost members","you can't see who's about to churn until they're gone"],
-  fixes=[("class booking","members book, waitlist and cancel themselves. from $600"),
-   ("membership dashboard","attendance, payments and fade-outs on one screen. from $1,000"),
-   ("reminder automation","class reminders and win-back nudges that send themselves. from $600"),
-   ("a site that converts","schedule, pricing and signup without a phone call. from $300")],
+  fixes=[("class booking","members book, waitlist and cancel themselves. from $600","booking-systems"),
+   ("membership dashboard","attendance, payments and fade-outs on one screen. from $1,000","business-dashboards"),
+   ("reminder automation","class reminders and win-back nudges that send themselves. from $600","business-automation"),
+   ("a site that converts","schedule, pricing and signup without a phone call. from $300","websites")],
   proof=("curio","a consumer subscription app on the app store — retention mechanics, streaks and subscriptions are literally what it runs on."),
   faqs=[("we use mindbody / glofox. switch?","only if it's failing you. often the right move is automation around what you have — i'll say which in the free call."),
    ("can members pay online?","yes — stripe subscriptions, class packs and drop-ins, with receipts and failed-payment recovery."),
@@ -257,10 +257,10 @@ INDUSTRIES = [
   intro=["retail dies by a thousand small syncs: the count that drifted, the online order nobody saw, the bestseller that sold out because reordering lived in someone's head.",
    "the fix is rarely a new platform — it's the connective tissue: inventory that matches reality, orders flowing into one queue, numbers you see daily without exporting anything."],
   pains=["stock counts drift from reality","online and in-store systems don't talk","reordering depends on someone noticing","you learn about a bad week from the bank balance"],
-  fixes=[("inventory system","stock, suppliers and low-stock alerts that survive a rush. from $1,500"),
-   ("order automation","every channel's orders into one queue with alerts. from $600"),
-   ("sales dashboard","today's numbers without opening five systems. from $1,000"),
-   ("storefront","fast product pages, clean checkout, no template bloat. from $300")],
+  fixes=[("inventory system","stock, suppliers and low-stock alerts that survive a rush. from $1,500","custom-software"),
+   ("order automation","every channel's orders into one queue with alerts. from $600","business-automation"),
+   ("sales dashboard","today's numbers without opening five systems. from $1,000","business-dashboards"),
+   ("storefront","fast product pages, clean checkout, no template bloat. from $300","websites")],
   proof=("multi-brand ordering","server-side pricing, per-vendor tickets and payouts across 22 businesses — retail-grade order handling in production."),
   faqs=[("we're on shopify / square. is that a problem?","no — keep them. most retail builds connect and automate around the platform you're on."),
    ("can inventory sync between online and the register?","usually yes, depending on your pos. i verify the specific integration before quoting."),
@@ -273,10 +273,10 @@ INDUSTRIES = [
   intro=["service firms sell hours, then spend a shocking share of them on intake, status emails, document wrangling and 'just checking in' calls.",
    "a client portal, automated intake and document workflows give those hours back — and make the firm feel bigger and calmer than the inbox it replaced."],
   pains=["intake is a pdf emailed back and forth","clients email for status because there's nowhere to look","documents have four versions in three inboxes","billable time leaks into administration"],
-  fixes=[("client portal","cases, files, invoices and status in one login. from $1,500"),
-   ("intake automation","forms that fill in on a phone, file and notify automatically. from $600"),
-   ("document workflows","created, versioned, approved and filed — automatically. from $500"),
-   ("firm dashboard","matters, pipeline and billing on one screen. from $1,000")],
+  fixes=[("client portal","cases, files, invoices and status in one login. from $1,500","custom-software"),
+   ("intake automation","forms that fill in on a phone, file and notify automatically. from $600","business-automation"),
+   ("document workflows","created, versioned, approved and filed — automatically. from $500","business-automation"),
+   ("firm dashboard","matters, pipeline and billing on one screen. from $1,000","business-dashboards")],
   proof=("document control","request → document created, filed, approved, locked, versioned and published — running today, built twice (apps script and n8n) so the team can edit it."),
   faqs=[("is client data safe?","per-client visibility is enforced server-side, and you own the code and hosting — auditable by anyone you choose."),
    ("we bill hourly. does this change that?","it removes the hours you can't bill — admin — and keeps the ones you can."),
@@ -289,10 +289,10 @@ INDUSTRIES = [
   intro=["a founder with an idea needs the version of the product that can meet users — not a six-month engagement, not a no-code demo that collapses at the first real feature.",
    "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs, and you keep the repo."],
   pains=["you have the idea and the users, not the technical team","agency quotes start at six figures","the no-code prototype hit its ceiling","your technical co-founder search is month six"],
-  fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500"),
-   ("app + backend + payments","the whole stack, not just screens. from $3,500"),
-   ("ai features","assistants, retrieval and pipelines with guardrails that hold. from $1,000"),
-   ("ongoing development","a standing block of hours as you see fit. from $400/mo")],
+  fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500","custom-software"),
+   ("app + backend + payments","the whole stack, not just screens. from $3,500","mobile-apps"),
+   ("ai features","assistants, retrieval and pipelines with guardrails that hold. from $1,000","ai-chatbots"),
+   ("ongoing development","a standing block of hours as you see fit. from $400/mo",None)],
   proof=("curio","consumer ios app on the app store: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages — built alone."),
   faqs=[("how fast can an mvp ship?","weeks, not quarters — scope decides. we cut to the version that tests the idea, in writing, before building."),
    ("do i own the code?","completely — repo, accounts and infrastructure from day one. investors will ask; the answer is yes."),
@@ -408,10 +408,34 @@ def cta_block(starter):
     return f'''<div class="ctarow">
       <a class="btn btn-solid magnet" href="/quote" data-evt="pricing_cta_click"><span>tell me what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <button class="btn magnet" type="button" data-assist-open data-assist-starter="{e(starter)}"><span>ask the ai about this</span></button>
+      <a class="cx-mini" href="/call" data-evt="cta_call_click">or book the free 15 minutes →</a>
       <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
     </div>'''
 
 ICONS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol></svg>'
+
+
+# Nineteen pages spent their one proof link on "/#work", which drops the reader
+# at the top of a 46KB homepage to go hunting for the thing they were just
+# promised. Each proof title names one of the six work rows outright, so the
+# anchor is derivable rather than nineteen hand-kept keys that would drift.
+WORK_ANCHORS = [
+    ('ordering', '#work-ordering'),
+    ('curio', '#work-curio'),
+    ('site intelligence', '#work-zips'),
+    ('zip', '#work-zips'),
+    ('review', '#work-reviews'),
+    ('document control', '#work-docs'),
+    ('compliance', '#work-assistant'),
+    ('assistant', '#work-assistant'),
+]
+
+def work_link(proof_title):
+    t = (proof_title or '').lower()
+    for needle, anchor in WORK_ANCHORS:
+        if needle in t:
+            return '/' + anchor
+    return '/#work'
 
 def service_page(s):
     path = f'/services/{s["slug"]}'
@@ -457,7 +481,7 @@ def service_page(s):
     <div class="proofcard">
       <h2>{e(s["proof"][0])}</h2>
       <p class="sub">{e(s["proof"][1])}</p>
-      <a class="cx-mini" href="/#work">see everything that's running →</a>
+      <a class="cx-mini" href="{work_link(s["proof"][0])}">see everything that's running →</a>
     </div>
   </div>
 </section>
@@ -482,7 +506,19 @@ def industry_page(i):
          "description":i["desc"]},
         faq_schema(i["faqs"]), breadcrumb_schema(bc, path)]
     pains = ''.join(f'<li>{e(p)}</li>' for p in i["pains"])
-    fixes = ''.join(f'<article class="fixcard"><h3>{e(t)}</h3><p>{e(d)}</p></article>' for t,d in i["fixes"])
+    # THE 40 DEAD ENDS (fixed 2026-08-21). These cards are the highest-intent
+    # element on an industry page — a restaurant owner reads "online ordering you
+    # own — from $600" and decides right there — and every one of them was an
+    # <article> with nowhere to click. Three of the four cards on a page now carry
+    # the reader to the priced service page; the rest stay inert on purpose,
+    # because a card promising less than the page it opens is worse than a card
+    # that opens nothing. check_prices.py enforces that direction.
+    fixes = ''.join(
+        (f'<a class="fixcard link" href="/services/{sl}" data-evt="fixcard_{sl}">'
+         f'<h3>{e(t)}</h3><p>{e(d)}</p><span class="go">see how →</span></a>'
+         if sl else
+         f'<article class="fixcard"><h3>{e(t)}</h3><p>{e(d)}</p></article>')
+        for t, d, sl in i["fixes"])
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in i["intro"])
     related = ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in i["related_services"])
     starter = f'i run a business in {i["name"]} — here\'s what i\'m dealing with: '
@@ -516,7 +552,7 @@ def industry_page(i):
     <div class="proofcard">
       <h2>{e(i["proof"][0])}</h2>
       <p class="sub">{e(i["proof"][1])}</p>
-      <a class="cx-mini" href="/#work">see everything that's running →</a>
+      <a class="cx-mini" href="{work_link(i["proof"][0])}">see everything that's running →</a>
     </div>
   </div>
 </section>
@@ -867,11 +903,26 @@ def quote_page():
 # EMIT
 # ══════════════════════════════════════════════════════════════════
 
+CHANGED = []
+
 def w(rel, content):
+    """Writes only on a real diff, and records it.
+
+    It used to write unconditionally, which mattered once IndexNow existed:
+    every rebuild would otherwise announce all forty URLs as fresh, including
+    the thirty-nine that are byte-identical, and a submitter that cries wolf is
+    a submitter that gets throttled."""
     p = os.path.join(ROOT, rel)
-    os.makedirs(os.path.dirname(p), exist_ok=True)
+    os.makedirs(os.path.dirname(p) or '.', exist_ok=True)
+    old = None
+    if os.path.exists(p):
+        with open(p, encoding='utf-8') as f:
+            old = f.read()
+    if old == content:
+        return
     with open(p, 'w', encoding='utf-8') as f:
         f.write(content)
+    CHANGED.append(rel)
     print('wrote', rel)
 
 # ── language service pages ────────────────────────────────────────
@@ -976,3 +1027,53 @@ w('sitemap.xml', sm)
 w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
 
 print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, quote, sitemap ({len(urls)} urls), robots.')
+
+# ── IndexNow ──────────────────────────────────────────────────────
+# There was no IndexNow code anywhere in this repo. README said "see git log for
+# the exact call", which means it fired approximately once, by hand, ever, while
+# the pages were regenerated many times a day. A step that lives in a person's
+# memory is a step that does not happen; a step in the build is one that cannot
+# be forgotten.
+#
+# Gated behind INDEXNOW=1 so local iteration does not POST the whole sitemap in
+# a loop and get the key throttled. Prints the HTTP status, because a silent 4xx
+# is exactly how this fails.
+INDEXNOW_KEY = 'b20f1e412f2cff8af636fe5676cfdbcd'
+
+def indexnow(paths):
+    import json as _json, urllib.request, urllib.error
+    if not paths:
+        print('indexnow: nothing changed, nothing submitted')
+        return
+    host = BASE.replace('https://', '')
+    payload = {
+        'host': host,
+        'key': INDEXNOW_KEY,
+        'keyLocation': f'{BASE}/{INDEXNOW_KEY}.txt',
+        'urlList': [BASE + u for u in paths],
+    }
+    req = urllib.request.Request(
+        'https://api.indexnow.org/indexnow',
+        data=_json.dumps(payload).encode(),
+        headers={'Content-Type': 'application/json; charset=utf-8'})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            print(f'indexnow: HTTP {r.status} for {len(paths)} url(s)')
+    except urllib.error.HTTPError as ex:
+        print(f'indexnow: HTTP {ex.code} — {ex.read()[:200].decode(errors="replace")}')
+    except Exception as ex:
+        print(f'indexnow: failed — {ex}')
+
+if os.environ.get('INDEXNOW') == '1':
+    # A changed file maps back to the URL that serves it.
+    def _url_of(rel):
+        if rel == 'index.html':
+            return '/'
+        if rel.endswith('/index.html'):
+            return '/' + rel[:-len('/index.html')]
+        if rel.endswith('.html'):
+            return '/' + rel[:-5]
+        return None
+    indexnow(sorted({u for u in (_url_of(r) for r in CHANGED) if u}))
+else:
+    print(f'{len(CHANGED)} file(s) changed — run with INDEXNOW=1 to submit them')

@@ -118,7 +118,31 @@ def main():
             if hi < lo:
                 errors.append(f'{path}: descending range ${lo:,}-${hi:,}')
 
-    # 4. the assistant quotes prices too, and it has its own copy of the list
+    # 4. a linked card must never promise less than the page it opens.
+    # The industry cards are the highest-intent element on the site and they now
+    # carry the reader to a priced service page. "from $600" opening a page that
+    # starts at $1,500 is a bait-and-switch the visitor discovers one click in,
+    # which is worse than the dead end this replaced. Direction only: a card may
+    # quote ABOVE its target's floor, because an industry-shaped build legitimately
+    # starts higher than the generic service.
+    card = re.compile(
+        r'<a class="fixcard link" href="/services/([a-z-]+)"[^>]*>.*?</a>', re.S)
+    for path in sorted(glob.glob('industries/*.html')):
+        s_html = io.open(path, encoding='utf-8').read()
+        for m in card.finditer(s_html):
+            slug = m.group(1)
+            floor = FLOORS.get(slug)
+            if floor is None:
+                errors.append(f'{path}: card links to /services/{slug}, which has no floor')
+                continue
+            vals = figures(m.group(0))
+            for v in vals:
+                if v < floor:
+                    errors.append(
+                        f'{path}: a card promising ${v:,} opens /services/{slug}, '
+                        f'which starts at ${floor:,}')
+
+    # 5. the assistant quotes prices too, and it has its own copy of the list
     prompt = io.open('server/prompt.js', encoding='utf-8').read()
     for v in set(figures(prompt)):
         if v not in ALL:
