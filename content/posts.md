@@ -1,5 +1,12 @@
 # Posts, ready to publish
 
+LEON IS BRAZILIAN. "Sou brasileiro" is true and it belongs in the Portuguese
+copy — in a Brazilian owners' group it is the single strongest trust signal he
+has, and it costs nothing to say. I removed it on 2026-08-21 assuming from his
+name that it was invented, and put it back the same night. Do not remove it
+again. What must still never appear is a CITY: "moro em Hayward (CA)" was in a
+pending group post and that is the part that had to go, not his nationality.
+
 Every line here is written natively in its language, not translated. Rules applied
 throughout: no city or region named anywhere, no testimonial or client name, no
 rating, no download count, no "trusted by N businesses". Prices are the published
@@ -58,7 +65,7 @@ Price `300` · link `https://leonbuilds.org/pt?s=fbmkt-pt`
 
 > Ainda anota pedido, agendamento, pergunta de cliente ou papelada na mão?
 >
-> Eu faço o sistema que tira esse trabalho de você.
+> Sou brasileiro e sou desenvolvedor. Eu faço o sistema que tira esse trabalho de você.
 >
 > O QUE EU POSSO FAZER PRA VOCÊ
 > • Site do seu negócio — a partir de $300
