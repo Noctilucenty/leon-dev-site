@@ -638,11 +638,11 @@ def about_page():
 </main>
 ''' + footer()
 
-CAL_LINK = "https://cal.com/noctilucente-wzvdey/15min?theme=dark"  # live booker; the page switches
+CAL_SLUG = "noctilucente-wzvdey/15min"   # cal.com user/event; empty string falls back to the request form
                 #    from the request form to a real embedded booker when set.
 
 def call_page():
-    """Book a 15-minute call. Until CAL_LINK is set this posts a request to the
+    """Book a 15-minute call. Until CAL_SLUG is set this posts a request to the
        same lead API the quote form uses, so the page converts from day one
        instead of waiting on a third-party signup."""
     path = '/call'
@@ -655,8 +655,24 @@ def call_page():
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
         "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
     }]
-    booker = (f'<div class="calwrap"><iframe src="{CAL_LINK}" title="book a 15-minute call" '
-              'loading="lazy" style="width:100%;min-height:680px;border:0"></iframe></div>') if CAL_LINK else \
+    # Cal.com's OFFICIAL inline embed, not a raw iframe. A raw iframe of the
+    # public booking URL inherits the visitor's cal.com session, so a logged-in
+    # user — i.e. Leon himself — sees his own bookings dashboard instead of the
+    # booker. The embed script renders in an isolated context and cannot.
+    booker = (
+      '<div class="calwrap"><div id="leon-cal"></div></div>'
+      '<script>(function(C,A,L){var p=function(a,ar){a.q.push(ar)};var d=C.document;'
+      'C.Cal=C.Cal||function(){var cal=C.Cal;var ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];'
+      'd.head.appendChild(d.createElement("script")).src=A;cal.loaded=true}'
+      'if(ar[0]===L){var api=function(){p(api,arguments)};var ns=ar[1];api.q=api.q||[];'
+      'if(typeof ns==="string"){cal.ns[ns]=cal.ns[ns]||api;p(cal.ns[ns],ar);p(cal,["initNamespace",ns])}'
+      'else p(cal,ar);return}p(cal,ar)}})(window,"https://app.cal.com/embed/embed.js","init");'
+      'Cal("init","leon15",{origin:"https://app.cal.com"});'
+      'Cal.ns.leon15("inline",{elementOrSelector:"#leon-cal",'
+      'config:{layout:"month_view",theme:"dark"},calLink:"' + CAL_SLUG + '"});'
+      'Cal.ns.leon15("ui",{theme:"dark",hideEventTypeDetails:false,layout:"month_view"});'
+      '</script>'
+    ) if CAL_SLUG else \
     '''<form class="qform" id="callform" novalidate>
       <label>name<input name="name" type="text" autocomplete="name"></label>
       <div class="qrow">
