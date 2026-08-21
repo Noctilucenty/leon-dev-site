@@ -6,6 +6,27 @@
   'use strict';
 
   var run = function (fn) { try { fn(); } catch (e) { /* fail soft */ } };
+
+  /* ══ the old host ════════════════════════════════════════
+     The site moved to leonbuilds.org but leonkelvinli.onrender.com still
+     serves every page with a 200, including ones created after the move. Two
+     costs: every URL exists twice on the open web while a day-old domain is
+     asking to be indexed, and — the part that actually matters — the Facebook
+     Marketplace listings and group posts already published point at the old
+     host, so real people are landing there right now.
+
+     A server-side 301 in the Render dashboard is the correct fix and this is
+     not a substitute for it. This is the safety net that costs nothing and
+     works today: the visitor lands where the content is canonical, keeping
+     their path and their ?s= attribution intact.
+
+     Runs before anything else and deliberately outside run(), because a
+     redirect that fails soft is a redirect that does not happen. */
+  (function () {
+    var h = location.hostname;
+    if (h !== 'leonkelvinli.onrender.com') return;
+    location.replace('https://leonbuilds.org' + location.pathname + location.search + location.hash);
+  })();
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
