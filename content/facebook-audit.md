@@ -164,3 +164,115 @@ Two things in it were right for reasons that survive the retraction:
   the channel that works is a referral from someone the owner trusts, or work
   already done for one specific business. That was true before tonight.
 
+---
+
+## The full sweep, done properly — 2026-08-21
+
+The earlier passes checked the six groups he remembered posting to. The complete
+list came from one page nobody had opened: **`facebook.com/me/allactivity/?category_key=GROUPPOSTS`**,
+which lists every group post he has ever made, with its full text. It is the
+only reliable inventory; the group-by-group check misses whatever he forgot.
+
+It found **nine live posts with stale prices**, not the three the "Fixed" table
+above claimed. The earlier line — "the stale posts were NOT spread across 51
+groups, they were concentrated in the six he actually posted to" — was wrong,
+and wrong because the sample was his memory rather than the log.
+
+### The prices that were live
+Old figures against the current floors: small fixes $49 (now $75) · single-page
+site $400 (now $300, and $400 now means the monthly retainer) · full site $1,200
+(now $625) · online ordering $2,000 (now $600) · website $325 (now $300) ·
+app/system $2,500 (now $3,500 for an app, $1,500 for custom software).
+
+Most were quoted **higher** than today, which reads as disorganised rather than
+as a bait. `$49 → $75` is the one that runs the wrong way, and it is exactly
+what rule 4 of `tools/check_prices.py` exists to stop on the site.
+
+### Fixed, verified after saving
+| group | was wrong | now |
+|---|---|---|
+| 美国华人圈 | 住在加州, $49, $1,200, old domain | **published**, corrected |
+| 巴西🇧🇷华人交流群 | 人在美国加州, $49/$400/$1,200/$2,000 | corrected, queued for re-approval |
+| 巴西华人群 \| Overseas Chinese In Brazil | 人在美国加州, $49/$400/$1,200 | **published**, corrected |
+| 巴西华人 | 人在美国加州, $49/$400/$1,200 | **published**, corrected |
+| Hayward, CA community | "living here in Hayward", $325/$2,500, **stale rate-card image** | corrected + image replaced, queued |
+| Hayward Market Place | "I live here in Hayward", $325/$2,500, **stale rate-card image** | **published**, corrected + image replaced |
+| Brasileiros Nos EUA | "moro em Hayward (CA)", $400/$2,000/$49 | corrected |
+| 🇧🇷 Brasileiros em SF e Bay Area | "moro em Hayward", $325/$2,500, **stale rate-card image** | corrected + image replaced, still pending |
+| Brasileiros Na Bay-Area | "moro em Hayward", $325/$2,500 | corrected + image replaced, still pending |
+
+Nine for nine. Every one now carries the floors from `tools/check_prices.py`,
+no place name, and leonbuilds.org.
+
+### The image was worse than the text
+Four of those posts carried a picture of the **old rate card** — twelve prices
+rendered large, above the fold, every one of them wrong: business websites
+$325, online ordering $2,000, ios & android apps $2,500, booking & scheduling
+$750, ai chatbots $500. An older variant was worse still ($49 small fixes,
+$4,500 apps).
+
+Editing the text does nothing about that, and nobody reads the caption before
+the image. They were replaced with `assets/listings/fb_*_2build.png`, which
+lists the service names and **no figures at all** — `tools/make_listing_images.py`
+already decided that ("names only — no figures on listing creative"), and this
+is why that decision was right. A priced image is a price that cannot be
+regenerated; it has to be hunted down in every group it was ever posted to.
+
+**Rule: never put a figure on any image that leaves this repo.** The floors move;
+the picture does not.
+
+### Facebook mechanics worth not relearning
+- **The "Leave site? — unsaved changes" dialog fires after a *successful* save.**
+  It is not evidence of anything. Verify by reloading the group's own
+  `my_posted_content` / `my_pending_content`, never by trusting that dialog.
+  This false signal is most of what produced the retracted report below.
+- **Some pending posts are server-side ghosts.** Their Edit button is greyed
+  out, and the ⋯ menu returns *"We can't access this post, it may have been
+  deleted."* Two are in this state (see below). That — not a membership review,
+  not a platform bug — is what a genuinely un-editable post looks like.
+- **Editing a *published* post can send it back to moderation.** Some groups
+  warn in the menu: "Edits will be submitted for admin approval". Correcting a
+  live post there costs its current visibility. Worth it for a wrong price;
+  not worth it for a typo.
+- **Opening the ⋯ menu and clicking its item must happen in one batch**, with a
+  screenshot between them for timing. Any `find`/`read_page` in between
+  dismisses the menu.
+- Attached photos are removable in the edit dialog (an X on the thumbnail), and
+  a replacement uploads through the dialog's hidden `input[type=file]`.
+
+### Two ghosts — Leon has to delete and repost
+Both are **pending**, so nothing was ever published and no reach is lost.
+Neither can be edited by anyone; the post object is gone server-side.
+
+| group | what it still says |
+|---|---|
+| 美国华人群 | 住在加州 · 小修小改 $49 · 单页网站 $400 · 完整网站 $1,200 · 网上点单 $2,000 |
+| ANUNCIOS CLASSIFICADOS BRASILEIROS … | $325 site / $2,500 app, plus the worst stale rate-card image |
+
+Fix for each: open `facebook.com/groups/<id>/my_pending_content`, click
+**Delete**, then post the corrected copy from `content/posts.md`. One click each.
+Both groups also show **Removed · 1** — a separate post a moderator took down.
+
+### Not verified
+One photo-only post in **Castro Valley Hayward San Leandro & San Lorenzo
+COMMUNITY HUB** (private, 2026-08-16). It very likely carries the same stale
+rate-card image. The group did not surface in the joined-groups list far enough
+to read its id; the check is `facebook.com/groups/<id>/my_posted_content`.
+
+### Marketplace puts the city back, and there is no setting to stop it
+Two group posts are Marketplace listings cross-posted into groups (湾区华人群,
+湾区生活资讯). Their card renders **"$300 · HAYWARD, CA"**. The city is not in
+any copy — it is the listing's location field, which Marketplace requires and
+which has no "nationwide" option. The only lever is to move the listing to a
+different city, which changes who sees it locally. Left alone deliberately;
+this is Leon's call, not a bug to fix.
+
+### Marketplace listing state, for the record
+Four service listings are flagged **"This listing may go against our rules for
+selling"** — expected, since Commerce Policies ban services. Two are still
+active. Clicks so far: PT $300 listing **14**, old EN $49/$199 listing 9, new EN
+$300 listing 4, old $0/$5 listing 4, ES $300 listing 2, ZH $300 listing 2.
+
+The two **old** listings are still up and still quoting `$49/$199` and `$0/$5` —
+the "$0" being the exact thing Leon said makes a listing read as spam. They
+predate the reprice and should come down. Not deleted here: that is his to do.
