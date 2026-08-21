@@ -52,12 +52,30 @@ CROSS = {
     'mobile-apps': {3500, 1500},
 }
 
-ALL = set(FLOORS.values())
+# Card-processing constants that legitimately appear in the ordering copy, where
+# the honest comparison is "platform commission vs 2.9% + $0.30". They are not
+# service prices, so they are named here rather than being let through by a
+# blanket "small numbers are fine" rule — a stray "$50 website" must still fail.
+FEE_CONSTANTS = {0.30}
+
+
+ALL = set(FLOORS.values()) | FEE_CONSTANTS
 # budget brackets on the quote form are ranges, not prices
 IGNORE_FILES = {'quote.html'}
 
 def figures(text):
-    return [int(m.group(1).replace(',', '')) for m in re.finditer(r'\$([0-9][0-9,]*)', text)]
+    """Every dollar amount, decimals included.
+
+    The first version stopped at the decimal point, so "$0.30" read as $0 and
+    tripped the check on correct copy, while a European-style "$1.500" meant to
+    say fifteen hundred read as $1 and tripped it for the wrong reason. Both are
+    the same bug: a price parser that cannot see a decimal is not reading prices.
+    """
+    out = []
+    for m in re.finditer(r'\$([0-9][0-9,]*(?:\.[0-9]+)?)', text):
+        v = float(m.group(1).replace(',', ''))
+        out.append(int(v) if v == int(v) else v)
+    return out
 
 def main():
     os.chdir(ROOT)

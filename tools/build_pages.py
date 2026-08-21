@@ -353,7 +353,11 @@ def footer():
 <script src="/app.js" defer></script>
 <script src="/assist.js" defer></script>'''
 
-def head(title, desc, path, schema):
+def head(title, desc, path, schema, alts=''):
+    """alts carries the hreflang cluster. Hreflang only works when it is
+    RECIPROCAL — a Portuguese page pointing at its English twin while the twin
+    stays silent is a cluster Google discards, so the English service pages that
+    have translations must name them back."""
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -364,6 +368,7 @@ def head(title, desc, path, schema):
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="{BASE}{path}">
+{alts}
 <meta property="og:type" content="website">
 <meta property="og:url" content="{BASE}{path}">
 <meta property="og:title" content="{e(title)}">
@@ -421,7 +426,7 @@ def service_page(s):
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
     related = ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
     starter = f'i\'m looking at {s["name"]} — here\'s my situation: '
-    return head(s["title"], s["desc"], path, schema) + ICONS + nav() + f'''
+    return head(s["title"], s["desc"], path, schema, EN_ALTS.get(s["slug"], "")) + ICONS + nav() + f'''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
@@ -859,19 +864,6 @@ def w(rel, content):
         f.write(content)
     print('wrote', rel)
 
-for s in SERVICES: w(f'services/{s["slug"]}.html', service_page(s))
-for i in INDUSTRIES: w(f'industries/{i["slug"]}.html', industry_page(i))
-
-w('services/index.html', listing_page('services', SERVICES,
-  "Services — Websites, Apps, AI & Automation | Leon Kelvin Li",
-  "Every service Leon builds, with honest starting prices: websites, mobile apps, AI chatbots and phone agents, automation, portals, dashboards and more.",
-  "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and i'll quote the shape of it."))
-
-w('industries/index.html', listing_page('industries', INDUSTRIES,
-  "Industries I Build Software For | Leon Kelvin Li",
-  "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
-  "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
-
 # ── language service pages ────────────────────────────────────────
 # The one thing an agency cannot copy: the developer speaks the language the
 # owner explains the problem in. Copy is native, never translated, and lives
@@ -890,6 +882,37 @@ def _siblings(lang, key):
             if l == lang and k != key]
 
 LANG_CTX = dict(e=e, BASE=BASE, FONTS=FONTS, ICONS=ICONS, siblings=_siblings)
+
+# Reciprocal hreflang for the English pages that now have translations. Built
+# from the same SLUGS table the language pages use, so the two sides cannot
+# drift into a one-way cluster Google throws away.
+EN_ALTS = {}
+for _key, _en in lang_pages.EN_COUNTERPART.items():
+    if not any(l for (l, k) in LANG_COPY if k == _key):
+        continue
+    _tags = [f'<link rel="alternate" hreflang="en" href="{BASE}{_en}">']
+    for _code in ['pt', 'es', 'zh']:
+        if (_code, _key) in LANG_COPY:
+            _hl = lang_pages.LANGS[_code]['hreflang']
+            _tags.append(f'<link rel="alternate" hreflang="{_hl}" '
+                         f'href="{BASE}/{_code}/{lang_pages.SLUGS[(_code, _key)]}">')
+    _tags.append(f'<link rel="alternate" hreflang="x-default" href="{BASE}{_en}">')
+    EN_ALTS[_en.rsplit("/", 1)[-1]] = ''.join(_tags)
+
+
+for s in SERVICES: w(f'services/{s["slug"]}.html', service_page(s))
+for i in INDUSTRIES: w(f'industries/{i["slug"]}.html', industry_page(i))
+
+w('services/index.html', listing_page('services', SERVICES,
+  "Services — Websites, Apps, AI & Automation | Leon Kelvin Li",
+  "Every service Leon builds, with honest starting prices: websites, mobile apps, AI chatbots and phone agents, automation, portals, dashboards and more.",
+  "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and i'll quote the shape of it."))
+
+w('industries/index.html', listing_page('industries', INDUSTRIES,
+  "Industries I Build Software For | Leon Kelvin Li",
+  "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
+  "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
+
 LANG_URLS = []
 for (lang, key), page in sorted(LANG_COPY.items()):
     slug = lang_pages.SLUGS[(lang, key)]
