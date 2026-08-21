@@ -148,13 +148,50 @@ const isNetworkError = (e) => {
   return /ETIMEDOUT|ENETUNREACH|ECONNREFUSED|EHOSTUNREACH|Connection timeout|Greeting never received/i.test(c);
 };
 
-function transportFor(port) {
+/* Resolve the SMTP host to an IPv4 LITERAL ourselves, and connect to that.
+ *
+ * Two softer fixes were tried first and both failed, which is why this one looks
+ * heavy-handed:
+ *
+ *   1. `family: 4` on the transport. nodemailer 9 does not reliably pass it down
+ *      to net.connect. 9 of 10 attempts still went to an AAAA address.
+ *   2. `dns.setDefaultResultOrder('ipv4first')` process-wide. That governs
+ *      dns.lookup, and nodemailer does its OWN resolution rather than going
+ *      through lookup, so it sails straight past the setting. Measured: still
+ *      `connect ENETUNREACH 2607:f8b0:400e:c05::6d:465 - Local (:::0)`, and the
+ *      `Local (:::0)` in that message is the giveaway — an IPv6 wildcard bind.
+ *
+ * Handing nodemailer an address instead of a name leaves nothing to resolve and
+ * nothing to get wrong. `tls.servername` carries the real hostname so SNI and
+ * certificate validation still work — without it, the cert would be checked
+ * against an IP and every connection would fail to verify.
+ *
+ * Cached for a few minutes: Gmail rotates these, and re-resolving on every lead
+ * is a DNS round trip in the path of something a person is waiting on.
+ */
+let _ipCache = { host: null, ip: null, at: 0 };
+const IP_TTL_MS = 5 * 60 * 1000;
+
+async function resolveIPv4(host) {
+  const now = Date.now();
+  if (_ipCache.host === host && _ipCache.ip && now - _ipCache.at < IP_TTL_MS) return _ipCache.ip;
+  const { resolve4 } = require('dns').promises;
+  const addrs = await resolve4(host);
+  if (!addrs || !addrs.length) throw new Error(`no A record for ${host}`);
+  _ipCache = { host, ip: addrs[0], at: now };
+  return addrs[0];
+}
+
+async function transportFor(port) {
   const nodemailer = require('nodemailer');
+  const host = process.env.SMTP_HOST;
+  const ip = await resolveIPv4(host);
   return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
+    host: ip,                      // an address, so there is nothing left to resolve
     port,
     secure: port === 465,          // implicit TLS on 465, STARTTLS on 587
-    family: 4,                     // see the IPv6 note above
+    family: 4,
+    tls: { servername: host },     // SNI + cert validation against the real name
     auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
     connectionTimeout: 15000,
     greetingTimeout: 15000
@@ -167,7 +204,7 @@ async function openTransport() {
   let last;
   for (const port of portsToTry()) {
     try {
-      const t = transportFor(port);
+      const t = await transportFor(port);
       await t.verify();
       return { t, port };
     } catch (e) {
