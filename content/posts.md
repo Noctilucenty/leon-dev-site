@@ -284,3 +284,43 @@ Where service posts ARE allowed on Facebook:
 What NOT to do: request a review on the rejected listings. The listing does
 promote a service, so a review would uphold the decision, and appeals that are
 denied are a worse signal than a listing quietly left alone.
+
+---
+
+## Facebook group post audit — 2026-08-21
+
+Every group post predates the reprice, the domain move to leonbuilds.org, and
+the no-city rule. They all carry some combination of: prices from the old list
+($49 small fixes, $400 "single-page site", $1,200 "full site", $2,000 online
+ordering, $4,500 app), a link to leonkelvinli.onrender.com, and a location —
+"moro em Hayward (CA)" or 住在加州.
+
+The prices are the damaging part. A live post quoting $2,000 for online
+ordering, against $600 on the site, reads as either a bait or a mistake to
+anyone who checks both.
+
+### Fixed
+| group | what was wrong | state |
+|---|---|---|
+| 美国洛杉矶广告群 (688, **live**) | $49 · $400 · $1,200 · $2,000 · $4,500, 住在加州, old domain | corrected + WeChat added |
+| Empresas Brasileiras nos EUA (6.8K, pending) | old prices, old domain | corrected, "Sou brasileiro" kept |
+| Empreendedores Brasileiros dos EUA (8.7K, pending) | "moro em Hayward (CA)", $49/$400/$1,200, old domain | corrected, "Sou brasileiro" kept |
+
+### Still wrong — could not be fixed from here
+| group | what is wrong | why it is stuck |
+|---|---|---|
+| 加州华人(美国) …生意广告 (pending) | 住在加州, 小修小改 $49, 完整网站 $1,200 | Facebook shows "Your review is still pending — admins review new participants before their content is published". His MEMBERSHIP is under review, and the pending post will not accept an edit. Save silently fails and the page reports unsaved changes. Delete and repost once the membership clears. |
+| Profissionais Brasileiros nos EUA (pending) | "moro em Hayward (CA)", $49 · $400 · $1,200, old domain | Not blocked — the browser session became unstable before it was done. Same edit as the other two. |
+
+### Checked, nothing to fix
+洛杉矶华人交流群 (46.1K) · Comunidade Brasileira nos EUA — no posts, published or pending.
+
+### Not yet checked
+美国华人圈 · 美国华人群 · 巴西🇧🇷华人交流群 · 巴西华人群 · 巴西华人 · Brasileiros Nos EUA ·
+Brasileiros Na Bay-Area · 🇧🇷 Brasileiros em SF e Bay Area · 湾区华人群 · 湾区生活资讯 ·
+湾区租房二手 · ANUNCIOS CLASSIFICADOS BRASILEIROS · Gringos Buy & Sell Sao Paulo.
+He is in 51 groups in total; these are the ones with recent activity.
+
+The check for each is two URLs:
+  facebook.com/groups/<id>/my_posted_content    (live — fix these first)
+  facebook.com/groups/<id>/my_pending_content   (queued)
