@@ -84,3 +84,51 @@ The composer offers posting to up to 9 groups at once. Not used, deliberately:
 the same text across Chinese, Portuguese and English groups is both wrong for
 most of those audiences and the exact shape Facebook's spam heuristics look
 for. One group, one language, one post.
+
+---
+
+## STOP — the posts are getting him removed from groups (2026-08-21)
+
+Checked every group he had posted to. The button on all of them now reads
+**"Join group"**, which means he is no longer a member:
+
+| group | members | status |
+|---|---|---|
+| 加州华人(美国)…生意广告 | 56.5K | REMOVED |
+| 洛杉矶华人交流群 | 46.1K | REMOVED — within ~1h of tonight's post |
+| Comunidade Brasileira nos EUA | 28.6K | REMOVED — within ~1h of tonight's post |
+| Profissionais Brasileiros nos EUA | 22.7K | REMOVED, pending post gone with it |
+| Empreendedores Brasileiros dos EUA | 8.7K | REMOVED |
+
+Five for five. Roughly 162,000 members of reach, gone.
+
+This also explains what looked like a Facebook bug earlier: the two pending
+posts whose edits "silently failed" were not frozen by a platform quirk. He had
+already been removed from those groups, so the posts were no longer his to edit.
+
+### What this overturns
+The earlier conclusion — "Marketplace bans services, so groups are the
+compliant Facebook surface" — is wrong as executed. Marketplace rejects service
+listings by policy; the groups reject them by moderator, and the penalty is
+worse. Marketplace removes the listing. A group removes the person.
+
+### What it does not prove
+That group posting cannot work. What was posted was, in every case, a
+price-list ad: a headline, a bulleted rate card, a link. That is what these
+moderators remove, and it is also the least persuasive thing he could post. The
+marketing plan said this in its own words and was not followed: the channel that
+works is being introduced by someone the owner already trusts, or arriving with
+the work already done for one specific business — not broadcasting a rate card
+to 8,000 strangers.
+
+### Do not, until this is thought through
+- Do not post to another group.
+- Do not rejoin a group he was removed from. Rejoining to post the same thing
+  again is how a personal account gets restricted, and that account is also his
+  Marketplace access, which is where his one paying client came from.
+- Do not use the composer's post-to-9-groups feature, ever.
+
+### Worth checking
+Whether the personal account itself carries a warning or restriction. Five
+group removals in a day is the kind of pattern Facebook's own systems act on,
+and that would be a far more expensive problem than any of the above.
