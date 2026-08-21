@@ -193,3 +193,71 @@
   .as-langpick{ margin-right:.4rem; }
   .as-langpick a{ padding:.24rem .38rem; font-size:10.5px; }
 }
+
+/* ══ the first-visit language chooser ══════════════════════
+   A centred box rather than a corner bar: the corner bar was dismissible by
+   ignoring it, and the visitor it exists for — someone who reads English
+   slowly — is exactly the one who ignores small grey text in a corner. */
+.as-langmodal{
+  position:fixed; inset:0; z-index:9000;
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  background:rgba(0,0,0,.72); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  animation:as-fade .22s ease both;
+}
+@keyframes as-fade{ from{opacity:0} to{opacity:1} }
+.as-langbox{
+  position:relative; width:min(28rem,100%);
+  background:var(--panel,#0b0b0c); border:1px solid var(--line-2,#2a2a2e);
+  border-radius:16px; padding:1.6rem 1.5rem 1.3rem;
+  animation:as-rise .26s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes as-rise{ from{opacity:0;transform:translateY(10px) scale(.985)} to{opacity:1;transform:none} }
+.as-langbox .k{
+  margin:0 0 .7rem; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--faint,#666);
+}
+.as-langbox h2{
+  margin:0 0 .55rem; font-size:1.12rem; line-height:1.32; font-weight:500;
+  color:var(--fg,#fafafa); letter-spacing:-.01em;
+}
+.as-langbox .sub{ margin:0 0 1.15rem; font-size:12.5px; line-height:1.6; color:var(--mid,#aaa); }
+.as-langbox .opts{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
+.as-langbox .opts button{
+  display:flex; flex-direction:column; gap:.15rem; align-items:flex-start;
+  padding:.7rem .8rem; border-radius:10px; cursor:pointer; text-align:left;
+  border:1px solid var(--line-2,#2a2a2e); background:#000; color:var(--fg,#fafafa);
+  transition:border-color .2s, transform .2s, background .2s;
+}
+.as-langbox .opts button:hover{ border-color:var(--ac,#9b8cff); transform:translateY(-1px); }
+.as-langbox .opts button b{ font-size:13.5px; font-weight:500; }
+.as-langbox .opts button i{ font-style:normal; font-size:10.5px; color:var(--faint,#666); }
+.as-langbox .opts button.go{ border-color:var(--ac,#9b8cff); }
+.as-langbox .opts button.go i{ color:var(--ac,#9b8cff); }
+.as-langbox .skip{
+  display:block; width:100%; margin-top:.85rem; padding:.5rem; cursor:pointer;
+  background:none; border:0; color:var(--faint,#666); font-size:11.5px;
+  font-family:inherit; letter-spacing:.02em;
+}
+.as-langbox .skip:hover{ color:var(--mid,#aaa); }
+.as-langbox .x{
+  position:absolute; top:.6rem; right:.7rem; width:26px; height:26px; cursor:pointer;
+  background:none; border:0; color:var(--faint,#666); font-size:13px; line-height:1;
+}
+.as-langbox .x:hover{ color:var(--fg,#fafafa); }
+@media (max-width:400px){
+  .as-langbox .opts{ grid-template-columns:1fr; }
+}
+
+/* The nav pills live in the header on desktop and inside the burger menu on a
+   phone — never both. Three items plus four pills crushed the wordmark to zero
+   width at 375px. */
+.as-langpick.in-menu{ display:none; }
+@media (max-width:900px){
+  .as-langpick.in-menu{
+    display:flex; justify-content:center; gap:.15rem;
+    padding:.55rem .3rem .35rem; border-top:1px solid var(--line,#1c1c1f);
+  }
+}
+@media (max-width:620px){
+  .nav-end > .as-langpick{ display:none; }
+}

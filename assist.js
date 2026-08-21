@@ -131,49 +131,92 @@
     return (LANG_PAGE[v] || '/') + (location.search || '');
   }
 
-  /* the page-level nudge — only when the browser disagrees with the page */
+  /* ══ the language chooser, on first visit ════════════════
+     This used to fire only when the browser's locale disagreed with the page,
+     which is precisely the case that does not happen. A Brazilian owner in
+     Ohio and a Chinese owner in Texas both carry English-set phones — locale
+     sniffing finds neither of them, so the one visitor the four translations
+     exist for was the one never asked.
+
+     So: ask once, plainly, on the English pages. Someone already on /pt chose
+     by clicking the ad that sent them there and is not asked again. The answer
+     is remembered in localStorage, not sessionStorage, so it survives the visit
+     and a returning visitor never sees the box twice.
+
+     Injected by script, so it is invisible to crawlers and changes nothing
+     about what Google indexes. */
   var langBar = null;
   run(function () {
     if (storedLang()) return;
-    // Already on a translated page? They picked by clicking the ad that sent
-    // them here. Asking again at the door is friction — most Brazilians and
-    // Chinese speakers in the US carry english-set phones, so locale sniffing
-    // would prompt literally everyone. The chat still offers the choice.
     if (PAGE_LANG !== 'en') return;
-    var want = detectLang();
-    var target = want;
-    if (!target || target === PAGE_LANG) return;
-    try { if (sessionStorage.getItem('leon_lang_dismissed')) return; } catch (e) {}
+    try { if (localStorage.getItem('leon_lang_dismissed')) return; } catch (e) {}
 
-    var bar = document.createElement('div');
-    bar.className = 'as-langbar';
-    bar.setAttribute('role', 'dialog');
-    bar.setAttribute('aria-label', 'language');
-    bar.style.position = 'fixed';
-    bar.innerHTML = '<button class="x" type="button" aria-label="close">✕</button>'
-      + '<p>' + LANG_ASK + '</p><div class="opts"></div>';
-    var opts = bar.querySelector('.opts');
+    // detectLang no longer decides WHETHER to ask, only which option to mark as
+    // the likely one.
+    var guess = detectLang();
+
+    var back = document.createElement('div');
+    back.className = 'as-langmodal';
+    back.setAttribute('role', 'dialog');
+    back.setAttribute('aria-modal', 'true');
+    back.setAttribute('aria-label', 'Choose your language');
+
+    var box = document.createElement('div');
+    box.className = 'as-langbox';
+    box.innerHTML =
+      '<button class="x" type="button" aria-label="close">\u2715</button>'
+      + '<p class="k">Leon Kelvin Li</p>'
+      + '<h2>What language do you want to do this in?</h2>'
+      + '<p class="sub">I build the software and I speak all four. Pick one and the '
+      + 'whole site switches \u2014 prices, pages and the person who answers.</p>'
+      + '<div class="opts"></div>'
+      + '<button class="skip" type="button">keep it in english</button>';
+    var opts = box.querySelector('.opts');
+
+    var NATIVE = { en: 'English', es: 'Espa\u00f1ol', pt: 'Portugu\u00eas', zh: '\u4e2d\u6587' };
+    var UNDER = { en: 'United States', es: 'hablo espa\u00f1ol', pt: 'falo portugu\u00eas', zh: '\u6211\u8bf4\u4e2d\u6587' };
+
+    function choose(v) {
+      setLang(v);
+      evt('lang_pick_' + v);
+      try { localStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
+      if (v === PAGE_LANG) { close(); return; }
+      location.href = langHref(v);
+    }
+    function close() {
+      try { localStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
+      back.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') { evt('lang_prompt_dismiss'); close(); } }
 
     ['en', 'es', 'pt', 'zh'].forEach(function (v) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.textContent = LANG_NAME[v];
-      if (v === target) b.className = 'go';
-      b.addEventListener('click', function () {
-        setLang(v);
-        evt('lang_pick_' + v);
-        if (v === PAGE_LANG) { bar.remove(); return; }
-        location.href = langHref(v);
-      });
+      b.setAttribute('lang', v);
+      b.innerHTML = '<b>' + NATIVE[v] + '</b><i>' + UNDER[v] + '</i>';
+      if (v === guess && v !== 'en') b.className = 'go';
+      b.addEventListener('click', function () { choose(v); });
       opts.appendChild(b);
     });
-    bar.querySelector('.x').addEventListener('click', function () {
-      try { sessionStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
-      bar.remove();
+
+    box.querySelector('.x').addEventListener('click', function () {
+      evt('lang_prompt_dismiss'); close();
     });
-    document.body.appendChild(bar);
-    langBar = bar;
+    box.querySelector('.skip').addEventListener('click', function () {
+      choose('en');
+    });
+    back.addEventListener('click', function (e) {
+      if (e.target === back) { evt('lang_prompt_dismiss'); close(); }
+    });
+    document.addEventListener('keydown', onKey);
+
+    back.appendChild(box);
+    document.body.appendChild(back);
+    langBar = back;
     evt('lang_prompt_shown');
+    var first = opts.querySelector('button.go') || opts.querySelector('button');
+    if (first) first.focus();
   });
 
   /* ══ language switcher, in the nav of every page ═════════
@@ -203,6 +246,22 @@
       wrap.appendChild(a);
     });
     nav.insertBefore(wrap, nav.firstChild);
+
+    // A second copy inside the burger menu. On a phone the nav has room for the
+    // mark, the booking button and the burger — and that is all; the pills were
+    // squeezing the wordmark down to nothing. CSS shows exactly one of the two.
+    var menu = $('.nav-mid');
+    if (menu) {
+      var m = wrap.cloneNode(true);
+      m.className = 'as-langpick in-menu';
+      Array.prototype.forEach.call(m.querySelectorAll('a'), function (a) {
+        a.addEventListener('click', function () {
+          setLang(a.getAttribute('lang'));
+          evt('lang_switch_' + a.getAttribute('lang'));
+        });
+      });
+      menu.appendChild(m);
+    }
   });
 
   /* ══ contextual starter prompts ══════════════════════════ */

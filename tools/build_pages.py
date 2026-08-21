@@ -324,6 +324,7 @@ def nav():
     <a href="/industries/"><i>[</i><span>industries</span><i>]</i></a>
     <a href="/#work"><i>[</i><span>work</span><i>]</i></a>
     <a href="/#pricing"><i>[</i><span>pricing</span><i>]</i></a>
+    <a class="nav-book" href="/call"><i>[</i><span>book a 15-min call</span><i>]</i></a>
   </nav>
   <div class="nav-end">
     <a class="btn btn-solid magnet" href="/call" data-evt="nav_call_click"><span>book a 15-min call</span></a>
