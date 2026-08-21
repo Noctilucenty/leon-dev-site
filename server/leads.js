@@ -81,54 +81,31 @@ function persistLead(lead) {
       '. Until then this lead exists only in this log and in an ephemeral file ' +
       'that the next deploy erases.');
   } else {
-    try {
-      const nodemailer = require('nodemailer');
-      const t = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT || 587),
-        secure: Number(process.env.SMTP_PORT) === 465,
-        /* IPv4 ONLY, AND THIS IS NOT A PREFERENCE (2026-08-21).
-         *
-         * Every lead silently failed to send for the first hours after SMTP was
-         * configured, with the health endpoint reporting leadEmail:true the whole
-         * time. Two different errors, one cause:
-         *
-         *   LEAD_MAIL_FAILED Connection timeout
-         *   LEAD_MAIL_FAILED connect ENETUNREACH 2607:f8b0:400e:c02::6c:587
-         *
-         * That address is smtp.gmail.com's AAAA record. Node 20 resolves both
-         * families and will happily pick IPv6; this container has no IPv6 route,
-         * so the connect is unreachable. Whether it fails fast (ENETUNREACH) or
-         * hangs for the full two-minute timeout is down to which record DNS
-         * returned first that run — which is why it looked intermittent.
-         *
-         * `family: 4` is passed through to net.connect and takes IPv6 out of the
-         * running entirely. Do not "clean this up": without it the mailer works
-         * on any laptop and fails on the host that actually matters, and it fails
-         * in the worst possible way, which is quietly.
-         */
-        family: 4,
-        auth: process.env.SMTP_USER ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS } : undefined
-      });
-      const subj = `New website lead — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
-      const rows = Object.entries(lead)
-        .filter(([, v]) => v)
-        .map(([k, v]) => `${k}: ${v}`)
-        .join('\n');
-      t.sendMail(
-        {
-          from: process.env.LEAD_FROM_EMAIL || process.env.SMTP_USER,
-          to: process.env.LEAD_TO_EMAIL,
-          replyTo: lead.email || undefined,   // hit reply and it goes to the visitor
-          subject: subj,
-          text: rows
-        },
-        err => {
-          if (err) console.error('LEAD_MAIL_FAILED', err.message);
-          else console.log('LEAD_MAILED to ' + process.env.LEAD_TO_EMAIL);
-        }
-      );
-    } catch (e) { console.error('lead mail failed:', e.message); }
+    /* Fire-and-forget: the visitor already got their response, and the mail
+     * must never hold the request open. openTransport() picks whichever port
+     * this host can actually reach — see SMTP_PORTS above for why that is not
+     * a fixed value. */
+    const subj = `New website lead — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
+    const rows = Object.entries(lead)
+      .filter(([, v]) => v)
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n');
+    openTransport()
+      .then(({ t, port }) => t.sendMail({
+        from: process.env.LEAD_FROM_EMAIL || process.env.SMTP_USER,
+        to: process.env.LEAD_TO_EMAIL,
+        replyTo: lead.email || undefined,   // hit reply and it goes to the visitor
+        subject: subj,
+        text: rows
+      }).then(() => {
+        // The port is in the success line on purpose: when a host's egress rules
+        // change, this is the only place that records which route was working.
+        console.log(`LEAD_MAILED to ${process.env.LEAD_TO_EMAIL} via port ${port}`);
+      }))
+      .catch(err => console.error(
+        'LEAD_MAIL_FAILED', (err && err.message) || err,
+        '— tried ports', portsToTry().join(', '),
+        '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
   }
 }
 
@@ -144,6 +121,61 @@ function readLeads(limit) {
   }
   out.reverse();
   return out.slice(0, limit || 200);
+}
+
+/* SMTP ports to try, in order, and why there is more than one.
+ *
+ * Render's containers cannot reach smtp.gmail.com:587 at all. IPv6 gives an
+ * immediate `ENETUNREACH`; IPv4 just hangs until the two-minute timeout. Port
+ * 465 speaks implicit TLS instead of STARTTLS and is a different path out.
+ *
+ * The host's egress rules are not something this app should be brittle about,
+ * and they are not something the operator should have to discover through
+ * missing leads. So: try the configured port, and on a NETWORK failure only,
+ * try the other one. An auth rejection (535) is not retried — a wrong password
+ * is wrong on every port, and hammering Gmail with it earns a block.
+ */
+const SMTP_PORTS = [465, 587];
+
+function portsToTry() {
+  const configured = Number(process.env.SMTP_PORT || 587);
+  return [configured, ...SMTP_PORTS.filter(p => p !== configured)];
+}
+
+/** A network failure is worth retrying on another port; a rejection is not. */
+const isNetworkError = (e) => {
+  const c = String(e && (e.code || '')) + ' ' + String(e && e.message || '');
+  return /ETIMEDOUT|ENETUNREACH|ECONNREFUSED|EHOSTUNREACH|Connection timeout|Greeting never received/i.test(c);
+};
+
+function transportFor(port) {
+  const nodemailer = require('nodemailer');
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port,
+    secure: port === 465,          // implicit TLS on 465, STARTTLS on 587
+    family: 4,                     // see the IPv6 note above
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    connectionTimeout: 15000,
+    greetingTimeout: 15000
+  });
+}
+
+/** Returns a connected, authenticated transport plus the port that worked, or
+ *  throws the LAST error so the caller can log something diagnostic. */
+async function openTransport() {
+  let last;
+  for (const port of portsToTry()) {
+    try {
+      const t = transportFor(port);
+      await t.verify();
+      return { t, port };
+    } catch (e) {
+      last = e;
+      if (!isNetworkError(e)) throw e;   // auth/config problem — same on every port
+    }
+  }
+  throw last;
 }
 
 /* Opens a real connection to the SMTP host and authenticates, using the SAME
@@ -165,18 +197,8 @@ async function verifyMail() {
     .filter(k => !process.env[k]);
   if (missing.length) return { ok: false, reason: 'not configured — missing ' + missing.join(', ') };
   try {
-    const nodemailer = require('nodemailer');
-    const t = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT || 587),
-      secure: Number(process.env.SMTP_PORT) === 465,
-      family: 4,                 // see the long note on the sender's transport
-      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-      connectionTimeout: 15000,  // fail the check fast; the sender may take longer
-      greetingTimeout: 15000
-    });
-    await t.verify();
-    return { ok: true, reason: 'connected and authenticated' };
+    const { port } = await openTransport();
+    return { ok: true, port, reason: `connected and authenticated on port ${port}` };
   } catch (e) {
     // The message is the diagnosis and belongs in the response: ENETUNREACH is a
     // routing problem, 535 is a wrong password, and they need opposite fixes.
