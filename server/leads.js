@@ -228,7 +228,19 @@ async function openTransport() {
  * Deliberately NOT run on every /api/health call: this opens a TCP connection
  * and does a full SMTP auth handshake, and health is polled. It runs on
  * /api/health?deep=1, which is the thing to curl after changing any SMTP
- * setting. */
+ * setting.
+ *
+ * DO NOT LOOP THIS (2026-08-21). Eight ?deep=1 calls in two minutes, to prove a
+ * fix was stable, produced one success and seven `Connection timeout`s — and the
+ * timeouts were caused BY the checking. Each call is a real AUTH, and repeated
+ * logins from a datacenter address are what Google throttles; it drops packets
+ * rather than returning an SMTP error, so the symptom is indistinguishable from
+ * the network fault this check exists to find.
+ *
+ * A verification that induces the failure it is testing for is worse than no
+ * verification, because it reads as evidence. Run it ONCE after a change. To
+ * confirm the pipeline end to end, post one lead and look for LEAD_MAILED —
+ * that exercises the same path and sends exactly one message. */
 async function verifyMail() {
   const missing = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
     .filter(k => !process.env[k]);
