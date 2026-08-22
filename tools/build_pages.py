@@ -7,11 +7,21 @@ Run after editing PAGE DATA below:   python3 tools/build_pages.py
 Anything inside services/ and industries/ is overwritten on every run.
 Render static sites serve pretty URLs, so /services/websites -> websites.html.
 """
-import html, json, os, datetime
+import html, json, os, datetime, subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = "https://leonbuilds.org"
 TODAY = datetime.date.today().isoformat()
+IDENTITY_URLS = [
+    "https://trycurio.app/team.html#leon",
+    "https://www.worldcubeassociation.org/persons/2016LILE01",
+    "https://www.f6s.com/leonkelvinli",
+    "https://www.linkedin.com/in/leon-kelvin-li",
+    "https://github.com/Noctilucenty",
+    "https://noctilucenty.github.io/",
+    "https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129",
+    "https://www.instagram.com/lkelvn_/",
+]
 
 # ══════════════════════════════════════════════════════════════════
 # PAGE DATA
@@ -304,7 +314,7 @@ INDUSTRIES = [
 # TEMPLATE
 # ══════════════════════════════════════════════════════════════════
 
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">'
+FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500&amp;display=swap" rel="stylesheet">'
 
 def e(s): return html.escape(str(s), quote=True)
 
@@ -354,11 +364,13 @@ def footer():
 <script src="/app.js" defer></script>
 <script src="/assist.js" defer></script>'''
 
-def head(title, desc, path, schema, alts=''):
+def head(title, desc, path, schema, alts='', head_extra=''):
     """alts carries the hreflang cluster. Hreflang only works when it is
     RECIPROCAL — a Portuguese page pointing at its English twin while the twin
     stays silent is a cluster Google discards, so the English service pages that
-    have translations must name them back."""
+    have translations must name them back. head_extra is reserved for page-only
+    identity metadata so it does not leak into the generated page fleet."""
+    head_links = "\n".join(link for link in (alts, head_extra) if link)
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -369,7 +381,7 @@ def head(title, desc, path, schema, alts=''):
 <meta name="theme-color" content="#000000">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="{BASE}{path}">
-{alts}
+{head_links}
 <meta property="og:type" content="website">
 <meta property="og:url" content="{BASE}{path}">
 <meta property="og:title" content="{e(title)}">
@@ -605,11 +617,11 @@ def about_page():
         "name": "Leon Kelvin Li",
         "alternateName": ["Leon Li", "Noctilucenty"],
         "url": f"{BASE}/about",
-        "mainEntityOfPage": {"@id": f"{BASE}/about"},
+        "mainEntityOfPage": {"@id": f"{BASE}/about#webpage"},
         "jobTitle": "Software Developer",
-        "description": ("Independent software developer. Builds websites, mobile apps, online ordering, "
-                        "booking systems, AI assistants and business automation for companies across the "
-                        "United States, working directly with the owner rather than through an agency."),
+        "description": ("Independent software developer and computer engineering student at California "
+                        "State University, East Bay. Builds websites, mobile apps, online ordering, booking "
+                        "systems, AI assistants and business automation for companies across the United States."),
         "knowsLanguage": ["English", "Chinese", "Portuguese", "Spanish"],
         "knowsAbout": ["web development", "iOS development", "Android development",
                        "online ordering systems", "booking systems", "AI chatbots",
@@ -617,23 +629,27 @@ def about_page():
         "email": "leondragon3798@gmail.com",
         "telephone": "+1-510-826-7735",
         "address": {"@type": "PostalAddress", "addressRegion": "CA", "addressCountry": "US"},
-        "alumniOf": {"@type": "CollegeOrUniversity", "name": "California State University, East Bay"},
+        "affiliation": {"@type": "CollegeOrUniversity", "name": "California State University, East Bay"},
+        "alumniOf": {"@type": "CollegeOrUniversity", "name": "Green River College"},
         "worksFor": {"@id": f"{BASE}/#business"},
-        "sameAs": ["https://www.linkedin.com/in/leon-kelvin-li",
-                   "https://github.com/Noctilucenty",
-                   "https://noctilucenty.github.io/",
-                   # The App Store listing. A stranger deciding whether this is a
-                   # real developer can tap it and see a shipped product with a
-                   # publisher name on it — the one claim on this site that a
-                   # third party underwrites.
-                   "https://apps.apple.com/app/id6781121127"],
+        "sameAs": IDENTITY_URLS,
     }
-    schema = [{"@context": "https://schema.org", "@graph": [person]}, breadcrumb_schema(bc, path)]
+    profile = {
+        "@type": "ProfilePage",
+        "@id": f"{BASE}/about#webpage",
+        "url": f"{BASE}/about",
+        "name": "About Leon Kelvin Li — Software Developer",
+        "description": "Leon Kelvin Li's work, background, education and verified public profiles.",
+        "isPartOf": {"@id": f"{BASE}/#website"},
+        "mainEntity": {"@id": f"{BASE}/#leon"},
+    }
+    schema = [{"@context": "https://schema.org", "@graph": [profile, person]}, breadcrumb_schema(bc, path)]
+    rel_me = "\n".join(f'<link rel="me" href="{e(url)}">' for url in IDENTITY_URLS)
     return head("About Leon Kelvin Li — Software Developer | Leon Kelvin Li",
         "Leon Kelvin Li is an independent software developer working with businesses across the United States. "
         "He builds websites, apps, online ordering, booking systems and AI automation, and works in English, "
         "Chinese, Portuguese and Spanish.",
-        path, schema) + ICONS + nav() + '''
+        path, schema, head_extra=rel_me) + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
@@ -673,8 +689,10 @@ def about_page():
 <section class="sec">
   <div class="rail">
     <p class="label">background</p>
-    <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span> and a working developer with production systems running today. both are true at once, and he would rather say so than hide either.</p>
+    <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span>, an alumnus of <span class="keepcase">Green River College</span>, and a working developer with production systems running today. all three are true at once, and he would rather say so than hide any of them.</p>
     <p class="sub">he writes under the name <span class="keepcase">Noctilucenty</span>, which is where his code lives on github.</p>
+    <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. older work remains in the <a class="cx-mini" href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a>.</p>
+    <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="/quote" data-evt="pricing_cta_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_about"><span>whatsapp</span></a>
@@ -1024,9 +1042,37 @@ w('call.html', call_page())
 urls = ['/', '/about', '/call', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
+
+# A sitemap date means "this URL's content changed", not "the sitemap builder ran".
+# The old builder stamped TODAY on all forty URLs whenever one page changed, making
+# the freshness signal useless to a crawler. A working-tree change is from today;
+# otherwise Git supplies the last commit date for that page. This also avoids a file
+# copy or no-op generator run making an old page look new.
+def url_output(url):
+    if url == '/':
+        return 'index.html'
+    if url.endswith('/'):
+        return url.strip('/') + '/index.html'
+    return url.strip('/') + '.html'
+
+def url_lastmod(url):
+    rel = url_output(url)
+    page = os.path.join(ROOT, rel)
+    if not os.path.exists(page):
+        return TODAY
+    dirty = subprocess.run(
+        ['git', 'status', '--porcelain', '--', rel], cwd=ROOT,
+        check=True, capture_output=True, text=True).stdout.strip()
+    if dirty:
+        return TODAY
+    committed = subprocess.run(
+        ['git', 'log', '-1', '--format=%cs', '--', rel], cwd=ROOT,
+        check=True, capture_output=True, text=True).stdout.strip()
+    return committed or TODAY
+
 sm = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
 for u in urls:
-    sm += f'  <url><loc>{BASE}{u}</loc><lastmod>{TODAY}</lastmod></url>\n'
+    sm += f'  <url><loc>{BASE}{u}</loc><lastmod>{url_lastmod(u)}</lastmod></url>\n'
 sm += '</urlset>\n'
 w('sitemap.xml', sm)
 w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
