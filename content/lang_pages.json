@@ -28,7 +28,7 @@
           "carrega rápido no celular, mesmo com sinal ruim",
           "você mesmo troca horário, preço e foto depois, sem precisar me chamar",
           "o mesmo site em português e em inglês, quando os seus clientes falam os dois",
-          "tudo no seu nome: domínio, hospedagem, código e as contas"
+          "o domínio, a hospedagem e as contas combinados no escopo ficam no seu nome; você recebe o código incluído e as instruções de configuração"
         ],
         "proof_label": "coisas rodando de verdade",
         "proof_title": "uma cozinha só, várias marcas vendendo online ao mesmo tempo",
@@ -49,7 +49,7 @@
           },
           {
             "q": "como funciona o trabalho, do começo até o site no ar?",
-            "a": "a gente conversa, eu te mando o preço fechado por escrito e só depois disso eu começo. a maioria dos sites de empresa fica pronta em uma ou duas semanas, e toda semana você recebe um link que abre no seu celular com o que já está funcionando, então você não fica esperando no escuro até o final. quando entra no ar, tudo fica no seu nome: domínio, hospedagem, código e as contas."
+            "a": "a gente conversa, eu te mando o preço fechado por escrito e só depois disso eu começo. a maioria dos sites de empresa fica pronta em uma ou duas semanas, e toda semana você recebe um link que abre no seu celular com o que já está funcionando, então você não fica esperando no escuro até o final. quando entra no ar, o domínio, a hospedagem e as contas definidos no escopo ficam no seu nome; você recebe o código incluído e as instruções. licenças e serviços de terceiros continuam seguindo os próprios termos."
           }
         ],
         "cta_primary": "me chama no whatsapp",
@@ -107,7 +107,7 @@
           },
           {
             "q": "quanto tempo demora e o que fica sendo meu no final?",
-            "a": "um sistema de pedido ou de agendamento normalmente leva de duas a quatro semanas, e você não espera até o fim pra ver: toda semana eu te mando um link que você abre no navegador e testa. no final tudo fica no seu nome: o domínio, a hospedagem, o código, a conta do Stripe e a lista dos seus clientes. se um dia você quiser passar pra outra pessoa mexer, ela mexe sem precisar falar comigo."
+            "a": "um sistema de pedido ou de agendamento normalmente leva de duas a quatro semanas, e você não espera até o fim pra ver: toda semana eu te mando um link que você abre no navegador e testa. no final, o domínio, a hospedagem, a conta de pagamento e as contas do projeto definidas no escopo ficam no seu nome; você recebe o código incluído, os dados do projeto e as instruções. outra pessoa pode continuar o trabalho sem depender de mim, respeitando os termos dos serviços de terceiros."
           }
         ],
         "cta_primary": "me conta o seu caso",
@@ -144,7 +144,7 @@
           "formulário que vira planilha e documento sozinho, já arquivado no lugar certo",
           "chatbot no site ou no whatsapp que responde só com a informação que você me confirmou: preço, horário, o que você faz e o que você não faz",
           "atendente de telefone com IA que resolve a pergunta de sempre e passa pra uma pessoa assim que o assunto sai do combinado",
-          "tudo montado nas suas contas e num painel que a sua equipe abre e mexe sem precisar me chamar"
+          "o que for definido no escopo é montado nas contas do projeto combinadas com você; sua equipe recebe acesso, o código incluído e instruções de configuração, e serviços ou licenças de terceiros continuam seguindo os próprios termos"
         ],
         "proof_label": "o que já está rodando",
         "proof_title": "resposta de avaliação escrita com IA",
@@ -184,7 +184,7 @@
         "h1_em": "no te dé pena mandar",
         "intro": [
           "el cliente te busca en el celular antes de llamarte. si no encuentra nada, o encuentra una página vieja que en el teléfono se ve mal, llama al siguiente negocio de la lista y tú nunca te enteras de que estuvo ahí.",
-          "yo hago la página, la subo, y queda a tu nombre. me explicas tu negocio en español, sin tecnicismos, y la persona que te contesta es la misma que escribe el código. el precio queda por escrito antes de empezar y no cambia al final."
+          "yo hago la página y la subo en las cuentas del proyecto que acordemos contigo. me explicas tu negocio en español, sin tecnicismos, y la persona que te contesta es la misma que escribe el código. el precio queda por escrito antes de empezar y no cambia al final."
         ],
         "pricetag": "desde $300 · precio cerrado por escrito antes de empezar · trabajo en línea con negocios de todo el país",
         "pains_label": "¿te suena esto?",
@@ -200,7 +200,7 @@
           "una página que abre rápido en el celular, con tu horario, tu dirección, tus fotos y un botón que marca tu teléfono",
           "en español, en inglés o en los dos, según a quién le vendes",
           "tú puedes cambiar precios, horarios y fotos después, sin escribirme ni pagar de nuevo",
-          "el dominio, el hosting, el código y las cuentas quedan a tu nombre, no al mío",
+          "el dominio, el hosting y las cuentas acordados en el alcance quedan a tu nombre; recibes el código incluido y las instrucciones de configuración, mientras las licencias y servicios de terceros conservan sus propias condiciones",
           "hecha para que te encuentren en google y también en los asistentes de inteligencia artificial, que es donde ya busca mucha gente",
           "si la página necesita guardar datos —cuentas de clientes, base de datos, un panel para administrar— eso también lo construyo yo, y ahí entra el otro precio"
         ],
@@ -223,7 +223,7 @@
           },
           {
             "q": "¿la página queda a mi nombre?",
-            "a": "sí, todo queda a tu nombre. el dominio, el hosting, el código y las cuentas se abren con tu correo, y las contraseñas son tuyas desde el primer día. el hosting se lo pagas directo al proveedor, no a mí. si mañana quieres que otra persona siga trabajando en tu página, se lleva todo y no tiene que pedirme permiso ni pagarme nada."
+            "a": "el dominio, el hosting y las cuentas del proyecto que figuran en el alcance se abren con tu correo. recibes el código incluido y las instrucciones de configuración; las licencias y los servicios de terceros siguen sus propias condiciones. si mañana quieres que otra persona continúe, puede hacerlo sin depender de mí."
           }
         ],
         "cta_primary": "cuéntame qué necesitas",
@@ -269,7 +269,7 @@
         "faqs": [
           {
             "q": "¿cuánto cuesta un sistema de pedidos o de citas?",
-            "a": "los pedidos en línea y el sistema de citas empiezan en $600, y ese es un precio de partida, no el final. el número sube o baja según qué tan grande sea el menú o la lista de servicios y con qué otros sistemas tenga que conectarse. antes de empezar te doy el precio cerrado por escrito y ese número no cambia al final. yo no te cobro comisión por pedido ni por cita, y cuando termino, el sistema es tuyo."
+            "a": "los pedidos en línea y el sistema de citas empiezan en $600, y ese es un precio de partida, no el final. el número sube o baja según qué tan grande sea el menú o la lista de servicios y con qué otros sistemas tenga que conectarse. antes de empezar te doy el precio cerrado por escrito y ese número no cambia al final. yo no te cobro comisión por pedido ni por cita; al terminar recibes el sistema, el código y las instrucciones incluidos en el alcance, mientras las cuentas, licencias y servicios de terceros conservan sus propias condiciones y costos."
           },
           {
             "q": "¿entonces me salgo de las aplicaciones de entrega?",
@@ -281,7 +281,7 @@
           },
           {
             "q": "¿de quién es el sistema cuando terminas?",
-            "a": "el sistema es tuyo, completo: el dominio, el hosting, el código, la cuenta de stripe y los datos de tus clientes quedan a tu nombre desde el primer día. si mañana quieres que otra persona siga trabajando en él, se lleva todo sin pedirme permiso. tampoco te amarro a un pago mensual conmigo para que el sistema siga prendido."
+            "a": "el dominio, el hosting, la cuenta de pago y las cuentas del proyecto definidas en el alcance quedan a tu nombre. recibes el código y los datos incluidos, junto con instrucciones para que otra persona pueda continuar sin depender de mí. las licencias y servicios externos conservan sus propias condiciones, y no te obligo a pagarme una mensualidad para que el sistema siga encendido."
           }
         ],
         "cta_primary": "cuéntame qué necesitas",
@@ -318,7 +318,7 @@
           "facturas y recibos que se arman y se mandan sin que nadie los escriba a mano",
           "un bot que contesta con la información real de tu negocio: tus precios, tus horarios, lo que sí haces y lo que no",
           "un agente que contesta el teléfono cuando nadie puede, toma el recado y te pasa a ti las llamadas raras",
-          "todo queda a tu nombre, con los pasos escritos en español para que tu gente los pueda leer y cambiar sin llamarme"
+          "lo acordado en el alcance se monta en las cuentas del proyecto definidas contigo; tu equipo recibe acceso, el código incluido y pasos de configuración en español, mientras las licencias y servicios de terceros conservan sus propias condiciones"
         ],
         "proof_label": "pruebas, no promesas",
         "proof_title": "reseñas contestadas sin inventar nada",
@@ -353,7 +353,7 @@
       "service": "websites",
       "page": {
         "title": "商家网站制作 $300 起，直接说中文 | Leon Kelvin Li",
-        "metaDescription": "给餐馆、美甲店、诊所、超市做网站：菜单、服务、照片、营业时间、电话、地图，手机上打开很快，点一下就能拨号导航。展示型网站 $300 起；要客人登录、数据库、后台管理的从 $625 起。我一个人写代码，全程用中文跟你讲，价格开工前写下来，做完不变，域名和账号都开在你名下。全美国都接，线上做。",
+        "metaDescription": "给餐馆、美甲店、诊所、超市做网站：菜单、服务、照片、营业时间、电话、地图，手机上打开很快，点一下就能拨号导航。展示型网站 $300 起；要客人登录、数据库、后台管理的从 $625 起。我一个人写代码，全程用中文沟通，开工前把范围和固定价写清楚；范围内约定的域名、账号和源代码会交接给你。全美国线上合作。",
         "h1_plain": "一个你敢直接发给客人的网站，",
         "h1_em": "用中文跟我说就行",
         "intro": [
@@ -376,7 +376,7 @@
           "电话点一下就拨出去，地址点一下就跳到地图导航",
           "中文和英文放在同一个网站里，两套内容一起写，不用做两个站",
           "店名、地址、营业时间、服务项目，按 Google 和 AI 读得懂的格式写进代码里",
-          "域名、服务器、代码、后台账号全部开在你自己名下，做完密码一起交给你"
+          "范围里约定的域名、服务器和项目账号开在你名下；包含的源代码和设置说明会交给你，第三方服务按各自条款使用"
         ],
         "proof_label": "做过的东西，不是承诺",
         "proof_title": "一个厨房，几个牌子，一个购物车自己分单",
@@ -455,7 +455,7 @@
           },
           {
             "q": "店里的人不太会用电脑，管得住吗？",
-            "a": "管得住，前提是常用的东西我都做成手机上点几下就能改。日常真正要动的就那几件事：某样东西卖完了先下架、今天提前停单、明天休息、改个价钱，全部放在同一个页面上，中文的。上线之后我会陪你和店里的人走一遍真实的下单流程，从客人点到后厨出票，走完你们心里才有底。上线后 30 天内的修改不另外收钱。所有东西都在你名下：域名、服务器、代码、收款账号，你哪天不想找我了，整套直接带走。"
+            "a": "管得住，前提是常用的东西我都做成手机上点几下就能改。日常真正要动的就那几件事：某样东西卖完了先下架、今天提前停单、明天休息、改个价钱，全部放在同一个中文页面上。上线之后我会陪你和店里的人走一遍真实下单流程。上线后 30 天内，书面范围内的修改不另外收钱。范围里约定的域名、服务器、收款账号和项目账号放在你名下；包含的代码、数据和设置说明交给你，第三方服务仍按各自条款使用。"
           }
         ],
         "cta_primary": "跟我说说你要什么",
@@ -513,7 +513,7 @@
           },
           {
             "q": "我们店的东西都在微信和本子上，也能做吗？",
-            "a": "可以，东西都在微信和本子上也能做，多数店一开始都是这样的。第一步不是让你把微信和本子换掉，而是先看清楚哪一段最花时间、最容易出错，先把那一段接起来。微信群和本子可以继续用，只是原来要人手抄的那一步交给系统。做出来的东西都在你名下：域名、服务器、代码、账号，全部是你的。"
+            "a": "可以，东西都在微信和本子上也能做，多数店一开始都是这样的。第一步不是让你把微信和本子换掉，而是先看清楚哪一段最花时间、最容易出错，先把那一段接起来。微信群和本子可以继续用，只是原来要人手抄的那一步交给系统。书面范围里约定的域名、服务器和项目账号放在你名下，包含的代码和设置说明交给你；第三方服务和许可仍按各自条款使用。"
           }
         ],
         "cta_primary": "跟我说说你的情况",

@@ -1,4 +1,12 @@
-# Facebook group post audit
+# Facebook group post audit — historical narrative
+
+> **Current state lives in `content/publication-ledger.csv`.** This file is kept
+> intact as an append-only account of what was believed, corrected, and learned.
+> It contains retracted and superseded sections by design; do not use an early
+> table here as a publishing dashboard. Validate the current ledger with
+> `python3 tools/check_publication_ledger.py`. The companion
+> `content/facebook-group-coverage.csv` records all 51 joined groups, including
+> the 30 where the activity-log sweep found no post.
 
 Every group post predates the reprice, the domain move to leonbuilds.org, and
 the no-city rule. They all carry some combination of: prices from the old list
@@ -244,6 +252,11 @@ the picture does not.
 Both are **pending**, so nothing was ever published and no reach is lost.
 Neither can be edited by anyone; the post object is gone server-side.
 
+> **No-delete correction — 2026-08-22:** preserve both pending records. Do not
+> follow the deletion/repost instruction below. The canonical ledger records
+> `retain_no_delete_edit_unavailable`; only revisit them if Facebook later makes
+> non-destructive editing possible and the group rules still permit the post.
+
 | group | what it still says |
 |---|---|
 | 美国华人群 | 住在加州 · 小修小改 $49 · 单页网站 $400 · 完整网站 $1,200 · 网上点单 $2,000 |
@@ -276,3 +289,8 @@ $300 listing 4, old $0/$5 listing 4, ES $300 listing 2, ZH $300 listing 2.
 The two **old** listings are still up and still quoting `$49/$199` and `$0/$5` —
 the "$0" being the exact thing Leon said makes a listing read as spam. They
 predate the reprice and should come down. Not deleted here: that is his to do.
+
+> **No-delete correction — 2026-08-22:** retain these listings and their history.
+> Do not use the sentence above as an action item. Their current policy-risk and
+> stale-copy states are tracked in `content/publication-ledger.csv`; the repo no
+> longer generates Marketplace service-listing copy.

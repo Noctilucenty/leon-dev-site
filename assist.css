@@ -68,21 +68,31 @@
 }
 .as-starts button:hover{ border-color:var(--ac,#9b8cff); color:var(--fg,#fafafa); }
 
-.as-lead{ border-top:1px solid var(--line,#1a1a1a); padding:.8rem 1rem; flex:none; display:grid; gap:.5rem; }
+.as-lead{ border-top:1px solid var(--line,#1a1a1a); padding:.8rem 1rem; flex:none; display:grid; gap:.55rem; max-height:72%; overflow-y:auto; }
 .as-lead p{ margin:0; font-size:11.5px; color:var(--mid,#aaa); }
-.as-lead input{
+.as-lead p a{ color:var(--ac,#9b8cff); text-underline-offset:2px; }
+.as-lead .as-field{ display:grid; gap:.25rem; min-width:0; }
+.as-lead .as-field > span{ color:var(--mid,#aaa); font-size:10.5px; line-height:1.35; letter-spacing:.02em; }
+.as-lead input,
+.as-lead textarea{
   width:100%; background:#0b0b0e; border:1px solid var(--line-2,#262626); border-radius:8px;
-  color:var(--fg,#fafafa); font-family:inherit; font-size:13px; padding:.55rem .7rem;
+  color:var(--fg,#fafafa); font-family:inherit; font-size:13px; line-height:1.45; padding:.55rem .7rem;
 }
-.as-lead input:focus{ outline:none; border-color:var(--ac,#9b8cff); }
+.as-lead textarea{ resize:vertical; min-height:54px; max-height:110px; }
+.as-lead input:focus,
+.as-lead textarea:focus{ outline:none; border-color:var(--ac,#9b8cff); }
 .as-lead .row2{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem; }
 .as-lead .as-err{ color:#ff9b9b; font-size:11px; min-height:1em; margin:0; }
+.as-lead .as-inline-fallback{ color:var(--ac,#9b8cff); font-size:11.5px; text-underline-offset:3px; }
 .as-lead .acts{ display:flex; gap:.5rem; }
 .as-lead button{
   font-family:inherit; font-size:12px; letter-spacing:.04em; border-radius:8px; padding:.55rem .9rem; cursor:pointer;
 }
 .as-lead .go{ background:var(--ac,#9b8cff); border:1px solid var(--ac,#9b8cff); color:#000; }
 .as-lead .no{ background:none; border:1px solid var(--line-2,#262626); color:var(--dim,#777); }
+.as-lead button:disabled{ opacity:.55; cursor:wait; }
+.as-lead-success{ max-width:100%; color:var(--fg,#fafafa)!important; font-size:12px!important; }
+.as-result-actions{ width:100%; padding:.15rem 0 .6rem; }
 
 .as-foot{ border-top:1px solid var(--line,#1a1a1a); padding:.7rem .8rem .6rem; flex:none; }
 .as-inrow{ display:flex; gap:.5rem; align-items:flex-end; }
@@ -110,6 +120,11 @@
     padding-bottom:env(safe-area-inset-bottom,0px);
   }
   .as-launch{ right:14px; bottom:calc(14px + env(safe-area-inset-bottom,0px)); }
+}
+@media (max-width:420px){
+  .as-lead .row2{ grid-template-columns:1fr; }
+  .as-head{ gap:.35rem; padding:.7rem .65rem; }
+  .as-hbtn{ padding:.3rem .4rem; }
 }
 @media (prefers-reduced-motion:reduce){
   .as-launch, .as-send{ transition:none; }
@@ -164,6 +179,11 @@
 @media (max-width:640px){
   .as-langbar{ left:14px; right:14px; width:auto; bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
 }
+
+/* Quote and booking pages already have one clear primary action. Keep help
+   available without letting a second full-width CTA compete with the form. */
+.as-high-intent .as-launch{ width:44px; height:44px; padding:0; justify-content:center; }
+.as-high-intent .as-launch span{ position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
 
 /* handoff links rendered inside the chat log reuse the starter-button look */
 .as-log .as-starts a{
@@ -234,7 +254,7 @@
 .as-langbox .opts button.go{ border-color:var(--ac,#9b8cff); }
 .as-langbox .opts button.go i{ color:var(--ac,#9b8cff); }
 .as-langbox .skip{
-  display:block; width:100%; margin-top:.85rem; padding:.5rem; cursor:pointer;
+  display:block; position:static; left:auto; width:100%; margin-top:.85rem; padding:.5rem; cursor:pointer;
   background:none; border:0; color:var(--faint,#666); font-size:11.5px;
   font-family:inherit; letter-spacing:.02em;
 }

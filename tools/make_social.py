@@ -1,20 +1,19 @@
 #!/usr/bin/env python3
-"""Build the Instagram-portrait cards in assets/social/ from the same palette,
-dither and type as tools/make_fb.py — so the listing image, the social cards and
-the site all read as one thing.
+"""Build the price-free Instagram portrait cards in ``assets/social/``.
 
-  ig_01_prices.png   six headline floors, 1080x1350
-  ig_02_pricing.png  the three ways to work together, 1080x1350
+The social cards deliberately sell outcomes, process and proof instead of
+publishing a rate card. This file is the canonical source for all three
+exports, including the proof card; do not hand-edit the PNGs.
 
-These used to be one-off exports, which is how they ended up months out of date
-with the site's prices. Prices live in PRICES/TIERS below; change them here and
-rerun, the same way facebook.png works.
-
-Run from the repo root:  python3 tools/make_social.py
+Run from the repo root: python3 tools/make_social.py
 """
 
+import argparse
+import io
 import math
 import os
+import re
+
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1080, 1350
@@ -30,23 +29,45 @@ MONO = "/System/Library/Fonts/Menlo.ttc"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "assets", "social")
+EXPECTED_DOMAIN = "leonbuilds.org"
+CANONICAL_DOMAIN = EXPECTED_DOMAIN
+RETIRED_DOMAIN = "leonkelvinli.onrender.com"
+FOOTER_TAGLINE = "remote  ·  businesses across the u.s."
 
-# keep in step with index.html, tools/build_pages.py and tools/make_fb.py
-PRICES = [
-    ("business websites",     "$1,200+"),
-    ("booking & ordering",    "$600+"),
-    ("ios & android apps",    "$4,500+"),
-    ("ai chatbots",           "$1,000+"),
-    ("ai phone agents",       "$1,200+"),
-    ("workflow automation",   "$600+"),
-]
-
-TIERS = [
-    ("small fixes",   "$49+",     "the broken thing, the one integration — a day, not a month"),
-    ("fixed project", "$400+",    "one clear thing, built and handed over"),
-    ("full build",    "$3,500+",  "an app or a whole system, end to end"),
-    ("ongoing",       "$450/mo",  "you need a developer, not a project"),
-]
+# Output filenames stay stable because they may already be referenced by
+# drafts. Their content is now evergreen and intentionally contains no rates.
+CARDS = {
+    "ig_01_prices.png": {
+        "label": "leon --outcomes",
+        "headline": ("less manual work.", "more room to run", "your business."),
+        "rows": (
+            ("take orders while you sleep", "online ordering · payments"),
+            ("let customers book themselves", "booking · reminders · follow-up"),
+            ("stop copying data by hand", "automation · dashboards"),
+        ),
+        "note": "show me the step that wastes the most time.",
+    },
+    "ig_02_pricing.png": {
+        "label": "leon --process",
+        "headline": ("a clear path from", "bottleneck to launch."),
+        "rows": (
+            ("01  show me the bottleneck", "a short call or message is enough to start"),
+            ("02  get a written plan", "scope, timeline and handoff agreed before work starts"),
+            ("03  launch with a clean handoff", "agreed accounts · included source · setup notes"),
+        ),
+        "note": "one developer from first conversation through launch.",
+    },
+    "ig_03_work.png": {
+        "label": "leon --proof",
+        "headline": ("proof,", "not promises."),
+        "rows": (
+            ("curio", "consumer iPhone app · live on the App Store"),
+            ("multi-brand ordering", "one kitchen · several brands · one cart routes orders"),
+            ("review desk", "reads business reviews · drafts owner replies"),
+        ),
+        "note": "real systems in production · built and shipped by one developer",
+    },
+}
 
 BAYER = [
     0, 32, 8, 40, 2, 34, 10, 42,
@@ -59,10 +80,64 @@ BAYER = [
     63, 31, 55, 23, 61, 29, 53, 21,
 ]
 CELL = 6
+PAD = 84
+
+
+def _all_copy(value):
+    """Yield every copy string so safety checks cannot miss a nested row."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for child in value.values():
+            yield from _all_copy(child)
+    else:
+        for child in value:
+            yield from _all_copy(child)
+
+
+def validate_domain(domain, joined_copy):
+    if domain != EXPECTED_DOMAIN:
+        raise ValueError(f"social creative domain must be {EXPECTED_DOMAIN!r}, got {domain!r}")
+    if RETIRED_DOMAIN.casefold() in joined_copy.casefold():
+        raise ValueError(f"retired domain in social creative copy: {RETIRED_DOMAIN}")
+
+
+def regression_check_domain_guard():
+    """Exercise both failure modes so the safety guard cannot become decorative."""
+    unsafe_cases = (
+        (RETIRED_DOMAIN, "safe copy"),
+        (EXPECTED_DOMAIN, f"visit {RETIRED_DOMAIN}"),
+    )
+    for domain, copy in unsafe_cases:
+        try:
+            validate_domain(domain, copy)
+        except ValueError:
+            continue
+        raise AssertionError(f"domain guard accepted unsafe case: {domain!r}, {copy!r}")
+
+
+def validate_copy():
+    """Refuse to render money figures or a retired domain into social art."""
+    joined = "\n".join(_all_copy((CARDS, FOOTER_TAGLINE, CANONICAL_DOMAIN)))
+    money = re.compile(r"(?:[$€£]\s*\d|\bUSD\s*\d)", re.IGNORECASE)
+    match = money.search(joined)
+    if match:
+        raise ValueError(f"social creative copy must be price-free: {match.group(0)!r}")
+    validate_domain(CANONICAL_DOMAIN, joined)
+
+
+def checked_text(d, xy, value, *, font, fill, right=W - PAD, bottom=H - PAD):
+    """Draw text only when its actual glyph bounds stay inside the card."""
+    box = d.textbbox(xy, value, font=font)
+    if box[0] < 0 or box[1] < 0 or box[2] > right or box[3] > bottom:
+        raise ValueError(
+            f"text overflow for {value!r}: bounds={box}, allowed right={right}, bottom={bottom}"
+        )
+    d.text(xy, value, font=font, fill=fill)
 
 
 def dither(d):
-    """The site's ordered dither, frozen at t=0, falling off from the top right."""
+    """The site's ordered dither, frozen at t=0, falling off top-right."""
     for gy in range(H // CELL + 1):
         for gx in range(W // CELL + 1):
             x, y = gx * CELL / W, gy * CELL / H
@@ -71,8 +146,10 @@ def dither(d):
             v = (v * 0.5 + 0.5) * fall * 0.78
             if v > (BAYER[(gy % 8) * 8 + (gx % 8)] + 0.5) / 64:
                 a = min(0.34, 0.10 + v * 0.5)
-                d.rectangle([gx * CELL, gy * CELL, gx * CELL + CELL - 2, gy * CELL + CELL - 2],
-                            fill=(int(AC[0] * a), int(AC[1] * a), int(AC[2] * a)))
+                d.rectangle(
+                    [gx * CELL, gy * CELL, gx * CELL + CELL - 2, gy * CELL + CELL - 2],
+                    fill=(int(AC[0] * a), int(AC[1] * a), int(AC[2] * a)),
+                )
 
 
 def canvas():
@@ -84,73 +161,95 @@ def canvas():
 
 def footer(d):
     d.line([(PAD, H - 190), (W - PAD, H - 190)], fill=LINE, width=1)
-    d.text((PAD, H - 155), "remote  ·  businesses across the u.s.",
-           font=ImageFont.truetype(MONO, 22), fill=MID)
-    d.text((PAD, H - 110), "leonbuilds.org",
-           font=ImageFont.truetype(MONO, 26), fill=AC)
+    checked_text(
+        d,
+        (PAD, H - 155),
+        FOOTER_TAGLINE,
+        font=ImageFont.truetype(MONO, 22),
+        fill=MID,
+    )
+    checked_text(
+        d,
+        (PAD, H - 120),
+        CANONICAL_DOMAIN,
+        font=ImageFont.truetype(MONO, 26),
+        fill=AC,
+    )
 
 
-PAD = 84
-
-
-def card_prices():
+def build_card(card):
     img, d = canvas()
-    f_lab = ImageFont.truetype(MONO, 22)
-    f_disp = ImageFont.truetype(MONO, 54)
-    f_row = ImageFont.truetype(MONO, 30)
+    f_label = ImageFont.truetype(MONO, 22)
+    f_display = ImageFont.truetype(MONO, 54)
+    f_title = ImageFont.truetype(MONO, 30)
+    f_body = ImageFont.truetype(MONO, 21)
+    f_note = ImageFont.truetype(MONO, 21)
 
-    d.text((PAD, 200), "leon --help", font=f_lab, fill=FAINT)
-    for i, line in enumerate(["i build the part of", "your business you", "still do by hand."]):
-        d.text((PAD, 270 + i * 82), line, font=f_disp, fill=FG if i == 2 else DIM)
-    d.line([(PAD, 520), (PAD + 130, 520)], fill=AC, width=5)
+    checked_text(d, (PAD, 196), card["label"], font=f_label, fill=FAINT)
+    for i, line in enumerate(card["headline"]):
+        checked_text(
+            d,
+            (PAD, 266 + i * 76),
+            line,
+            font=f_display,
+            fill=FG if i == len(card["headline"]) - 1 else DIM,
+        )
 
-    y = 580
-    for name, price in PRICES:
-        d.text((PAD, y), name, font=f_row, fill=FG)
-        d.text((W - PAD - d.textlength(price, font=f_row), y), price, font=f_row, fill=AC)
-        d.line([(PAD, y + 52), (W - PAD, y + 52)], fill=LINE, width=1)
-        y += 76
+    divider_y = 282 + len(card["headline"]) * 76
+    d.line([(PAD, divider_y), (PAD + 130, divider_y)], fill=AC, width=5)
 
-    d.text((PAD, y + 24), "floors, not quotes — fixed price agreed in writing first",
-           font=ImageFont.truetype(MONO, 21), fill=DIM)
+    y = divider_y + 66
+    for title, body in card["rows"]:
+        checked_text(d, (PAD, y), title, font=f_title, fill=FG)
+        checked_text(d, (PAD, y + 47), body, font=f_body, fill=MID)
+        d.line([(PAD, y + 92), (W - PAD, y + 92)], fill=LINE, width=1)
+        y += 126
+
+    checked_text(d, (PAD, y + 14), card["note"], font=f_note, fill=AC)
     footer(d)
     return img
 
 
-def card_tiers():
-    img, d = canvas()
-    f_lab = ImageFont.truetype(MONO, 22)
-    f_disp = ImageFont.truetype(MONO, 54)
-    f_name = ImageFont.truetype(MONO, 32)
-    f_amt = ImageFont.truetype(MONO, 32)
-    f_for = ImageFont.truetype(MONO, 20)
-
-    d.text((PAD, 200), "leon --price", font=f_lab, fill=FAINT)
-    for i, line in enumerate(["three ways to", "work together."]):
-        d.text((PAD, 270 + i * 82), line, font=f_disp, fill=FG if i == 1 else DIM)
-    d.line([(PAD, 440), (PAD + 130, 440)], fill=AC, width=5)
-
-    y = 520
-    for name, amt, blurb in TIERS:
-        d.text((PAD, y), name, font=f_name, fill=FG)
-        d.text((W - PAD - d.textlength(amt, font=f_amt), y), amt, font=f_amt, fill=AC)
-        d.text((PAD, y + 46), blurb, font=f_for, fill=DIM)
-        d.line([(PAD, y + 96), (W - PAD, y + 96)], fill=LINE, width=1)
-        y += 128
-
-    d.text((PAD, y + 16), "price follows scope, not hours. no hourly billing, no surprises.",
-           font=ImageFont.truetype(MONO, 21), fill=DIM)
-    footer(d)
-    return img
+def png_bytes(image):
+    payload = io.BytesIO()
+    image.save(payload, "PNG", optimize=True)
+    return payload.getvalue()
 
 
-def main():
+def main(check=False):
+    regression_check_domain_guard()
+    validate_copy()
     os.makedirs(OUT, exist_ok=True)
-    for name, img in [("ig_01_prices.png", card_prices()), ("ig_02_pricing.png", card_tiers())]:
-        p = os.path.join(OUT, name)
-        img.save(p, "PNG", optimize=True)
-        print("wrote", p, img.size)
+    stale = []
+    for name, card in CARDS.items():
+        image = build_card(card)
+        if image.size != (W, H):
+            raise ValueError(f"unexpected social card size for {name}: {image.size}")
+        path = os.path.join(OUT, name)
+        expected = png_bytes(image)
+        if check:
+            if not os.path.exists(path):
+                stale.append(f"missing {path}")
+            else:
+                with open(path, "rb") as existing:
+                    if existing.read() != expected:
+                        stale.append(f"stale {path}")
+        else:
+            with open(path, "wb") as output:
+                output.write(expected)
+            print("wrote", path, image.size)
+    if stale:
+        for message in stale:
+            print(message)
+        print("run: python3 tools/make_social.py")
+        return 1
+    if check:
+        print("social assets match canonical generator")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true", help="fail if committed PNGs differ from a fresh render")
+    args = parser.parse_args()
+    raise SystemExit(main(check=args.check))

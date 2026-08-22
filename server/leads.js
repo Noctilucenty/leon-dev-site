@@ -1,13 +1,14 @@
 /* Lead intake: validate, sanitize, persist, notify.
-   Sinks, in order of durability:
-   1. stdout      — always. Render keeps logs; grep "LEAD ".
+   Copies, in order:
+   1. stdout      — always, but only as durable as the host's log retention.
    2. jsonl file  — best effort. data/leads.jsonl (ephemeral on free Render, real on disk locally).
-   3. SMTP email  — only if SMTP_HOST + LEAD_TO_EMAIL are configured. */
+   3. email       — Resend over HTTPS, or SMTP on hosts where SMTP egress works. */
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
+const { randomUUID } = require('crypto');
 
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const LEADS_FILE = path.join(DATA_DIR, 'leads.jsonl');
@@ -24,13 +25,94 @@ const clean = (v, max, multiline) => {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const newReceiptId = () => 'lead_' + randomUUID();
+
+const present = v => typeof v === 'string' ? !!v.trim() : !!v;
+
+function isRenderRuntime(env) {
+  return /^(1|true|yes)$/i.test(String(env.RENDER || '')) || present(env.RENDER_SERVICE_ID);
+}
+
+function maskEmail(value) {
+  const email = String(value || '').trim();
+  const at = email.lastIndexOf('@');
+  if (at <= 0 || at === email.length - 1) return email ? '***' : null;
+  return email.slice(0, 1) + '***' + email.slice(at);
+}
+
+/* One source of truth for sending AND health reporting. Previously these paths
+ * disagreed: sending preferred Resend, while /api/health ignored Resend and
+ * marked SMTP green on Render even though this service has measured SMTP egress
+ * failures there. `ready` means "fully configured on a supported transport";
+ * it deliberately does not mean "a message reached the inbox". */
+function leadDeliveryConfig(env = process.env) {
+  const onRender = isRenderRuntime(env);
+  const resendMissing = ['RESEND_API_KEY', 'LEAD_TO_EMAIL'].filter(k => !present(env[k]));
+  // SMTP_PORT is optional: portsToTry() has a real default of 587.
+  const smtpMissing = ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+    .filter(k => !present(env[k]));
+  const resendConfigured = resendMissing.length === 0;
+  const smtpConfigured = smtpMissing.length === 0;
+  const anySmtp = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS']
+    .some(k => present(env[k]));
+
+  // Match persistLead's precedence exactly. A configured Resend key always wins
+  // because HTTPS is the supported production path on Render.
+  const provider = present(env.RESEND_API_KEY) ? 'resend' : (anySmtp ? 'smtp' : null);
+  const configured = provider === 'resend' ? resendConfigured
+    : provider === 'smtp' ? smtpConfigured
+    : false;
+  const supported = provider === 'smtp' ? !onRender : provider === 'resend';
+  const ready = configured && supported;
+  const missing = provider === 'resend' ? resendMissing
+    : provider === 'smtp' && onRender ? resendMissing
+    : provider === 'smtp' ? smtpMissing
+    : onRender ? resendMissing
+    : [
+        ...(!present(env.LEAD_TO_EMAIL) ? ['LEAD_TO_EMAIL'] : []),
+        'RESEND_API_KEY or SMTP_HOST + SMTP_USER + SMTP_PASS'
+      ];
+
+  let state = 'not_configured';
+  let warning = null;
+  if (provider && !configured) state = 'incomplete';
+  if (configured) state = 'configured_unverified';
+  if (provider === 'smtp' && !supported) {
+    state = 'blocked';
+    warning = 'SMTP is selected, but outbound SMTP is unavailable on this Render service; configure RESEND_API_KEY to use HTTPS.';
+  }
+
+  return {
+    provider,
+    transport: provider === 'resend' ? 'https' : provider,
+    configured,
+    supported,
+    ready,
+    state,
+    missing,
+    warning,
+    onRender,
+    recipient: maskEmail(env.LEAD_TO_EMAIL),
+    providers: {
+      resend: { configured: resendConfigured, transport: 'https', missing: resendMissing },
+      smtp: {
+        configured: smtpConfigured,
+        transport: 'smtp',
+        supported: !onRender,
+        missing: smtpMissing
+      }
+    }
+  };
+}
 
 function validateLead(body) {
   // Bots fill the hidden `website` field. Checked before anything else so the
-  // response cannot be used to tell which check rejected them.
-  if (body.website) return { bot: true };
+  // response cannot be used to tell which check rejected them. Give the fake
+  // success the same receipt shape as a real submission, but do not persist it.
+  if (body.website) return { bot: true, receiptId: newReceiptId() };
   const lead = {
     ts: new Date().toISOString(),
+    receiptId: newReceiptId(),
     name: clean(body.name, 120),
     email: clean(body.email, 200).toLowerCase(),
     phone: clean(body.phone, 40),
@@ -46,6 +128,18 @@ function validateLead(body) {
     utmSource: clean(body.utmSource, 120),
     utmMedium: clean(body.utmMedium, 120),
     utmCampaign: clean(body.utmCampaign, 120),
+    firstPage: clean(body.firstPage, 300),
+    firstReferrer: clean(body.firstReferrer, 300),
+    firstUtmSource: clean(body.firstUtmSource, 120),
+    firstUtmMedium: clean(body.firstUtmMedium, 120),
+    firstUtmCampaign: clean(body.firstUtmCampaign, 120),
+    lastPage: clean(body.lastPage, 300) || clean(body.sourcePage, 300),
+    lastReferrer: clean(body.lastReferrer, 300) || clean(body.referrer, 300),
+    lastUtmSource: clean(body.lastUtmSource, 120) || clean(body.utmSource, 120),
+    lastUtmMedium: clean(body.lastUtmMedium, 120) || clean(body.utmMedium, 120),
+    lastUtmCampaign: clean(body.lastUtmCampaign, 120) || clean(body.utmCampaign, 120),
+    analyticsSessionId: clean(body.analyticsSessionId, 96),
+    chatSessionId: clean(body.chatSessionId, 96),
     via: clean(body.via, 30) || 'site',           // 'chat' | 'quote-form' | 'site'
     conversationSummary: clean(body.conversationSummary, 8000, true)
   };
@@ -61,44 +155,45 @@ function persistLead(lead) {
   try {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.appendFileSync(LEADS_FILE, JSON.stringify(lead) + '\n');
-  } catch (e) { console.error('lead file write failed:', e.message); }
-  // 3. email — the only sink the owner actually watches
-  // All FOUR are required. Host + recipient alone looked like enough and is not:
+  } catch (e) { console.error('lead file write failed:', lead.receiptId, e.message); }
+  // 3. email — the only off-host copy the owner currently watches
+  // Host + recipient alone looked like enough and is not:
   // nodemailer will happily connect unauthenticated, Gmail will refuse it, and
   // the lead is lost while every readiness check reports green. Half-configured
   // has to read as OFF, or the check is worse than no check.
   // Either route will do: RESEND_API_KEY (HTTPS) or a full SMTP set. On a host
   // that blocks outbound SMTP the first is the only one that works — see the
   // note above sendViaHttp.
-  const mailReady = !!(process.env.LEAD_TO_EMAIL && (
-    process.env.RESEND_API_KEY ||
-    (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)));
-  if (!mailReady) {
+  const delivery = leadDeliveryConfig();
+  if (!delivery.ready) {
     // LOUD, once per lead. This was silent, and silence read as "no leads yet"
     // when it actually meant "leads arrived and nobody was told". stdout is
     // Render's log tail, so this is visible without digging.
+    const missing = delivery.missing.length
+      ? ' Missing: ' + delivery.missing.join(', ') + '.'
+      : '';
     console.error(
-      'LEAD_NOT_EMAILED — needs LEAD_TO_EMAIL plus either RESEND_API_KEY (https) ' +
-      'or SMTP_HOST + SMTP_USER + SMTP_PASS. Missing: ' +
-      ['LEAD_TO_EMAIL', 'RESEND_API_KEY', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS']
-        .filter(k => !process.env[k]).join(', ') +
-      '. Until then this lead exists only in this log and in an ephemeral file ' +
+      'LEAD_NOT_EMAILED receiptId=' + lead.receiptId + ' — delivery state=' + delivery.state +
+      ', provider=' + (delivery.provider || 'none') + '. ' +
+      (delivery.warning ? delivery.warning + ' ' : '') +
+      missing +
+      ' Until then this lead exists only in this log and in an ephemeral file ' +
       'that the next deploy erases.');
   } else {
     /* Fire-and-forget: the visitor already got their response, and the mail
      * must never hold the request open. openTransport() picks whichever port
      * this host can actually reach — see SMTP_PORTS above for why that is not
      * a fixed value. */
-    const subj = `New website lead — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
+    const subj = `New website lead [${lead.receiptId}] — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
     const rows = Object.entries(lead)
       .filter(([, v]) => v)
       .map(([k, v]) => `${k}: ${v}`)
       .join('\n');
-    if (process.env.RESEND_API_KEY) {
+    if (delivery.provider === 'resend') {
       sendViaHttp(lead, subj, rows)
-        .then(() => console.log(`LEAD_MAILED to ${process.env.LEAD_TO_EMAIL} via https (resend)`))
+        .then(() => console.log(`LEAD_MAILED receiptId=${lead.receiptId} to ${process.env.LEAD_TO_EMAIL} via https (resend)`))
         .catch(err => console.error(
-          'LEAD_MAIL_FAILED', (err && err.message) || err,
+          `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
           '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
       return;
     }
@@ -112,10 +207,10 @@ function persistLead(lead) {
       }).then(() => {
         // The port is in the success line on purpose: when a host's egress rules
         // change, this is the only place that records which route was working.
-        console.log(`LEAD_MAILED to ${process.env.LEAD_TO_EMAIL} via port ${port}`);
+        console.log(`LEAD_MAILED receiptId=${lead.receiptId} to ${process.env.LEAD_TO_EMAIL} via port ${port}`);
       }))
       .catch(err => console.error(
-        'LEAD_MAIL_FAILED', (err && err.message) || err,
+        `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
         '— tried ports', portsToTry().join(', '),
         '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
   }
@@ -156,16 +251,17 @@ function readLeads(limit) {
  * and adding the key is the only step needed here.
  */
 async function sendViaHttp(lead, subject, text) {
-  const key = process.env.RESEND_API_KEY;
+  const key = String(process.env.RESEND_API_KEY || '').trim();
   // A verified domain is better than a gmail: it makes the notification look
   // like it came from the business, and it is what allows a real From address.
   const from = process.env.LEAD_FROM_EMAIL || 'Leon Builds <onboarding@resend.dev>';
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    signal: AbortSignal.timeout(15_000),
     body: JSON.stringify({
       from,
-      to: [process.env.LEAD_TO_EMAIL],
+      to: [String(process.env.LEAD_TO_EMAIL || '').trim()],
       reply_to: lead.email || undefined,   // reply goes to the visitor, not to us
       subject,
       text
@@ -193,7 +289,8 @@ async function sendViaHttp(lead, subject, text) {
 const SMTP_PORTS = [465, 587];
 
 function portsToTry() {
-  const configured = Number(process.env.SMTP_PORT || 587);
+  const asked = Number(process.env.SMTP_PORT || 587);
+  const configured = Number.isInteger(asked) && asked > 0 && asked <= 65535 ? asked : 587;
   return [configured, ...SMTP_PORTS.filter(p => p !== configured)];
 }
 
@@ -294,36 +391,66 @@ async function openTransport() {
  *
  * A verification that induces the failure it is testing for is worse than no
  * verification, because it reads as evidence. Run it ONCE after a change. To
- * confirm the pipeline end to end, post one lead and look for LEAD_MAILED —
- * that exercises the same path and sends exactly one message. */
+ * confirm the pipeline end to end, post one uniquely tagged lead, look for
+ * LEAD_MAILED, and confirm that same tag arrived in the target inbox. */
 async function verifyMail() {
-  if (!process.env.LEAD_TO_EMAIL) return { ok: false, reason: 'not configured — missing LEAD_TO_EMAIL' };
-  if (!process.env.RESEND_API_KEY) {
-    const missing = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS']
-      .filter(k => !process.env[k]);
-    if (missing.length) return { ok: false, reason: 'not configured — missing ' + missing.join(', ') + ' (or set RESEND_API_KEY)' };
+  const delivery = leadDeliveryConfig();
+  if (!delivery.configured) {
+    return {
+      ok: false,
+      provider: delivery.provider,
+      level: 'configuration',
+      reason: 'not configured — missing ' + delivery.missing.join(', ')
+    };
   }
-  if (process.env.RESEND_API_KEY) {
-    // No connection to test without sending mail, so check the credential the
-    // only way that does not: ask the API who we are.
-    try {
-      const r = await fetch('https://api.resend.com/domains', {
-        headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}` }
-      });
-      if (r.ok) return { ok: true, via: 'https', reason: 'resend api key accepted' };
-      return { ok: false, via: 'https', reason: `resend HTTP ${r.status}` };
-    } catch (e) {
-      return { ok: false, via: 'https', reason: String(e && e.message || e).slice(0, 200) };
-    }
+  if (!delivery.supported) {
+    return {
+      ok: false,
+      provider: delivery.provider,
+      level: 'platform',
+      reason: delivery.warning
+    };
+  }
+  if (delivery.provider === 'resend') {
+    // There is no honest, side-effect-free Resend check that proves this API
+    // key, From identity, recipient and inbox all work together. Listing domains
+    // only checks one credential permission and previously overstated that as
+    // "leadEmailWorks". Do not send mail from a public GET health endpoint.
+    return {
+      ok: null,
+      provider: 'resend',
+      level: 'configuration',
+      reason: 'Resend HTTPS delivery is configured but not verified. Submit one uniquely tagged test lead and confirm both LEAD_MAILED and receipt in the target inbox.'
+    };
   }
   try {
     const { port } = await openTransport();
-    return { ok: true, port, reason: `connected and authenticated on port ${port}` };
+    return {
+      ok: true,
+      provider: 'smtp',
+      level: 'connection',
+      port,
+      reason: `SMTP connected and authenticated on port ${port}; no message was sent, so inbox delivery is not verified.`
+    };
   } catch (e) {
     // The message is the diagnosis and belongs in the response: ENETUNREACH is a
     // routing problem, 535 is a wrong password, and they need opposite fixes.
-    return { ok: false, reason: String(e && e.message || e).slice(0, 200) };
+    return {
+      ok: false,
+      provider: 'smtp',
+      level: 'connection',
+      reason: String(e && e.message || e).slice(0, 200)
+    };
   }
 }
 
-module.exports = { validateLead, persistLead, readLeads, clean, verifyMail };
+module.exports = {
+  validateLead,
+  persistLead,
+  readLeads,
+  clean,
+  verifyMail,
+  leadDeliveryConfig,
+  maskEmail,
+  isRenderRuntime
+};

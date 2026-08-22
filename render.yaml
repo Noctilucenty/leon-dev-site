@@ -4,7 +4,8 @@
 # Setup on Render:
 #   New + -> Blueprint -> pick this repo -> apply
 #   (or New + -> Web Service -> this repo -> settings below by hand)
-# Then open the service -> Environment -> add OPENAI_API_KEY yourself.
+# Then open the service -> Environment -> add OPENAI_API_KEY, RESEND_API_KEY,
+# and LEAD_TO_EMAIL yourself. Secrets and recipients are never committed.
 # The frontend expects the service URL in assist.js (API_BASE) — if Render
 # gives you a different URL than https://leon-assist.onrender.com, change
 # that one constant and push.
@@ -20,6 +21,10 @@ services:
     envVars:
       - key: OPENAI_API_KEY
         sync: false        # paste the real key in the dashboard, never in git
+      - key: RESEND_API_KEY
+        sync: false        # HTTPS lead delivery; required on Render because SMTP egress is blocked
+      - key: LEAD_TO_EMAIL
+        sync: false        # off-host inbox that receives each lead
       - key: OPENAI_MODEL
         value: gpt-5-mini
       - key: OPENAI_MAX_OUTPUT

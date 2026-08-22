@@ -8,8 +8,9 @@ which both missed survivors and introduced new errors — a blanket
 
 So this checks PER SERVICE, not per value: every figure that appears on a
 service's own page must be that service's floor, or an explicitly allowed
-cross-reference. Prices live on five surfaces that nothing syncs, and all five
-are checked here.
+cross-reference. Prices live on several surfaces that nothing syncs. Those
+surfaces are checked here, and social/listing generators are separately
+required to stay free of hard-coded dollar amounts.
 
     python3 tools/check_prices.py     # exit 1 on any contradiction
 """
@@ -18,6 +19,7 @@ import glob
 import io
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -62,6 +64,20 @@ FEE_CONSTANTS = {0.30}
 ALL = set(FLOORS.values()) | FEE_CONSTANTS
 # budget brackets on the quote form are ranges, not prices
 IGNORE_FILES = {'quote.html'}
+
+# Social and classified cards are intentionally evergreen. A valid site floor
+# is still invalid here: putting even a current amount back into either source
+# would recreate a second rate card that can silently go stale.
+PRICE_FREE_CREATIVE_SOURCES = (
+    'tools/make_social.py',
+    'tools/make_listing_images.py',
+    'tools/make_fb.py',
+)
+
+CREATIVE_ASSET_CHECKS = tuple(
+    (sys.executable, path, '--check') for path in PRICE_FREE_CREATIVE_SOURCES
+)
+
 
 def figures(text):
     """Every dollar amount, decimals included.
@@ -148,12 +164,35 @@ def main():
         if v not in ALL:
             errors.append(f'server/prompt.js: ${v:,} is not a published floor')
 
+    # 6. Generated creatives are evergreen, so any dollar amount is wrong even
+    # when it happens to match today's site floor. PNGs are not reliably
+    # searchable; their canonical copy dictionaries are.
+    for path in PRICE_FREE_CREATIVE_SOURCES:
+        source = io.open(path, encoding='utf-8').read()
+        for v in set(figures(source)):
+            errors.append(
+                f'{path}: ${v:,} is embedded in evergreen creative source; '
+                'social and listing images must not publish prices')
+
+    social_source = io.open('tools/make_social.py', encoding='utf-8').read()
+    for output in ('ig_01_prices.png', 'ig_02_pricing.png', 'ig_03_work.png'):
+        if output not in social_source:
+            errors.append(f'tools/make_social.py: canonical output missing: {output}')
+
+    # A safe generator is not enough if an old PNG was committed beside it.
+    # Byte-for-byte fresh renders make source/asset drift a normal test failure.
+    for command in CREATIVE_ASSET_CHECKS:
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+        if result.returncode:
+            detail = (result.stdout + result.stderr).strip().replace('\n', '; ')
+            errors.append(f'{command[1]} --check failed: {detail}')
+
     if errors:
         print('PRICE CHECK FAILED')
         for e in errors:
             print('  -', e)
         return 1
-    print(f'price check ok — {len(ALL)} floors, every surface agrees')
+    print(f'price check ok — {len(FLOORS)} service floors, every surface agrees')
     return 0
 
 

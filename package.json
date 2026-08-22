@@ -8,7 +8,11 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "PORT=8787 node server/index.js",
-    "pages": "python3 tools/build_pages.py"
+    "pages": "python3 tools/build_pages.py",
+    "build:static": "python3 tools/build_static.py",
+    "posts": "python3 tools/make_posts.py",
+    "social": "python3 tools/make_social.py",
+    "check": "python3 tools/make_posts.py --check && python3 tools/check_prices.py && python3 tools/check_copy.py && python3 tools/check_publication_ledger.py && python3 tools/check_site.py && python3 tools/build_static.py --check && node --check assist.js && node --test tests/*.test.js"
   },
   "dependencies": {
     "express": "^4.21.2",

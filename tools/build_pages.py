@@ -30,11 +30,11 @@ IDENTITY_URLS = [
 SERVICES = [
  dict(slug="websites", name="business websites", h1=("a website that", "works as hard as you do"),
   price="$300", title="Business Website Design — from $300 | Leon Kelvin Li",
-  desc="Fast business websites built directly by one developer. Fixed quote before work starts, you own everything. Serving businesses across the U.S.",
+  desc="Fast business websites by one developer. Fixed quote first; agreed project accounts, included source and setup notes are handed over. Vendor terms apply.",
   intro=["a lot of good businesses still have no website, or one from 2016 that nobody can update. customers check online before they call — if they find nothing, or something broken on a phone, they call the next place.",
    "i build sites that load fast, read clearly on a phone in a parking lot, and that you can update yourself without calling me. price agreed in writing before i start."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
-  build=["a fast site you own completely — domain, hosting, code","editable by you: change hours, prices and photos yourself","booking, ordering or payments built in when you need them","found on google and by ai assistants people ask instead of google","english, spanish, portuguese or chinese — i speak all four"],
+  build=["a fast site with the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","editable by you: change hours, prices and photos yourself","booking, ordering or payments built in when you need them","found on google and by ai assistants people ask instead of google","english, spanish, portuguese or chinese — i speak all four"],
   proof=("curio + this site","the app store app, this site, and every system on the work page were built by the same person you'd be hiring."),
   faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
    ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and i'll tell you which parts are worth keeping."),
@@ -47,11 +47,11 @@ SERVICES = [
   intro=["most app projects die between the idea and the store. agencies quote six figures; freelancer marketplaces hand you code that never passes apple's review.",
    "i've taken my own app through app store review solo — design, code, backend, subscriptions, the review process, and the appeal when review got it wrong. that whole path is what you're buying."],
   pains=["you have an app idea and no technical team","your customers keep asking 'do you have an app?'","you got an agency quote with too many zeros","someone built you an app that never made it to the store","you need the backend, accounts and payments — not just screens"],
-  build=["ios and android from one codebase where that's the right call","the backend, accounts, notifications and payments behind it","app store and play submission handled, including review problems","subscriptions and in-app purchases wired correctly","you own the developer accounts and the code from day one"],
+  build=["ios and android from one codebase where that's the right call","the backend, accounts, notifications and payments behind it","app store and play submission handled, including review problems","subscriptions and in-app purchases wired correctly","agreed project accounts are set up in your name and included source code is handed over; app stores, libraries and vendors keep their terms"],
   proof=("curio — live on the app store","a consumer ios app built solo end to end: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages."),
   faqs=[("what does an app cost?","full builds start at $3,500. a simple internal app costs less than a consumer app with accounts, payments and push. you get a fixed written quote first — the number doesn't move after."),
    ("ios first or both?","usually both from one codebase. if your customers are heavily iphone (common for consumer) or android (common for field crews), we start there."),
-   ("who owns the app?","you. the developer accounts, the store listing, the code and the backend are all in your name.")],
+   ("who owns the app?","the agreed project accounts and store listing are set up in your name, and the included source code and backend setup notes are handed over. app stores, hosting providers, libraries and other vendors keep their own terms.")],
   related=["custom-software","websites","booking-systems"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
@@ -103,26 +103,26 @@ SERVICES = [
   proof=("multi-brand ordering","one cart across many restaurant brands; the server re-prices every line, splits a ticket per vendor and computes each vendor's fee. no off-the-shelf product does that."),
   faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — i'll tell you so in the free call. custom wins when the missing 30% is the part your business actually runs on."),
    ("what does custom software cost?","full builds start at $1,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
-   ("what happens if you get hit by a bus?","the code, repo, accounts and documentation are in your name from day one. any competent developer can pick it up — nothing is set up to make me irreplaceable.")],
+   ("what happens if you get hit by a bus?","the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make me irreplaceable.")],
   related=["mobile-apps","business-automation","business-dashboards"]),
 
  dict(slug="booking-systems", name="booking & online ordering", h1=("customers book and order themselves —", "the reminder does the rest"),
   price="$600", title="Booking & Online Ordering — from $600 | Leon Kelvin Li",
-  desc="Booking and online ordering built into your own website: appointments, deposits, no-show-killing reminders, and a cart that keeps the commission. Owned by you, no per-booking fees.",
+  desc="Booking and ordering on your website: appointments, deposits, reminders and a direct-order cart. Leon charges no booking fee; provider terms still apply.",
   intro=["every booking that happens over the phone costs staff time, and every no-show costs the whole slot. online booking fixes the first; automatic reminders fix the second — the reminder is the part that pays for the build.",
    "i build booking into your own site — your calendar, your rules, deposits if you want them — rather than renting a generic widget with someone else's branding and a per-booking fee.",
    "ordering works the same way. a cart on your own site keeps the 15-30% a delivery app takes on every order, and the customer stays yours instead of theirs."],
   pains=["booking happens by phone and eats front-desk time","no-shows are killing your calendar","after-hours visitors can't book and don't call back","a delivery app takes a cut of every order and owns your customer","your current booking tool takes a cut or looks like an ad for itself"],
   build=["booking pages that match your site, not a widget's brand","staff calendars, service durations, buffer rules","deposits and card-on-file through stripe","automatic sms/email reminders and easy rescheduling","sync with the calendar your team already lives in","commission-free ordering: cart, payment, and a ticket that reaches the kitchen"],
   proof=("built like the ordering system","the same server-side discipline as the multi-brand ordering platform: rules enforced where customers can't edit them."),
-  faqs=[("what does a booking system cost?","from $600 built into your site, and commission-free online ordering from $600. no monthly per-booking cut — you own it."),
+  faqs=[("what does a booking system cost?","from $600 built into your site, and direct online ordering from $600. leon charges no monthly per-booking or per-order cut; payment, messaging, hosting and other provider terms still apply."),
    ("can customers pay a deposit when they book?","yes — deposits, full prepayment or card-on-file, through stripe, with receipts handled."),
    ("we already use a scheduling tool. keep it?","if it works, keep it — sometimes the right build is your website talking to it. i'll tell you which in the free call.")],
   related=["websites","ai-phone-agents","business-automation"]),
 
  dict(slug="business-dashboards", name="dashboards & internal tools", h1=("the four numbers that decide", "your week, on one screen"),
   price="$750", title="Dashboards & Internal Tools — from $750 | Leon Kelvin Li",
-  desc="Live dashboards that replace the Friday export ritual, plus the small internal tools and Chrome extensions that delete the copy-paste out of a job your team does forty times a day.",
+  desc="Live dashboards and focused internal tools that replace manual exports, surface the numbers that matter and remove repetitive copy-paste from daily work.",
   intro=["somebody on your team spends part of every week exporting, pasting and reformatting the same report. and by the time it's read, it's old.",
    "a dashboard pulls those numbers live from the systems that already have them — sales, bookings, stock, ad spend — onto one screen you check in ten seconds.",
    "the same goes for the job somebody does forty times a day in six clicks. a small internal tool or chrome extension that makes it one click is the highest return-per-dollar software i build."],
@@ -161,7 +161,7 @@ INDUSTRIES = [
    ("review desk","every review read and a reply drafted for you — a human presses send. from $750",None)],
   proof=("multi-brand ordering","one cart across many kitchens; the server re-prices every line, splits tickets per vendor, computes fees. running for a 22-business operation."),
   faqs=[("can i stop paying delivery-app commissions?","for pickup and your own delivery, yes — ordering on your own site has no per-order cut. marketplaces still bring discovery; the goal is moving your regulars to the channel you own."),
-   ("what does online ordering cost?","from $600 one-time, on your site, you own it. compare that to a month of commissions."),
+   ("what does online ordering cost?","from $600 one-time for ordering on your own site; leon charges no per-order cut. payment, hosting and other provider fees still apply. compare that to a month of commissions."),
    ("i have two locations with different menus.","that's exactly what the multi-brand system was built for — shared platform, separate menus, tickets and payouts.")],
   related_services=["booking-systems","ai-phone-agents","websites"]),
 
@@ -288,7 +288,7 @@ INDUSTRIES = [
    ("document workflows","created, versioned, approved and filed — automatically. from $500","business-automation"),
    ("firm dashboard","matters, pipeline and billing on one screen. from $1,000","business-dashboards")],
   proof=("document control","request → document created, filed, approved, locked, versioned and published — running today, built twice (apps script and n8n) so the team can edit it."),
-  faqs=[("is client data safe?","per-client visibility is enforced server-side, and you own the code and hosting — auditable by anyone you choose."),
+  faqs=[("is client data safe?","per-client visibility is enforced server-side. the agreed project accounts, included source code and setup notes are handed over, while hosting providers, licensed software and other vendors keep their own terms. your reviewer can audit the included code."),
    ("we bill hourly. does this change that?","it removes the hours you can't bill — admin — and keeps the ones you can."),
    ("what does a portal cost?","from $1,500; intake automation from $600. written fixed quotes.")],
   related_services=["custom-software","business-automation","business-dashboards"]),
@@ -297,7 +297,7 @@ INDUSTRIES = [
   title="MVP & Product Development for Startups | Leon Kelvin Li",
   desc="MVPs that actually ship: app + backend + payments from one developer who has taken his own product through App Store review.",
   intro=["a founder with an idea needs the version of the product that can meet users — not a six-month engagement, not a no-code demo that collapses at the first real feature.",
-   "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs, and you keep the repo."],
+   "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs; the agreed repo, included source and setup notes are part of the written handoff, while third-party and licensed terms remain."],
   pains=["you have the idea and the users, not the technical team","agency quotes start at six figures","the no-code prototype hit its ceiling","your technical co-founder search is month six"],
   fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500","custom-software"),
    ("app + backend + payments","the whole stack, not just screens. from $3,500","mobile-apps"),
@@ -305,7 +305,7 @@ INDUSTRIES = [
    ("ongoing development","a standing block of hours as you see fit. from $400/mo",None)],
   proof=("curio","consumer ios app on the app store: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages — built alone."),
   faqs=[("how fast can an mvp ship?","weeks, not quarters — scope decides. we cut to the version that tests the idea, in writing, before building."),
-   ("do i own the code?","completely — repo, accounts and infrastructure from day one. investors will ask; the answer is yes."),
+   ("do i own the code?","the agreed repo and project accounts, plus the source code and setup notes included in scope, are handed over. third-party infrastructure, app stores, libraries and other licensed services keep their own terms. investors can review the written handoff."),
    ("can you keep building after launch?","yes — ongoing from $400/mo, or fixed quotes per milestone as you raise.")],
   related_services=["mobile-apps","custom-software","ai-chatbots"]),
 ]
@@ -354,11 +354,11 @@ def footer():
     </div>
     <nav><h4>services</h4>{slinks}</nav>
     <nav><h4>industries</h4>{ilinks}</nav>
-    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="/privacy">privacy</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
-    <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
+    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
@@ -646,9 +646,7 @@ def about_page():
     schema = [{"@context": "https://schema.org", "@graph": [profile, person]}, breadcrumb_schema(bc, path)]
     rel_me = "\n".join(f'<link rel="me" href="{e(url)}">' for url in IDENTITY_URLS)
     return head("About Leon Kelvin Li — Software Developer | Leon Kelvin Li",
-        "Leon Kelvin Li is an independent software developer working with businesses across the United States. "
-        "He builds websites, apps, online ordering, booking systems and AI automation, and works in English, "
-        "Chinese, Portuguese and Spanish.",
+        "Meet Leon Kelvin Li, a California-based independent developer who builds websites, apps and automation directly for U.S. businesses in four languages.",
         path, schema, head_extra=rel_me) + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
@@ -679,7 +677,7 @@ def about_page():
         <li><svg class="ic"><use href="#ic-check"/></svg>one person, on purpose — no account manager, no handoff to a junior</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a written fixed price before any work starts, and it does not change after</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a working demo you can open in a browser every week, not a status email</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>you own everything: domain, hosting, code, accounts and data, in your name from day one</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>the agreed project accounts, included source code, project data and setup notes are handed over; domains, hosting, app stores, libraries and other third-party services remain under their own terms</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>he will tell you when you don't need him — a script or an off-the-shelf tool is often the right answer, and saying so is cheaper than being wrong</li>
       </ul>
     </div>
@@ -694,7 +692,7 @@ def about_page():
     <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. older work remains in the <a class="cx-mini" href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a>.</p>
     <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
     <div class="ctarow">
-      <a class="btn btn-solid magnet" href="/quote" data-evt="pricing_cta_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+      <a class="btn btn-solid magnet" href="/quote" data-evt="about_quote_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_about"><span>whatsapp</span></a>
       <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
     </div>
@@ -703,61 +701,202 @@ def about_page():
 </main>
 ''' + footer()
 
-CAL_SLUG = "noctilucente-wzvdey/15min"   # cal.com user/event; empty string falls back to the request form
-                #    from the request form to a real embedded booker when set.
+CAL_SLUG = "noctilucente-wzvdey/15min"
+
+ZH_CALL_DESCRIPTION = "免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工、哪里最费时间，我会告诉你适合怎么做、大概从多少钱起，也会直说暂时不需要做系统。"
+
+CAL_COPY = {
+    "en": {
+        "loading": "loading live availability…",
+        "failed": "the inline calendar did not load. use the direct booking link below.",
+        "booked_label": "you are booked",
+        "booked": "cal.com will send the video link and calendar invitation to the email used for the booking.",
+        "fallback": "calendar not showing?",
+        "direct": "open the booking page directly",
+        "email": "email leon",
+        "call": "call (510) 826-7735",
+        "unavailable": "online booking is temporarily unavailable. email leon or call (510) 826-7735.",
+    },
+    "pt": {
+        "loading": "carregando os horários disponíveis…",
+        "failed": "o calendário não carregou aqui. use o link direto abaixo.",
+        "booked_label": "horário marcado",
+        "booked": "o cal.com vai mandar o link da chamada e o convite para o e-mail usado no agendamento.",
+        "fallback": "o calendário não apareceu?",
+        "direct": "abrir a página de agendamento",
+        "email": "mandar e-mail",
+        "call": "ligar para (510) 826-7735",
+        "unavailable": "o agendamento online está indisponível por enquanto. mande um e-mail ou ligue para (510) 826-7735.",
+    },
+    "es": {
+        "loading": "cargando los horarios disponibles…",
+        "failed": "el calendario no cargó aquí. usa el enlace directo de abajo.",
+        "booked_label": "llamada agendada",
+        "booked": "cal.com enviará el enlace de video y la invitación al correo usado para agendar.",
+        "fallback": "¿no aparece el calendario?",
+        "direct": "abrir la página de reservas",
+        "email": "enviar un correo",
+        "call": "llamar al (510) 826-7735",
+        "unavailable": "las reservas en línea no están disponibles por ahora. envía un correo o llama al (510) 826-7735.",
+    },
+    "zh": {
+        "loading": "正在加载可预约时间…",
+        "failed": "日历没有成功加载，请使用下面的直接预约链接。",
+        "booked_label": "预约成功",
+        "booked": "cal.com 会把视频链接和日历邀请发到预约时填写的邮箱。",
+        "fallback": "没有看到日历？",
+        "direct": "直接打开预约页面",
+        "email": "发邮件给 Leon",
+        "call": "拨打 (510) 826-7735",
+        "unavailable": "在线预约暂时不可用，请发邮件或拨打 (510) 826-7735。",
+    },
+}
 
 # Cal.com's OFFICIAL inline embed, not a raw iframe. A raw iframe of the
 # public booking URL inherits the visitor's cal.com session, so a logged-in
 # user — i.e. Leon himself — sees his own bookings dashboard instead of the
 # booker. The embed script renders in an isolated context and cannot.
-def booker():
-    """The one Cal.com embed. Shared so the English page and the three
-    translated ones can never drift into different widgets."""
-    return (
-      '<div class="calwrap"><div id="leon-cal"></div></div>'
-      '<script>(function(C,A,L){var p=function(a,ar){a.q.push(ar)};var d=C.document;'
-      'C.Cal=C.Cal||function(){var cal=C.Cal;var ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];'
-      'd.head.appendChild(d.createElement("script")).src=A;cal.loaded=true}'
-      'if(ar[0]===L){var api=function(){p(api,arguments)};var ns=ar[1];api.q=api.q||[];'
-      'if(typeof ns==="string"){cal.ns[ns]=cal.ns[ns]||api;p(cal.ns[ns],ar);p(cal,["initNamespace",ns])}'
-      'else p(cal,ar);return}p(cal,ar)}})(window,"https://app.cal.com/embed/embed.js","init");'
-      'Cal("init","leon15",{origin:"https://app.cal.com"});'
-      'Cal.ns.leon15("inline",{elementOrSelector:"#leon-cal",'
-      'config:{layout:"month_view",theme:"dark"},calLink:"' + CAL_SLUG + '"});'
-      'Cal.ns.leon15("ui",{theme:"dark",hideEventTypeDetails:false,layout:"month_view"});'
-      '</script>'
-    ) if CAL_SLUG else \
-    '''<form class="qform" id="callform" novalidate>
-  <label>name<input name="name" type="text" autocomplete="name"></label>
-  <div class="qrow">
-    <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
-    <label>phone or whatsapp<input name="phone" type="tel" autocomplete="tel"></label>
+def booker(lang="en"):
+    """One instrumented Cal.com embed, shared by every booking page.
+
+    Only the source/campaign fields already captured by the site are forwarded.
+    Arbitrary page query parameters are deliberately not forwarded: names,
+    emails, or other accidental URL data must never cross into the calendar.
+    """
+    copy = CAL_COPY.get(lang, CAL_COPY["en"])
+    if not CAL_SLUG:
+        return (
+            '<div class="calwrap" style="min-height:14rem;padding:2rem">'
+            f'<p class="sub">{copy["unavailable"]}</p>'
+            '<p class="qnote"><a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">'
+            f'{copy["email"]}</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">'
+            f'{copy["call"]}</a></p></div>'
+        )
+
+    calendar_url = f"https://cal.com/{CAL_SLUG}?redirect=false"
+    template = r'''<div class="calwrap" id="leon-booker" aria-busy="true" style="min-height:680px;position:relative">
+  <div id="leon-cal-status" role="status" style="position:absolute;inset:0;z-index:2;min-height:680px;padding:2rem;background:#050505;pointer-events:none">
+    <p class="label" id="leon-cal-status-text">__LOADING__</p>
+    <div aria-hidden="true" style="margin-top:2rem;display:grid;gap:1rem">
+      <i style="display:block;height:3.25rem;border:1px solid #262626;border-radius:9px;background:linear-gradient(90deg,#090909,#151515,#090909)"></i>
+      <i style="display:block;height:18rem;border:1px solid #202020;border-radius:9px;background:linear-gradient(135deg,#080808,#111,#080808)"></i>
+      <i style="display:block;height:3.25rem;border:1px solid #262626;border-radius:9px;background:linear-gradient(90deg,#090909,#151515,#090909)"></i>
+    </div>
   </div>
-  <label>what do you want to talk about? <i>(required)</i><textarea name="problem" rows="3" required placeholder="the part of the week that is still manual, the thing that is broken, or the thing you wish existed…"></textarea></label>
-  <div class="qrow">
-    <label>which days suit you?
-      <select name="timeline"><option value="">any day</option><option>weekdays</option><option>weekends</option><option>today or tomorrow</option></select>
-    </label>
-    <label>what time of day?
-      <select name="currentTools"><option value="">any time 11am-11pm pacific</option><option>late morning</option><option>afternoon</option><option>evening</option><option>late evening</option></select>
-    </label>
-  </div>
-  <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-  <p class="qerr" id="callerr" role="alert"></p>
-  <button class="btn btn-solid magnet qsend" type="submit" data-evt="call_form_submit"><span>request the call</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-  <p class="qnote">leon replies with a video link and a time, usually the same day. want it faster? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20I%27d%20like%20to%20book%20a%2015%20minute%20call.%20I%27m%20free%3A%20" target="_blank" rel="noopener" data-evt="wa_click_call">whatsapp him</a> or call <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a>.</p>
-    </form>
-    <div class="qok" id="callok" hidden>
-  <p class="label">got it</p>
-  <p class="sub">leon will email you a video link and a time. if you would rather not wait, message him on <a href="https://wa.me/15108267735" target="_blank" rel="noopener">whatsapp</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
-    </div>'''
+  <div id="leon-cal" style="min-height:680px"></div>
+</div>
+<div class="qok" id="bookingok" hidden tabindex="-1" aria-live="polite">
+  <p class="label">__BOOKED_LABEL__</p>
+  <p class="sub">__BOOKED__</p>
+</div>
+<p class="qnote">__FALLBACK__ <a href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">__EMAIL__</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">__CALL__</a></p>
+<script>
+(function(){
+  var scriptNode=document.currentScript;
+  var wrap=document.getElementById('leon-booker');
+  var status=document.getElementById('leon-cal-status');
+  var statusText=document.getElementById('leon-cal-status-text');
+  var confirmation=document.getElementById('bookingok');
+  var readyTracked=false,failedTracked=false,bookedTracked=false;
+  var timeout;
+
+  // Put the calendar first visually immediately, then first in the DOM once the
+  // parser is done. This keeps translated pages generated by their shared
+  // layout accessible without duplicating that layout here.
+  var column=scriptNode&&scriptNode.closest('.callgrid > div');
+  if(column){
+    column.style.order='-1';
+    var moveFirst=function(){
+      var grid=column.parentElement;
+      if(grid&&grid.classList.contains('callgrid')&&grid.firstElementChild!==column){
+        grid.insertBefore(column,grid.firstElementChild);
+      }
+    };
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',moveFirst,{once:true});
+    else moveFirst();
+  }
+
+  function track(name,extra){
+    if(window.leonEvt){ window.leonEvt(name,extra); return; }
+    document.addEventListener('DOMContentLoaded',function(){ if(window.leonEvt) window.leonEvt(name,extra); },{once:true});
+  }
+  function safeParam(value,max){
+    return String(value||'').trim().replace(/[^A-Za-z0-9._~-]/g,'-').slice(0,max);
+  }
+  function sourceConfig(){
+    var attr={};
+    try{ attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')||{}; }catch(e){}
+    var query=new URLSearchParams(location.search);
+    var out={layout:'month_view',theme:'dark'};
+    var source=safeParam(query.get('utm_source')||query.get('s')||attr.utmSource,120);
+    var medium=safeParam(query.get('utm_medium')||attr.utmMedium,120);
+    var campaign=safeParam(query.get('utm_campaign')||attr.utmCampaign,120);
+    if(source) out.utm_source=source;
+    if(medium) out.utm_medium=medium;
+    if(campaign) out.utm_campaign=campaign;
+    return out;
+  }
+  function ready(){
+    clearTimeout(timeout);
+    wrap.setAttribute('aria-busy','false');
+    status.hidden=true;
+    if(!readyTracked){ readyTracked=true; track('calendar_ready'); }
+  }
+  function failed(){
+    clearTimeout(timeout);
+    wrap.setAttribute('aria-busy','false');
+    statusText.textContent='__FAILED__';
+    if(!failedTracked){ failedTracked=true; track('calendar_failed'); }
+  }
+  function booked(payload){
+    ready();
+    confirmation.hidden=false;
+    var data=payload&&payload.detail&&payload.detail.data;
+    var rawUid=data&&(data.uid||(data.booking&&data.booking.uid));
+    var bookingUid=safeParam(rawUid,128);
+    if(!bookedTracked){ bookedTracked=true; track('calendar_booking_success',bookingUid?{bookingUid:bookingUid}:undefined); }
+    try{ confirmation.focus({preventScroll:true}); }catch(e){ confirmation.focus(); }
+    confirmation.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+  }
+
+  (function(C,A,L){var p=function(a,ar){a.q.push(ar)};var d=C.document;
+    C.Cal=C.Cal||function(){var cal=C.Cal;var ar=arguments;if(!cal.loaded){cal.ns={};cal.q=cal.q||[];
+    d.head.appendChild(d.createElement('script')).src=A;cal.loaded=true}
+    if(ar[0]===L){var api=function(){p(api,arguments)};var ns=ar[1];api.q=api.q||[];
+    if(typeof ns==='string'){cal.ns[ns]=cal.ns[ns]||api;p(cal.ns[ns],ar);p(cal,['initNamespace',ns])}
+    else p(cal,ar);return}p(cal,ar)}})(window,'https://app.cal.com/embed/embed.js','init');
+
+  Cal('init','leon15',{origin:'https://app.cal.com'});
+  Cal.ns.leon15('on',{action:'bookerReady',callback:ready});
+  Cal.ns.leon15('on',{action:'linkFailed',callback:failed});
+  Cal.ns.leon15('on',{action:'bookingSuccessfulV2',callback:booked});
+  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:sourceConfig(),calLink:'__CAL_SLUG__'});
+  Cal.ns.leon15('ui',{theme:'dark',hideEventTypeDetails:false,layout:'month_view'});
+  var embedScript=document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
+  if(embedScript) embedScript.addEventListener('error',failed,{once:true});
+  timeout=setTimeout(failed,15000);
+})();
+</script>'''
+    replacements = {
+        "__LOADING__": copy["loading"],
+        "__FAILED__": copy["failed"],
+        "__BOOKED_LABEL__": copy["booked_label"],
+        "__BOOKED__": copy["booked"],
+        "__FALLBACK__": copy["fallback"],
+        "__DIRECT__": copy["direct"],
+        "__EMAIL__": copy["email"],
+        "__CALL__": copy["call"],
+        "__CAL_URL__": calendar_url,
+        "__CAL_SLUG__": CAL_SLUG,
+    }
+    for marker, value in replacements.items():
+        template = template.replace(marker, value)
+    return template
 
 
 
 def call_page():
-    """Book a 15-minute call. Until CAL_SLUG is set this posts a request to the
-       same lead API the quote form uses, so the page converts from day one
-       instead of waiting on a third-party signup."""
+    """Book a 15-minute call with a visible, instrumented calendar and fallbacks."""
     path = '/call'
     bc = [("home","/"),("book a call", None)]
     schema = [breadcrumb_schema(bc, path), {
@@ -768,7 +907,7 @@ def call_page():
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
         "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
     }]
-    booker_html = booker()
+    booker_html = booker("en")
     call_alts = ''.join(
         f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
         for hl, href in lang_pages.call_alternates())
@@ -790,6 +929,9 @@ def call_page():
   <div class="rail">
     <div class="callgrid">
     <div>
+      ''' + booker_html + '''
+    </div>
+    <div>
       <p class="label">what happens on the call</p>
       <ul class="blist">
         <li><svg class="ic"><use href="#ic-check"/></svg>you describe the problem in plain words — no technical vocabulary needed</li>
@@ -799,35 +941,11 @@ def call_page():
       </ul>
       <p class="sub">english, spanish, portuguese or chinese — whichever you would rather think in.</p>
     </div>
-    <div>
-      ''' + booker_html + '''
-    </div>
     </div>
   </div>
 </section>
 </main>
-''' + footer() + CALL_JS
-
-
-CALL_JS = '''<script>
-(function(){
-  var f=document.getElementById('callform'), err=document.getElementById('callerr'), ok=document.getElementById('callok');
-  if(!f) return;
-  var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
-  f.addEventListener('submit',function(ev){
-    ev.preventDefault(); err.textContent='';
-    var d={}; new FormData(f).forEach(function(v,k){ d[k]=String(v||'').trim(); });
-    if(!d.email||!/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(d.email)){ err.textContent='a valid email, so leon can send you the link.'; return; }
-    if(!d.problem){ err.textContent='one line about what you want to talk about.'; return; }
-    d.via='call-request';
-    try{ var a=JSON.parse(localStorage.getItem('leon_attr')||'null'); if(a){ d.utmSource=a.utmSource; d.referrer=a.referrer; d.firstPage=a.firstPage; } }catch(e){}
-    var b=f.querySelector('button[type=submit]'); b.disabled=true;
-    fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
-      .then(function(r){ if(!r.ok) throw new Error('failed'); f.hidden=true; ok.hidden=false; if(window.leonEvt)window.leonEvt('call_request_sent'); })
-      .catch(function(){ b.disabled=false; err.innerHTML='that did not send. message him on <a href="https://wa.me/15108267735">whatsapp</a> or call (510) 826-7735.'; });
-  });
-})();
-</script>'''
+''' + footer()
 
 def quote_page():
     path = '/quote'
@@ -848,59 +966,114 @@ def quote_page():
 </section>
 <section class="sec">
   <div class="rail">
-    <form class="qform" id="qform" novalidate>
-      <label>what does your business do?<input name="company" type="text" placeholder="two taquerias in dallas / a plumbing company / a dental office…"></label>
+    <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
       <label>what are you trying to fix or build? <i>(required)</i><textarea name="problem" rows="4" required placeholder="the part of the week that's still manual, the thing that's broken, or the thing you wish existed…"></textarea></label>
-      <label>what do you currently use for it?<input name="currentTools" type="text" placeholder="paper + phone / spreadsheets / quickbooks / square / nothing…"></label>
-      <label>what result would make this worth paying for?<input name="desiredOutcome" type="text" placeholder="phone stops ringing about status / orders without commission / one less hire…"></label>
-      <div class="qrow">
-        <label>when do you want to start?
-          <select name="timeline"><option value="">choose…</option><option>as soon as possible</option><option>within a month</option><option>next few months</option><option>just exploring</option></select>
-        </label>
-        <label>rough budget <i>(optional)</i>
-          <select name="budget"><option value="">not sure yet</option><option>under $1,000</option><option>$1,000–$1,500</option><option>$1,500–$5,000</option><option>$5,000–$15,000</option><option>$15,000+</option></select>
-        </label>
-      </div>
       <div class="qrow">
         <label>name<input name="name" type="text" autocomplete="name"></label>
-        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email"></label>
+        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email"></label>
       </div>
-      <label>phone <i>(optional)</i><input name="phone" type="tel" autocomplete="tel"></label>
+      <details>
+        <summary style="cursor:pointer;color:var(--dim);font-size:12px;letter-spacing:.05em">add project details <i>(optional)</i></summary>
+        <div style="display:grid;gap:1.1rem;margin-top:1.1rem">
+          <label>what does your business do?<input name="company" type="text" placeholder="two taquerias in dallas / a plumbing company / a dental office…"></label>
+          <label>what do you currently use for it?<input name="currentTools" type="text" placeholder="paper + phone / spreadsheets / quickbooks / square / nothing…"></label>
+          <label>what result would make this worth paying for?<input name="desiredOutcome" type="text" placeholder="phone stops ringing about status / orders without commission / one less hire…"></label>
+          <div class="qrow">
+            <label>when do you want to start?
+              <select name="timeline"><option value="">choose…</option><option>as soon as possible</option><option>within a month</option><option>next few months</option><option>just exploring</option></select>
+            </label>
+            <label>rough budget <i>(optional)</i>
+              <select name="budget"><option value="">not sure yet</option><option>under $1,000</option><option>$1,000–$1,500</option><option>$1,500–$5,000</option><option>$5,000–$15,000</option><option>$15,000+</option></select>
+            </label>
+          </div>
+          <label>phone <i>(optional)</i><input name="phone" type="tel" autocomplete="tel"></label>
+        </div>
+      </details>
       <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
-      <p class="qerr" id="qerr" role="alert"></p>
-      <button class="btn btn-solid magnet qsend" type="submit" data-evt="quote_form_submit"><span>send it to leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <p class="qnote">goes straight to leon — no sales team exists. you'll hear back at the email above. or skip the form: <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">whatsapp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="email_click">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a></p>
+      <p class="qerr" id="qerr" role="alert" aria-live="polite"></p>
+      <div id="qfail" hidden role="alert">
+        <p class="sub">the site did not accept that request. your answers are still here. <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">open a prepared email</a>, then hit send in your email app; or use whatsapp or phone below.</p>
+      </div>
+      <button class="btn btn-solid magnet qsend" type="submit"><span>send it to leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <noscript><p class="qnote">this form needs javascript to submit safely. email <a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p></noscript>
+      <p class="qnote" id="qnote">the site sends this directly; it will not open your email app when it works. no sales team exists. prefer a manual route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">whatsapp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a></p>
     </form>
-    <div class="qok" id="qok" hidden>
-      <p class="label">almost there</p>
-      <h2 class="dsp">your email app just opened. <em>hit send and it comes straight to leon.</em></h2>
-      <p class="sub">everything you wrote is already in the message — nothing to retype. if nothing opened, <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="email_click">open it here</a> or write to <a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a>. urgent? call <a href="tel:+15108267735">(510) 826-7735</a>.</p>
+    <div class="qok" id="qok" hidden tabindex="-1" aria-live="polite">
+      <p class="label">received</p>
+      <h2 class="dsp">the site accepted your <em>project note.</em></h2>
+      <p class="sub">your reference is <code id="qreceipt"></code>. save it if you want leon to trace this exact submission.</p>
+      <div class="ctarow">
+        <a class="btn btn-solid magnet" href="/call" data-evt="quote_to_calendar"><span>book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn magnet" href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email"><span>email leon directly</span></a>
+      </div>
     </div>
   </div>
 </section>
 </main>
 <script>
 (function(){
-  var f=document.getElementById('qform'),err=document.getElementById('qerr'),ok=document.getElementById('qok');
+  var f=document.getElementById('qform'),err=document.getElementById('qerr'),fail=document.getElementById('qfail'),ok=document.getElementById('qok');
   if(!f)return;
   var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
-  var started=false;
-  f.addEventListener('input',function(){ if(!started){started=true; if(window.leonEvt)window.leonEvt('quote_form_start');} },{once:false});
-  f.addEventListener('submit',function(ev){
-    ev.preventDefault(); err.textContent='';
+  var button=f.querySelector('button[type="submit"]'),buttonText=button.querySelector('span');
+  var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt');
+  var started=false,submitting=false;
+  function track(name,extra){ if(window.leonEvt) window.leonEvt(name,extra); }
+  f.addEventListener('input',function(ev){
+    if(!started){ started=true; track('quote_form_start'); }
+    if(ev.target&&ev.target.removeAttribute) ev.target.removeAttribute('aria-invalid');
+  },{once:false});
+  f.addEventListener('submit',async function(ev){
+    ev.preventDefault();
+    if(submitting)return;
+    track('quote_submit_attempt');
+    err.textContent=''; fail.hidden=true;
     var d=Object.fromEntries(new FormData(f).entries());
-    if(!d.problem||!d.problem.trim()){err.textContent='tell me at least a sentence about what you need.';return;}
-    if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(d.email||'')){err.textContent='that email does not look right.';return;}
+    Object.keys(d).forEach(function(k){ if(typeof d[k]==='string') d[k]=d[k].trim(); });
+    var invalid=null;
+    if(!d.problem){ err.textContent='tell me at least a sentence about what you need.'; invalid=f.elements.problem; }
+    else if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(d.email||'')){ err.textContent='that email does not look right.'; invalid=f.elements.email; }
+    if(invalid){
+      invalid.setAttribute('aria-invalid','true');
+      invalid.focus();
+      track('quote_validation_failed');
+      return;
+    }
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
     d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||''; d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||'';
-    // Logged server-side as a backup, but the person never waits on it: the
-    // browser hands the message straight to their mail app instead.
-    try{ fetch(API+'/api/lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true}).catch(function(){}); }catch(e){}
-    var href=mailtoFor(d);
-    document.getElementById('qmail').href=href;
-    f.hidden=true; ok.hidden=false; window.scrollTo({top:0});
-    if(window.leonEvt)window.leonEvt('quote_form_submit');
-    window.location.href=href;
+    d.firstPage=(attr.first&&attr.first.page)||attr.firstPage||'/';
+    d.firstReferrer=(attr.first&&attr.first.referrer)||'';
+    d.firstUtmSource=(attr.first&&attr.first.utmSource)||'';
+    d.firstUtmMedium=(attr.first&&attr.first.utmMedium)||'';
+    d.firstUtmCampaign=(attr.first&&attr.first.utmCampaign)||'';
+    d.lastPage=(attr.last&&attr.last.page)||location.pathname;
+    try{ d.analyticsSessionId=sessionStorage.getItem('leon_analytics_session')||''; }catch(e){ d.analyticsSessionId=''; }
+    submitting=true; button.disabled=true; button.setAttribute('aria-busy','true'); buttonText.textContent='sending…';
+    var controller=window.AbortController?new AbortController():null;
+    var timer=controller?setTimeout(function(){controller.abort();},35000):null;
+    try{
+      var options={method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)};
+      if(controller) options.signal=controller.signal;
+      var response=await fetch(API+'/api/lead',options);
+      var result={}; try{result=await response.json();}catch(e){}
+      if(!response.ok||result.ok!==true) throw new Error('lead rejected');
+      var receiptId=String(result.receiptId||'');
+      if(!/^lead_[A-Za-z0-9-]{16,}$/.test(receiptId)) throw new Error('missing receipt');
+      receipt.textContent=receiptId;
+      f.hidden=true; ok.hidden=false;
+      track('quote_lead_accepted',{receipt:receiptId});
+      try{ ok.focus({preventScroll:true}); }catch(e){ ok.focus(); }
+      ok.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+    }catch(e){
+      manual.href=mailtoFor(d);
+      fail.hidden=false;
+      err.textContent='that did not send through the site.';
+      track('quote_lead_failed');
+      try{ fail.scrollIntoView({behavior:'smooth',block:'center'}); }catch(ignore){}
+    }finally{
+      if(timer)clearTimeout(timer);
+      submitting=false; button.disabled=false; button.removeAttribute('aria-busy'); buttonText.textContent='send it to leon';
+    }
   });
   function line(label,val){ return val&&String(val).trim() ? label+': '+String(val).trim()+'\\n' : ''; }
   function mailtoFor(d){
@@ -953,6 +1126,10 @@ def w(rel, content):
 # owner explains the problem in. Copy is native, never translated, and lives
 # in data/lang_pages.json.
 import lang_pages
+
+# Keep the localized call metadata in the same generator path as its page.
+# The long-form translation table remains owned by tools/lang_pages.py.
+lang_pages.CALL_COPY["zh"]["desc"] = ZH_CALL_DESCRIPTION
 
 LANG_COPY = {}
 _copy_path = os.path.join(ROOT, 'content', 'lang_pages.json')
@@ -1008,7 +1185,7 @@ for (lang, key), page in sorted(LANG_COPY.items()):
 # the moment of deciding. Same Cal.com embed, translated page around it.
 for _lang in sorted(lang_pages.CALL_COPY):
     _c = lang_pages.CALL_COPY[_lang]
-    w(f"{_lang}/{_c['slug']}.html", lang_pages.render_call(_lang, booker(), LANG_CTX))
+    w(f"{_lang}/{_c['slug']}.html", lang_pages.render_call(_lang, booker(_lang), LANG_CTX))
     LANG_URLS.append(f"/{_lang}/{_c['slug']}")
 
 # Refill the link block on each language home so the service pages are not
@@ -1039,7 +1216,7 @@ w('about.html', about_page())
 w('call.html', call_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/call', '/quote', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
 

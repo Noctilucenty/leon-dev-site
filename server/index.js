@@ -8,7 +8,7 @@
      POST /api/chat     — streams assistant text (plain chunked text, not SSE)
      POST /api/lead     — validated lead intake (chat handoff + quote form)
      POST /api/event    — tiny first-party analytics beacon -> stdout ("EVT ...")
-   Also serves the static site, so one service can host everything if wanted. */
+   This process is API-only; repository files are never served from this host. */
 
 'use strict';
 
@@ -32,15 +32,22 @@
  */
 require('dns').setDefaultResultOrder('ipv4first');
 
-const path = require('path');
+const crypto = require('crypto');
 const express = require('express');
 
 let OpenAI = null;
 try { OpenAI = require('openai'); } catch (e) { /* handled at call time */ }
 
 const { SYSTEM_PROMPT } = require('./prompt');
-const { validateLead, persistLead, readLeads, clean, verifyMail } = require('./leads');
-const { persistEvent, readEvents, sourceOf } = require('./events');
+const {
+  validateLead,
+  persistLead,
+  readLeads,
+  clean,
+  verifyMail,
+  leadDeliveryConfig
+} = require('./leads');
+const { persistEvent, readEvents, sourceOf, normalizeEvent, funnelStats } = require('./events');
 
 const app = express();
 app.disable('x-powered-by');
@@ -52,6 +59,23 @@ const MAX_OUTPUT = Math.min(Number(process.env.OPENAI_MAX_OUTPUT || 700), 2000);
 const KEY = process.env.OPENAI_API_KEY || '';
 
 const client = KEY && OpenAI ? new OpenAI({ apiKey: KEY }) : null;
+
+function escapeHtml(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+/* Admin routes accept LEADS_KEY only in a header. Query-string secrets leak
+   into browser history, reverse-proxy logs and referrers, so `?key=` is never a
+   fallback. Buffer lengths are compared before timingSafeEqual can run. */
+function adminKeyState(req) {
+  const expected = Buffer.from(String(process.env.LEADS_KEY || ''));
+  if (!expected.length) return 'disabled';
+  const given = Buffer.from(String(req.get('x-leads-key') || ''));
+  if (given.length !== expected.length) return 'unauthorized';
+  return crypto.timingSafeEqual(given, expected) ? 'authorized' : 'unauthorized';
+}
 
 /* ── CORS: only the site, localhost, and one optional extra origin ── */
 const ORIGINS = new Set([
@@ -208,34 +232,50 @@ function reasoningOpts() {
 }
 
 /* ── health ── */
-/* Reports what is CONFIGURED, never a secret value. Lead email was off in
-   production for weeks and nothing said so: leads landed in stdout and an
-   ephemeral file while the owner assumed his inbox was the record. A capability
-   that fails silently is worse than one that is missing. */
+/* Reports liveness separately from lead-delivery readiness, never a secret
+   value. Render polls this route, so HTTP 200 / `ok:true` only means the process
+   is up; it must not pretend a configured-but-blocked notification transport is
+   working. */
 app.get('/api/health', async (req, res) => {
-  // `leadEmail` answers "is it configured", NOT "does it work" — it counts
-  // variables and nothing more. That distinction is not pedantic: it reported
-  // true for hours on 2026-08-21 while every send died on
-  // `connect ENETUNREACH 2607:f8b0:400e:c02::6c:587`, because five variables
-  // were indeed present and the host was simply unreachable over IPv6.
-  //
-  // ?deep=1 is the one that actually connects and authenticates. Use it after
-  // touching any SMTP setting; the cheap field is for uptime polling.
-  const configured = !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
-                        && process.env.SMTP_USER && process.env.SMTP_PASS);
+  res.setHeader('Cache-Control', 'no-store');
+  const deep = req.query.deep === '1' || req.query.deep === 'true';
+  if (deep) {
+    // The deep SMTP path opens a real outbound connection and authenticates.
+    // Keep warm-up/liveness public, but do not expose that operation as a public
+    // GET. This endpoint intentionally accepts the key by header only so it does
+    // not leak into URLs, browser history, proxy logs, or referrers.
+    const auth = adminKeyState(req);
+    if (auth === 'disabled') return res.status(404).json({ error: 'deep health is not enabled' });
+    if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  }
+  const delivery = leadDeliveryConfig();
   const body = {
     ok: true,
     model: client ? MODEL : null,
     vision: !!client,
-    leadEmailConfigured: configured,
-    leadEmail: configured,   // kept for anything already reading this name
-    leadEmailMissing: ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
-      .filter(k => !process.env[k]),
-    leadEmailTo: process.env.LEAD_TO_EMAIL ? String(process.env.LEAD_TO_EMAIL).replace(/^(.).*(@.*)$/, '$1***$2') : null
+    leadEmailProvider: delivery.provider,
+    leadEmailTransport: delivery.transport,
+    leadEmailState: delivery.state,
+    leadEmailConfigured: delivery.configured,
+    leadEmailSupported: delivery.supported,
+    leadEmailReady: delivery.ready,
+    // Backward-compatible name, with corrected semantics: a complete but known-
+    // blocked SMTP setup on Render is false instead of a false green.
+    leadEmail: delivery.ready,
+    leadEmailVerified: false,
+    leadEmailMissing: delivery.missing,
+    leadEmailWarning: delivery.warning,
+    leadEmailTo: delivery.recipient
   };
-  if (req.query.deep) {
+  if (deep) {
     const v = await verifyMail();
-    body.leadEmailWorks = v.ok;
+    // A connection/auth check is not an end-to-end inbox-delivery test. Keep the
+    // historical field, but never set it true unless an actual delivery can be
+    // observed (a public GET endpoint must not send test mail).
+    body.leadEmailWorks = v.ok === false ? false : null;
+    body.leadEmailCheckPassed = v.ok;
+    body.leadEmailCheckLevel = v.level;
+    body.leadEmailCheckProvider = v.provider;
     body.leadEmailCheck = v.reason;
   }
   res.json(body);
@@ -270,7 +310,11 @@ function downMessage(lang) {
 app.post('/api/chat', async (req, res) => {
   const ip = req.ip || 'x';
   if (limited('c:' + ip, 20, 5 * 60_000)) return res.status(429).json({ error: 'slow down a little — try again in a few minutes.' });
-  if (!client) return res.status(503).json({ error: 'assistant is not configured yet. email leondragon3798@gmail.com instead.' });
+  const streamFactory = process.env.NODE_ENV === 'test'
+    && typeof app.locals.chatStreamFactory === 'function'
+    ? app.locals.chatStreamFactory
+    : null;
+  if (!client && !streamFactory) return res.status(503).json({ error: 'assistant is not configured yet. email leondragon3798@gmail.com instead.' });
   if (overDailyCap()) return res.status(503).json({ error: 'the assistant hit its daily limit. email leondragon3798@gmail.com and a human will answer.' });
 
   const sessionId = clean(String(req.body.sessionId || ''), 64) || ip;
@@ -299,37 +343,67 @@ app.post('/api/chat', async (req, res) => {
   if (page) input.push({ role: 'developer', content: 'The visitor is currently on this page of the site: ' + page });
   for (const m of history) input.push(m);
 
-  res.status(200);
-  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-  res.setHeader('Cache-Control', 'no-store');
-  res.setHeader('X-Accel-Buffering', 'no');
-
-  const timeout = setTimeout(() => { try { res.end('\n[timed out — try again]'); } catch (e) {} }, 90_000);
+  const request = {
+    model: MODEL,
+    instructions: SYSTEM_PROMPT + langLine(req.body.lang),
+    input,
+    max_output_tokens: MAX_OUTPUT,
+    stream: true,
+    ...(reasoningOpts())
+  };
+  const controller = new AbortController();
+  const abortOnDisconnect = () => {
+    if (!res.writableEnded) controller.abort();
+  };
+  res.once('close', abortOnDisconnect);
+  const timeoutMs = process.env.NODE_ENV === 'test' && Number.isFinite(app.locals.chatTimeoutMs)
+    ? Math.max(10, app.locals.chatTimeoutMs)
+    : 90_000;
+  let timedOut = false;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+    // Once streaming has begun, an HTTP status can no longer change. End the
+    // transport as an error so fetch's reader rejects and the existing widget
+    // enters its human-handoff path instead of saving an error as model text.
+    if (res.headersSent && !res.writableEnded && !res.destroyed) {
+      res.destroy(new Error('chat stream timed out'));
+    }
+  }, timeoutMs);
   try {
-    const stream = await client.responses.create({
-      model: MODEL,
-      instructions: SYSTEM_PROMPT + langLine(req.body.lang),
-      input,
-      max_output_tokens: MAX_OUTPUT,
-      stream: true,
-      ...(reasoningOpts())
-    });
+    const stream = streamFactory
+      ? await streamFactory(request, { signal: controller.signal })
+      : await client.responses.create(request, {
+          signal: controller.signal,
+          timeout: timeoutMs,
+          maxRetries: 0
+        });
+    res.status(200);
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-store');
+    res.setHeader('X-Accel-Buffering', 'no');
     for await (const ev of stream) {
       if (ev.type === 'response.output_text.delta' && ev.delta) res.write(ev.delta);
-      if (ev.type === 'response.failed') throw new Error('response failed');
+      if (ev.type === 'response.failed' || ev.type === 'response.incomplete' || ev.type === 'error') {
+        throw new Error('response stream failed');
+      }
     }
-    res.end();
+    if (!res.destroyed && !res.writableEnded) res.end();
   } catch (e) {
-    console.error('chat error:', e.status || '', e.message);
-    try {
-      // A dead assistant must still hand the visitor a way to reach a human —
-      // on /pt and /zh the chat button is the PRIMARY call to action, so an
-      // unexplained failure there is a lost lead, not a cosmetic bug.
-      if (!res.headersSent) res.status(502).json({ error: downMessage(req.body.lang) });
-      else res.end('\n\n' + downMessage(req.body.lang));
-    } catch (e2) {}
+    const error = e instanceof Error ? e : new Error(String(e || 'chat stream failed'));
+    console.error('chat error:', error.status || '', error.message);
+    if (res.destroyed || res.writableEnded) return;
+    // Before the first byte, send a normal non-2xx response. After the first
+    // byte, destroy the stream: the browser cannot see a new status at that
+    // point, but it can reliably detect a failed body read.
+    if (!res.headersSent) {
+      res.status(timedOut ? 504 : 502).json({ error: downMessage(req.body.lang) });
+    } else {
+      res.destroy(error);
+    }
   } finally {
     clearTimeout(timeout);
+    res.off('close', abortOnDisconnect);
   }
 });
 
@@ -345,16 +419,16 @@ app.post('/api/lead', async (req, res) => {
   if (!body.conversationSummary && history) {
     body.conversationSummary = history.map(m => `${m.role}: ${textOf(m)}`).join('\n').slice(0, 6000);
   }
-  const { lead, error, bot } = validateLead(body);
-  if (bot) return res.json({ ok: true });   // looks identical to a real submission
+  const { lead, error, bot, receiptId } = validateLead(body);
+  if (bot) return res.json({ ok: true, receiptId }); // same shape as a real submission
   if (error) return res.status(400).json({ error });
   persistLead(lead);
-  res.json({ ok: true });
+  res.json({ ok: true, receiptId: lead.receiptId });
 
   // The condensed version is a nicety; it lands in the log after the answer went out.
   if (history) {
     summarize(history)
-      .then(sum => { if (sum) console.log('LEAD_SUMMARY ' + JSON.stringify({ ts: lead.ts, email: lead.email, summary: sum })); })
+      .then(sum => { if (sum) console.log('LEAD_SUMMARY ' + JSON.stringify({ ts: lead.ts, receiptId: lead.receiptId, email: lead.email, summary: sum })); })
       .catch(() => {});
   }
 });
@@ -363,24 +437,23 @@ app.post('/api/lead', async (req, res) => {
    Leads live on Render's ephemeral disk, so this shows everything since the last
    deploy. Off unless LEADS_KEY is set; ?format=json for the raw records. */
 app.get('/api/leads', (req, res) => {
-  const key = process.env.LEADS_KEY || '';
-  if (!key) return res.status(404).json({ error: 'not enabled' });
-  const given = String(req.get('x-leads-key') || req.query.key || '');
-  if (given.length !== key.length || given !== key) return res.status(401).json({ error: 'wrong key' });
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
 
   const asked = Math.floor(Number(req.query.limit));
   const leads = readLeads(Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200);
   if (req.query.format === 'json') return res.json({ count: leads.length, leads });
 
-  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const card = l => '<article><h2>' + esc(l.name || l.email) + ' <small>' + esc(l.via) + ' · ' + esc(l.ts) + '</small></h2>'
-    + '<p><a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>'
-    + (l.phone ? ' · <a href="tel:' + esc(l.phone) + '">' + esc(l.phone) + '</a>' : '') + '</p>'
-    + (l.company ? '<p><b>business:</b> ' + esc(l.company) + '</p>' : '')
-    + (l.problem ? '<pre>' + esc(l.problem) + '</pre>' : '')
-    + (l.conversationSummary ? '<pre>' + esc(l.conversationSummary) + '</pre>' : '')
-    + (l.budget || l.timeline ? '<p><b>budget:</b> ' + esc(l.budget || '—') + ' · <b>timeline:</b> ' + esc(l.timeline || '—') + '</p>' : '')
-    + '<p class="src">' + esc(l.sourcePage || '') + ' ' + esc(l.utmSource || '') + '</p></article>';
+  const card = l => '<article><h2>' + escapeHtml(l.name || l.email) + ' <small>' + escapeHtml(l.via) + ' · ' + escapeHtml(l.ts) + ' · ' + escapeHtml(l.receiptId || 'legacy-no-receipt') + '</small></h2>'
+    + '<p><a href="mailto:' + escapeHtml(l.email) + '">' + escapeHtml(l.email) + '</a>'
+    + (l.phone ? ' · <a href="tel:' + escapeHtml(l.phone) + '">' + escapeHtml(l.phone) + '</a>' : '') + '</p>'
+    + (l.company ? '<p><b>business:</b> ' + escapeHtml(l.company) + '</p>' : '')
+    + (l.problem ? '<pre>' + escapeHtml(l.problem) + '</pre>' : '')
+    + (l.conversationSummary ? '<pre>' + escapeHtml(l.conversationSummary) + '</pre>' : '')
+    + (l.budget || l.timeline ? '<p><b>budget:</b> ' + escapeHtml(l.budget || '—') + ' · <b>timeline:</b> ' + escapeHtml(l.timeline || '—') + '</p>' : '')
+    + '<p class="src">' + escapeHtml(l.sourcePage || '') + ' ' + escapeHtml(l.utmSource || '') + '</p></article>';
 
   res.type('html').send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<meta name="robots" content="noindex"><title>leads (' + leads.length + ')</title>'
@@ -398,16 +471,9 @@ app.get('/api/leads', (req, res) => {
 app.post('/api/event', (req, res) => {
   const ip = req.ip || 'x';
   if (limited('e:' + ip, 120, 10 * 60_000)) return res.sendStatus(204);
-  const name = clean(String((req.body || {}).name || ''), 48);
-  if (name) {
-    persistEvent({
-      ts: new Date().toISOString(),
-      name,
-      path: clean(String(req.body.path || ''), 200),
-      ref: clean(String(req.body.ref || ''), 200),
-      utm: clean(String(req.body.utm || ''), 200)
-    });
-  }
+  const event = normalizeEvent(req.body || {});
+  if (!event) return res.status(400).json({ error: 'invalid event name' });
+  persistEvent(event);
   res.sendStatus(204);
 });
 
@@ -415,21 +481,24 @@ app.post('/api/event', (req, res) => {
    Same key and same caveat as /api/leads: events.jsonl resets on deploy;
    the permanent record is the "EVT " lines in Render logs. */
 app.get('/api/traffic', (req, res) => {
-  const key = process.env.LEADS_KEY || '';
-  if (!key) return res.status(404).send('set LEADS_KEY in the environment to enable this view');
-  const given = String(req.get('x-leads-key') || req.query.key || '');
-  if (given !== key) return res.status(403).send('wrong key');
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).send('set LEADS_KEY in the environment to enable this view');
+  if (auth !== 'authorized') return res.status(401).send('unauthorized');
 
   const events = readEvents(5000);
   if (req.query.format === 'json') return res.json({ count: events.length, events });
 
   const count = (map, k) => { if (k) map.set(k, (map.get(k) || 0) + 1); };
-  const bySource = new Map(), byName = new Map(), byPath = new Map(), byDay = new Map(), byLang = new Map();
+  const bySource = new Map(), byLastSource = new Map(), byName = new Map(), byPath = new Map(), byDay = new Map(), byLang = new Map();
+  const sessionsSeen = new Set();
   for (const ev of events) {
+    if (ev.sessionId) sessionsSeen.add(ev.sessionId);
     count(byName, ev.name);
     count(byDay, String(ev.ts || '').slice(0, 10));
     if (ev.name === 'page_view') {
       count(bySource, sourceOf(ev));
+      count(byLastSource, sourceOf(ev, 'last'));
       count(byPath, ev.path || '/');
       // PREFIX, not exact match. This was a lookup keyed on the whole path,
       // which was right when the only translated URLs were /es, /pt and /zh.
@@ -446,40 +515,51 @@ app.get('/api/traffic', (req, res) => {
     }
   }
   const rows = (map) => [...map.entries()].sort((a, b) => b[1] - a[1])
-    .map(([k, v]) => `<tr><td>${String(k).replace(/</g, '&lt;')}</td><td>${v}</td></tr>`).join('')
+    .map(([k, v]) => `<tr><td>${escapeHtml(k)}</td><td>${escapeHtml(v)}</td></tr>`).join('')
     || '<tr><td colspan="2">nothing yet</td></tr>';
+  const funnel = funnelStats(events);
+  const stepRate = stage => {
+    if (stage.priorQualifiedCount === null) return 'baseline';
+    if (!stage.priorQualifiedCount) return '—';
+    const percent = (stage.qualifiedCount * 100 / stage.priorQualifiedCount)
+      .toFixed(1).replace(/\.0$/, '');
+    return `${stage.qualifiedCount}/${stage.priorQualifiedCount} · ${percent}%`;
+  };
+  const funnelRows = funnel.stages.map(stage =>
+    `<tr data-stage="${stage.id}"><td>${escapeHtml(stage.label)}</td><td>${stage.eventCount}</td><td>${stage.sessionCount}</td><td>${escapeHtml(stepRate(stage))}</td></tr>`
+  ).join('');
   const recent = events.slice(-40).reverse().map(ev =>
-    `<tr><td>${String(ev.ts || '').slice(5, 16).replace('T', ' ')}</td><td>${ev.name}</td><td>${(ev.path || '').replace(/</g, '&lt;')}</td><td>${sourceOf(ev).replace(/</g, '&lt;')}</td></tr>`).join('');
+    `<tr><td>${escapeHtml(String(ev.ts || '').slice(5, 16).replace('T', ' '))}</td><td>${escapeHtml(ev.name)}</td><td>${escapeHtml(ev.path || '')}</td><td>${escapeHtml(sourceOf(ev))}</td><td>${escapeHtml([
+      ev.receipt ? 'receipt ' + ev.receipt : '',
+      ev.bookingUid ? 'booking ' + ev.bookingUid : ''
+    ].filter(Boolean).join(' · '))}</td></tr>`).join('');
 
   res.type('html').send('<!doctype html><meta charset="utf-8">'
     + '<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width,initial-scale=1"><title>traffic</title>'
     + '<style>body{background:#000;color:#fafafa;font:14px/1.6 "JetBrains Mono",monospace;padding:2rem;max-width:880px;margin:auto}'
     + 'h1,h2{font-weight:500} h2{margin:2rem 0 .5rem;color:#9b8cff} table{width:100%;border-collapse:collapse}'
-    + 'td{border-bottom:1px solid #1a1a1a;padding:.35rem .5rem} td:last-child{text-align:right;color:#aaa}'
-    + '.recent td{text-align:left;color:#aaa;font-size:12px} p{color:#777}</style>'
-    + `<h1>traffic — ${events.length} events since last deploy</h1>`
+    + 'th,td{border-bottom:1px solid #1a1a1a;padding:.35rem .5rem} th{text-align:left;color:#777;font-size:11px;font-weight:500}'
+    + 'td:last-child{text-align:right;color:#aaa}.recent td{text-align:left;color:#aaa;font-size:12px}.note,p{color:#777}.note{font-size:12px}</style>'
+    + `<h1>traffic — ${events.length} events · ${sessionsSeen.size} anonymous sessions since last deploy</h1>`
     + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. permanent history: "EVT " lines in render logs.</p>'
-    + `<h2>visits by source</h2><table>${rows(bySource)}</table>`
-    + `<h2>visits by language page</h2><table>${rows(byLang)}</table>`
-    + `<h2>visits by page</h2><table>${rows(byPath)}</table>`
+    + '<h2>unique-session funnel</h2>'
+    + `<table class="funnel"><thead><tr><th>stage</th><th>event records</th><th>unique sessions*</th><th>step rate†</th></tr></thead><tbody>${funnelRows}</tbody></table>`
+    + `<p class="note">* event counts include all records; unique sessions exclude ${funnel.sessionlessEventCount} of ${funnel.funnelEventCount} funnel records with no session ID (including legacy data). † each step-rate numerator includes only session IDs also recorded in every preceding row. Direct calendar bookings remain visible in their row's unique-session total even when no accepted-lead event was recorded for that session.</p>`
+    + `<h2>page views by first-touch source</h2><table>${rows(bySource)}</table>`
+    + `<h2>page views by last-touch source</h2><table>${rows(byLastSource)}</table>`
+    + `<h2>page views by language page</h2><table>${rows(byLang)}</table>`
+    + `<h2>page views by page</h2><table>${rows(byPath)}</table>`
     + `<h2>events</h2><table>${rows(byName)}</table>`
     + `<h2>by day</h2><table>${rows(byDay)}</table>`
-    + `<h2>last 40</h2><table class="recent">${recent}</table>`);
+    + `<h2>last 40</h2><table class="recent"><thead><tr><th>time</th><th>event</th><th>page</th><th>first source</th><th>correlation</th></tr></thead><tbody>${recent}</tbody></table>`);
 });
-
-/* ── static site (lets one service host everything if ever wanted) ── */
-const ROOT = path.join(__dirname, '..');
-app.use((req, res, next) => {
-  if (/^\/(server|tools|data|node_modules|research)(\/|$)|^\/\.|\/\.env/.test(req.path)
-      || /^\/(README|readme)|\.(md|ya?ml|lock|log|bak|zip|py)$|^\/package(-lock)?\.json$/.test(req.path)) {
-    return res.sendStatus(404);
-  }
-  next();
-});
-app.use(express.static(ROOT, { extensions: ['html'], index: 'index.html', maxAge: '10m' }));
 
 app.use((req, res) => res.status(404).send('not found'));
 
-app.listen(PORT, () => {
-  console.log(`leon-assist on :${PORT} — model=${client ? MODEL : 'NOT CONFIGURED'} dailyCap=${DAILY_CAP}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`leon-assist on :${PORT} — model=${client ? MODEL : 'NOT CONFIGURED'} dailyCap=${DAILY_CAP}`);
+  });
+}
+
+module.exports = { app };

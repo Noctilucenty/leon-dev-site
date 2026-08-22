@@ -6,3 +6,4 @@ _shot.html
 node_modules/
 data/
 __pycache__/
+/dist/

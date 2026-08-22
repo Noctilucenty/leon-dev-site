@@ -17,41 +17,97 @@
   var run = function (fn) { try { fn(); } catch (e) { /* fail soft */ } };
   var $ = function (s, r) { return (r || document).querySelector(s); };
 
-  /* ══ utm + first-touch capture ═══════════════════════════ */
+  /* ══ attribution + anonymous visit session ════════════════
+     Keep first-touch immutable and last-touch separate. The earlier shape
+     silently overwrote "first touch" every time a tagged link was opened,
+     which made source reports impossible to interpret. No cookie or PII is
+     used: the session id lives only for the current browser tab session. */
   var attribution = {};
+  var analyticsSessionId = '';
   run(function () {
     var KEY = 'leon_attr';
+    var SID = 'leon_analytics_session';
     try {
+      analyticsSessionId = sessionStorage.getItem(SID) || '';
+      if (!analyticsSessionId) {
+        analyticsSessionId = (window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : String(Date.now()) + Math.random().toString(16).slice(2);
+        sessionStorage.setItem(SID, analyticsSessionId);
+      }
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
       var qs = new URLSearchParams(location.search);
       var tag = qs.get('utm_source') || qs.get('s') || '';
-      if (!saved) {
+      var touch = {
+        page: location.pathname,
+        referrer: (document.referrer || '').slice(0, 200),
+        utmSource: tag,
+        utmMedium: qs.get('utm_medium') || '',
+        utmCampaign: qs.get('utm_campaign') || '',
+        at: new Date().toISOString()
+      };
+      var externalEntry = false;
+      try {
+        externalEntry = !!touch.referrer && new URL(touch.referrer).hostname !== location.hostname;
+      } catch (e) {}
+      // Migrate the original flat record without throwing away its history.
+      if (saved && !saved.first) {
         saved = {
-          firstPage: location.pathname,
-          referrer: (document.referrer || '').slice(0, 200),
-          utmSource: tag,
-          utmMedium: qs.get('utm_medium') || '',
-          utmCampaign: qs.get('utm_campaign') || ''
+          first: {
+            page: saved.firstPage || '/', referrer: saved.referrer || '',
+            utmSource: saved.utmSource || '', utmMedium: saved.utmMedium || '',
+            utmCampaign: saved.utmCampaign || '', at: saved.at || ''
+          },
+          last: {
+            page: saved.firstPage || '/', referrer: saved.referrer || '',
+            utmSource: saved.utmSource || '', utmMedium: saved.utmMedium || '',
+            utmCampaign: saved.utmCampaign || '', at: saved.at || ''
+          }
         };
-        localStorage.setItem(KEY, JSON.stringify(saved));
-      } else if (tag) {
-        saved.utmSource = tag;
-        saved.utmMedium = qs.get('utm_medium') || saved.utmMedium;
-        saved.utmCampaign = qs.get('utm_campaign') || saved.utmCampaign;
-        localStorage.setItem(KEY, JSON.stringify(saved));
       }
+      if (!saved) saved = { first: touch, last: touch };
+      else if (tag || externalEntry) saved.last = touch;
+      if (!saved.first) saved.first = touch;
+      if (!saved.last) saved.last = saved.first;
+
+      // Legacy top-level fields keep existing lead forms backward-compatible.
+      saved.firstPage = saved.first.page || '/';
+      saved.referrer = saved.first.referrer || '';
+      saved.utmSource = saved.last.utmSource || saved.first.utmSource || '';
+      saved.utmMedium = saved.last.utmMedium || saved.first.utmMedium || '';
+      saved.utmCampaign = saved.last.utmCampaign || saved.first.utmCampaign || '';
+      localStorage.setItem(KEY, JSON.stringify(saved));
       attribution = saved;
     } catch (e) {}
   });
 
   /* ══ event beacon (first-party, log-only) ════════════════ */
-  function evt(name) {
+  function evt(name, extra) {
     try {
-      var body = JSON.stringify({
+      var payload = {
         name: name, path: location.pathname,
-        ref: (document.referrer || attribution.referrer || '').slice(0, 200),
-        utm: attribution.utmSource || ''
+        ref: String(attribution.referrer || '').slice(0, 200),
+        utm: attribution.utmSource || '',
+        medium: attribution.utmMedium || '',
+        campaign: attribution.utmCampaign || '',
+        firstPage: attribution.firstPage || '/',
+        lastPage: location.pathname,
+        firstRef: (attribution.first && attribution.first.referrer) || '',
+        lastRef: (attribution.last && attribution.last.referrer) || '',
+        firstUtm: (attribution.first && attribution.first.utmSource) || '',
+        lastUtm: (attribution.last && attribution.last.utmSource) || '',
+        firstMedium: (attribution.first && attribution.first.utmMedium) || '',
+        lastMedium: (attribution.last && attribution.last.utmMedium) || '',
+        firstCampaign: (attribution.first && attribution.first.utmCampaign) || '',
+        lastCampaign: (attribution.last && attribution.last.utmCampaign) || '',
+        sessionId: analyticsSessionId
+      };
+      // Correlation identifiers are safe; contact details never belong here.
+      extra = extra || {};
+      ['receipt', 'bookingUid', 'status'].forEach(function (k) {
+        if (extra[k]) payload[k] = String(extra[k]).slice(0, 120);
       });
+      var body = JSON.stringify(payload);
       if (navigator.sendBeacon) {
         navigator.sendBeacon(API_BASE + '/api/event', new Blob([body], { type: 'application/json' }));
       } else {
@@ -144,97 +200,57 @@
     }
     return '';
   }
-  // keep ?s= / utm attribution across a language switch
+  // Keep attribution across a language switch and prefer this page's hreflang
+  // counterpart. Falling back to a language home is still better than a 404.
   function langHref(v) {
-    return (LANG_PAGE[v] || '/') + (location.search || '');
+    var hreflang = v === 'pt' ? 'pt-BR' : v;
+    var alt = document.querySelector('link[rel="alternate"][hreflang="' + hreflang + '"]');
+    var base = alt ? alt.getAttribute('href') : (LANG_PAGE[v] || '/');
+    try {
+      var u = new URL(base, location.origin);
+      var current = new URLSearchParams(location.search);
+      current.forEach(function (value, key) { if (!u.searchParams.has(key)) u.searchParams.set(key, value); });
+      return u.origin === location.origin ? u.pathname + u.search + u.hash : u.href;
+    } catch (e) { return (LANG_PAGE[v] || '/') + (location.search || ''); }
   }
 
-  /* ══ the language chooser, on first visit ════════════════
-     This used to fire only when the browser's locale disagreed with the page,
-     which is precisely the case that does not happen. A Brazilian owner in
-     Ohio and a Chinese owner in Texas both carry English-set phones — locale
-     sniffing finds neither of them, so the one visitor the four translations
-     exist for was the one never asked.
-
-     So: ask once, plainly, on the English pages. Someone already on /pt chose
-     by clicking the ad that sent them there and is not asked again. The answer
-     is remembered in localStorage, not sessionStorage, so it survives the visit
-     and a returning visitor never sees the box twice.
-
-     Injected by script, so it is invisible to crawlers and changes nothing
-     about what Google indexes. */
+  /* ══ nonblocking first-visit language nudge ═══════════════
+     Never put a choice gate in front of a quote or booking. Only show a small
+     nudge when the browser itself prefers a supported non-English language;
+     the permanent navigation switcher remains available to everyone else. */
   var langBar = null;
   run(function () {
     if (storedLang()) return;
     if (PAGE_LANG !== 'en') return;
+    if (/^\/(call|quote)(\/|$)/.test(location.pathname)) return;
     try { if (localStorage.getItem('leon_lang_dismissed')) return; } catch (e) {}
-
-    // detectLang no longer decides WHETHER to ask, only which option to mark as
-    // the likely one.
     var guess = detectLang();
+    if (!guess || guess === 'en') return;
 
-    var back = document.createElement('div');
-    back.className = 'as-langmodal';
-    back.setAttribute('role', 'dialog');
-    back.setAttribute('aria-modal', 'true');
-    back.setAttribute('aria-label', 'Choose your language');
-
-    var box = document.createElement('div');
-    box.className = 'as-langbox';
-    box.innerHTML =
-      '<button class="x" type="button" aria-label="close">\u2715</button>'
-      + '<p class="k">Leon Kelvin Li</p>'
-      + '<h2>What language do you want to do this in?</h2>'
-      + '<p class="sub">I build the software and I speak all four. Pick one and the '
-      + 'whole site switches \u2014 prices, pages and the person who answers.</p>'
-      + '<div class="opts"></div>'
-      + '<button class="skip" type="button">keep it in english</button>';
-    var opts = box.querySelector('.opts');
-
-    var NATIVE = { en: 'English', es: 'Espa\u00f1ol', pt: 'Portugu\u00eas', zh: '\u4e2d\u6587' };
-    var UNDER = { en: 'United States', es: 'hablo espa\u00f1ol', pt: 'falo portugu\u00eas', zh: '\u6211\u8bf4\u4e2d\u6587' };
-
-    function choose(v) {
-      setLang(v);
-      evt('lang_pick_' + v);
-      try { localStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
-      if (v === PAGE_LANG) { close(); return; }
-      location.href = langHref(v);
-    }
+    var bar = document.createElement('aside');
+    bar.className = 'as-langbar';
+    bar.setAttribute('aria-label', LANG_SWITCH[guess] || LANG_ASK);
+    bar.innerHTML = '<button class="x" type="button" aria-label="close">\u2715</button>'
+      + '<p>' + (LANG_SWITCH[guess] || LANG_ASK) + '</p><div class="opts"></div>';
+    var opts = bar.querySelector('.opts');
+    var choose = document.createElement('button');
+    choose.type = 'button'; choose.className = 'go'; choose.lang = guess;
+    choose.textContent = LANG_NAME[guess];
+    var keep = document.createElement('button');
+    keep.type = 'button'; keep.textContent = 'keep english';
     function close() {
       try { localStorage.setItem('leon_lang_dismissed', '1'); } catch (e) {}
-      back.remove();
-      document.removeEventListener('keydown', onKey);
+      bar.remove(); langBar = null;
     }
-    function onKey(e) { if (e.key === 'Escape') { evt('lang_prompt_dismiss'); close(); } }
-
-    ['en', 'es', 'pt', 'zh'].forEach(function (v) {
-      var b = document.createElement('button');
-      b.type = 'button';
-      b.setAttribute('lang', v);
-      b.innerHTML = '<b>' + NATIVE[v] + '</b><i>' + UNDER[v] + '</i>';
-      if (v === guess && v !== 'en') b.className = 'go';
-      b.addEventListener('click', function () { choose(v); });
-      opts.appendChild(b);
+    choose.addEventListener('click', function () {
+      setLang(guess); evt('lang_pick_' + guess); close(); location.href = langHref(guess);
     });
-
-    box.querySelector('.x').addEventListener('click', function () {
-      evt('lang_prompt_dismiss'); close();
-    });
-    box.querySelector('.skip').addEventListener('click', function () {
-      choose('en');
-    });
-    back.addEventListener('click', function (e) {
-      if (e.target === back) { evt('lang_prompt_dismiss'); close(); }
-    });
-    document.addEventListener('keydown', onKey);
-
-    back.appendChild(box);
-    document.body.appendChild(back);
-    langBar = back;
+    keep.addEventListener('click', function () { setLang('en'); evt('lang_pick_en'); close(); });
+    bar.querySelector('.x').addEventListener('click', function () { evt('lang_prompt_dismiss'); close(); });
+    opts.appendChild(choose); opts.appendChild(keep);
+    document.body.appendChild(bar);
+    langBar = bar;
     evt('lang_prompt_shown');
-    var first = opts.querySelector('button.go') || opts.querySelector('button');
-    if (first) first.focus();
   });
 
   /* ══ language switcher, in the nav of every page ═════════
@@ -342,6 +358,96 @@
     ];
   }
 
+  /* Every piece of injected UI follows the page/visitor language. The chat
+     used to answer in four languages while its controls, consent note and
+     lead form stayed English, which made the handoff feel untrustworthy. */
+  var UI = {
+    en: {
+      launch: 'ask about your project', label: "leon's ai project assistant",
+      status: 'ai project assistant', leadOpen: 'send to leon', fresh: 'new',
+      freshTitle: 'start over', close: 'close chat',
+      intro: "tell me what your business does and what part of the week is still done by hand — i'll suggest the smallest useful next step, a realistic starting range, and tell you when you do not need custom software.",
+      leadIntro: '<b>Send this conversation securely to Leon.</b> He usually replies the same business day. You will get a receipt here; no email app is required.',
+      name: 'name', email: 'email (required)', phone: 'phone (optional)', problem: 'what should Leon help with? (required)',
+      submit: 'send securely', later: 'not yet', invalidEmail: 'that email does not look right.',
+      sending: 'sending securely…', sent: 'Sent to Leon. Save this receipt:',
+      book: 'book a free 15-minute workflow review', fallback: 'email Leon instead',
+      failed: 'That did not reach the server. Your details are still here — retry, or use the email fallback.',
+      attached: 'attached photo', remove: 'remove photo', attach: 'attach a photo',
+      placeholder: 'describe your business, or attach a photo…', send: 'send',
+      note: 'AI assistant — messages and photos may be processed to answer and scope your project. Never send passwords or payment details.',
+      privacy: 'privacy', human: 'prefer a human?', emailHuman: 'email', callHuman: 'call',
+      thinking: 'thinking', waking: 'waking the assistant — this may take about 30 seconds',
+      upTo: 'you can attach up to ', notPhoto: 'that file is not a photo', unreadable: 'could not read that photo',
+      photoOnly: 'here is a photo of what i have now.', streamFailed: 'The assistant stopped before finishing. Here is Leon directly:'
+    },
+    es: {
+      launch: 'cuéntame tu proyecto', label: 'asistente de proyectos de Leon',
+      status: 'asistente de proyectos con IA', leadOpen: 'enviar a Leon', fresh: 'nuevo',
+      freshTitle: 'empezar de nuevo', close: 'cerrar chat',
+      intro: 'Cuéntame qué hace tu negocio y qué parte de la semana todavía haces a mano. Te sugeriré el paso útil más pequeño, un precio inicial realista y también te diré si no necesitas software a medida.',
+      leadIntro: '<b>Envía esta conversación de forma segura a Leon.</b> Suele responder el mismo día laborable. Recibirás un comprobante aquí; no necesitas abrir el correo.',
+      name: 'nombre', email: 'correo (obligatorio)', phone: 'teléfono (opcional)', problem: '¿en qué debe ayudarte Leon? (obligatorio)',
+      submit: 'enviar de forma segura', later: 'ahora no', invalidEmail: 'ese correo no parece correcto.',
+      sending: 'enviando de forma segura…', sent: 'Enviado a Leon. Guarda este comprobante:',
+      book: 'reserva una revisión gratuita de 15 minutos', fallback: 'enviar correo a Leon',
+      failed: 'No llegó al servidor. Tus datos siguen aquí: inténtalo otra vez o usa el correo.',
+      attached: 'foto adjunta', remove: 'quitar foto', attach: 'adjuntar una foto',
+      placeholder: 'describe tu negocio o adjunta una foto…', send: 'enviar',
+      note: 'El asistente con IA puede procesar mensajes y fotos para responder y definir el proyecto. No envíes contraseñas ni datos de pago.',
+      privacy: 'privacidad', human: '¿prefieres una persona?', emailHuman: 'correo', callHuman: 'llamar',
+      thinking: 'pensando', waking: 'iniciando el asistente — puede tardar unos 30 segundos',
+      upTo: 'puedes adjuntar hasta ', notPhoto: 'ese archivo no es una foto', unreadable: 'no pude leer esa foto',
+      photoOnly: 'aquí tienes una foto de lo que uso ahora.', streamFailed: 'El asistente se detuvo antes de terminar. Habla directamente con Leon:'
+    },
+    pt: {
+      launch: 'conte sobre seu projeto', label: 'assistente de projetos do Leon',
+      status: 'assistente de projetos com IA', leadOpen: 'enviar ao Leon', fresh: 'novo',
+      freshTitle: 'começar de novo', close: 'fechar chat',
+      intro: 'Conte o que seu negócio faz e qual parte da semana ainda é manual. Vou sugerir o menor próximo passo útil, uma faixa inicial realista e também dizer quando você não precisa de software sob medida.',
+      leadIntro: '<b>Envie esta conversa com segurança ao Leon.</b> Ele costuma responder no mesmo dia útil. Você receberá um comprovante aqui; não precisa abrir o e-mail.',
+      name: 'nome', email: 'e-mail (obrigatório)', phone: 'telefone (opcional)', problem: 'como o Leon pode ajudar? (obrigatório)',
+      submit: 'enviar com segurança', later: 'agora não', invalidEmail: 'esse e-mail não parece correto.',
+      sending: 'enviando com segurança…', sent: 'Enviado ao Leon. Guarde este comprovante:',
+      book: 'agende uma análise gratuita de 15 minutos', fallback: 'enviar e-mail ao Leon',
+      failed: 'Não chegou ao servidor. Seus dados continuam aqui — tente novamente ou use o e-mail.',
+      attached: 'foto anexada', remove: 'remover foto', attach: 'anexar uma foto',
+      placeholder: 'descreva seu negócio ou anexe uma foto…', send: 'enviar',
+      note: 'O assistente com IA pode processar mensagens e fotos para responder e definir o projeto. Não envie senhas nem dados de pagamento.',
+      privacy: 'privacidade', human: 'prefere falar com uma pessoa?', emailHuman: 'e-mail', callHuman: 'ligar',
+      thinking: 'pensando', waking: 'iniciando o assistente — pode levar cerca de 30 segundos',
+      upTo: 'você pode anexar até ', notPhoto: 'esse arquivo não é uma foto', unreadable: 'não consegui ler essa foto',
+      photoOnly: 'aqui está uma foto do que uso hoje.', streamFailed: 'O assistente parou antes de terminar. Fale direto com o Leon:'
+    },
+    zh: {
+      launch: '聊聊你的项目', label: 'Leon 的项目助手',
+      status: 'AI 项目助手', leadOpen: '发送给 Leon', fresh: '新对话',
+      freshTitle: '重新开始', close: '关闭聊天',
+      intro: '告诉我你的生意做什么，以及每周哪些工作还要手动完成。我会建议最小且有用的下一步、现实的起步范围；如果你不需要定制软件，我也会直接说明。',
+      leadIntro: '<b>安全地把这段对话发送给 Leon。</b>他通常会在同一个工作日回复。页面会显示回执，无需打开邮件应用。',
+      name: '姓名', email: '邮箱（必填）', phone: '电话（选填）', problem: '希望 Leon 帮你解决什么？（必填）',
+      submit: '安全发送', later: '暂不发送', invalidEmail: '这个邮箱地址好像不正确。',
+      sending: '正在安全发送…', sent: '已发送给 Leon。请保存回执：',
+      book: '预约免费的 15 分钟业务流程分析', fallback: '改用邮箱联系 Leon',
+      failed: '没有成功到达服务器。你的资料仍保留在表格中，请重试或使用邮箱。',
+      attached: '已附照片', remove: '移除照片', attach: '添加照片',
+      placeholder: '描述你的生意，或添加一张照片…', send: '发送',
+      note: 'AI 助手可能会处理消息和照片，以便回答并了解项目范围。请勿发送密码或付款资料。',
+      privacy: '隐私', human: '想直接联系真人？', emailHuman: '邮件', callHuman: '电话',
+      thinking: '正在思考', waking: '正在启动助手，可能需要约 30 秒',
+      upTo: '最多可以添加 ', notPhoto: '这个文件不是照片', unreadable: '无法读取这张照片',
+      photoOnly: '这是我现在使用方式的照片。', streamFailed: '助手未完成回复。你可以直接联系 Leon：'
+    }
+  };
+  function lang() { return storedLang() || PAGE_LANG; }
+  function ui() { return UI[lang()] || UI.en; }
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>\"]/g, function (ch) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch];
+    });
+  }
+  var BOOKING_PAGE = { en: '/call', es: '/es/agendar', pt: '/pt/agendar', zh: '/zh/yuyue' };
+
   /* ══ the widget ══════════════════════════════════════════ */
   run(function () {
     if (window.__leonAssist) return;
@@ -349,6 +455,10 @@
 
     var SS = 'leon_chat';
     var state = { open: false, busy: false, history: [], sessionId: '', warmed: false, firstSent: false };
+    var t = ui();
+    if (/^\/(call|quote|es\/agendar|pt\/agendar|zh\/yuyue)(\/|$)/.test(location.pathname)) {
+      document.documentElement.classList.add('as-high-intent');
+    }
 
     try {
       var saved = JSON.parse(sessionStorage.getItem(SS) || 'null');
@@ -374,50 +484,52 @@
     launch.className = 'as-launch';
     launch.type = 'button';
     launch.setAttribute('aria-haspopup', 'dialog');
-    launch.innerHTML = '<i>[&gt;_]</i> ask about your project';
+    launch.setAttribute('aria-label', t.launch);
+    launch.innerHTML = '<i>[&gt;_]</i><span>' + esc(t.launch) + '</span>';
 
     var panel = document.createElement('section');
     panel.className = 'as-panel';
     panel.hidden = true;
     panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true');
-    panel.setAttribute('aria-label', "leon's ai project assistant");
+    panel.setAttribute('aria-label', t.label);
     panel.innerHTML =
       '<header class="as-head">' +
         '<span class="dot">[<span aria-hidden="true">•</span>]</span>' +
-        '<div><h2>leon --assist</h2><div class="st" data-as-status>ai project assistant</div></div>' +
+        '<div><h2>leon --assist</h2><div class="st" data-as-status>' + esc(t.status) + '</div></div>' +
         '<span class="sp"></span>' +
-        '<button class="as-hbtn" type="button" data-as-lead-open>send to leon</button>' +
-        '<button class="as-hbtn" type="button" data-as-new title="start over">new</button>' +
-        '<button class="as-hbtn" type="button" data-as-close aria-label="close chat">✕</button>' +
+        '<button class="as-hbtn" type="button" data-as-lead-open>' + esc(t.leadOpen) + '</button>' +
+        '<button class="as-hbtn" type="button" data-as-new title="' + esc(t.freshTitle) + '">' + esc(t.fresh) + '</button>' +
+        '<button class="as-hbtn" type="button" data-as-close aria-label="' + esc(t.close) + '">✕</button>' +
       '</header>' +
       '<div class="as-log" data-as-log aria-live="polite"></div>' +
       '<div class="as-lang" data-as-lang hidden><p></p><div class="opts"></div></div>' +
       '<div class="as-starts" data-as-starts></div>' +
       '<form class="as-lead" data-as-lead hidden>' +
-        '<p><b>send this conversation to leon.</b> your email app opens with it already written — you just hit send. he replies himself, usually same day.</p>' +
-        '<input name="name" type="text" placeholder="name" autocomplete="name">' +
+        '<p>' + t.leadIntro + ' <a href="/privacy">' + esc(t.privacy) + '</a></p>' +
+        '<label class="as-field"><span>' + esc(t.name) + '</span><input name="name" type="text" autocomplete="name"></label>' +
         '<div class="row2">' +
-          '<input name="email" type="email" placeholder="email (required)" autocomplete="email" required>' +
-          '<input name="phone" type="tel" placeholder="phone (optional)" autocomplete="tel">' +
+          '<label class="as-field"><span>' + esc(t.email) + '</span><input name="email" type="email" autocomplete="email" required></label>' +
+          '<label class="as-field"><span>' + esc(t.phone) + '</span><input name="phone" type="tel" autocomplete="tel"></label>' +
         '</div>' +
+        '<label class="as-field"><span>' + esc(t.problem) + '</span><textarea name="problem" rows="2" required></textarea></label>' +
         '<input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">' +
-        '<p class="as-err" data-as-err></p>' +
-        '<div class="acts"><button class="go" type="submit">write the email</button><button class="no" type="button" data-as-lead-close>not yet</button></div>' +
+        '<p class="as-err" data-as-err role="alert" aria-live="assertive"></p>' +
+        '<div class="acts"><button class="go" type="submit">' + esc(t.submit) + '</button><button class="no" type="button" data-as-lead-close>' + esc(t.later) + '</button></div>' +
       '</form>' +
       '<footer class="as-foot">' +
         '<div class="as-shots" data-as-shots hidden></div>' +
         '<div class="as-inrow">' +
-          '<button class="as-clip" data-as-clip type="button" aria-label="attach a photo" title="attach a photo">' +
+          '<button class="as-clip" data-as-clip type="button" aria-label="' + esc(t.attach) + '" title="' + esc(t.attach) + '">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' +
             '<path d="M21 11.5l-8.5 8.5a5 5 0 0 1-7-7l9-9a3.5 3.5 0 0 1 5 5l-9 9a2 2 0 0 1-3-3l8-8"/></svg>' +
           '</button>' +
           '<input type="file" data-as-file accept="image/png,image/jpeg,image/webp" multiple hidden>' +
-          '<textarea class="as-in" data-as-in rows="1" placeholder="describe your business, or attach a photo of it…" aria-label="message"></textarea>' +
-          '<button class="as-send" data-as-send type="button" aria-label="send">↵</button>' +
+          '<textarea class="as-in" data-as-in rows="1" placeholder="' + esc(t.placeholder) + '" aria-label="' + esc(t.placeholder) + '"></textarea>' +
+          '<button class="as-send" data-as-send type="button" aria-label="' + esc(t.send) + '">↵</button>' +
         '</div>' +
-        '<p class="as-note">ai assistant — may process messages to answer and scope your project. no passwords or payment details. ' +
-          'prefer a human? <a href="mailto:leondragon3798@gmail.com">email</a> · <a href="tel:+15108267735">call</a></p>' +
+        '<p class="as-note">' + esc(t.note) + ' <a href="/privacy">' + esc(t.privacy) + '</a><br>' + esc(t.human) +
+          ' <a href="mailto:leondragon3798@gmail.com">' + esc(t.emailHuman) + '</a> · <a href="tel:+15108267735">' + esc(t.callHuman) + '</a></p>' +
       '</footer>';
 
     document.body.appendChild(launch);
@@ -434,6 +546,31 @@
     var leadErr = $('[data-as-err]', panel);
     var lastFocus = null;
 
+    function applyUi() {
+      var launchText = $('span', launch); if (launchText) launchText.textContent = t.launch;
+      launch.setAttribute('aria-label', t.launch);
+      panel.setAttribute('aria-label', t.label);
+      if (!state.busy) statusEl.textContent = t.status;
+      $('[data-as-lead-open]', panel).textContent = t.leadOpen;
+      var fresh = $('[data-as-new]', panel); fresh.textContent = t.fresh; fresh.title = t.freshTitle;
+      $('[data-as-close]', panel).setAttribute('aria-label', t.close);
+      var leadIntro = leadForm.firstElementChild;
+      if (leadIntro) leadIntro.innerHTML = t.leadIntro + ' <a href="/privacy">' + esc(t.privacy) + '</a>';
+      var fieldNames = [t.name, t.email, t.phone, t.problem];
+      Array.prototype.forEach.call(leadForm.querySelectorAll('.as-field > span'), function (span, i) {
+        if (fieldNames[i]) span.textContent = fieldNames[i];
+      });
+      $('[data-as-lead] button[type="submit"]', panel).textContent = t.submit;
+      $('[data-as-lead-close]', panel).textContent = t.later;
+      var clip = $('[data-as-clip]', panel); clip.title = t.attach; clip.setAttribute('aria-label', t.attach);
+      input.placeholder = t.placeholder; input.setAttribute('aria-label', t.placeholder);
+      sendBtn.setAttribute('aria-label', t.send);
+      var note = $('.as-note', panel);
+      note.innerHTML = esc(t.note) + ' <a href="/privacy">' + esc(t.privacy) + '</a><br>' + esc(t.human)
+        + ' <a href="mailto:leondragon3798@gmail.com">' + esc(t.emailHuman) + '</a> · '
+        + '<a href="tel:+15108267735">' + esc(t.callHuman) + '</a>';
+    }
+
     function msgEl(role, text, pics) {
       var d = document.createElement('div');
       d.className = 'as-msg ' + (role === 'user' ? 'u' : role === 'sys' ? 'sys' : 'a');
@@ -444,7 +581,7 @@
         pics.forEach(function (sh) {
           var im = document.createElement('img');
           im.src = sh.dataUrl || sh;
-          im.alt = 'attached photo';
+          im.alt = t.attached;
           row.appendChild(im);
         });
         d.appendChild(row);
@@ -456,7 +593,7 @@
     function renderHistory() {
       log.innerHTML = '';
       if (!state.history.length) {
-        msgEl('assistant', "tell me what your business does and what part of the week is still done by hand — i'll tell you what software could take off your plate, what it roughly starts at, and just as readily when you don't need me.");
+        msgEl('assistant', t.intro);
       }
       state.history.forEach(function (m) { msgEl(m.role, plainText(m.content)); });
       renderStarters();
@@ -488,9 +625,11 @@
         b.type = 'button'; b.textContent = LANG_NAME[v];
         b.addEventListener('click', function () {
           setLang(v);
+          t = ui();
           evt('lang_pick_' + v);
           box.hidden = true;
-          renderStarters();
+          applyUi();
+          renderHistory();
           // a page in their language exists — offer it, don't force it
           if (LANG_PAGE[v] && v !== PAGE_LANG) {
             var d = msgEl('assistant', '');
@@ -530,7 +669,7 @@
     function setBusy(b) {
       state.busy = b;
       sendBtn.disabled = b;
-      statusEl.textContent = b ? 'thinking…' : 'ai project assistant';
+      statusEl.textContent = b ? t.thinking + '…' : t.status;
     }
 
 
@@ -549,7 +688,7 @@
       statusEl.textContent = msg;
       clearTimeout(statusTimer);
       statusTimer = setTimeout(function () {
-        if (!state.busy) statusEl.textContent = 'ai project assistant';
+        if (!state.busy) statusEl.textContent = t.status;
       }, 3200);
     }
 
@@ -587,9 +726,9 @@
         var chip = document.createElement('div');
         chip.className = 'as-shot';
         var im = document.createElement('img');
-        im.src = sh.dataUrl; im.alt = sh.name || 'attached photo';
+        im.src = sh.dataUrl; im.alt = sh.name || t.attached;
         var x = document.createElement('button');
-        x.type = 'button'; x.setAttribute('aria-label', 'remove photo'); x.textContent = '\u2715';
+        x.type = 'button'; x.setAttribute('aria-label', t.remove); x.textContent = '\u2715';
         x.addEventListener('click', function () {
           shots = shots.filter(function (o) { return o.id !== sh.id; });
           renderShots();
@@ -603,14 +742,14 @@
       var files = Array.prototype.slice.call(list || []);
       if (!files.length) return;
       var room = MAX_SHOTS - shots.length;
-      if (room <= 0) { status('you can attach up to ' + MAX_SHOTS + ' photos'); return; }
+      if (room <= 0) { status(t.upTo + MAX_SHOTS); return; }
       files.slice(0, room).forEach(function (f) {
-        if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { status('that file is not a photo'); return; }
+        if (!/^image\/(png|jpeg|webp)$/.test(f.type)) { status(t.notPhoto); return; }
         downscale(f).then(function (dataUrl) {
           shots.push({ id: String(Date.now()) + Math.random(), name: f.name, dataUrl: dataUrl });
           renderShots();
           evt('chat_photo_attached');
-        }).catch(function () { status('could not read that photo'); });
+        }).catch(function () { status(t.unreadable); });
       });
       fileIn.value = '';
     }
@@ -643,7 +782,7 @@
       shots = []; renderShots();
 
       if (sending.length) {
-        var parts = [{ type: 'input_text', text: text || 'here is a photo of what i have now.' }];
+        var parts = [{ type: 'input_text', text: text || t.photoOnly }];
         sending.forEach(function (sh) {
           parts.push({ type: 'input_image', image_url: sh.dataUrl });
         });
@@ -658,11 +797,11 @@
 
       var think = document.createElement('div');
       think.className = 'as-think';
-      think.innerHTML = 'thinking <i>▌</i>';
+      think.innerHTML = esc(t.thinking) + ' <i>▌</i>';
       log.appendChild(think); log.scrollTop = log.scrollHeight;
 
       var slowNote = setTimeout(function () {
-        think.innerHTML = 'waking the assistant — free hosting naps when idle, can take ~30s <i>▌</i>';
+        think.innerHTML = esc(t.waking) + ' <i>▌</i>';
       }, 4500);
 
       var ctrl = new AbortController();
@@ -700,13 +839,14 @@
           });
         }
         return pump().then(function (full) {
+          if (!String(full || '').trim()) throw new Error('empty assistant response');
           state.history.push({ role: 'assistant', content: full });
           save();
         });
       }).catch(function (err) {
         clearTimeout(slowNote);
         think.remove();
-        var m = (err && err.name === 'AbortError') ? TIMEOUT_MSG[lang()] || TIMEOUT_MSG.en : (err.message || '');
+        var m = (err && err.name === 'AbortError') ? TIMEOUT_MSG[lang()] || TIMEOUT_MSG.en : t.streamFailed;
         msgEl('sys', m);
         // A failed reply must not end the conversation. Give them the channels
         // that always work, as buttons — not an address to copy by hand.
@@ -728,10 +868,30 @@
     var HANDOFF = {
       en: [['whatsapp', 'https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20'], ['call (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com?subject=project']],
       pt: [['whatsapp', 'https://wa.me/15108267735?text=Oi%20Leon%2C%20vi%20o%20seu%20site.%20Meu%20neg%C3%B3cio%20%C3%A9%3A%20'], ['ligar (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com?subject=projeto']],
-      zh: [['打电话 (510) 826-7735', 'tel:+15108267735'], ['whatsapp', 'https://wa.me/15108267735'], ['发邮件', 'mailto:leondragon3798@gmail.com?subject=项目']],
+      // WeChat has no reliable add-friend URL. Keep it first for Chinese and
+      // copy the visible ID; phone and email remain honest fallbacks.
+      zh: [['复制微信号 leon34695820', '#wechat', 'leon34695820', '已复制微信号，去微信粘贴添加'], ['打电话 (510) 826-7735', 'tel:+15108267735'], ['发邮件', 'mailto:leondragon3798@gmail.com?subject=项目']],
       es: [['whatsapp', 'https://wa.me/15108267735'], ['llamar (510) 826-7735', 'tel:+15108267735'], ['email', 'mailto:leondragon3798@gmail.com']]
     };
-    function lang() { return storedLang() || PAGE_LANG; }
+    function copyContact(value, done) {
+      var fallback = function () {
+        var t = document.createElement('textarea');
+        t.value = value;
+        t.setAttribute('readonly', '');
+        t.style.position = 'fixed';
+        t.style.left = '-9999px';
+        document.body.appendChild(t);
+        t.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(t);
+        done();
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(done, fallback);
+      } else {
+        fallback();
+      }
+    }
     function handoffRow() {
       var opts = HANDOFF[lang()] || HANDOFF.en;
       var box = document.createElement('div');
@@ -741,7 +901,17 @@
         a.href = o[1];
         a.textContent = o[0];
         if (o[1].indexOf('http') === 0) { a.target = '_blank'; a.rel = 'noopener'; }
-        a.addEventListener('click', function () { evt('handoff_' + lang()); });
+        a.addEventListener('click', function (e) {
+          evt('handoff_' + lang());
+          if (!o[2]) return;
+          e.preventDefault();
+          var original = a.textContent;
+          copyContact(o[2], function () {
+            a.textContent = o[3] || 'copied';
+            evt('handoff_' + lang() + '_copy');
+            setTimeout(function () { a.textContent = original; }, 2200);
+          });
+        });
         box.appendChild(a);
       });
       log.appendChild(box);
@@ -752,68 +922,126 @@
     function openLead() {
       leadForm.hidden = false;
       leadErr.textContent = '';
+      var problem = $('textarea[name="problem"]', leadForm);
+      if (problem && !problem.value) {
+        var firstUser = state.history.filter(function (m) { return m.role === 'user'; })[0];
+        if (firstUser) problem.value = plainText(firstUser.content).slice(0, 1500);
+      }
       $('input[name="email"]', leadForm).focus();
     }
+
+    function mailFallback(name, email, phone) {
+      var talk = state.history.slice(-20).map(function (m) {
+        return (m.role === 'user' ? 'visitor: ' : 'assistant: ') + plainText(m.content).trim();
+      }).join('\n\n');
+      var body = 'name: ' + (name || '(not given)') + '\nemail: ' + email + (phone ? '\nphone: ' + phone : '')
+        + '\n\nsite conversation:\n\n' + talk
+        + '\n\n— leonbuilds.org' + (location.pathname !== '/' ? ' (' + location.pathname + ')' : '');
+      if (body.length > 1800) body = body.slice(0, 1800) + '\n…';
+      return 'mailto:leondragon3798@gmail.com?subject=' + encodeURIComponent('project inquiry' + (name ? ' — ' + name : ''))
+        + '&body=' + encodeURIComponent(body);
+    }
+
+    function leadActions(mailHref) {
+      var box = document.createElement('div');
+      box.className = 'as-starts as-result-actions';
+      var book = document.createElement('a');
+      book.href = BOOKING_PAGE[lang()] || BOOKING_PAGE.en;
+      book.textContent = t.book;
+      book.addEventListener('click', function () { evt('lead_booking_click'); });
+      var email = document.createElement('a');
+      email.href = mailHref;
+      email.textContent = t.fallback;
+      email.addEventListener('click', function () { evt('lead_email_fallback'); });
+      box.appendChild(book); box.appendChild(email);
+      log.appendChild(box);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function postLead(payload, isRetry) {
+      return fetch(API_BASE + '/api/lead', {
+        method: 'POST', keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (res.ok && data.ok) return data;
+          if (!isRetry) {
+            var slim = {};
+            for (var k in payload) if (k !== 'conversationSummary') slim[k] = payload[k];
+            slim.problem = String(payload.problem || '').slice(0, 1500);
+            evt('lead_submit_retry');
+            return postLead(slim, true);
+          }
+          throw new Error(data.error || 'lead submission failed');
+        });
+      });
+    }
+
     leadForm.addEventListener('submit', function (e) {
       e.preventDefault();
       var f = new FormData(leadForm);
       var email = String(f.get('email') || '').trim();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { leadErr.textContent = 'that email does not look right.'; return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { leadErr.textContent = t.invalidEmail; return; }
       leadErr.textContent = '';
       var name = String(f.get('name') || ''), phone = String(f.get('phone') || '');
-      // Logged server-side as a backup, but nobody waits on it — the browser
-      // hands the conversation straight to their own mail app.
-      try {
-        var leadBody = {
-            via: 'chat', name: name, email: email, phone: phone,
-            website: String(f.get('website') || ''),
-            messages: budgetedHistory(state.history, 20000),
-            problem: (state.history.filter(function (m) { return m.role === 'user'; })[0] || {}).content || '',
-            sourcePage: location.pathname,
-            referrer: attribution.referrer || '',
-            utmSource: attribution.utmSource || '',
-            utmMedium: attribution.utmMedium || '',
-            utmCampaign: attribution.utmCampaign || ''
-        };
-        // A rejected promise is not the only failure: a 413 RESOLVES, so a bare
-        // .catch() would let the most engaged visitor's lead vanish in silence.
-        // Retry once without the transcript — the contact details are the part
-        // that must survive.
-        var send = function (payload, isRetry) {
-          return fetch(API_BASE + '/api/lead', {
-            method: 'POST', keepalive: true,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          }).then(function (res) {
-            if (!res.ok && !isRetry) {
-              var slim = {}; for (var k in payload) if (k !== 'messages') slim[k] = payload[k];
-              slim.problem = (payload.problem || '').slice(0, 1500);
-              evt('lead_post_retry');
-              return send(slim, true);
-            }
-            if (!res.ok) evt('lead_post_failed');
-          }).catch(function () { evt('lead_post_failed'); });
-        };
-        send(leadBody, false);
-      } catch (e) {}
-      var talk = state.history.slice(-20).map(function (m) {
-        return (m.role === 'user' ? 'me: ' : 'assistant: ') + String(m.content || '').trim();
+      var problem = String(f.get('problem') || '').trim();
+      if (!problem) { leadErr.textContent = t.problem; return; }
+      var summary = budgetedHistory(state.history, 7000).map(function (m) {
+        return (m.role === 'user' ? 'visitor: ' : 'assistant: ') + plainText(m.content);
       }).join('\n\n');
-      var body = 'name: ' + (name || '(not given)') + '\nemail: ' + email + (phone ? '\nphone: ' + phone : '')
-        + '\n\nwhat we talked about on the site:\n\n' + talk
-        + '\n\n— sent from leonbuilds.org' + (location.pathname !== '/' ? ' (' + location.pathname + ')' : '');
-      if (body.length > 1600) body = body.slice(0, 1600) + '\n…';
-      var href = 'mailto:leondragon3798@gmail.com?subject=' + encodeURIComponent('project inquiry' + (name ? ' — ' + name : ''))
-        + '&body=' + encodeURIComponent(body);
-      leadForm.hidden = true;
-      evt('lead_submit');
-      msgEl('sys', 'your email app is opening with this conversation in it — hit send and it comes straight to leon. if nothing opened, email leondragon3798@gmail.com.');
-      window.location.href = href;
+      var leadBody = {
+        via: 'chat', name: name, email: email, phone: phone,
+        website: String(f.get('website') || ''), problem: problem,
+        conversationSummary: summary,
+        sourcePage: location.pathname,
+        referrer: attribution.referrer || '',
+        utmSource: attribution.utmSource || '',
+        utmMedium: attribution.utmMedium || '',
+        utmCampaign: attribution.utmCampaign || '',
+        firstPage: (attribution.first && attribution.first.page) || attribution.firstPage || '/',
+        firstReferrer: (attribution.first && attribution.first.referrer) || '',
+        firstUtmSource: (attribution.first && attribution.first.utmSource) || '',
+        firstUtmMedium: (attribution.first && attribution.first.utmMedium) || '',
+        firstUtmCampaign: (attribution.first && attribution.first.utmCampaign) || '',
+        lastPage: (attribution.last && attribution.last.page) || location.pathname,
+        analyticsSessionId: analyticsSessionId,
+        chatSessionId: state.sessionId
+      };
+      var submit = $('button[type="submit"]', leadForm);
+      var original = submit.textContent;
+      submit.disabled = true;
+      submit.textContent = t.sending;
+      evt('lead_submit_attempt');
+      postLead(leadBody, false).then(function (data) {
+        var receipt = String(data.receipt || data.receiptId || 'accepted');
+        leadForm.hidden = true;
+        evt('lead_submit_success', { receipt: receipt, status: 'accepted' });
+        var confirmation = msgEl('sys', t.sent + ' ' + receipt);
+        confirmation.classList.add('as-lead-success');
+        leadActions(mailFallback(name, email, phone));
+      }).catch(function () {
+        evt('lead_submit_failed', { status: 'failed' });
+        leadErr.textContent = t.failed;
+        var old = $('.as-inline-fallback', leadForm);
+        if (!old) {
+          var fallback = document.createElement('a');
+          fallback.className = 'as-inline-fallback';
+          fallback.href = mailFallback(name, email, phone);
+          fallback.textContent = t.fallback;
+          fallback.addEventListener('click', function () { evt('lead_email_fallback'); });
+          leadErr.insertAdjacentElement('afterend', fallback);
+        }
+      }).finally(function () {
+        submit.disabled = false;
+        submit.textContent = original;
+      });
     });
 
     /* wiring */
     launch.addEventListener('click', function () { open(); });
     launch.addEventListener('mouseenter', warm, { once: false });
+    launch.addEventListener('pointerdown', warm, { once: true });
     panel.addEventListener('click', function (e) {
       if (e.target.closest('[data-as-close]')) close();
       if (e.target.closest('[data-as-lead-open]')) openLead();

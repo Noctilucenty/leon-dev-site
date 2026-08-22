@@ -171,23 +171,71 @@
     el.style.opacity = '0';   // no phantom square before the pointer has moved
 
     var tx = window.innerWidth / 2, ty = window.innerHeight / 2, cx = tx, cy = ty, raf = 0;
+    var inside = false;
+
+    function paintCursor() {
+      el.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
+    }
+
+    function stopCursor() {
+      if (!raf) return;
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    function scheduleCursor() {
+      if (!raf && document.visibilityState !== 'hidden') raf = requestAnimationFrame(tick);
+    }
 
     function tick() {
+      raf = 0;
       cx = lerp(cx, tx, 0.22);
       cy = lerp(cy, ty, 0.22);
-      el.style.transform = 'translate3d(' + cx + 'px,' + cy + 'px,0)';
-      raf = requestAnimationFrame(tick);
+      if (Math.abs(tx - cx) < 0.1 && Math.abs(ty - cy) < 0.1) {
+        cx = tx;
+        cy = ty;
+        paintCursor();
+        return;
+      }
+      paintCursor();
+      scheduleCursor();
     }
-    raf = requestAnimationFrame(tick);
 
     window.addEventListener('mousemove', function (e) {
-      if (el.style.opacity === '0') { cx = tx = e.clientX; cy = ty = e.clientY; el.style.opacity = '1'; }
+      inside = true;
+      if (el.style.opacity === '0') {
+        cx = tx = e.clientX;
+        cy = ty = e.clientY;
+        paintCursor();
+        el.style.opacity = '1';
+      }
       tx = e.clientX; ty = e.clientY;
+      scheduleCursor();
     }, { passive: true });
     window.addEventListener('mousedown', function () { el.classList.add('down'); });
     window.addEventListener('mouseup', function () { el.classList.remove('down'); });
-    document.addEventListener('mouseleave', function () { el.style.opacity = '0'; });
-    document.addEventListener('mouseenter', function () { el.style.opacity = '1'; });
+    document.addEventListener('mouseleave', function () {
+      inside = false;
+      stopCursor();
+      el.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', function (e) {
+      inside = true;
+      cx = tx = e.clientX;
+      cy = ty = e.clientY;
+      paintCursor();
+      el.style.opacity = '1';
+      scheduleCursor();
+    });
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') {
+        stopCursor();
+        el.style.opacity = '0';
+      } else if (inside) {
+        el.style.opacity = '1';
+        scheduleCursor();
+      }
+    });
 
     var HOT = 'a,button,summary,.cell,.tier,.sat,.chip,input,select';
     document.addEventListener('mouseover', function (e) {
@@ -241,11 +289,11 @@
     var out = $('#termT');
     if (!out) return;
     var lines = [
-      'leon --services | wc -l   → 9',
-      'leon --quote "booking system"',
-      'leon --serve --remote all-50-states',
-      'leon --stack ios android web ai',
-      'leon --owns-the-code you'
+      'direct with leon -- no sales team',
+      'written scope -- before the build',
+      'working demo -- every week',
+      'plain words welcome',
+      'smaller tool better? -- i will say so'
     ];
     if (reduced) { out.textContent = lines[0]; return; }
 
@@ -319,7 +367,12 @@
 
   run(function () {
     if (reduced || !('IntersectionObserver' in window)) return;
-    var els = $$('[data-scramble]');
+    /* Critical conversion copy must be readable on the first paint. The selector
+       guard makes that true even if a future edit accidentally adds the
+       attribute back to one of these sections. */
+    var els = $$('[data-scramble]').filter(function (el) {
+      return !el.closest('.hero,.proof-strip,.cta,#pricing');
+    });
     if (!els.length) return;
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
@@ -364,29 +417,32 @@
     setTimeout(function () { els.forEach(reveal); }, 3000);
   });
 
-  /* ══ 8. counters ═══════════════════════════════════════════ */
+  /* ══ 8. counters ═══════════════════════════════════════════
+     Proof numbers are evidence, not decoration. Always render their final
+     value immediately so a visitor never sees a false intermediate claim. */
   run(function () {
-    if (!('IntersectionObserver' in window)) return;
     var els = $$('[data-count]');
     if (!els.length) return;
+    els.forEach(function (el) {
+      var end = parseInt(el.getAttribute('data-count'), 10) || 0;
+      el.textContent = end.toLocaleString('en-US');
+    });
+  });
 
-    var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        io.unobserve(e.target);
-        var el = e.target, end = parseInt(el.getAttribute('data-count'), 10) || 0;
-        if (reduced) { el.textContent = end.toLocaleString('en-US'); return; }
-        var t0 = 0, dur = 1250;
-        (function step(now) {
-          if (!t0) t0 = now;
-          var p = Math.min(1, (now - t0) / dur);
-          var e2 = 1 - Math.pow(1 - p, 3);
-          el.textContent = Math.round(end * e2).toLocaleString('en-US');
-          if (p < 1) requestAnimationFrame(step);
-        })(0);
-      });
-    }, { threshold: 0.6 });
-    els.forEach(function (el) { io.observe(el); });
+  /* Open progressive sections when a direct link targets content inside one. */
+  run(function () {
+    function revealHashTarget() {
+      if (!location.hash || location.hash.length < 2) return;
+      var target = document.getElementById(location.hash.slice(1));
+      if (!target) return;
+      var disclosure = target.closest('details.disclosure');
+      if (disclosure) {
+        disclosure.open = true;
+        requestAnimationFrame(function () { target.scrollIntoView(); });
+      }
+    }
+    revealHashTarget();
+    window.addEventListener('hashchange', revealHashTarget);
   });
 
   /* ══ 9. magnetic buttons ═══════════════════════════════════ */

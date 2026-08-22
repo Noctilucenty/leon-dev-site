@@ -26,28 +26,44 @@ tools/build_pages.py  regenerates everything marked GENERATED (edit its in-file 
 render.yaml         blueprint for the API service (leon-assist)
 ```
 
-The **site** is still no-build static files. The **API** is the only thing with
-dependencies (`npm install`), and it deploys as a separate Render web service.
+The **site source** is still plain static files with no bundler. Deployment uses
+`tools/build_static.py` to assemble an explicit public allowlist in `dist/`; the
+**API** is the only runtime with dependencies, and it deploys as a separate Render
+web service.
 
 ## Run it
 
 ```bash
 cd ~/Desktop/dev/freelancing
 npm install
-OPENAI_API_KEY=sk-... npm run dev      # site + API together on http://localhost:8787
+OPENAI_API_KEY=sk-... npm run dev      # API only on http://localhost:8787
 python3 tools/build_pages.py           # regenerate the page fleet after editing its data
+npm run build:static                    # allowlisted public files -> dist/ (deletes nothing)
+python3 -m http.server 4599 --directory dist  # static preview in a second terminal
+npm run check                           # content, site-integrity and server regression gates
 ```
 
 ## Two deployments, one repo
 
-1. **Static site (existing, unchanged):** Render static site → leonbuilds.org,
-   publish dir `.`, auto-deploys on push. Pretty URLs serve `/services/websites` from
-   `services/websites.html`.
+1. **Static site:** Render static site → leonbuilds.org, auto-deploys on push.
+   Set **Build Command** to `npm run build:static` and **Publish Directory** to
+   `dist`. Never publish the repository root `.`. Pretty URLs serve
+   `/services/websites` from `dist/services/websites.html`.
 2. **Assistant API (new):** Render **web service** from this same repo — *New + →
    Blueprint* picks up `render.yaml` (name `leon-assist`, `npm install`,
    `node server/index.js`, health `/api/health`). Then add `OPENAI_API_KEY` in that
    service's **Environment tab yourself** — it is never in git; `render.yaml` marks it
-   `sync:false` on purpose.
+   `sync:false` on purpose. For lead notifications on Render, add
+   `RESEND_API_KEY` and `LEAD_TO_EMAIL`; this service cannot reach outbound SMTP.
+
+The static builder starts from `sitemap.xml`, adds the public verification files,
+CSS/JS/icons/OG image, and follows local page/CSS asset references. It does not copy
+`content/`, `tests/`, `tools/`, `server/`, `research/`, `data/`, package files,
+Markdown/CSV, or unreferenced social/listing creatives. It never cleans or deletes
+`dist/`: a symlink or unexpected pre-existing path makes the build stop before any
+copy. Rename an old unexpected output directory aside if the manifest changes.
+`python3 tools/build_static.py --check` validates the allowlist read-only and is part
+of `npm run check`.
 
 The frontend finds the API through **one constant**: `API_BASE` at the top of
 `assist.js` (default `https://leon-assist.onrender.com`; on localhost it targets
@@ -59,7 +75,10 @@ The frontend finds the API through **one constant**: `API_BASE` at the top of
 | `OPENAI_MODEL` | no | default `gpt-5-mini` |
 | `OPENAI_MAX_OUTPUT` | no | default 700 tokens/reply |
 | `DAILY_MODEL_CAP` | no | default 500 calls/day, then chat politely closes |
-| `SMTP_HOST/PORT/USER/PASS` + `LEAD_TO_EMAIL` | no | set all five to email each lead (Gmail app password works) |
+| `RESEND_API_KEY` + `LEAD_TO_EMAIL` | no | recommended on Render; sends the off-host lead copy over HTTPS |
+| `LEAD_FROM_EMAIL` | no | Resend sender; use an address/domain allowed by that Resend account |
+| `SMTP_HOST/USER/PASS` (+ optional `SMTP_PORT`) + `LEAD_TO_EMAIL` | no | fallback only on hosts that permit outbound SMTP; the current Render service does not |
+| `LEADS_KEY` | no | admin key for lead/traffic views and deep health; all three accept it only via `x-leads-key` |
 | `EXTRA_ORIGIN` | no | one extra allowed browser origin |
 
 Free plan idles: first chat reply can take ~30–60s. The widget warns the visitor and
@@ -73,16 +92,71 @@ text. The key exists **only** in server env; browser and model context never see
 only as published floors, recommends *against* AI when a script is cheaper, never quotes
 finals, never claims to be Leon. Protections: CORS locked to the site, per-IP rate
 limits, body-size caps, daily model-call ceiling, bounded history (older turns
-summarized server-side), 90s timeout, `/server` `/tools` `/data` unservable.
+summarized server-side), 90s timeout, and an API-only host that serves no repository
+or duplicate site files.
 
 **Leads** (`POST /api/lead`, from chat handoff + quote form): logged to stdout as
-`LEAD {...}` (grep Render logs — the durable sink), appended to `data/leads.jsonl`
-(ephemeral on free), emailed if SMTP is set. Chat leads include a model-written
-conversation summary. UTM/referrer/first-page ride along via `localStorage.leon_attr`.
+`LEAD {...}` (useful for diagnosis, but subject to Render's log retention), appended
+to `data/leads.jsonl` (ephemeral on the free service), and emailed when a supported
+delivery route is ready. Resend/HTTPS is the production route on Render; SMTP remains
+a fallback for hosts that allow it. Chat leads include a model-written conversation
+summary. UTM/referrer/first-page ride along via `localStorage.leon_attr`.
+
+`GET /api/health` is a liveness check and reports lead delivery separately:
+`leadEmailProvider`, `leadEmailState`, `leadEmailConfigured`, `leadEmailSupported`,
+and `leadEmailReady`. A complete SMTP setup on Render reports `blocked`, not green.
+`?deep=1` may check an SMTP connection, but it never sends mail and therefore never
+claims inbox delivery worked. Deep health is admin-only: set `LEADS_KEY` and send it
+in the `x-leads-key` header. It returns 404 when the key is not configured and 401
+when the header is missing or wrong; a `?key=` query value is deliberately ignored.
+
+```bash
+curl -s https://leon-assist.onrender.com/api/health?deep=1 \
+  -H 'x-leads-key: YOUR_LEADS_KEY'
+```
+
+### Verify lead delivery end to end
+
+There is one honest delivery check: submit exactly one uniquely tagged lead and save
+the non-sensitive `receiptId` returned by `POST /api/lead`. Confirm that receipt in
+the Render `LEAD {...}` record, the following `LEAD_MAILED receiptId=...` line, and
+the target inbox's subject/body. The human-readable tag appears in the stored lead
+and email body; the API response intentionally returns only status plus the receipt.
+Neither a green environment dashboard nor `/api/health?deep=1` replaces the inbox
+check.
+
+```bash
+curl -i https://leon-assist.onrender.com/api/lead \
+  -H 'content-type: application/json' \
+  --data '{"name":"PIPELINE-CHECK-YYYYMMDD-HHMM","email":"pipeline-check@example.com","problem":"End-to-end delivery check; tag PIPELINE-CHECK-YYYYMMDD-HHMM","via":"pipeline-check"}'
+```
+
+Run this once after changing delivery configuration. A passing run has HTTP 200 with
+`{"ok":true,"receiptId":"lead_..."}`, the same receipt in `LEAD`, a matching
+`LEAD_MAILED` line (not `LEAD_MAIL_FAILED`), and the receipt plus test tag in the
+message delivered to `LEAD_TO_EMAIL`. The log and JSONL copies are not durable
+substitutes for the off-host copy. No generic webhook is treated as durable without
+a real receiving system selected and verified.
+
+## Publishing status
+
+`content/publication-ledger.csv` is the canonical current record of what was posted
+and each item's latest status. `content/facebook-audit.md` is historical narrative;
+it contains useful evidence and superseded snapshots, but is not the live dashboard.
+`content/facebook-group-coverage.csv` completes the other side of the audit: all 51
+joined groups, including the 30 where the activity-log sweep found no group post.
+Price-bearing ledger records carry a fingerprint of `tools/check_prices.py`'s
+canonical floors. A reprice makes the check fail until each affected external post
+is reviewed, so a live caption cannot silently drift behind the site again.
 
 **Analytics**: first-party, log-only — `EVT {...}` lines from `data-evt` clicks
 (hero_quote_click, pricing_cta_click, email_click, phone_click, quote_form_*) and the
-widget (chat_open, chat_first_message, lead_submit). No cookies, no third parties.
+widget (chat_open, chat_first_message, lead_submit). Records include a tab-scoped
+anonymous session ID plus separate first- and last-touch source fields. No cookies,
+contact fields or third parties. `/api/leads` and `/api/traffic` ignore `?key=`; use
+the `x-leads-key` header so the secret does not enter URL logs or browser history.
+The traffic view separates raw event records from unique-session funnel rates and
+labels legacy records without a session ID instead of treating them as visitors.
 
 ## What moves
 
@@ -113,10 +187,11 @@ insert one.
 **Prices** live in the `<b>` at the end of each cell and in `.amt` on the tiers. Each floor
 sits roughly 10-15% below the low end of the 2026 US market band for a solo developer selling
 direct — the bands, sources and reasoning are in `research/2026-08-19-*.md`. They are floors,
-not quotes, and the whole list is meant to stay internally consistent. If you change one, check it still sits sensibly against its neighbours — **and
-update the other three copies nothing syncs for you**: the fleet data in
-`tools/build_pages.py` (then rerun it), the assistant's price list in `server/prompt.js`,
-and `assets/facebook.png` via `tools/make_fb.py`.
+not quotes, and the whole list is meant to stay internally consistent. If you change one,
+check it still sits sensibly against its neighbours — **and update the other two copies;
+nothing syncs for you**: the fleet data in `tools/build_pages.py` (then rerun it) and the
+assistant's price list in `server/prompt.js`. Generated social and classified art is
+deliberately price-free; `tools/check_prices.py` enforces that and verifies fresh renders.
 
 **The page fleet** (`services/`, `industries/`, `quote.html`) is generated — copy edits go
 in `tools/build_pages.py`'s SERVICES/INDUSTRIES data, never in the output files.
@@ -147,16 +222,17 @@ changes with a POST to api.indexnow.org (see git log for the exact call).
 is added later, those three need updating — a relative `og:image` is not followed by Facebook
 or iMessage, so it has to stay absolute.
 
-## Listing image
+## Facebook/classified image
 
-`assets/facebook.png` is the square (1200x1200) Marketplace image, built by
-`tools/make_fb.py`. Square because Marketplace crops the thumbnail to a square. Its price
-table is a hand-picked twelve — **if the prices on the page change, change them there too**;
-nothing links the two.
+`assets/facebook.png` is a square (1200x1200) general Facebook/classified card built by
+`tools/make_fb.py`. It uses three readable business outcomes and carries no prices, so it
+does not drift when site rates change. Use it only where business promotion is allowed; it
+is not a recommendation to create a Marketplace service listing.
 
 ```bash
-python3 tools/make_fb.py    # listing image
-python3 tools/make_og.py    # link preview
+python3 tools/make_fb.py            # regenerate the classified card
+python3 tools/make_fb.py --check    # verify the committed PNG is current
+python3 tools/make_og.py            # link preview
 ```
 
 ## Things that will bite you
@@ -179,12 +255,17 @@ python3 tools/make_og.py    # link preview
 - **`min-height:100svh` on the hero makes tall-window full-page screenshots useless** — the hero
   grows to the window. Screenshot a copy with that overridden instead.
 
-## Listing media kit
+## Social/classified media kit
 
-`assets/listings/` holds the images used on the marketplace and directory listings.
-Regenerated by screenshotting the live site with the reveal animations forced on — the
-scroll-reveal keeps every section at `opacity:0` in headless Chrome, so a plain
-`--screenshot` of `#services` comes back black. Copy `index.html`, inject
+`assets/listings/` holds proof imagery plus multilingual square cards for permitted group,
+classified and directory promotion. The `fb_<lang>_{1hook,2build,3proof}.png` sets come
+from `tools/make_listing_images.py`: a high-contrast hook, three readable outcomes, and a
+Curio proof card with real product art and its public App Store URL. Run the generator with
+`--check` to verify that every committed PNG matches its source.
+
+The three source/proof images below were captured from the live site with reveal animations
+forced on. The scroll-reveal keeps every section at `opacity:0` in headless Chrome, so a
+plain `--screenshot` of `#services` comes back black. Copy `index.html`, inject
 
 ```css
 [data-rise],.js [data-rise]{opacity:1!important;filter:none!important;transform:none!important}

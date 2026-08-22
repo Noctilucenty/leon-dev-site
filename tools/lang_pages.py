@@ -7,7 +7,7 @@ in. "web development" is unwinnable — Toptal and Clutch own it — but
 "criar site para restaurante nos estados unidos" is nearly uncontested, and
 the person searching it is ready to buy.
 
-The copy is written natively, never translated, and lives in
+The copy is written for each audience, never translated at page load, and lives in
 content/lang_pages.json so it can be re-edited without touching this renderer.
 Called from build_pages.py, which passes its own helpers in via ctx so the
 markup, fonts and icons stay identical to the English pages.
@@ -55,6 +55,7 @@ LANGS = {
         foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atendo negócios nos estados unidos inteiros · <a href="/">english</a> · <a href="/es">español</a> · <a href="/zh">中文</a>',
         assist_starter='pode responder em português. meu negócio é o seguinte: ',
         call_label='agendar 15 minutos',
+        privacy_label='privacidade',
     ),
     'es': dict(
         html_lang='es', hreflang='es', home='/es',
@@ -70,6 +71,7 @@ LANGS = {
         foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atiendo negocios en todo estados unidos · <a href="/">english</a> · <a href="/pt">português</a> · <a href="/zh">中文</a>',
         assist_starter='puedes responder en español. mi negocio es el siguiente: ',
         call_label='agendar 15 minutos',
+        privacy_label='privacidad',
     ),
     'zh': dict(
         html_lang='zh-Hans', hreflang='zh', home='/zh',
@@ -92,6 +94,7 @@ LANGS = {
         foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · 加州 · 全美国都接 · <a href="/">english</a> · <a href="/es">español</a> · <a href="/pt">português</a>',
         assist_starter='请用中文回复。我的生意是这样的：',
         call_label='预约 15 分钟',
+        privacy_label='隐私',
     ),
 }
 
@@ -122,6 +125,21 @@ def _contact_attrs(L):
         return (f' data-copy="{L["wechat_id"]}" data-copied="已复制，去微信粘贴添加"'
                 ' onclick="return false"')
     return ''
+
+
+def _footer_contacts(lang, L):
+    """Localized contact choices with a separate analytics label per action."""
+    contact = _contact_href(L)
+    return (
+        f'<a href="{contact}"{_contact_attrs(L)} '
+        f'data-evt="footer_contact_click_{lang}">{L["contact_label"]}</a> · '
+        f'<a href="mailto:leondragon3798@gmail.com" '
+        f'data-evt="footer_email_click_{lang}">leondragon3798@gmail.com</a> · '
+        f'<a href="tel:+15108267735" '
+        f'data-evt="footer_phone_click_{lang}">(510) 826-7735</a> · '
+        f'<a href="/privacy" '
+        f'data-evt="footer_privacy_click_{lang}">{L["privacy_label"]}</a>'
+    )
 
 
 def _alternates(key, path):
@@ -298,7 +316,7 @@ def render(lang, key, page, ctx):
 <footer class="foot">
   <div class="rail foot-bar">
     <p>{L['foot']}</p>
-    <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
+    <p>{_footer_contacts(lang, L)}</p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
@@ -507,7 +525,7 @@ def render_call(lang, booker, ctx):
 <footer class="foot">
   <div class="rail foot-bar">
     <p>{L['foot']}</p>
-    <p><a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> · <a href="tel:+15108267735">(510) 826-7735</a></p>
+    <p>{_footer_contacts(lang, L)}</p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
