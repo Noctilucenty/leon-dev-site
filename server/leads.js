@@ -67,16 +67,20 @@ function persistLead(lead) {
   // nodemailer will happily connect unauthenticated, Gmail will refuse it, and
   // the lead is lost while every readiness check reports green. Half-configured
   // has to read as OFF, or the check is worse than no check.
-  const mailReady = !!(process.env.SMTP_HOST && process.env.LEAD_TO_EMAIL
-                       && process.env.SMTP_USER && process.env.SMTP_PASS);
+  // Either route will do: RESEND_API_KEY (HTTPS) or a full SMTP set. On a host
+  // that blocks outbound SMTP the first is the only one that works — see the
+  // note above sendViaHttp.
+  const mailReady = !!(process.env.LEAD_TO_EMAIL && (
+    process.env.RESEND_API_KEY ||
+    (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS)));
   if (!mailReady) {
     // LOUD, once per lead. This was silent, and silence read as "no leads yet"
     // when it actually meant "leads arrived and nobody was told". stdout is
     // Render's log tail, so this is visible without digging.
     console.error(
-      'LEAD_NOT_EMAILED — need all of SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS ' +
-      'and LEAD_TO_EMAIL. Missing: ' +
-      ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
+      'LEAD_NOT_EMAILED — needs LEAD_TO_EMAIL plus either RESEND_API_KEY (https) ' +
+      'or SMTP_HOST + SMTP_USER + SMTP_PASS. Missing: ' +
+      ['LEAD_TO_EMAIL', 'RESEND_API_KEY', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS']
         .filter(k => !process.env[k]).join(', ') +
       '. Until then this lead exists only in this log and in an ephemeral file ' +
       'that the next deploy erases.');
@@ -90,6 +94,14 @@ function persistLead(lead) {
       .filter(([, v]) => v)
       .map(([k, v]) => `${k}: ${v}`)
       .join('\n');
+    if (process.env.RESEND_API_KEY) {
+      sendViaHttp(lead, subj, rows)
+        .then(() => console.log(`LEAD_MAILED to ${process.env.LEAD_TO_EMAIL} via https (resend)`))
+        .catch(err => console.error(
+          'LEAD_MAIL_FAILED', (err && err.message) || err,
+          '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
+      return;
+    }
     openTransport()
       .then(({ t, port }) => t.sendMail({
         from: process.env.LEAD_FROM_EMAIL || process.env.SMTP_USER,
@@ -121,6 +133,49 @@ function readLeads(limit) {
   }
   out.reverse();
   return out.slice(0, limit || 200);
+}
+
+/* ── HTTP email, and why it is the default when configured ──────────────────
+ *
+ * SMTP DOES NOT WORK FROM THIS HOST. Measured 2026-08-21, after fixing two
+ * unrelated faults on the way down:
+ *
+ *   LEAD_MAIL_FAILED Connection timeout — tried ports 587, 465
+ *
+ * Both Gmail ports, over IPv4, one attempt, after a four-minute cooldown to
+ * rule out Google's connection throttling. Render's containers do not allow
+ * outbound SMTP. No amount of credential or port fiddling changes that, and the
+ * failure is silent: the lead is captured, the visitor is thanked, and nobody
+ * is told.
+ *
+ * Port 443 demonstrably works — every OpenAI call on this service goes out that
+ * way. So the mail goes out that way too.
+ *
+ * RESEND_API_KEY switches this on. Without it the code falls back to SMTP, so
+ * this file still works unchanged on a host that permits it (a laptop, a VPS),
+ * and adding the key is the only step needed here.
+ */
+async function sendViaHttp(lead, subject, text) {
+  const key = process.env.RESEND_API_KEY;
+  // A verified domain is better than a gmail: it makes the notification look
+  // like it came from the business, and it is what allows a real From address.
+  const from = process.env.LEAD_FROM_EMAIL || 'Leon Builds <onboarding@resend.dev>';
+  const r = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      from,
+      to: [process.env.LEAD_TO_EMAIL],
+      reply_to: lead.email || undefined,   // reply goes to the visitor, not to us
+      subject,
+      text
+    })
+  });
+  if (!r.ok) {
+    const body = await r.text().catch(() => '');
+    throw new Error(`resend HTTP ${r.status}: ${body.slice(0, 200)}`);
+  }
+  return r.json().catch(() => ({}));
 }
 
 /* SMTP ports to try, in order, and why there is more than one.
@@ -242,9 +297,25 @@ async function openTransport() {
  * confirm the pipeline end to end, post one lead and look for LEAD_MAILED —
  * that exercises the same path and sends exactly one message. */
 async function verifyMail() {
-  const missing = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS', 'LEAD_TO_EMAIL']
-    .filter(k => !process.env[k]);
-  if (missing.length) return { ok: false, reason: 'not configured — missing ' + missing.join(', ') };
+  if (!process.env.LEAD_TO_EMAIL) return { ok: false, reason: 'not configured — missing LEAD_TO_EMAIL' };
+  if (!process.env.RESEND_API_KEY) {
+    const missing = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS']
+      .filter(k => !process.env[k]);
+    if (missing.length) return { ok: false, reason: 'not configured — missing ' + missing.join(', ') + ' (or set RESEND_API_KEY)' };
+  }
+  if (process.env.RESEND_API_KEY) {
+    // No connection to test without sending mail, so check the credential the
+    // only way that does not: ask the API who we are.
+    try {
+      const r = await fetch('https://api.resend.com/domains', {
+        headers: { authorization: `Bearer ${process.env.RESEND_API_KEY}` }
+      });
+      if (r.ok) return { ok: true, via: 'https', reason: 'resend api key accepted' };
+      return { ok: false, via: 'https', reason: `resend HTTP ${r.status}` };
+    } catch (e) {
+      return { ok: false, via: 'https', reason: String(e && e.message || e).slice(0, 200) };
+    }
+  }
   try {
     const { port } = await openTransport();
     return { ok: true, port, reason: `connected and authenticated on port ${port}` };
