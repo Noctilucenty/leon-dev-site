@@ -149,3 +149,69 @@ tags from the group posts: `/pt` with `utm=fbgrp-cb` referred by
 `m.facebook.com`. The mobile referrer on the second makes a real visitor more
 likely than a self-click, but two hits is not a result — it is a reason to keep
 the `?s=` tags on every posted link, which is what makes this measurable at all.
+
+---
+
+## Verdict — 2026-08-21, after four end-to-end runs
+
+**Render does not permit outbound SMTP.** Final measurement, one attempt, after
+a four-minute cooldown to rule out Google's connection throttling:
+
+    LEAD_MAIL_FAILED Connection timeout — tried ports 587, 465
+
+Both Gmail ports, over IPv4. Not the app password, not the port, and not IPv6.
+
+### Three faults were stacked, and each one hid the next
+
+1. **`leon@leonbuilds.org` had no forwarder.** MX records existed — Namecheap
+   sets them on every domain — so it looked configured. Fixed by pointing leads
+   at a real mailbox and taking the forwarding hop out of the path entirely.
+2. **IPv6.** `connect ENETUNREACH 2607:f8b0:400e:c02::6c:587`. The container has
+   no IPv6 route; Node resolved the AAAA record and tried it anyway. Two obvious
+   fixes both failed — `family: 4` (nodemailer 9 does not pass it to
+   `net.connect`) and `dns.setDefaultResultOrder('ipv4first')` (nodemailer does
+   its own resolution and never calls `dns.lookup`). Only resolving to an IPv4
+   literal and passing `tls.servername` for SNI removed it.
+3. **Outbound SMTP is blocked.** Only visible once IPv6 stopped failing first.
+
+Faults 1 and 2 were real and are fixed. Fault 3 is the platform's, and no
+amount of configuration will move it.
+
+### Fixed by sending over HTTPS instead
+
+Port 443 works — every OpenAI call on this service proves it daily. Lead mail
+now POSTs to Resend's API when `RESEND_API_KEY` is set, and falls back to SMTP
+when it is not, so the code still works unchanged on a host that allows SMTP.
+
+### The one remaining step
+
+Set **`RESEND_API_KEY`** on leon-assist. Free tier is 3,000 emails/month, which
+is roughly 100× the volume this needs. Then:
+
+    curl -s "https://leon-assist.onrender.com/api/health?deep=1"
+
+wants `"leadEmailWorks":true` and `"leadEmailCheck":"resend api key accepted"`.
+
+**This is urgent in a way the earlier steps were not.** Leads are captured
+correctly and stored on an ephemeral disk that every deploy erases, and the
+email that would have been the durable copy is not going out. Right now a real
+enquiry is logged, thanked, and then lost.
+
+### What was never broken
+
+The capture path. Every one of the four audit leads is in the log, complete,
+with attribution intact. The form, the validation, the analytics events, the
+`Reply-To` header and the UTM tracking have all worked from the first test.
+Only the notification was failing.
+
+### Method note, for the next person
+
+Twice in this audit a single passing check would have shipped a broken build:
+one build passed 1 of 6, another 1 of 8. But the correction has its own trap —
+looping `?deep=1` to prove stability *caused* timeouts, because each call is a
+real SMTP AUTH and repeated logins from a datacenter address are exactly what
+Google throttles. A check that induces the failure it tests for is worse than
+no check, because it reads as evidence.
+
+The reliable test is the cheap one: post a single lead and read the log for
+`LEAD_MAILED`.
