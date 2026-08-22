@@ -183,19 +183,26 @@ Port 443 works — every OpenAI call on this service proves it daily. Lead mail
 now POSTs to Resend's API when `RESEND_API_KEY` is set, and falls back to SMTP
 when it is not, so the code still works unchanged on a host that allows SMTP.
 
-### The one remaining step
+### Resend deployment — completed 2026-08-22
 
-Set **`RESEND_API_KEY`** on leon-assist. Free tier is 3,000 emails/month, which
-is roughly 100× the volume this needs. Then:
+`RESEND_API_KEY` is now configured on leon-assist. Shallow health reports
+provider `resend`, transport `https`, `leadEmailReady:true`, and no missing
+delivery variables. One uniquely tagged submission passed all four checks with
+receipt `lead_11c53d76-29d2-4177-9a9d-4bb81bacf09c`: HTTP 200, the matching
+`LEAD` record, `LEAD_MAILED ... via https (resend)`, and the same receipt and
+tag in the target Gmail inbox.
 
-    curl -s "https://leon-assist.onrender.com/api/health?deep=1"
+> **Superseding verification note:** the earlier unauthenticated deep-health
+> command is intentionally retired. Deep health now requires `LEADS_KEY` in the
+> `x-leads-key` header, and Resend reports `configured_unverified` with
+> `leadEmailWorks:null` because a credential check cannot prove inbox delivery.
+> After setting the key, shallow health should report provider `resend`, transport
+> `https`, `leadEmailReady:true`, and no missing variables. The uniquely tagged
+> end-to-end submission documented below is the only delivery proof.
 
-wants `"leadEmailWorks":true` and `"leadEmailCheck":"resend api key accepted"`.
-
-**This is urgent in a way the earlier steps were not.** Leads are captured
-correctly and stored on an ephemeral disk that every deploy erases, and the
-email that would have been the durable copy is not going out. Right now a real
-enquiry is logged, thanked, and then lost.
+> **Historical pre-fix condition:** leads were captured correctly but stored on
+> an ephemeral disk while notification email was blocked, so a deploy could erase
+> the only copy. The completed Resend test above resolves that delivery gap.
 
 ### What was never broken
 

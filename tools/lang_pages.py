@@ -352,7 +352,7 @@ CALL_COPY = {
             'quinze minutos já dão pra saber se tem projeto aqui. você conta o que é lento ou manual na sua semana, e eu falo o que eu faria, a partir de quanto sai, e também quando você não precisa de mim.',
             'a conversa é em português, com a pessoa que escreve o código. não tem vendedor, não tem gerente de conta, e não tem compromisso nenhum depois.',
         ],
-        pricetag='de graça · 15 minutos · horários das 11h às 23h (horário do pacífico) · você fala direto comigo',
+        pricetag='de graça · 15 minutos · disponibilidade em dias úteis (horário do pacífico) · você fala direto comigo',
         label='o que acontece na conversa',
         bullets=[
             'você explica o problema do seu jeito, sem precisar de palavra técnica',
@@ -373,7 +373,7 @@ CALL_COPY = {
             'quince minutos alcanzan para saber si hay proyecto. me cuentas qué es lento o manual en tu semana, y te digo qué haría yo, desde cuánto sale, y también cuándo no me necesitas.',
             'la llamada es en español, con la persona que escribe el código. no hay vendedor, no hay ejecutivo de cuenta, y no queda ningún compromiso después.',
         ],
-        pricetag='gratis · 15 minutos · horarios de 11am a 11pm (hora del pacífico) · hablas directo conmigo',
+        pricetag='gratis · 15 minutos · disponibilidad entre semana (hora del pacífico) · hablas directo conmigo',
         label='qué pasa en la llamada',
         bullets=[
             'me explicas el problema a tu manera, sin necesidad de términos técnicos',
@@ -394,7 +394,7 @@ CALL_COPY = {
             '十五分钟就够判断有没有必要做了。你说说每周哪些事情又慢又费人，我告诉你我会怎么做、从多少钱起，以及什么时候你根本不需要找我。',
             '全程中文，直接跟写代码的人聊。没有销售，没有客户经理，聊完也没有任何后续负担。',
         ],
-        pricetag='免费 · 15 分钟 · 可约时间 上午 11 点到晚上 11 点（太平洋时间）· 直接跟我聊',
+        pricetag='免费 · 15 分钟 · 工作日可约（太平洋时间）· 直接跟我聊',
         label='这十五分钟会聊什么',
         bullets=[
             '你用自己的话说问题就行，不用懂任何技术名词',
