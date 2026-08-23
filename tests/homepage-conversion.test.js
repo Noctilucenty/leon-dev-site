@@ -46,7 +46,7 @@ function sectionLandmarks(source) {
     if (attrs.id === 'top' || classes.includes('hero')) name = 'hero';
     else if (classes.includes('proof-strip')) name = 'proof';
     else if (attrs.id === 'fix' || attrs.id === 'outcomes') name = 'outcomes';
-    else if (['work', 'services', 'process', 'pricing', 'about', 'faq', 'contact'].includes(attrs.id)) name = attrs.id;
+    else if (['work', 'testimonials', 'services', 'process', 'pricing', 'about', 'faq', 'contact'].includes(attrs.id)) name = attrs.id;
     if (name) landmarks.push({ name, index: match.index });
   }
   return landmarks;
@@ -93,7 +93,7 @@ function navBookRules(source) {
 
 test('homepage follows the B2B conversion section order', () => {
   const names = sectionLandmarks(html).map(item => item.name);
-  const expected = ['hero', 'proof', 'outcomes', 'work', 'services', 'process', 'pricing', 'about', 'faq', 'contact'];
+  const expected = ['hero', 'proof', 'outcomes', 'work', 'testimonials', 'services', 'process', 'pricing', 'about', 'faq', 'contact'];
   let cursor = -1;
   for (const name of expected) {
     const next = names.indexOf(name, cursor + 1);
@@ -103,6 +103,26 @@ test('homepage follows the B2B conversion section order', () => {
 
   const workIds = html.match(/\bid\s*=\s*(["'])work\1/gi) || [];
   assert.equal(workIds.length, 1, 'homepage has exactly one id="work" landmark');
+});
+
+test('client feedback is attributed, project-specific, and not inflated into schema ratings', () => {
+  const testimonials = sectionWithId(html, 'testimonials');
+  const cards = testimonials.match(/<article\b[\s\S]*?<\/article>/gi) || [];
+  assert.equal(cards.length, 7, 'homepage includes the seven approved client testimonials');
+
+  const testimonialText = plainText(testimonials).toLowerCase();
+  for (const name of ['ALLCPR', 'ONPECY AI Lab', 'Paul', '明途 Client', 'Jayson', 'Glenn', 'Heather']) {
+    assert.ok(testimonialText.includes(name.toLowerCase()), `${name} is attributed`);
+  }
+  assert.equal((testimonials.match(/aria-label=["']5 out of 5 stars["']/gi) || []).length, 7);
+  assert.match(plainText(testimonials), /feedback shared directly by clients/i);
+  assert.match(testimonials, /<details\b[^>]*class=["'][^"']*testimonial-more/i, 'four secondary reviews use progressive disclosure');
+  assert.match(plainText(testimonials), /see four more client reviews/i);
+  assert.doesNotMatch(plainText(testimonials), /more than 300 locations/i, 'unsupported 300+ location claim is not published');
+
+  const schemaBlocks = Array.from(html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi), match => match[1]);
+  assert.ok(schemaBlocks.length > 0, 'homepage includes structured data');
+  assert.doesNotMatch(schemaBlocks.join('\n'), /aggregateRating|reviewRating|ratingValue/i, 'direct feedback is not presented as a platform aggregate rating');
 });
 
 test('hero offers the two plain-language next steps', () => {

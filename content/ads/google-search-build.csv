@@ -1,6 +1,8 @@
 record_type,campaign,ad_group,entity_id,status,scope,match_type,priority,text,final_url,utm_source,utm_medium,utm_campaign,utm_term,utm_content,instruction
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,draft_state,DISABLED,campaign,,,DRAFT - DO NOT ENABLE,,,,,,,Offline specification only; no live account action is authorized
-campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,budget,DISABLED,campaign,,,BUDGET UNSET,,,,,,,Owner must enter a separately approved amount after completing economics-calculator.csv
+campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,budget_type,DISABLED,campaign,,,Campaign total budget,,,,,,,Use only when creating a new Search campaign; the budget type cannot be changed after creation
+campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,budget,DISABLED,campaign,,,$100 USD total for full campaign,,,,,,,Hard billed-media cap for the 10-calendar-day flight; do not enter this as an average daily budget
+campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,flight_duration,DISABLED,campaign,,,10 calendar days,,,,,,,The end date is the ninth calendar date after the start date
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,campaign_type,DISABLED,campaign,,,Search,,,,,,,One controlled Search campaign
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,networks,DISABLED,campaign,,,Google Search only,,,,,,,Keep Display Network and Search Partners off for the initial controlled test
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,goal,DISABLED,campaign,,,Leads,,,,,,,Use only after conversion actions are verified
@@ -8,8 +10,8 @@ campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,target_locations,DI
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,location_option,DISABLED,campaign,,,Presence: people in or regularly in targeted locations,,,,,,,Do not use the default Presence or Interest option
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,language,DISABLED,campaign,,,English,,,,,,,Add another language only with a reviewed matching ad and landing experience
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,bidding_strategy,DISABLED,campaign,,,UNSET,,,,,,,Choose only after the initial booking conversion and economics are verified
-campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,start_date,DISABLED,campaign,,,UNSET,,,,,,,Requires separate launch authorization
-campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,end_date,DISABLED,campaign,,,UNSET,,,,,,,Requires separate launch authorization
+campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,start_date,DISABLED,campaign,,,UNSET — choose future date after final launch authorization,,,,,,,Never use Today while this pack remains disabled
+campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,end_date,DISABLED,campaign,,,UNSET — start date + 9 calendar days; ends 23:59 account timezone,,,,,,,Do not extend the end date without new owner authorization
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,ad_schedule,DISABLED,campaign,,,UNSET,,,,,,,Set only after response coverage and time-zone handling are confirmed
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,auto_tagging,DISABLED,campaign,,,REVIEW REQUIRED,,,,,,,If later enabled let Google append genuine click IDs; never put one in this sheet
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,auto_created_assets,DISABLED,campaign,,,OFF FOR CONTROLLED TEST,,,,,,,Review current account controls before any launch
@@ -193,7 +195,7 @@ launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_08,DISABLED,campa
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_09,DISABLED,campaign,,BLOCKER,Keyword and negative lists reviewed,,,,,,,Check conflicts plurals and niche separation before upload
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_10,DISABLED,campaign,,BLOCKER,RSA copy and URLs pass validator and policy review,,,,,,,Preview combinations because assets may appear in different orders
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_11,DISABLED,campaign,,BLOCKER,Economics inputs and owner stop rules completed,,,,,,,No fabricated benchmarks; use private real contribution economics
-launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_12,DISABLED,campaign,,BLOCKER,Budget bid strategy dates and schedule separately approved,,,,,,,They are intentionally unset in this repository
+launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_12,DISABLED,campaign,,BLOCKER,Campaign-total budget type bid strategy dates and schedule verified,,,,,,,The $100 cap and 10-day duration are approved; bids exact dates schedule and launch are not
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_13,DISABLED,campaign,,BLOCKER,Billing and account permissions reviewed by owner,,,,,,,This pack must not change billing
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_14,DISABLED,campaign,,BLOCKER,Campaign and every child entity created paused,,,,,,,A second person confirms disabled state before any billing-capable action
 launch_check,DRAFT | BA | Search | Missed Lead Recovery,,check_15,DISABLED,campaign,,POST_LAUNCH,Search terms and lead quality review owner assigned,,,,,,,Review actual terms and add negatives without waiting for vanity metrics

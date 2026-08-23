@@ -1,6 +1,6 @@
 # Paid campaign build pack
 
-**Status: DRAFT — DISABLED — BUDGET UNSET**
+**Status: DRAFT — DISABLED — GOOGLE $100 / 10 CALENDAR DAYS — META $0**
 
 **NO LAUNCH AUTHORIZATION.** This folder is an offline build specification. It
 does not authorize creating, enabling, publishing, funding, or changing a live
@@ -10,8 +10,12 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 
 - Keep every campaign, ad group, ad set, ad, and conversion action disabled
   until the launch checklist is separately approved by the account owner.
-- The budget, bids, cost goals, dates, billing, audiences, and account IDs are
-  intentionally unset. Do not infer or auto-fill them from these drafts.
+- The owner-approved paid-media ceiling is **$100 total across 10 calendar
+  days**. The entire first-test allocation is assigned to one new Google Search
+  campaign using **Campaign total budget**; Meta receives $0 and stays disabled.
+  This is not $100 per platform and is not launch authorization.
+- Bids, cost goals, exact start/end dates, billing, audiences, and account IDs
+  remain unset or unapproved. Do not infer or auto-fill them from these drafts.
 - Never type a made-up `gclid`, `gbraid`, `wbraid`, `fbclid`, or another click
   identifier into a URL. Platforms may append genuine identifiers later.
 - Do not put prospect or customer information in campaign names, UTMs, URLs,
@@ -30,13 +34,15 @@ python3 tools/check_ads_pack.py
 
 ## Pack map
 
-- `google-search-build.csv` — one disabled Bay Area Search campaign with three
-  intent-separated ad groups, keywords, negatives, two RSAs per ad group,
-  conversion hierarchy, and a launch checklist.
+- `google-search-build.csv` — one disabled Bay Area Search campaign with a $100
+  campaign-total budget over 10 calendar days, three intent-separated ad groups,
+  keywords, negatives, two RSAs per ad group, conversion hierarchy, and a launch
+  checklist.
 - `meta-build.csv` — one disabled Leads-objective plan using a website booking
-  conversion, six mapped assets, qualification controls, and retargeting gates.
-- `economics-calculator.csv` — blank decision inputs, spreadsheet formulas, and
-  owner-defined stop-rule templates. Blank cells are intentional.
+  conversion, six mapped assets, qualification controls, retargeting gates, and
+  a $0 first-test allocation.
+- `economics-calculator.csv` — the four owner-approved test controls, blank
+  business-economics inputs, spreadsheet formulas, and stop-rule templates.
 
 ## Canonical offer and landing page
 
@@ -83,6 +89,15 @@ to held qualified call to won client.
 
 ## Google mechanics checked on 2026-08-23
 
+- Google says Campaign total budget is available when creating a new Search
+  campaign, requires start/end dates, supports a 3–90 day Search flight, cannot
+  replace the budget type on an existing campaign, and never bills above the
+  campaign total: [About campaign total
+  budgets](https://support.google.com/google-ads/answer/10486938?hl=en).
+- A normal $10 average daily budget is not the same hard cap: Google documents a
+  daily spending limit of up to two times the average daily budget for most
+  campaigns. This pack therefore does not use $10/day: [About spending
+  limits](https://support.google.com/google-ads/answer/10486637?hl=en).
 - Google documents up to 15 RSA headlines and four descriptions, with a
   30-character headline limit, 90-character description limit, and a minimum
   of three headlines and two descriptions: [About responsive search
@@ -103,7 +118,9 @@ to held qualified call to won client.
   report](https://support.google.com/google-ads/answer/2472708?hl=en).
 
 Platform interfaces and policies change. Re-check the live help pages and the
-account UI immediately before any separately authorized build.
+account UI immediately before any separately authorized build. If Campaign total
+budget is unavailable in the account, do not substitute a $10/day budget or
+enable the campaign; stop and revise the capped plan first.
 
 ## Meta mechanics checked on 2026-08-23
 
@@ -147,7 +164,8 @@ landing page because routine ordering is explicitly outside this sprint.
 ## Human launch boundary
 
 Passing the validator means the offline pack is internally consistent. It does
-not approve budget, billing, tracking technology, targeting, copy, creative,
-privacy posture, or publication. A later authorized launch still requires a
-human to complete every checklist row in both build sheets and re-check the
-economics with real, privately held business inputs.
+records the owner's $100/10-calendar-day paid-media ceiling and Google-only first
+allocation. It does not approve launch, billing, bids, exact dates, tracking
+technology, targeting, copy, creative, privacy posture, or publication. A later
+authorized launch still requires a human to complete every checklist row in both
+build sheets and re-check the economics with real, privately held business inputs.

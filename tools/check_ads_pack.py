@@ -55,6 +55,17 @@ ASSETS = {
     "assets/social/ad_05_founder_direct.png",
     "assets/social/ad_06_lead_leak_review.png",
 }
+GOOGLE_TOTAL_BUDGET = "$100 USD total for full campaign"
+GOOGLE_FLIGHT_DURATION = "10 calendar days"
+GOOGLE_START_DATE = "UNSET — choose future date after final launch authorization"
+GOOGLE_END_DATE = "UNSET — start date + 9 calendar days; ends 23:59 account timezone"
+META_ZERO_ALLOCATION = "0 USD — NO ALLOCATION IN FIRST 10-DAY TEST"
+APPROVED_ECONOMICS_INPUTS = {
+    "approved_test_media_cap": ("100", "USD"),
+    "approved_test_days": ("10", "calendar_days"),
+    "google_test_allocation": ("100", "USD"),
+    "meta_test_allocation": ("0", "USD"),
+}
 
 
 def read_text(path, errors):
@@ -145,13 +156,15 @@ def check_readme(errors):
         return
     lead = "\n".join(text.splitlines()[:10])
     for marker in (
-        "Status: DRAFT — DISABLED — BUDGET UNSET",
+        "Status: DRAFT — DISABLED — GOOGLE $100 / 10 CALENDAR DAYS — META $0",
         "NO LAUNCH AUTHORIZATION.",
     ):
         if marker not in lead:
             errors.append(f"README.md: top-of-file marker missing: {marker}")
     required_links = (
         "https://support.google.com/google-ads/answer/7684791",
+        "https://support.google.com/google-ads/answer/10486938",
+        "https://support.google.com/google-ads/answer/10486637",
         "https://support.google.com/google-ads/answer/1722038",
         "https://support.google.com/google-ads/answer/14996023",
         "https://support.google.com/google-ads/answer/2453983",
@@ -168,6 +181,8 @@ def check_readme(errors):
     for required in (
         "calendar_booking_success", "qualified_call_held", "won_client",
         "all five standard UTM", "message/landing mismatch",
+        "$100 total across 10 calendar", "Meta receives $0",
+        "not $100 per platform", "not launch authorization",
     ):
         if required not in text:
             errors.append(f"README.md: missing required contract text {required!r}")
@@ -184,9 +199,21 @@ def check_google(errors):
         if row.get("status") != "DISABLED":
             errors.append(f"google-search-build.csv line {line_no}: status must be DISABLED")
 
+    budget_type = one_setting(rows, "budget_type", errors, "google-search-build.csv")
+    if budget_type and budget_type.get("text") != "Campaign total budget":
+        errors.append("google-search-build.csv: budget type must be Campaign total budget")
     budget = one_setting(rows, "budget", errors, "google-search-build.csv")
-    if budget and budget.get("text") != "BUDGET UNSET":
-        errors.append("google-search-build.csv: budget must remain BUDGET UNSET")
+    if budget and budget.get("text") != GOOGLE_TOTAL_BUDGET:
+        errors.append("google-search-build.csv: Google allocation must be the exact $100 total")
+    duration = one_setting(rows, "flight_duration", errors, "google-search-build.csv")
+    if duration and duration.get("text") != GOOGLE_FLIGHT_DURATION:
+        errors.append("google-search-build.csv: flight must be exactly 10 calendar days")
+    start_date = one_setting(rows, "start_date", errors, "google-search-build.csv")
+    if start_date and start_date.get("text") != GOOGLE_START_DATE:
+        errors.append("google-search-build.csv: start date must remain unset pending launch authorization")
+    end_date = one_setting(rows, "end_date", errors, "google-search-build.csv")
+    if end_date and end_date.get("text") != GOOGLE_END_DATE:
+        errors.append("google-search-build.csv: end date must remain the unset start-plus-nine-day rule")
     bidding = one_setting(rows, "bidding_strategy", errors, "google-search-build.csv")
     if bidding and bidding.get("text") != "UNSET":
         errors.append("google-search-build.csv: bidding strategy must remain UNSET")
@@ -307,8 +334,11 @@ def check_meta(errors):
             errors.append(f"meta-build.csv line {line_no}: website booking event mismatch")
 
     budget = one_setting(rows, "budget", errors, "meta-build.csv")
-    if budget and budget.get("primary_text") != "BUDGET UNSET":
-        errors.append("meta-build.csv: budget must remain BUDGET UNSET")
+    if budget and budget.get("primary_text") != META_ZERO_ALLOCATION:
+        errors.append("meta-build.csv: Meta allocation must remain exactly $0 for the first test")
+    schedule = one_setting(rows, "schedule", errors, "meta-build.csv")
+    if schedule and schedule.get("primary_text") != "NOT SCHEDULED":
+        errors.append("meta-build.csv: Meta must remain unscheduled for the first test")
 
     creatives = [row for row in rows if row.get("record_type") == "creative"]
     paths = {row.get("asset_path") for row in creatives}
@@ -355,6 +385,8 @@ def check_economics(errors):
         "actual_cost_per_booked_call", "actual_cost_per_qualified_call",
         "actual_cac", "zero_booking_stop", "booking_cost_stop",
         "qualification_stop", "profit_stop",
+        "approved_test_media_cap", "approved_test_days",
+        "google_test_allocation", "meta_test_allocation",
     }
     missing = sorted(required - keys)
     if missing:
@@ -367,9 +399,21 @@ def check_economics(errors):
         seen.add(key)
         row_type = row.get("row_type")
         if row_type == "input":
-            if row.get("input") or row.get("calculated_value"):
+            approved = APPROVED_ECONOMICS_INPUTS.get(key)
+            if approved:
+                expected_value, expected_unit = approved
+                if row.get("input") != expected_value or row.get("unit") != expected_unit:
+                    errors.append(
+                        f"economics-calculator.csv line {line_no}: {key} must be "
+                        f"{expected_value} {expected_unit}"
+                    )
+                if row.get("calculated_value"):
+                    errors.append(
+                        f"economics-calculator.csv line {line_no}: approved input must not contain a formula"
+                    )
+            elif row.get("input") or row.get("calculated_value"):
                 errors.append(
-                    f"economics-calculator.csv line {line_no}: decision inputs must remain blank"
+                    f"economics-calculator.csv line {line_no}: unapproved decision inputs must remain blank"
                 )
         elif row_type in {"formula", "stop_rule"}:
             formula = row.get("calculated_value", "")
@@ -414,7 +458,8 @@ def main():
     print(
         "ads pack check ok — 1 disabled Google campaign / 3 niche ad groups / "
         "6 draft RSAs / 1 disabled Meta campaign / 6 mapped creatives / "
-        "budget unset / economics inputs blank / no click IDs"
+        "$100 Google campaign-total cap / 10 calendar days / Meta $0 / "
+        "business-economics inputs blank / no click IDs"
     )
     return 0
 

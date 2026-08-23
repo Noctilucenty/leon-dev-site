@@ -288,9 +288,12 @@ viewBox and `stroke="currentColor"`, give it a new id.
 emails and the ASCII diagrams opt out via `.keepcase` / the selector list next to it. If you
 add a proper noun that must keep its capitals, add the class.
 
-**Every claim on the page is real.** No client names for employer work, no testimonials, no
-download or revenue figures, no star ratings. If you add a number, make sure it is one you
-would be happy to be asked about on a call.
+**Every claim on the page must be real.** Do not name an employer's client or publish a
+testimonial, rating, result, download figure, or revenue figure without the speaker's
+permission and supporting record. The homepage's seven direct project testimonials and
+five-star ratings were supplied and approved by the site owner; approval evidence belongs
+under the gitignored `private/testimonials/` path, never in the public repository. If you
+add a number, make sure it is one you would be happy to substantiate on a call.
 
 ## Deploying
 

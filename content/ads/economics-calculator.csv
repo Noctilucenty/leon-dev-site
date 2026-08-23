@@ -35,3 +35,7 @@ stop_rule,zero_booking_stop,Zero-booking stop rule,,"=IF(OR(D13="""",D15="""",D2
 stop_rule,booking_cost_stop,Booked-call cost stop rule,,"=IF(OR(E21="""",E30=""""),""INPUTS_REQUIRED"",IF(NOT(ISNUMBER(E21)),""PAUSE_AND_AUDIT"",IF(E21>E30,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT"")))",decision,Do not increase spend while over the owner-approved limit
 stop_rule,qualification_stop,Qualified-call rate stop rule,,"=IF(OR(E25="""",D31=""""),""INPUTS_REQUIRED"",IF(NOT(ISNUMBER(E25)),""PAUSE_AND_AUDIT"",IF(E25<D31,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT"")))",decision,Audit targeting search terms creative promise and qualification before resuming
 stop_rule,profit_stop,Contribution-return stop rule,,"=IF(OR(E27="""",D32="""",D18="""",D33=""""),""INPUTS_REQUIRED"",IF(D18<D33,""NOT_ENOUGH_OWNER_DEFINED_EVIDENCE"",IF(NOT(ISNUMBER(E27)),""PAUSE_AND_AUDIT"",IF(E27<D32,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT""))))",decision,Use contribution profit and a predeclared evidence threshold rather than gross revenue
+input,approved_test_media_cap,Owner-approved paid-media cap,100,,USD,Hard media-spend ceiling across Google and Meta for this test; not launch authorization
+input,approved_test_days,Owner-approved test duration,10,,calendar_days,Ten consecutive calendar dates including the start date
+input,google_test_allocation,Google Search allocation,100,,USD,Use Campaign total budget on one new disabled Search campaign
+input,meta_test_allocation,Meta allocation,0,,USD,Meta remains disabled and unscheduled for the first test
