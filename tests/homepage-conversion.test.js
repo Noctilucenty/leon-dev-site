@@ -125,6 +125,25 @@ test('client feedback is attributed, project-specific, and not inflated into sch
   assert.doesNotMatch(schemaBlocks.join('\n'), /aggregateRating|reviewRating|ratingValue/i, 'direct feedback is not presented as a platform aggregate rating');
 });
 
+test('client feedback is discoverable without scrolling through the case studies', () => {
+  const nav = sectionWithId(html.replace('<header class="nav"', '<section id="site-nav" class="nav"').replace('</header>', '</section>'), 'site-nav');
+  const navLinks = Array.from(nav.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi), match => {
+    const attrs = attributes(match[0].slice(0, match[0].indexOf('>') + 1));
+    return { href: attrs.href, text: plainText(match[0]).toLowerCase() };
+  });
+  assert.ok(navLinks.some(link => link.href === '#testimonials' && link.text === '[ reviews ]'), 'desktop and mobile navigation link directly to reviews');
+
+  const hero = sectionWithId(html, 'top');
+  assert.match(hero, /href=["']#testimonials["'][^>]*data-evt=["']hero_reviews_click["']/i, 'hero links directly to reviews');
+  assert.match(plainText(hero), /read 7 client reviews/i, 'hero exposes the amount of client feedback');
+
+  const workIndex = navLinks.findIndex(link => link.href === '#work');
+  const reviewIndex = navLinks.findIndex(link => link.href === '#testimonials');
+  const servicesIndex = navLinks.findIndex(link => link.href === '#services');
+  assert.ok(workIndex < reviewIndex && reviewIndex < servicesIndex, 'navigation anchors follow homepage section order');
+  assert.ok(navLinks.some(link => link.href === '#pricing' && link.text === '[ pricing ]'), 'navigation links directly to pricing information');
+});
+
 test('hero offers the two plain-language next steps', () => {
   const hero = sectionWithId(html, 'top');
   const links = Array.from(hero.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi), match => {
