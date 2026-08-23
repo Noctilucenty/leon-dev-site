@@ -57,7 +57,7 @@ FORBIDDEN_ROOT_NAMES = {
 }
 ASSET_SUFFIXES = {
     ".css", ".js", ".ico", ".jpeg", ".jpg", ".png", ".svg",
-    ".webp", ".woff", ".woff2",
+    ".webp", ".woff", ".woff2", ".mp4", ".webm",
 }
 GOOGLE_VERIFICATION = re.compile(r"google[a-z0-9]+\.html", re.I)
 TOKEN_VERIFICATION = re.compile(r"[a-f0-9]{16,}\.txt", re.I)

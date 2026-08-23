@@ -20,7 +20,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SITE_ORIGIN = "https://leonbuilds.org"
 INTERNAL_HOSTS = {"leonbuilds.org", "www.leonbuilds.org"}
-SKIP_PARTS = {".git", "node_modules"}
+# Generated publish output mirrors every canonical source page and must never
+# be counted as another source tree when developers preview a production build.
+SKIP_PARTS = {".git", "dist", "node_modules"}
 VERIFICATION_FILE = re.compile(r"^google[a-z0-9]+\.html$", re.I)
 
 
