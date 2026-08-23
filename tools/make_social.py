@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Build the price-free Instagram portrait cards in ``assets/social/``.
+"""Build the price-free organic and paid-social cards in ``assets/social/``.
 
-The social cards deliberately sell outcomes, process and proof instead of
-publishing a rate card. This file is the canonical source for all three
-exports, including the proof card; do not hand-edit the PNGs.
+The cards deliberately sell outcomes, process and proof instead of publishing
+a rate card. This file is the canonical source for every export, including the
+proof and campaign cards; do not hand-edit the PNGs.
 
 Run from the repo root: python3 tools/make_social.py
 """
@@ -35,7 +35,9 @@ RETIRED_DOMAIN = "leonkelvinli.onrender.com"
 FOOTER_TAGLINE = "remote  ·  businesses across the u.s."
 
 # Output filenames stay stable because they may already be referenced by
-# drafts. Their content is now evergreen and intentionally contains no rates.
+# drafts. Their content is evergreen and intentionally contains no rates.
+# The ``ad_*`` set gives the first paid test six genuinely different angles;
+# none claims a result that requires access to a prospect's private data.
 CARDS = {
     "ig_01_prices.png": {
         "label": "leon --outcomes",
@@ -66,6 +68,66 @@ CARDS = {
             ("review desk", "reads business reviews · drafts owner replies"),
         ),
         "note": "real systems in production · built and shipped by one developer",
+    },
+    "ad_01_contractor_after_hours.png": {
+        "label": "leon --missed-leads",
+        "headline": ("a quote request", "came in at 8:47pm.", "what happens next?"),
+        "rows": (
+            ("reply right away", "confirm the request without waiting for office hours"),
+            ("book the next step", "give the customer one clear action to take"),
+            ("keep one owner pipeline", "see what is new · waiting · booked · won"),
+        ),
+        "note": "free 15-minute lead leak review · no sales team",
+    },
+    "ad_02_contractor_flow.png": {
+        "label": "leon --lead-flow",
+        "headline": ("from new inquiry", "to booked estimate", "without phone tag."),
+        "rows": (
+            ("01  mobile quote flow", "ask only for what the estimator needs"),
+            ("02  instant confirmation", "set a real expectation while interest is high"),
+            ("03  visible follow-up", "give the owner one place to close the loop"),
+        ),
+        "note": "built for owner-run home service businesses",
+    },
+    "ad_03_auto_estimates.png": {
+        "label": "leon --repair-flow",
+        "headline": ("the customer wants", "an estimate.", "voicemail is not a flow."),
+        "rows": (
+            ("capture the request", "vehicle · problem · preferred time · contact"),
+            ("confirm what happens next", "reduce repeat calls and uncertain waiting"),
+            ("move work through stages", "new · inspecting · approved · ready"),
+        ),
+        "note": "start with the smallest useful repair-shop workflow",
+    },
+    "ad_04_restaurant_direct.png": {
+        "label": "leon --direct-orders",
+        "headline": ("the phone is busy", "during dinner.", "orders can keep moving."),
+        "rows": (
+            ("let guests order direct", "a mobile flow that matches the real menu"),
+            ("route each ticket clearly", "send the kitchen the details it actually needs"),
+            ("keep the handoff visible", "payment and delivery vendors keep their terms"),
+        ),
+        "note": "ordering systems shaped around the operation",
+    },
+    "ad_05_founder_direct.png": {
+        "label": "leon --one-developer",
+        "headline": ("you talk to", "the developer who", "writes the code."),
+        "rows": (
+            ("show the bottleneck", "a call, photo or rough explanation is enough"),
+            ("get a written scope", "price · timeline · limits · handoff before work"),
+            ("watch the build work", "review real milestones instead of slide decks"),
+        ),
+        "note": "direct from first conversation through handoff",
+    },
+    "ad_06_lead_leak_review.png": {
+        "label": "leon --free-review",
+        "headline": ("where do inquiries", "get stuck after", "they reach you?"),
+        "rows": (
+            ("bring one real workflow", "calls · forms · texts · spreadsheets · booking"),
+            ("find the weak handoff", "focus on one observable point of friction"),
+            ("leave with a next step", "keep the current tools when they are good enough"),
+        ),
+        "note": "free 15-minute review · smallest sensible fix first",
     },
 }
 

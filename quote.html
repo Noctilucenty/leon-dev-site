@@ -131,13 +131,33 @@
       return;
     }
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
-    d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||''; d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||'';
+    d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||'';
+    d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||''; d.utmTerm=attr.utmTerm||''; d.utmContent=attr.utmContent||'';
+    d.gclid=attr.gclid||''; d.gbraid=attr.gbraid||''; d.wbraid=attr.wbraid||''; d.fbclid=attr.fbclid||''; d.msclkid=attr.msclkid||'';
     d.firstPage=(attr.first&&attr.first.page)||attr.firstPage||'/';
     d.firstReferrer=(attr.first&&attr.first.referrer)||'';
     d.firstUtmSource=(attr.first&&attr.first.utmSource)||'';
     d.firstUtmMedium=(attr.first&&attr.first.utmMedium)||'';
     d.firstUtmCampaign=(attr.first&&attr.first.utmCampaign)||'';
+    d.firstUtmTerm=(attr.first&&attr.first.utmTerm)||'';
+    d.firstUtmContent=(attr.first&&attr.first.utmContent)||'';
+    d.firstGclid=(attr.first&&attr.first.gclid)||'';
+    d.firstGbraid=(attr.first&&attr.first.gbraid)||'';
+    d.firstWbraid=(attr.first&&attr.first.wbraid)||'';
+    d.firstFbclid=(attr.first&&attr.first.fbclid)||'';
+    d.firstMsclkid=(attr.first&&attr.first.msclkid)||'';
     d.lastPage=(attr.last&&attr.last.page)||location.pathname;
+    d.lastReferrer=(attr.last&&attr.last.referrer)||attr.referrer||'';
+    d.lastUtmSource=(attr.last&&attr.last.utmSource)||attr.utmSource||'';
+    d.lastUtmMedium=(attr.last&&attr.last.utmMedium)||attr.utmMedium||'';
+    d.lastUtmCampaign=(attr.last&&attr.last.utmCampaign)||attr.utmCampaign||'';
+    d.lastUtmTerm=(attr.last&&attr.last.utmTerm)||attr.utmTerm||'';
+    d.lastUtmContent=(attr.last&&attr.last.utmContent)||attr.utmContent||'';
+    d.lastGclid=(attr.last&&attr.last.gclid)||attr.gclid||'';
+    d.lastGbraid=(attr.last&&attr.last.gbraid)||attr.gbraid||'';
+    d.lastWbraid=(attr.last&&attr.last.wbraid)||attr.wbraid||'';
+    d.lastFbclid=(attr.last&&attr.last.fbclid)||attr.fbclid||'';
+    d.lastMsclkid=(attr.last&&attr.last.msclkid)||attr.msclkid||'';
     try{ d.analyticsSessionId=sessionStorage.getItem('leon_analytics_session')||''; }catch(e){ d.analyticsSessionId=''; }
     submitting=true; button.disabled=true; button.setAttribute('aria-busy','true'); buttonText.textContent='sending…';
     var controller=window.AbortController?new AbortController():null;

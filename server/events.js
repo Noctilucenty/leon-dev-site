@@ -1,20 +1,18 @@
 /* Traffic events: where visitors come from and what they do.
-   Same storage philosophy as leads.js — stdout is the sink that always
-   works (grep "EVT " in Render logs), the jsonl file is the convenient
-   one and resets on every deploy. Backs GET /api/traffic. */
+   Same storage philosophy as leads.js — stdout is the sink that always works
+   (grep "EVT " in Render logs). JSONL is replaceable by default and becomes
+   durable when LEON_DATA_DIR points inside a mounted disk. */
 
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
+const { normalizeAttribution } = require('./attribution');
+const { dataFile } = require('./storage');
 
-const DEFAULT_EVENTS_FILE = path.join(__dirname, '..', 'data', 'events.jsonl');
-// Tests may point the best-effort file sink at an isolated temporary directory.
-// Production keeps the original location and stdout remains the diagnostic sink
-// on Render.
-const EVENTS_FILE = process.env.NODE_ENV === 'test' && process.env.EVENTS_FILE
-  ? path.resolve(process.env.EVENTS_FILE)
-  : DEFAULT_EVENTS_FILE;
+// EVENTS_FILE keeps tests isolated. LEON_DATA_DIR is the production switch for
+// putting this file on a mounted disk rather than Render's replaceable app FS.
+const EVENTS_FILE = dataFile('events.jsonl', 'EVENTS_FILE');
 const DATA_DIR = path.dirname(EVENTS_FILE);
 
 // Event names become dashboard labels and log keys. Keep the vocabulary small
@@ -75,6 +73,9 @@ function firstReferrer(raw, names) {
 function normalizeEvent(raw, now) {
   if (!raw || typeof raw !== 'object' || !validEventName(raw.name)) return null;
 
+  const currentAttribution = normalizeAttribution(raw);
+  const firstAttribution = normalizeAttribution(raw, 'first');
+  const lastAttribution = normalizeAttribution(raw, 'last');
   const pathNow = eventText(raw.path, 200);
   const legacyRef = referrerOrigin(raw.ref);
   const legacyUtm = eventText(raw.utm, 120);
@@ -95,12 +96,25 @@ function normalizeEvent(raw, now) {
     lastMedium: firstPresent(raw, ['lastMedium', 'lastUtmMedium'], 120) || legacyMedium,
     firstCampaign: firstPresent(raw, ['firstCampaign', 'firstUtmCampaign'], 120) || legacyCampaign,
     lastCampaign: firstPresent(raw, ['lastCampaign', 'lastUtmCampaign'], 120) || legacyCampaign,
+    firstUtmTerm: firstAttribution.utmTerm || currentAttribution.utmTerm || '',
+    lastUtmTerm: lastAttribution.utmTerm || currentAttribution.utmTerm || '',
+    firstUtmContent: firstAttribution.utmContent || currentAttribution.utmContent || '',
+    lastUtmContent: lastAttribution.utmContent || currentAttribution.utmContent || '',
     // Backward-compatible fields used by existing Render-log searches.
     ref: legacyRef,
     utm: legacyUtm,
     medium: legacyMedium,
-    campaign: legacyCampaign
+    campaign: legacyCampaign,
+    term: currentAttribution.utmTerm || '',
+    content: currentAttribution.utmContent || ''
   };
+
+  for (const field of ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
+    const title = field.charAt(0).toUpperCase() + field.slice(1);
+    out[field] = currentAttribution[field] || '';
+    out['first' + title] = firstAttribution[field] || currentAttribution[field] || '';
+    out['last' + title] = lastAttribution[field] || currentAttribution[field] || '';
+  }
 
   // These are opaque correlation values, never contact details.
   for (const field of ['receipt', 'bookingUid', 'status']) {

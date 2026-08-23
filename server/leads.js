@@ -1,7 +1,7 @@
 /* Lead intake: validate, sanitize, persist, notify.
    Copies, in order:
    1. stdout      — always, but only as durable as the host's log retention.
-   2. jsonl file  — best effort. data/leads.jsonl (ephemeral on free Render, real on disk locally).
+   2. jsonl file  — best effort. data/leads.jsonl by default, or LEON_DATA_DIR.
    3. email       — Resend over HTTPS, or SMTP on hosts where SMTP egress works. */
 
 'use strict';
@@ -9,9 +9,11 @@
 const fs = require('fs');
 const path = require('path');
 const { randomUUID } = require('crypto');
+const { normalizeAttribution } = require('./attribution');
+const { dataFile } = require('./storage');
 
-const DATA_DIR = path.join(__dirname, '..', 'data');
-const LEADS_FILE = path.join(DATA_DIR, 'leads.jsonl');
+const LEADS_FILE = dataFile('leads.jsonl', 'LEADS_FILE');
+const DATA_DIR = path.dirname(LEADS_FILE);
 
 /* Single-line by default: every control character goes, including the CR/LF that
    would otherwise ride into an SMTP header. Pass multiline for the long free-text
@@ -110,6 +112,9 @@ function validateLead(body) {
   // response cannot be used to tell which check rejected them. Give the fake
   // success the same receipt shape as a real submission, but do not persist it.
   if (body.website) return { bot: true, receiptId: newReceiptId() };
+  const currentAttribution = normalizeAttribution(body);
+  const firstAttribution = normalizeAttribution(body, 'first');
+  const lastAttribution = normalizeAttribution(body, 'last');
   const lead = {
     ts: new Date().toISOString(),
     receiptId: newReceiptId(),
@@ -125,19 +130,40 @@ function validateLead(body) {
     budget: clean(body.budget, 60),
     sourcePage: clean(body.sourcePage, 300),
     referrer: clean(body.referrer, 300),
-    utmSource: clean(body.utmSource, 120),
-    utmMedium: clean(body.utmMedium, 120),
-    utmCampaign: clean(body.utmCampaign, 120),
+    utmSource: currentAttribution.utmSource || '',
+    utmMedium: currentAttribution.utmMedium || '',
+    utmCampaign: currentAttribution.utmCampaign || '',
+    utmTerm: currentAttribution.utmTerm || '',
+    utmContent: currentAttribution.utmContent || '',
+    gclid: currentAttribution.gclid || '',
+    gbraid: currentAttribution.gbraid || '',
+    wbraid: currentAttribution.wbraid || '',
+    fbclid: currentAttribution.fbclid || '',
+    msclkid: currentAttribution.msclkid || '',
     firstPage: clean(body.firstPage, 300),
     firstReferrer: clean(body.firstReferrer, 300),
-    firstUtmSource: clean(body.firstUtmSource, 120),
-    firstUtmMedium: clean(body.firstUtmMedium, 120),
-    firstUtmCampaign: clean(body.firstUtmCampaign, 120),
+    firstUtmSource: firstAttribution.utmSource || '',
+    firstUtmMedium: firstAttribution.utmMedium || '',
+    firstUtmCampaign: firstAttribution.utmCampaign || '',
+    firstUtmTerm: firstAttribution.utmTerm || '',
+    firstUtmContent: firstAttribution.utmContent || '',
+    firstGclid: firstAttribution.gclid || '',
+    firstGbraid: firstAttribution.gbraid || '',
+    firstWbraid: firstAttribution.wbraid || '',
+    firstFbclid: firstAttribution.fbclid || '',
+    firstMsclkid: firstAttribution.msclkid || '',
     lastPage: clean(body.lastPage, 300) || clean(body.sourcePage, 300),
     lastReferrer: clean(body.lastReferrer, 300) || clean(body.referrer, 300),
-    lastUtmSource: clean(body.lastUtmSource, 120) || clean(body.utmSource, 120),
-    lastUtmMedium: clean(body.lastUtmMedium, 120) || clean(body.utmMedium, 120),
-    lastUtmCampaign: clean(body.lastUtmCampaign, 120) || clean(body.utmCampaign, 120),
+    lastUtmSource: lastAttribution.utmSource || currentAttribution.utmSource || '',
+    lastUtmMedium: lastAttribution.utmMedium || currentAttribution.utmMedium || '',
+    lastUtmCampaign: lastAttribution.utmCampaign || currentAttribution.utmCampaign || '',
+    lastUtmTerm: lastAttribution.utmTerm || currentAttribution.utmTerm || '',
+    lastUtmContent: lastAttribution.utmContent || currentAttribution.utmContent || '',
+    lastGclid: lastAttribution.gclid || currentAttribution.gclid || '',
+    lastGbraid: lastAttribution.gbraid || currentAttribution.gbraid || '',
+    lastWbraid: lastAttribution.wbraid || currentAttribution.wbraid || '',
+    lastFbclid: lastAttribution.fbclid || currentAttribution.fbclid || '',
+    lastMsclkid: lastAttribution.msclkid || currentAttribution.msclkid || '',
     analyticsSessionId: clean(body.analyticsSessionId, 96),
     chatSessionId: clean(body.chatSessionId, 96),
     via: clean(body.via, 30) || 'site',           // 'chat' | 'quote-form' | 'site'
@@ -177,8 +203,8 @@ function persistLead(lead) {
       ', provider=' + (delivery.provider || 'none') + '. ' +
       (delivery.warning ? delivery.warning + ' ' : '') +
       missing +
-      ' Until then this lead exists only in this log and in an ephemeral file ' +
-      'that the next deploy erases.');
+      ' Until then this lead exists only in this log and the configured JSONL ' +
+      'store; without LEON_DATA_DIR that file can disappear on a deploy.');
   } else {
     /* Fire-and-forget: the visitor already got their response, and the mail
      * must never hold the request open. openTransport() picks whichever port
@@ -194,7 +220,7 @@ function persistLead(lead) {
         .then(() => console.log(`LEAD_MAILED receiptId=${lead.receiptId} to ${process.env.LEAD_TO_EMAIL} via https (resend)`))
         .catch(err => console.error(
           `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
-          '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
+          '— the lead remains in this log and the configured JSONL store'));
       return;
     }
     openTransport()
@@ -212,7 +238,7 @@ function persistLead(lead) {
       .catch(err => console.error(
         `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
         '— tried ports', portsToTry().join(', '),
-        '— the lead is still in this log and in data/leads.jsonl until the next deploy'));
+        '— the lead remains in this log and the configured JSONL store'));
   }
 }
 

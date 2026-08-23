@@ -20,10 +20,61 @@
   /* ══ attribution + anonymous visit session ════════════════
      Keep first-touch immutable and last-touch separate. The earlier shape
      silently overwrote "first touch" every time a tagged link was opened,
-     which made source reports impossible to interpret. No cookie or PII is
-     used: the session id lives only for the current browser tab session. */
+     which made source reports impossible to interpret. No cookie or contact
+     field is used: the session id lives only for the current browser tab. */
   var attribution = {};
   var analyticsSessionId = '';
+  var ATTR_FIELDS = [
+    ['utmSource', 'utm_source', 160, false],
+    ['utmMedium', 'utm_medium', 160, false],
+    ['utmCampaign', 'utm_campaign', 160, false],
+    ['utmTerm', 'utm_term', 160, false],
+    ['utmContent', 'utm_content', 160, false],
+    ['gclid', 'gclid', 256, true],
+    ['gbraid', 'gbraid', 256, true],
+    ['wbraid', 'wbraid', 256, true],
+    ['fbclid', 'fbclid', 256, true],
+    ['msclkid', 'msclkid', 256, true]
+  ];
+  var ATTR_TTL_MS = 90 * 24 * 60 * 60 * 1000;
+
+  function attrValue(value, max, tokenOnly) {
+    var text = String(value || '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
+    if (tokenOnly && !/^[A-Za-z0-9._~:+-]+$/.test(text)) return '';
+    return text;
+  }
+
+  function referrerOrigin(value) {
+    try {
+      var url = new URL(String(value || ''));
+      return /^(https?:)$/.test(url.protocol) ? url.origin : '';
+    } catch (e) { return ''; }
+  }
+
+  function readAttributionQuery(qs) {
+    var out = {};
+    for (var i = 0; i < ATTR_FIELDS.length; i++) {
+      var field = ATTR_FIELDS[i];
+      var raw = qs.get(field[1]);
+      if (field[0] === 'utmSource' && !raw) raw = qs.get('s');
+      out[field[0]] = attrValue(raw, field[2], field[3]);
+    }
+    return out;
+  }
+
+  function applyAttribution(target) {
+    var first = attribution.first || {};
+    var last = attribution.last || {};
+    for (var i = 0; i < ATTR_FIELDS.length; i++) {
+      var name = ATTR_FIELDS[i][0];
+      var title = name.charAt(0).toUpperCase() + name.slice(1);
+      target[name] = attribution[name] || last[name] || first[name] || '';
+      target['first' + title] = first[name] || '';
+      target['last' + title] = last[name] || target[name] || '';
+    }
+    return target;
+  }
+
   run(function () {
     var KEY = 'leon_attr';
     var SID = 'leon_analytics_session';
@@ -36,16 +87,18 @@
         sessionStorage.setItem(SID, analyticsSessionId);
       }
       var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (saved && Number(saved.expiresAt) && Number(saved.expiresAt) < Date.now()) saved = null;
       var qs = new URLSearchParams(location.search);
-      var tag = qs.get('utm_source') || qs.get('s') || '';
+      var campaign = readAttributionQuery(qs);
       var touch = {
         page: location.pathname,
-        referrer: (document.referrer || '').slice(0, 200),
-        utmSource: tag,
-        utmMedium: qs.get('utm_medium') || '',
-        utmCampaign: qs.get('utm_campaign') || '',
+        referrer: referrerOrigin(document.referrer),
         at: new Date().toISOString()
       };
+      for (var ti = 0; ti < ATTR_FIELDS.length; ti++) {
+        touch[ATTR_FIELDS[ti][0]] = campaign[ATTR_FIELDS[ti][0]] || '';
+      }
+      var taggedEntry = ATTR_FIELDS.some(function (field) { return !!campaign[field[0]]; });
       var externalEntry = false;
       try {
         externalEntry = !!touch.referrer && new URL(touch.referrer).hostname !== location.hostname;
@@ -56,26 +109,37 @@
           first: {
             page: saved.firstPage || '/', referrer: saved.referrer || '',
             utmSource: saved.utmSource || '', utmMedium: saved.utmMedium || '',
-            utmCampaign: saved.utmCampaign || '', at: saved.at || ''
+            utmCampaign: saved.utmCampaign || '', utmTerm: saved.utmTerm || '',
+            utmContent: saved.utmContent || '', gclid: saved.gclid || '',
+            gbraid: saved.gbraid || '', wbraid: saved.wbraid || '',
+            fbclid: saved.fbclid || '', msclkid: saved.msclkid || '', at: saved.at || ''
           },
           last: {
             page: saved.firstPage || '/', referrer: saved.referrer || '',
             utmSource: saved.utmSource || '', utmMedium: saved.utmMedium || '',
-            utmCampaign: saved.utmCampaign || '', at: saved.at || ''
+            utmCampaign: saved.utmCampaign || '', utmTerm: saved.utmTerm || '',
+            utmContent: saved.utmContent || '', gclid: saved.gclid || '',
+            gbraid: saved.gbraid || '', wbraid: saved.wbraid || '',
+            fbclid: saved.fbclid || '', msclkid: saved.msclkid || '', at: saved.at || ''
           }
         };
       }
-      if (!saved) saved = { first: touch, last: touch };
-      else if (tag || externalEntry) saved.last = touch;
+      if (saved && saved.first) saved.first.referrer = referrerOrigin(saved.first.referrer);
+      if (saved && saved.last) saved.last.referrer = referrerOrigin(saved.last.referrer);
+      var refreshed = false;
+      if (!saved) { saved = { first: touch, last: touch }; refreshed = true; }
+      else if (taggedEntry || externalEntry) { saved.last = touch; refreshed = true; }
       if (!saved.first) saved.first = touch;
       if (!saved.last) saved.last = saved.first;
 
       // Legacy top-level fields keep existing lead forms backward-compatible.
       saved.firstPage = saved.first.page || '/';
       saved.referrer = saved.first.referrer || '';
-      saved.utmSource = saved.last.utmSource || saved.first.utmSource || '';
-      saved.utmMedium = saved.last.utmMedium || saved.first.utmMedium || '';
-      saved.utmCampaign = saved.last.utmCampaign || saved.first.utmCampaign || '';
+      for (var si = 0; si < ATTR_FIELDS.length; si++) {
+        var name = ATTR_FIELDS[si][0];
+        saved[name] = saved.last[name] || saved.first[name] || '';
+      }
+      if (refreshed || !Number(saved.expiresAt)) saved.expiresAt = Date.now() + ATTR_TTL_MS;
       localStorage.setItem(KEY, JSON.stringify(saved));
       attribution = saved;
     } catch (e) {}
@@ -102,6 +166,7 @@
         lastCampaign: (attribution.last && attribution.last.utmCampaign) || '',
         sessionId: analyticsSessionId
       };
+      applyAttribution(payload);
       // Correlation identifiers are safe; contact details never belong here.
       extra = extra || {};
       ['receipt', 'bookingUid', 'status'].forEach(function (k) {
@@ -209,9 +274,14 @@
     try {
       var u = new URL(base, location.origin);
       var current = new URLSearchParams(location.search);
-      current.forEach(function (value, key) { if (!u.searchParams.has(key)) u.searchParams.set(key, value); });
+      var allowed = [['s', 160, false]];
+      ATTR_FIELDS.forEach(function (field) { allowed.push([field[1], field[2], field[3]]); });
+      allowed.forEach(function (rule) {
+        var value = attrValue(current.get(rule[0]), rule[1], rule[2]);
+        if (value && !u.searchParams.has(rule[0])) u.searchParams.set(rule[0], value);
+      });
       return u.origin === location.origin ? u.pathname + u.search + u.hash : u.href;
-    } catch (e) { return (LANG_PAGE[v] || '/') + (location.search || ''); }
+    } catch (e) { return LANG_PAGE[v] || '/'; }
   }
 
   /* ══ nonblocking first-visit language nudge ═══════════════
@@ -996,18 +1066,14 @@
         conversationSummary: summary,
         sourcePage: location.pathname,
         referrer: attribution.referrer || '',
-        utmSource: attribution.utmSource || '',
-        utmMedium: attribution.utmMedium || '',
-        utmCampaign: attribution.utmCampaign || '',
         firstPage: (attribution.first && attribution.first.page) || attribution.firstPage || '/',
         firstReferrer: (attribution.first && attribution.first.referrer) || '',
-        firstUtmSource: (attribution.first && attribution.first.utmSource) || '',
-        firstUtmMedium: (attribution.first && attribution.first.utmMedium) || '',
-        firstUtmCampaign: (attribution.first && attribution.first.utmCampaign) || '',
-        lastPage: (attribution.last && attribution.last.page) || location.pathname,
+        lastPage: location.pathname,
+        lastReferrer: (attribution.last && attribution.last.referrer) || '',
         analyticsSessionId: analyticsSessionId,
         chatSessionId: state.sessionId
       };
+      applyAttribution(leadBody);
       var submit = $('button[type="submit"]', leadForm);
       var original = submit.textContent;
       submit.disabled = true;

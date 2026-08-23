@@ -112,7 +112,7 @@ def main():
 
     # 2. no surface anywhere may show a figure that is not a published floor
     others = ([p for p in glob.glob('industries/*.html')]
-              + ['index.html', 'about.html', 'call.html', 'llms.txt']
+              + ['index.html', 'about.html', 'call.html', 'missed-lead-recovery.html', 'llms.txt']
               + glob.glob('es/*.html') + glob.glob('pt/*.html')
               + glob.glob('zh/*.html'))
     for path in others:

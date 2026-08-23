@@ -8,6 +8,8 @@
      POST /api/chat     — streams assistant text (plain chunked text, not SSE)
      POST /api/lead     — validated lead intake (chat handoff + quote form)
      POST /api/event    — tiny first-party analytics beacon -> stdout ("EVT ...")
+     POST /api/cal/webhook — signed Cal lifecycle events -> acquisition stages
+     GET  /api/acquisition — admin-only booking/opportunity stage records
    This process is API-only; repository files are never served from this host. */
 
 'use strict';
@@ -48,6 +50,17 @@ const {
   leadDeliveryConfig
 } = require('./leads');
 const { persistEvent, readEvents, sourceOf, normalizeEvent, funnelStats } = require('./events');
+const {
+  FUNNEL_STAGES,
+  STAGE_DEFINITIONS,
+  acquisitionStorageConfig,
+  acquisitionStats,
+  calWebhookRecord,
+  readAcquisition,
+  recordBookingAttribution,
+  recordStage,
+  verifyCalSignature
+} = require('./acquisition');
 
 const app = express();
 app.disable('x-powered-by');
@@ -112,6 +125,9 @@ app.use((req, res, next) => {
 // normal photo lands around 150-350kb and three of them still fit.
 app.use('/api/chat', express.json({ limit: '3mb' }));
 app.use('/api/lead', express.json({ limit: '256kb' }));
+// Cal signs the exact request bytes. This raw parser must run before the global
+// JSON parser or signature verification would be based on re-serialized data.
+app.use('/api/cal/webhook', express.raw({ type: 'application/json', limit: '128kb' }));
 app.use(express.json({ limit: '48kb' }));
 
 /* ── rate limiting: in-memory buckets, plus a daily model-call ceiling ── */
@@ -249,6 +265,7 @@ app.get('/api/health', async (req, res) => {
     if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
   }
   const delivery = leadDeliveryConfig();
+  const acquisitionStorage = acquisitionStorageConfig();
   const body = {
     ok: true,
     model: client ? MODEL : null,
@@ -265,7 +282,12 @@ app.get('/api/health', async (req, res) => {
     leadEmailVerified: false,
     leadEmailMissing: delivery.missing,
     leadEmailWarning: delivery.warning,
-    leadEmailTo: delivery.recipient
+    leadEmailTo: delivery.recipient,
+    acquisitionStorageState: acquisitionStorage.state,
+    acquisitionDurableConfigured: acquisitionStorage.durableConfigured,
+    acquisitionLocalMode: acquisitionStorage.localMode,
+    acquisitionSinkConfigured: acquisitionStorage.sinkConfigured,
+    calWebhookConfigured: !!String(process.env.CAL_WEBHOOK_SECRET || '').trim()
   };
   if (deep) {
     const v = await verifyMail();
@@ -434,8 +456,9 @@ app.post('/api/lead', async (req, res) => {
 });
 
 /* ── reading the leads back ──
-   Leads live on Render's ephemeral disk, so this shows everything since the last
-   deploy. Off unless LEADS_KEY is set; ?format=json for the raw records. */
+   Shows records in the configured JSONL store. The default application path is
+   replaceable; LEON_DATA_DIR can point at a durable mount. Off unless LEADS_KEY
+   is set; ?format=json returns raw records. */
 app.get('/api/leads', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const auth = adminKeyState(req);
@@ -463,8 +486,108 @@ app.get('/api/leads', (req, res) => {
     + 'h2{font-size:16px;margin:0 0 6px}small{color:#8a8a93;font-weight:400}'
     + 'pre{white-space:pre-wrap;background:#141416;padding:12px;border-radius:8px;margin:8px 0}'
     + 'a{color:#a78bfa}.src{color:#6b6b73;font-size:12px}p{margin:6px 0}</style>'
-    + '<h1>' + leads.length + ' leads since last deploy</h1>'
-    + (leads.length ? leads.map(card).join('') : '<p>nothing yet. leads reset whenever the service redeploys.</p>'));
+    + '<h1>' + leads.length + ' leads in the current store</h1>'
+    + (leads.length ? leads.map(card).join('') : '<p>nothing in the configured lead store yet.</p>'));
+});
+
+/* ── signed Cal lifecycle webhook ──
+   The route does not retain the webhook payload: it may contain attendee PII.
+   Only booking UID, a bounded campaign touch, and an authoritative stage are
+   extracted after verification. If durable storage was configured but failed,
+   a 503 asks Cal to retry the same dedupe key. */
+app.post('/api/cal/webhook', async (req, res) => {
+  const secret = String(process.env.CAL_WEBHOOK_SECRET || '').trim();
+  if (!secret) return res.status(404).send('not enabled');
+  if (limited('w:' + (req.ip || 'x'), 300, 10 * 60_000)) return res.status(429).send('rate limited');
+  const signature = req.get('x-cal-signature-256');
+  if (!verifyCalSignature(req.body, signature, secret)) return res.status(401).send('invalid signature');
+
+  let body;
+  try { body = JSON.parse(req.body.toString('utf8')); }
+  catch (error) { return res.status(400).send('invalid json'); }
+  const mapped = calWebhookRecord(body);
+  if (mapped.ignored) return res.sendStatus(204);
+  if (mapped.error) return res.status(422).json({ error: mapped.error });
+
+  const result = await recordStage(mapped.record);
+  if (result.error) return res.status(422).json({ error: result.error });
+  const storage = acquisitionStorageConfig();
+  if ((!result.localStored && !result.sink.ok)
+      || (storage.durableConfigured && !result.durableStored)
+      || (storage.sinkConfigured && !storage.sinkReady)) {
+    return res.status(503).send('acquisition storage unavailable');
+  }
+  res.sendStatus(204);
+});
+
+/* Manual CRM progression. Cal can prove booked/cancelled/no-show; only Leon can
+   honestly mark attended, qualified, proposal, won or lost. */
+app.post('/api/acquisition/stage', async (req, res) => {
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  if (limited('a:' + (req.ip || 'x'), 120, 10 * 60_000)) return res.status(429).json({ error: 'rate limited' });
+  const result = await recordStage({ ...(req.body || {}), source: 'admin' });
+  if (result.error) return res.status(400).json({ error: result.error, stages: FUNNEL_STAGES });
+  const storage = acquisitionStorageConfig();
+  if ((!result.localStored && !result.sink.ok)
+      || (storage.durableConfigured && !result.durableStored)
+      || (storage.sinkConfigured && !storage.sinkReady)) {
+    return res.status(503).json({ error: 'acquisition storage unavailable' });
+  }
+  res.status(result.duplicate ? 200 : 201).json({
+    ok: true,
+    duplicate: result.duplicate,
+    recordId: result.record.recordId,
+    dedupeKey: result.record.dedupeKey,
+    durableStored: result.durableStored
+  });
+});
+
+app.get('/api/acquisition', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  const asked = Math.floor(Number(req.query.limit));
+  const records = readAcquisition(Number.isFinite(asked) && asked > 0 ? Math.min(asked, 5000) : 1000);
+  const storage = acquisitionStorageConfig();
+  const funnel = acquisitionStats(records);
+  const body = {
+    count: records.length,
+    stages: STAGE_DEFINITIONS,
+    storage,
+    funnel,
+    records
+  };
+  if (req.query.format === 'json') return res.json(body);
+
+  const stageRows = FUNNEL_STAGES.map(stage =>
+    `<tr><td>${escapeHtml(stage)}</td><td>${funnel.stageCounts[stage]}</td><td>${escapeHtml(STAGE_DEFINITIONS[stage])}</td></tr>`
+  ).join('');
+  const latestRows = [...funnel.latestByBooking]
+    .sort((a, b) => String(b.occurredAt || '').localeCompare(String(a.occurredAt || '')))
+    .map(booking => {
+      const attribution = booking.attribution || {};
+      const source = [attribution.utmSource, attribution.utmMedium, attribution.utmCampaign]
+        .filter(Boolean).join(' / ') || 'direct or unavailable';
+      const clickIds = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']
+        .filter(field => attribution[field]).join(', ');
+      return `<tr><td><code>${escapeHtml(booking.bookingUid)}</code></td><td>${escapeHtml(booking.stage)}</td>`
+        + `<td>${escapeHtml(String(booking.occurredAt || '').replace('T', ' ').replace('.000Z', 'Z'))}</td>`
+        + `<td>${escapeHtml(source)}${clickIds ? '<small> · ' + escapeHtml(clickIds) + '</small>' : ''}</td></tr>`;
+    }).join('') || '<tr><td colspan="4">No authoritative booking stages yet.</td></tr>';
+
+  res.type('html').send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<meta name="robots" content="noindex"><title>acquisition</title>'
+    + '<style>body{background:#09090a;color:#eee;font:14px/1.55 ui-monospace,Menlo,monospace;max-width:980px;margin:auto;padding:28px}'
+    + 'h1,h2{font-weight:550}h2{margin-top:2rem;color:#a78bfa}p,small{color:#92929c}table{width:100%;border-collapse:collapse}'
+    + 'th,td{text-align:left;vertical-align:top;border-bottom:1px solid #242428;padding:.55rem}th{color:#777;font-size:11px;text-transform:uppercase}'
+    + 'td:nth-child(2){white-space:nowrap}code{color:#ddd}</style>'
+    + `<h1>acquisition — ${funnel.bookingCount} bookings · ${records.length} minimized records</h1>`
+    + `<p>storage: ${escapeHtml(storage.state)}. Raw JSON is available with <code>?format=json</code> through the same header-only authentication.</p>`
+    + `<h2>stage counts</h2><table><thead><tr><th>stage</th><th>count</th><th>definition</th></tr></thead><tbody>${stageRows}</tbody></table>`
+    + `<h2>current booking stage</h2><table><thead><tr><th>booking UID</th><th>stage</th><th>occurred</th><th>attribution</th></tr></thead><tbody>${latestRows}</tbody></table>`);
 });
 
 /* ── event beacon ── */
@@ -474,12 +597,17 @@ app.post('/api/event', (req, res) => {
   const event = normalizeEvent(req.body || {});
   if (!event) return res.status(400).json({ error: 'invalid event name' });
   persistEvent(event);
+  if (event.name === 'calendar_booking_success' && event.bookingUid) {
+    recordBookingAttribution(event).catch(error => {
+      console.error('booking attribution write failed:', String(error && error.message || error).slice(0, 200));
+    });
+  }
   res.sendStatus(204);
 });
 
 /* ── traffic dashboard — where visitors came from ──
-   Same key and same caveat as /api/leads: events.jsonl resets on deploy;
-   the permanent record is the "EVT " lines in Render logs. */
+   Same key and storage policy as /api/leads. The default JSONL path can reset;
+   LEON_DATA_DIR makes it suitable for a mounted persistent disk. */
 app.get('/api/traffic', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const auth = adminKeyState(req);
@@ -540,8 +668,8 @@ app.get('/api/traffic', (req, res) => {
     + 'h1,h2{font-weight:500} h2{margin:2rem 0 .5rem;color:#9b8cff} table{width:100%;border-collapse:collapse}'
     + 'th,td{border-bottom:1px solid #1a1a1a;padding:.35rem .5rem} th{text-align:left;color:#777;font-size:11px;font-weight:500}'
     + 'td:last-child{text-align:right;color:#aaa}.recent td{text-align:left;color:#aaa;font-size:12px}.note,p{color:#777}.note{font-size:12px}</style>'
-    + `<h1>traffic — ${events.length} events · ${sessionsSeen.size} anonymous sessions since last deploy</h1>`
-    + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. permanent history: "EVT " lines in render logs.</p>'
+    + `<h1>traffic — ${events.length} events · ${sessionsSeen.size} anonymous sessions in the current store</h1>`
+    + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. use LEON_DATA_DIR for mounted-disk JSONL; "EVT " lines remain in render logs.</p>'
     + '<h2>unique-session funnel</h2>'
     + `<table class="funnel"><thead><tr><th>stage</th><th>event records</th><th>unique sessions*</th><th>step rate†</th></tr></thead><tbody>${funnelRows}</tbody></table>`
     + `<p class="note">* event counts include all records; unique sessions exclude ${funnel.sessionlessEventCount} of ${funnel.funnelEventCount} funnel records with no session ID (including legacy data). † each step-rate numerator includes only session IDs also recorded in every preceding row. Direct calendar bookings remain visible in their row's unique-session total even when no accepted-lead event was recorded for that session.</p>`

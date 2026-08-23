@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generates the SEO page fleet: /services/*, /industries/*, both index pages,
-/quote, sitemap.xml and robots.txt — all in the site's own visual language
+/missed-lead-recovery, /quote, sitemap.xml and robots.txt — all in the site's own visual language
 (same styles.css, nav, footer, lowercase-by-CSS, one accent).
 
 Run after editing PAGE DATA below:   python3 tools/build_pages.py
@@ -534,6 +534,27 @@ def industry_page(i):
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in i["intro"])
     related = ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in i["related_services"])
     starter = f'i run a business in {i["name"]} — here\'s what i\'m dealing with: '
+    sprint_copy = {
+        "contractors": ("estimate requests that arrive while the owner is on a job",
+                        "see the contractor lead-recovery scope"),
+        "automotive": ("new service requests and missed-call callbacks that need an advisor",
+                       "see the auto-shop lead-recovery scope"),
+        "restaurants": ("catering and private-event inquiries that should reach a manager",
+                        "see the restaurant lead-recovery scope"),
+    }.get(i["slug"])
+    sprint_bridge = ''
+    if sprint_copy:
+        sprint_bridge = f'''<section class="sec">
+  <div class="rail">
+    <p class="label">one focused starting point</p>
+    <div class="proofcard">
+      <h2>the missed lead recovery sprint</h2>
+      <p class="sub">a fixed-scope, 10-business-day implementation for {e(sprint_copy[0])}: one existing inbound source, a prompt response, a short follow-up sequence and a documented human handoff.</p>
+      <a class="cx-mini" href="/missed-lead-recovery#{e(i["slug"])}" data-evt="lead_sprint_detail_click">{e(sprint_copy[1])} →</a>
+    </div>
+  </div>
+</section>
+'''
     return head(i["title"], i["desc"], path, schema) + ICONS + nav() + f'''
 <main id="main">
 <section class="sec page-hero">
@@ -545,7 +566,7 @@ def industry_page(i):
     {cta_block(starter)}
   </div>
 </section>
-<section class="sec">
+{sprint_bridge}<section class="sec">
   <div class="rail">
     <p class="label">the usual pain</p>
     <ul class="plist wide">{pains}</ul>
@@ -575,6 +596,155 @@ def industry_page(i):
     <p class="label" style="margin-top:3rem">related services</p>
     <div class="relrow">{related}</div>
     {cta_block(starter)}
+  </div>
+</section>
+</main>''' + footer() + '</body></html>'
+
+
+def missed_lead_recovery_page():
+    """A narrow ad/organic landing page for one measurable acquisition offer.
+
+    The page deliberately sells implementation, not leads or revenue. Its single
+    primary action is the existing /call booking flow; contextual links exist only
+    to substantiate niche fit and proof.
+    """
+    path = '/missed-lead-recovery'
+    title = 'Missed Lead Recovery Sprint — Bay Area | Leon Kelvin Li'
+    desc = ('A fixed-scope 10-business-day follow-up implementation for Bay Area contractors, '
+            'auto shops and restaurants. One lead source, one handoff, fixed quote first.')
+    faqs = [
+        ("is this lead generation or ad management?",
+         "no. this sprint starts with inbound inquiries you already receive. buying leads, running ads and managing outbound prospecting are separate work."),
+        ("does this guarantee more bookings or revenue?",
+         "no. it makes response and follow-up consistent, but results still depend on lead quality, demand, pricing, availability and how your team handles the conversation."),
+        ("when does the 10-business-day window start?",
+         "after the written scope is approved and the compatible accounts, access and customer-facing copy are ready. delays in access, vendor approval or client feedback move the schedule."),
+        ("what if my phone, inbox or crm does not connect?",
+         "i check compatibility before the fixed quote. if the tools cannot connect reliably, i will propose a smaller alternative, price a separate integration or say the sprint is not a fit."),
+        ("what is handed over?",
+         "the agreed project accounts, included configuration or source, setup notes, a handoff session and 30 days of fixes to the written scope. phone, crm, messaging, hosting and other vendors keep their own terms and fees."),
+        ("what about consent for texts and emails?",
+         "you approve the copy and remain responsible for lawful permission to contact each lead. i implement the agreed stop, opt-out and human-handoff rules in the compatible tools used for the sprint."),
+    ]
+    bc = [("home", "/"), ("missed lead recovery sprint", None)]
+    schema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "name": "Missed Lead Recovery Sprint",
+            "url": f"{BASE}{path}",
+            "provider": {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li"},
+            "areaServed": {"@type": "Place", "name": "San Francisco Bay Area"},
+            "audience": {"@type": "BusinessAudience", "audienceType": "Owner-run local service businesses"},
+            "description": desc,
+            "offers": {
+                "@type": "Offer",
+                "price": "1500",
+                "priceCurrency": "USD",
+                "description": "Starting scope; a written compatibility check and fixed quote come before work begins.",
+            },
+        },
+        faq_schema(faqs),
+        breadcrumb_schema(bc, path),
+    ]
+    call_cta = '''<a class="btn btn-solid magnet" href="/call" data-evt="cta_call_click"><span>book the 15-minute fit check</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
+    check = '<svg class="ic"><use href="#ic-check"/></svg>'
+    return head(title, desc, path, schema) + ICONS + nav() + f'''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    {crumbs(bc)}
+    <p class="label">10-business-day fixed-scope implementation · bay area</p>
+    <h1 class="dsp">stop letting ready-to-talk leads <em>die in voicemail</em></h1>
+    <p class="sub">for owner-run contractors, auto shops and restaurants: i connect one existing inbound lead source to a prompt acknowledgment, a short follow-up sequence and a clear human handoff.</p>
+    <p class="sub">this is not a call center, a lead list or a promise of booked work. it makes the response process you already need consistent and visible.</p>
+    <p class="pricetag">starting scope <b>$1,500</b> · compatibility check and written fixed quote before work starts · remote delivery for bay area businesses</p>
+    <div class="ctarow">{call_cta}</div>
+  </div>
+</section>
+
+<section class="sec" id="scope">
+  <div class="rail">
+    <p class="label">exactly what the starting scope includes</p>
+    <div class="two-col">
+      <div>
+        <ul class="blist">
+          <li>{check}one existing inbound source: a website form, a compatible missed-call event or a shared inquiry inbox</li>
+          <li>{check}one destination: your current crm, a shared sheet or a monitored inbox</li>
+          <li>{check}one immediate email or sms acknowledgment using copy you approve</li>
+          <li>{check}up to two follow-ups, with reply, stop and opt-out rules</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="blist">
+          <li>{check}one owner or staff handoff rule, plus one booking or contact link</li>
+          <li>{check}a basic event log so you can see received, sent, replied and handed off</li>
+          <li>{check}one handoff session, included configuration or source, and setup notes</li>
+          <li>{check}30 days of fixes for defects against the agreed written scope</li>
+        </ul>
+      </div>
+    </div>
+    <div class="proofcard">
+      <h2>the boundary is part of the offer</h2>
+      <p class="sub">not included: buying leads, paid-ad management, a new crm, a website rebuild, live call answering, historical-data cleanup, multi-location routing or ongoing campaign management. third-party phone, messaging, crm and hosting fees are paid to those providers. additions get a separate written scope.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="process">
+  <div class="rail">
+    <p class="label">the 10-business-day implementation window</p>
+    <ol class="steps">
+      <li><span class="sn">01</span><h3>map one leak</h3><p>confirm the source, destination, response copy, handoff owner and stop conditions. compatibility is checked before the quote.</p></li>
+      <li><span class="sn">02</span><h3>connect and test</h3><p>build the agreed acknowledgment and follow-ups, then test normal replies, opt-outs, duplicates and vendor failures.</p></li>
+      <li><span class="sn">03</span><h3>run with your team</h3><p>put the fixed scope live with your approved accounts and copy. your team remains the human decision-maker.</p></li>
+      <li><span class="sn">04</span><h3>hand it over</h3><p>review the event log, document the setup and hand over the included source or configuration covered by the quote.</p></li>
+    </ol>
+    <p class="sub">the window starts only after scope, access, compatible tools and approved copy are ready. vendor approval or delayed feedback moves the schedule.</p>
+  </div>
+</section>
+
+<section class="sec" id="niches">
+  <div class="rail">
+    <p class="label">where this sprint fits best</p>
+    <div class="fixrow">
+      <a class="fixcard link" id="contractors" href="/industries/contractors" data-evt="lead_sprint_niche_detail_click">
+        <h3>contractors & home services</h3>
+        <p>an estimate request or compatible missed call arrives while you are on a job. acknowledge it, follow up twice if needed, then alert the owner or office with the full context.</p>
+        <span class="go">contractor context →</span>
+      </a>
+      <a class="fixcard link" id="automotive" href="/industries/automotive" data-evt="lead_sprint_niche_detail_click">
+        <h3>auto repair</h3>
+        <p>a new-service or callback request reaches the shop during a rush. confirm receipt, collect the agreed basics and route it to an advisor. repair-status calls are outside this test.</p>
+        <span class="go">auto-shop context →</span>
+      </a>
+      <a class="fixcard link" id="restaurants" href="/industries/restaurants" data-evt="lead_sprint_niche_detail_click">
+        <h3>restaurants</h3>
+        <p>a catering or private-event inquiry lands outside the manager's attention. acknowledge it, follow up and route it with the event details. routine reservations and order calls are outside this test.</p>
+        <span class="go">restaurant context →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="proof">
+  <div class="rail">
+    <p class="label">proof of execution, not a forecast</p>
+    <div class="fixrow">
+      <a class="fixcard link" href="/#work-docs"><h3>document automation</h3><p>a request becomes a correctly filed, shared and versioned document without someone copying it by hand.</p><span class="go">see the build →</span></a>
+      <a class="fixcard link" href="/#work-reviews"><h3>human-in-the-loop review desk</h3><p>the system reads and drafts; a person makes the final decision. the sprint uses the same explicit handoff posture.</p><span class="go">see the build →</span></a>
+      <a class="fixcard link" href="/#work-ordering"><h3>production ordering logic</h3><p>one cart is re-priced and split into the correct tickets and payouts across a live multi-business operation.</p><span class="go">see the build →</span></a>
+    </div>
+    <p class="sub">these show the underlying integration and handoff discipline. they are not testimonials and do not predict your results.</p>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="rail">
+    <p class="label">fit and boundaries</p>
+    {faq_html(faqs)}
+    <div class="ctarow">{call_cta}</div>
+    <p class="sub">bring the one lead channel that is currently easiest to miss. the first call is a fit check, not a sales promise.</p>
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -759,7 +929,7 @@ CAL_COPY = {
 def booker(lang="en"):
     """One instrumented Cal.com embed, shared by every booking page.
 
-    Only the source/campaign fields already captured by the site are forwarded.
+    Only the five standard UTM fields already captured by the site are forwarded.
     Arbitrary page query parameters are deliberately not forwarded: names,
     emails, or other accidental URL data must never cross into the calendar.
     """
@@ -789,7 +959,7 @@ def booker(lang="en"):
   <p class="label">__BOOKED_LABEL__</p>
   <p class="sub">__BOOKED__</p>
 </div>
-<p class="qnote">__FALLBACK__ <a href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">__EMAIL__</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">__CALL__</a></p>
+<p class="qnote">__FALLBACK__ <a id="leon-cal-direct" href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">__EMAIL__</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">__CALL__</a></p>
 <script>
 (function(){
   var scriptNode=document.currentScript;
@@ -831,9 +1001,13 @@ def booker(lang="en"):
     var source=safeParam(query.get('utm_source')||query.get('s')||attr.utmSource,120);
     var medium=safeParam(query.get('utm_medium')||attr.utmMedium,120);
     var campaign=safeParam(query.get('utm_campaign')||attr.utmCampaign,120);
+    var term=safeParam(query.get('utm_term')||attr.utmTerm,120);
+    var content=safeParam(query.get('utm_content')||attr.utmContent,120);
     if(source) out.utm_source=source;
     if(medium) out.utm_medium=medium;
     if(campaign) out.utm_campaign=campaign;
+    if(term) out.utm_term=term;
+    if(content) out.utm_content=content;
     return out;
   }
   function ready(){
@@ -866,11 +1040,22 @@ def booker(lang="en"):
     if(typeof ns==='string'){cal.ns[ns]=cal.ns[ns]||api;p(cal.ns[ns],ar);p(cal,['initNamespace',ns])}
     else p(cal,ar);return}p(cal,ar)}})(window,'https://app.cal.com/embed/embed.js','init');
 
+  var calConfig=sourceConfig();
+  var direct=document.getElementById('leon-cal-direct');
+  if(direct){
+    try{
+      var directUrl=new URL(direct.href);
+      ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(function(key){
+        if(calConfig[key]) directUrl.searchParams.set(key,calConfig[key]);
+      });
+      direct.href=directUrl.toString();
+    }catch(e){}
+  }
   Cal('init','leon15',{origin:'https://app.cal.com'});
   Cal.ns.leon15('on',{action:'bookerReady',callback:ready});
   Cal.ns.leon15('on',{action:'linkFailed',callback:failed});
   Cal.ns.leon15('on',{action:'bookingSuccessfulV2',callback:booked});
-  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:sourceConfig(),calLink:'__CAL_SLUG__'});
+  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:calConfig,calLink:'__CAL_SLUG__'});
   Cal.ns.leon15('ui',{theme:'dark',hideEventTypeDetails:false,layout:'month_view'});
   var embedScript=document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
   if(embedScript) embedScript.addEventListener('error',failed,{once:true});
@@ -1040,13 +1225,33 @@ def quote_page():
       return;
     }
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
-    d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||''; d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||'';
+    d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||'';
+    d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||''; d.utmTerm=attr.utmTerm||''; d.utmContent=attr.utmContent||'';
+    d.gclid=attr.gclid||''; d.gbraid=attr.gbraid||''; d.wbraid=attr.wbraid||''; d.fbclid=attr.fbclid||''; d.msclkid=attr.msclkid||'';
     d.firstPage=(attr.first&&attr.first.page)||attr.firstPage||'/';
     d.firstReferrer=(attr.first&&attr.first.referrer)||'';
     d.firstUtmSource=(attr.first&&attr.first.utmSource)||'';
     d.firstUtmMedium=(attr.first&&attr.first.utmMedium)||'';
     d.firstUtmCampaign=(attr.first&&attr.first.utmCampaign)||'';
+    d.firstUtmTerm=(attr.first&&attr.first.utmTerm)||'';
+    d.firstUtmContent=(attr.first&&attr.first.utmContent)||'';
+    d.firstGclid=(attr.first&&attr.first.gclid)||'';
+    d.firstGbraid=(attr.first&&attr.first.gbraid)||'';
+    d.firstWbraid=(attr.first&&attr.first.wbraid)||'';
+    d.firstFbclid=(attr.first&&attr.first.fbclid)||'';
+    d.firstMsclkid=(attr.first&&attr.first.msclkid)||'';
     d.lastPage=(attr.last&&attr.last.page)||location.pathname;
+    d.lastReferrer=(attr.last&&attr.last.referrer)||attr.referrer||'';
+    d.lastUtmSource=(attr.last&&attr.last.utmSource)||attr.utmSource||'';
+    d.lastUtmMedium=(attr.last&&attr.last.utmMedium)||attr.utmMedium||'';
+    d.lastUtmCampaign=(attr.last&&attr.last.utmCampaign)||attr.utmCampaign||'';
+    d.lastUtmTerm=(attr.last&&attr.last.utmTerm)||attr.utmTerm||'';
+    d.lastUtmContent=(attr.last&&attr.last.utmContent)||attr.utmContent||'';
+    d.lastGclid=(attr.last&&attr.last.gclid)||attr.gclid||'';
+    d.lastGbraid=(attr.last&&attr.last.gbraid)||attr.gbraid||'';
+    d.lastWbraid=(attr.last&&attr.last.wbraid)||attr.wbraid||'';
+    d.lastFbclid=(attr.last&&attr.last.fbclid)||attr.fbclid||'';
+    d.lastMsclkid=(attr.last&&attr.last.msclkid)||attr.msclkid||'';
     try{ d.analyticsSessionId=sessionStorage.getItem('leon_analytics_session')||''; }catch(e){ d.analyticsSessionId=''; }
     submitting=true; button.disabled=true; button.setAttribute('aria-busy','true'); buttonText.textContent='sending…';
     var controller=window.AbortController?new AbortController():null;
@@ -1214,9 +1419,10 @@ for _lang in sorted({l for (l, _k) in LANG_COPY}):
 w('quote.html', quote_page())
 w('about.html', about_page())
 w('call.html', call_page())
+w('missed-lead-recovery.html', missed_lead_recovery_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/call', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/missed-lead-recovery', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
 
@@ -1228,7 +1434,10 @@ urls = ['/', '/about', '/call', '/quote', '/privacy', '/es', '/pt', '/zh', '/ser
 def url_output(url):
     if url == '/':
         return 'index.html'
-    if url.endswith('/'):
+    # Language homes intentionally use /es, /pt and /zh without trailing slashes.
+    # Resolve any route backed by a directory before asking Git for its lastmod;
+    # otherwise every generator run falsely stamps those unchanged homes as today.
+    if url.endswith('/') or os.path.isdir(os.path.join(ROOT, url.strip('/'))):
         return url.strip('/') + '/index.html'
     return url.strip('/') + '.html'
 
@@ -1254,7 +1463,7 @@ sm += '</urlset>\n'
 w('sitemap.xml', sm)
 w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
 
-print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, quote, sitemap ({len(urls)} urls), robots.')
+print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, missed-lead sprint, quote, sitemap ({len(urls)} urls), robots.')
 
 # ── IndexNow ──────────────────────────────────────────────────────
 # There was no IndexNow code anywhere in this repo. README said "see git log for

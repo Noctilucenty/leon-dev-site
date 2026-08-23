@@ -71,6 +71,14 @@ CITY = re.compile(
 # His actual school, and the automotive page's "repair bay", are both legitimate.
 CITY_OK = re.compile(r'cal state east bay|repair bay|service bay|bay door', re.I)
 
+# One acquisition experiment intentionally narrows its audience while the rest of
+# the catalog stays nationwide. Keep this exception page-and-phrase exact: it may
+# say "Bay Area", but it still may not name a city, offer in-person work or use any
+# of the other prohibited local-service promises in CITY.
+TARGETED_PLACE_OK = {
+    'missed-lead-recovery.html': {'bay area'},
+}
+
 
 def visible_text(html_src):
     s = re.sub(r'<script.*?</script>|<style.*?</style>', ' ', html_src, flags=re.S)
@@ -109,6 +117,8 @@ def main():
             continue
         s = io.open(path, encoding='utf-8').read()
         for m in CITY.finditer(s):
+            if m.group(0).lower() in TARGETED_PLACE_OK.get(path, set()):
+                continue
             around = s[max(0, m.start() - 40):m.end() + 40]
             if CITY_OK.search(around):
                 continue

@@ -1,0 +1,37 @@
+row_type,key,label,input,calculated_value,unit,decision_note
+input,average_contract_revenue,Average collected contract revenue,,,USD,Use private historical or quoted economics; do not commit a client record
+input,direct_delivery_cost,Direct delivery cost per won client,,,USD,Include contractor software vendor and directly attributable delivery cost
+formula,contribution_profit_per_client,Contribution profit per won client,,"=IF(OR(D2="""",D3=""""),"""",D2-D3)",USD,Revenue minus direct delivery cost before advertising
+input,acceptable_acquisition_share,Maximum share of contribution profit allowed for acquisition,,,decimal,Owner-selected risk limit between zero and one; intentionally blank
+formula,maximum_cac,Maximum customer acquisition cost,,"=IF(OR(E4="""",D5=""""),"""",E4*D5)",USD,Maximum acquisition spend per won client under the declared limit
+input,expected_show_rate,Expected held-call rate from booked calls,,,decimal,Use real privately held data or an explicitly approved planning assumption
+input,expected_qualification_rate,Expected qualified-call rate from held calls,,,decimal,Define qualified consistently before entering a value
+input,expected_close_rate,Expected won-client rate from qualified calls,,,decimal,Use the same offer niche and qualification definition
+formula,maximum_cost_per_booked_call,Maximum cost per booked call,,"=IF(OR(E6="""",D7="""",D8="""",D9=""""),"""",E6*D7*D8*D9)",USD,Maximum CAC multiplied by show qualification and close probabilities
+input,target_booked_calls_per_week,Target booked calls per week,,,count,Capacity target chosen by the owner; not a forecast
+formula,maximum_weekly_ad_spend,Maximum weekly spend from declared economics,,"=IF(OR(E10="""",D11=""""),"""",E10*D11)",USD,Ceiling calculation only; not budget authorization
+input,actual_ad_spend,Actual ad spend for the review window,,,USD,Enter from the platform after reconciliation
+input,actual_clicks,Actual eligible clicks for the review window,,,count,Do not substitute impressions
+input,actual_booked_calls,Actual confirmed booked calls,,,count,Deduplicate by authoritative booking UID and exclude invalid tests
+input,actual_held_calls,Actual calls that occurred,,,count,Use the agreed attendance definition
+input,actual_qualified_calls,Actual held calls meeting the qualification rule,,,count,Do not count scheduled or unheld calls
+input,actual_won_clients,Actual won clients,,,count,Use an agreed won definition
+input,actual_contribution_profit,Actual contribution profit from won clients,,,USD,Use collected revenue less direct delivery cost
+formula,actual_cost_per_click,Actual cost per click,,"=IF(OR(D13="""",D14=""""),"""",IF(D14=0,""NO_CLICKS"",D13/D14))",USD,Diagnostic metric only
+formula,actual_cost_per_booked_call,Actual cost per booked call,,"=IF(OR(D13="""",D15=""""),"""",IF(D15=0,""NO_BOOKINGS"",D13/D15))",USD,Compare only after the owner-defined zero-booking rule is eligible
+formula,actual_cost_per_qualified_call,Actual cost per qualified call,,"=IF(OR(D13="""",D17=""""),"""",IF(D17=0,""NO_QUALIFIED_CALLS"",D13/D17))",USD,Quality metric
+formula,actual_cac,Actual customer acquisition cost,,"=IF(OR(D13="""",D18=""""),"""",IF(D18=0,""NO_WINS"",D13/D18))",USD,Compare to maximum CAC only after sufficient owner-defined evidence
+formula,actual_show_rate,Actual held-call rate,,"=IF(OR(D15="""",D16=""""),"""",IF(D15=0,""NO_BOOKINGS"",D16/D15))",decimal,Operational quality signal
+formula,actual_qualification_rate,Actual qualified-call rate,,"=IF(OR(D16="""",D17=""""),"""",IF(D16=0,""NO_HELD_CALLS"",D17/D16))",decimal,Targeting and qualification signal
+formula,actual_close_rate,Actual won-client rate,,"=IF(OR(D17="""",D18=""""),"""",IF(D17=0,""NO_QUALIFIED_CALLS"",D18/D17))",decimal,Sales and offer signal
+formula,contribution_return_on_ad_spend,Actual contribution profit divided by ad spend,,"=IF(OR(D13="""",D19=""""),"""",IF(D13=0,""NO_SPEND"",D19/D13))",ratio,Not gross revenue ROAS
+input,maximum_zero_booking_spend,Pause threshold when confirmed bookings remain zero,,,USD,Owner-defined before launch; must not be inferred from a benchmark
+input,maximum_cost_per_booked_call_override,Optional stricter booked-call cost limit,,,USD,Leave blank to use the calculated maximum in row 10
+formula,effective_booking_cost_limit,Effective booked-call cost limit,,"=IF(D29<>"""",D29,E10)",USD,Uses the optional override when supplied
+input,minimum_qualified_call_rate,Minimum acceptable qualified-call rate from held calls,,,decimal,Owner-defined before launch
+input,minimum_contribution_return,Minimum acceptable contribution return on ad spend,,,ratio,Owner-defined before launch
+input,minimum_wins_before_profit_rule,Minimum won clients before the profit rule is eligible,,,count,Owner defines the evidence threshold; intentionally blank
+stop_rule,zero_booking_stop,Zero-booking stop rule,,"=IF(OR(D13="""",D15="""",D28=""""),""INPUTS_REQUIRED"",IF(AND(D15=0,D13>=D28),""PAUSE_AND_AUDIT"",""CONTINUE_MONITORING""))",decision,Pause does not mean delete; inspect tracking terms traffic and landing match
+stop_rule,booking_cost_stop,Booked-call cost stop rule,,"=IF(OR(E21="""",E30=""""),""INPUTS_REQUIRED"",IF(NOT(ISNUMBER(E21)),""PAUSE_AND_AUDIT"",IF(E21>E30,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT"")))",decision,Do not increase spend while over the owner-approved limit
+stop_rule,qualification_stop,Qualified-call rate stop rule,,"=IF(OR(E25="""",D31=""""),""INPUTS_REQUIRED"",IF(NOT(ISNUMBER(E25)),""PAUSE_AND_AUDIT"",IF(E25<D31,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT"")))",decision,Audit targeting search terms creative promise and qualification before resuming
+stop_rule,profit_stop,Contribution-return stop rule,,"=IF(OR(E27="""",D32="""",D18="""",D33=""""),""INPUTS_REQUIRED"",IF(D18<D33,""NOT_ENOUGH_OWNER_DEFINED_EVIDENCE"",IF(NOT(ISNUMBER(E27)),""PAUSE_AND_AUDIT"",IF(E27<D32,""PAUSE_AND_AUDIT"",""WITHIN_DECLARED_LIMIT""))))",decision,Use contribution profit and a predeclared evidence threshold rather than gross revenue

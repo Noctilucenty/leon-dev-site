@@ -75,7 +75,7 @@
   <p class="label">llamada agendada</p>
   <p class="sub">cal.com enviará el enlace de video y la invitación al correo usado para agendar.</p>
 </div>
-<p class="qnote">¿no aparece el calendario? <a href="https://cal.com/noctilucente-wzvdey/15min?redirect=false" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">abrir la página de reservas</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">enviar un correo</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">llamar al (510) 826-7735</a></p>
+<p class="qnote">¿no aparece el calendario? <a id="leon-cal-direct" href="https://cal.com/noctilucente-wzvdey/15min?redirect=false" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">abrir la página de reservas</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">enviar un correo</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">llamar al (510) 826-7735</a></p>
 <script>
 (function(){
   var scriptNode=document.currentScript;
@@ -117,9 +117,13 @@
     var source=safeParam(query.get('utm_source')||query.get('s')||attr.utmSource,120);
     var medium=safeParam(query.get('utm_medium')||attr.utmMedium,120);
     var campaign=safeParam(query.get('utm_campaign')||attr.utmCampaign,120);
+    var term=safeParam(query.get('utm_term')||attr.utmTerm,120);
+    var content=safeParam(query.get('utm_content')||attr.utmContent,120);
     if(source) out.utm_source=source;
     if(medium) out.utm_medium=medium;
     if(campaign) out.utm_campaign=campaign;
+    if(term) out.utm_term=term;
+    if(content) out.utm_content=content;
     return out;
   }
   function ready(){
@@ -152,11 +156,22 @@
     if(typeof ns==='string'){cal.ns[ns]=cal.ns[ns]||api;p(cal.ns[ns],ar);p(cal,['initNamespace',ns])}
     else p(cal,ar);return}p(cal,ar)}})(window,'https://app.cal.com/embed/embed.js','init');
 
+  var calConfig=sourceConfig();
+  var direct=document.getElementById('leon-cal-direct');
+  if(direct){
+    try{
+      var directUrl=new URL(direct.href);
+      ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(function(key){
+        if(calConfig[key]) directUrl.searchParams.set(key,calConfig[key]);
+      });
+      direct.href=directUrl.toString();
+    }catch(e){}
+  }
   Cal('init','leon15',{origin:'https://app.cal.com'});
   Cal.ns.leon15('on',{action:'bookerReady',callback:ready});
   Cal.ns.leon15('on',{action:'linkFailed',callback:failed});
   Cal.ns.leon15('on',{action:'bookingSuccessfulV2',callback:booked});
-  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:sourceConfig(),calLink:'noctilucente-wzvdey/15min'});
+  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:calConfig,calLink:'noctilucente-wzvdey/15min'});
   Cal.ns.leon15('ui',{theme:'dark',hideEventTypeDetails:false,layout:'month_view'});
   var embedScript=document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
   if(embedScript) embedScript.addEventListener('error',failed,{once:true});

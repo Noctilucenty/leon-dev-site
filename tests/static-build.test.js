@@ -60,7 +60,7 @@ test('static build publishes only pages and required referenced assets', () => {
   assert.equal(result.status, 0, diagnostic(result));
 
   for (const relative of [
-    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html',
+    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html', 'missed-lead-recovery.html',
     'services/index.html', 'services/websites.html', 'es/index.html',
     'styles.css', 'assist.css', 'app.js', 'assist.js',
     'assets/favicon.svg', 'assets/og.png', 'favicon.ico', 'apple-touch-icon.png',

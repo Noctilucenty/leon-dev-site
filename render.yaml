@@ -14,7 +14,9 @@ services:
   - type: web
     name: leon-assist
     runtime: node
-    plan: free            # free spins down when idle (~30-60s first reply); starter ($7/mo) stays warm
+    # Mirrors the live service. Keeping this at Starter prevents a later
+    # Blueprint apply from silently reintroducing free-tier cold starts.
+    plan: starter
     buildCommand: npm install
     startCommand: node server/index.js
     healthCheckPath: /api/health
@@ -31,3 +33,5 @@ services:
         value: "700"
       - key: LEADS_KEY
         generateValue: true   # unlocks /api/leads and /api/traffic — copy it from the Environment tab
+      - key: CAL_WEBHOOK_SECRET
+        sync: false        # same random signing secret configured on the Cal webhook; never commit it

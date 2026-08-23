@@ -83,6 +83,20 @@ test('event beacon stores bounded anonymous session plus first/last attribution'
     lastUtmMedium: 'social',
     firstUtmCampaign: 'evergreen',
     lastUtmCampaign: 'august-post',
+    firstUtmTerm: 'booking software',
+    lastUtmTerm: 'lead follow up',
+    firstUtmContent: 'rsa-a',
+    lastUtmContent: 'image-b',
+    firstGclid: 'gclid.first_123',
+    lastGclid: 'gclid.last_123',
+    firstGbraid: 'gbraid-first_123',
+    lastGbraid: 'gbraid-last_123',
+    firstWbraid: 'wbraid-first_123',
+    lastWbraid: 'wbraid-last_123',
+    firstFbclid: 'fbclid.first_123',
+    lastFbclid: 'fbclid.last_123',
+    firstMsclkid: 'abcdef0123456789abcdef0123456789',
+    lastMsclkid: 'fedcba9876543210fedcba9876543210',
     receipt: 'lead_example',
     bookingUid: 'booking_example'
   });
@@ -102,6 +116,20 @@ test('event beacon stores bounded anonymous session plus first/last attribution'
   assert.equal(event.lastMedium, 'social');
   assert.equal(event.firstCampaign, 'evergreen');
   assert.equal(event.lastCampaign, 'august-post');
+  assert.equal(event.firstUtmTerm, 'booking software');
+  assert.equal(event.lastUtmTerm, 'lead follow up');
+  assert.equal(event.firstUtmContent, 'rsa-a');
+  assert.equal(event.lastUtmContent, 'image-b');
+  assert.equal(event.firstGclid, 'gclid.first_123');
+  assert.equal(event.lastGclid, 'gclid.last_123');
+  assert.equal(event.firstGbraid, 'gbraid-first_123');
+  assert.equal(event.lastGbraid, 'gbraid-last_123');
+  assert.equal(event.firstWbraid, 'wbraid-first_123');
+  assert.equal(event.lastWbraid, 'wbraid-last_123');
+  assert.equal(event.firstFbclid, 'fbclid.first_123');
+  assert.equal(event.lastFbclid, 'fbclid.last_123');
+  assert.equal(event.firstMsclkid, 'abcdef0123456789abcdef0123456789');
+  assert.equal(event.lastMsclkid, 'fedcba9876543210fedcba9876543210');
   assert.equal(event.receipt, 'lead_example');
   assert.equal(event.bookingUid, 'booking_example');
 });

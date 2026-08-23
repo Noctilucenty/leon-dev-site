@@ -140,24 +140,68 @@ test('lead validation preserves bounded first/last attribution and anonymous cor
     sourcePage: '/quote',
     referrer: 'https://facebook.com/groups/example',
     utmSource: 'fbgroup-current',
+    utmMedium: 'paid-social',
+    utmCampaign: 'august-current',
+    utmTerm: 'booking workflow',
+    utmContent: 'creative-current',
+    gclid: 'gclid.current_123',
+    gbraid: 'gbraid-current_123',
+    wbraid: 'wbraid-current_123',
+    fbclid: 'fbclid.current_123',
+    msclkid: '0123456789abcdef0123456789abcdef',
     firstPage: '/',
     firstReferrer: 'https://google.com/search?q=booking',
     firstUtmSource: 'google',
     firstUtmMedium: 'organic',
     firstUtmCampaign: 'evergreen',
+    firstUtmTerm: 'website booking',
+    firstUtmContent: 'rsa-a',
+    firstGclid: 'gclid.first_123',
+    firstGbraid: 'gbraid-first_123',
+    firstWbraid: 'wbraid-first_123',
+    firstFbclid: 'fbclid.first_123',
+    firstMsclkid: 'abcdef0123456789abcdef0123456789',
     lastPage: '/quote',
     lastReferrer: 'https://facebook.com/groups/example',
     lastUtmSource: 'fbgroup-current',
     lastUtmMedium: 'social',
     lastUtmCampaign: 'august-post',
+    lastUtmTerm: 'follow up automation',
+    lastUtmContent: 'carousel-b',
+    lastGclid: 'gclid.last_123',
+    lastGbraid: 'gbraid-last_123',
+    lastWbraid: 'wbraid-last_123',
+    lastFbclid: 'fbclid.last_123',
+    lastMsclkid: 'fedcba9876543210fedcba9876543210',
     analyticsSessionId: 'session_abc123',
     chatSessionId: 'chat_xyz789'
   });
 
   assert.equal(lead.firstPage, '/');
   assert.equal(lead.firstUtmSource, 'google');
+  assert.equal(lead.firstUtmTerm, 'website booking');
+  assert.equal(lead.firstUtmContent, 'rsa-a');
+  assert.equal(lead.firstGclid, 'gclid.first_123');
+  assert.equal(lead.firstGbraid, 'gbraid-first_123');
+  assert.equal(lead.firstWbraid, 'wbraid-first_123');
+  assert.equal(lead.firstFbclid, 'fbclid.first_123');
+  assert.equal(lead.firstMsclkid, 'abcdef0123456789abcdef0123456789');
   assert.equal(lead.lastPage, '/quote');
   assert.equal(lead.lastUtmSource, 'fbgroup-current');
+  assert.equal(lead.lastUtmTerm, 'follow up automation');
+  assert.equal(lead.lastUtmContent, 'carousel-b');
+  assert.equal(lead.lastGclid, 'gclid.last_123');
+  assert.equal(lead.lastGbraid, 'gbraid-last_123');
+  assert.equal(lead.lastWbraid, 'wbraid-last_123');
+  assert.equal(lead.lastFbclid, 'fbclid.last_123');
+  assert.equal(lead.lastMsclkid, 'fedcba9876543210fedcba9876543210');
+  assert.equal(lead.utmTerm, 'booking workflow');
+  assert.equal(lead.utmContent, 'creative-current');
+  assert.equal(lead.gclid, 'gclid.current_123');
+  assert.equal(lead.gbraid, 'gbraid-current_123');
+  assert.equal(lead.wbraid, 'wbraid-current_123');
+  assert.equal(lead.fbclid, 'fbclid.current_123');
+  assert.equal(lead.msclkid, '0123456789abcdef0123456789abcdef');
   assert.equal(lead.analyticsSessionId, 'session_abc123');
   assert.equal(lead.chatSessionId, 'chat_xyz789');
 });

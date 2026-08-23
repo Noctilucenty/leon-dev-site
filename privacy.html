@@ -55,7 +55,7 @@
       <p class="label">leon --privacy</p>
       <h1 class="dsp">Your project details should be treated like <em>your project details</em></h1>
       <p class="sub">This page explains what leonbuilds.org collects, why it is used and which outside services process it. The short version: the site does not sell personal information, and you do not need to use the AI assistant to contact Leon.</p>
-      <p class="mini">effective august 22, 2026</p>
+      <p class="mini">effective august 23, 2026</p>
     </div>
   </section>
 
@@ -72,11 +72,13 @@
       <div>
         <p class="label">limited website measurement</p>
         <ul class="blist">
-          <li>page path, referring site, campaign tag and actions such as opening chat or submitting an inquiry</li>
+          <li>page path, referring-site origin, the five standard UTM campaign fields, and actions such as opening chat or submitting an inquiry</li>
+          <li>an advertising click identifier such as <span class="keepcase">gclid</span>, <span class="keepcase">gbraid</span>, <span class="keepcase">wbraid</span>, <span class="keepcase">fbclid</span> or <span class="keepcase">msclkid</span> when one is already present in the link you open</li>
           <li>a random session identifier stored for the current browser tab so page views are not mistaken for separate visitors</li>
-          <li>your language preference and original referral details stored in your browser so the site can stay in the language you chose and preserve attribution</li>
+          <li>the opaque booking identifier reported after a successful embedded booking so campaign details can be connected to the booking without putting your contact details in the event stream</li>
+          <li>your language preference and bounded first- and last-touch referral details stored in your browser so the site can stay in the language you chose and preserve attribution</li>
         </ul>
-        <p class="sub">Contact details and message text are not placed in the website event stream.</p>
+        <p class="sub">Advertising click identifiers are pseudonymous campaign identifiers, not names or contact details. Contact details and message text are not placed in the website event stream.</p>
       </div>
     </div>
   </section>
@@ -88,6 +90,7 @@
         <ul class="blist">
           <li>to answer your question, scope a project, prepare for a call and follow up on an inquiry</li>
           <li>to understand which pages and outreach sources lead to real inquiries</li>
+          <li>to distinguish a booking from an attended, qualified, proposed, won, lost, cancelled or no-show opportunity</li>
           <li>to prevent spam, diagnose failures and keep the lead and booking flows working</li>
         </ul>
       </div>
@@ -98,8 +101,9 @@
           <li><span class="keepcase">OpenAI</span> processes assistant messages and attached photos to generate a reply</li>
           <li><span class="keepcase">Resend</span> may deliver a copy of a submitted inquiry to Leon's inbox</li>
           <li><span class="keepcase">Cal.com</span> provides the booking calendar and handles the information entered there</li>
+          <li>a separately configured storage or CRM receiver may receive minimized booking-stage records; it is not used unless Leon configures and verifies it</li>
         </ul>
-        <p class="sub">Links to email, phone, WhatsApp and WeChat leave this site and are governed by those services and your device settings.</p>
+        <p class="sub">Signed Cal.com lifecycle updates are reduced before storage to a booking identifier, stage, time and bounded campaign fields; the webhook's attendee names, email addresses, answers and notes are not copied into the acquisition-stage record. Links to email, phone, WhatsApp and WeChat leave this site and are governed by those services and your device settings.</p>
       </div>
     </div>
   </section>
@@ -108,8 +112,8 @@
     <div class="rail two-col">
       <div>
         <p class="label">retention and your choices</p>
-        <p class="sub">Inquiry receipts and copies are kept only as long as reasonably needed to respond, work on the requested project, maintain business records and resolve delivery problems. Hosting logs follow the hosting provider's retention settings. Local analytics files on the app host are operational, may reset during deployments and are not a permanent customer database.</p>
-        <p class="sub">The main site does not require an advertising cookie. You can avoid the assistant, clear this site's browser storage, use email or phone instead, and open the direct Cal.com link if the embedded calendar is blocked.</p>
+        <p class="sub">Inquiry receipts, opportunity stages and copies are kept only as long as reasonably needed to respond, work on the requested project, maintain business records, understand acquisition and resolve delivery problems. Browser attribution expires after no more than 90 days unless a new referral touch refreshes it. Hosting logs follow the hosting provider's retention settings. Local JSONL files may reset during deployments unless durable storage is explicitly configured.</p>
+        <p class="sub">The main site does not require an advertising cookie, and it does not currently load an advertising-network tracking tag. Campaign values already present in the landing link are read by first-party code. You can avoid the assistant, clear this site's browser storage, use email or phone instead, and open the direct Cal.com link if the embedded calendar is blocked.</p>
       </div>
       <div>
         <p class="label">important limits</p>

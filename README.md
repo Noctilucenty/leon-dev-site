@@ -4,6 +4,8 @@ What I build, what it starts at, what is actually running — plus a **nationwid
 lead-generation layer**: problem-first homepage entry, a generated service/industry
 page fleet, a quote flow, and an AI project assistant with its own secure backend.
 Positioning: based in California, building for businesses across the U.S.
+The missed-lead sprint is an intentionally Bay Area-targeted acquisition test;
+the rest of the catalog remains nationwide.
 
 **Style references.** [ultracontext.com](https://ultracontext.com) for structure and motion —
 floating nav pill, bracket-hover links, an orbit graphic in the hero, alternating
@@ -16,6 +18,7 @@ slightly purple `#9b8cff`, which is the only colour on the page.
 index.html          the homepage — hand-written; 12 sections incl. problem cards + trust
 services/*.html     GENERATED — 9 service pages + index (tools/build_pages.py)
 industries/*.html   GENERATED — 10 industry pages + index
+missed-lead-recovery.html  GENERATED — focused 10-business-day acquisition offer
 quote.html          GENERATED — quote form; opens the visitor's mail app, logs to the API
 sitemap.xml robots.txt  GENERATED
 styles.css          tokens + layout (+ subpage/widget styles appended at the bottom)
@@ -80,9 +83,15 @@ The frontend finds the API through **one constant**: `API_BASE` at the top of
 | `SMTP_HOST/USER/PASS` (+ optional `SMTP_PORT`) + `LEAD_TO_EMAIL` | no | fallback only on hosts that permit outbound SMTP; the current Render service does not |
 | `LEADS_KEY` | no | admin key for lead/traffic views and deep health; all three accept it only via `x-leads-key` |
 | `EXTRA_ORIGIN` | no | one extra allowed browser origin |
+| `LEON_DATA_DIR` | no | directory for leads/events/acquisition JSONL; on Render, set only inside an attached persistent disk |
+| `CAL_WEBHOOK_SECRET` | no | enables `/api/cal/webhook`; must exactly match the signing secret configured in Cal |
+| `ACQUISITION_SINK_URL` | no | optional verified HTTPS receiver for minimized funnel-stage envelopes |
+| `ACQUISITION_SINK_TOKEN` | no | optional Bearer credential for that receiver |
+| `ACQUISITION_SINK_SECRET` | no | optional outbound HMAC secret for `x-leon-signature-256` |
 
-Free plan idles: first chat reply can take ~30–60s. The widget warns the visitor and
-warms the API when the panel opens; starter ($7/mo) removes the nap entirely.
+`render.yaml` deliberately says `plan: starter` because that is the live API plan.
+Changing it back to `free` would let a later Blueprint apply reintroduce cold-start
+delay. The widget still warms the API and handles restarts or provider latency.
 
 ## The assistant
 
@@ -97,10 +106,13 @@ or duplicate site files.
 
 **Leads** (`POST /api/lead`, from chat handoff + quote form): logged to stdout as
 `LEAD {...}` (useful for diagnosis, but subject to Render's log retention), appended
-to `data/leads.jsonl` (ephemeral on the free service), and emailed when a supported
-delivery route is ready. Resend/HTTPS is the production route on Render; SMTP remains
-a fallback for hosts that allow it. Chat leads include a model-written conversation
-summary. UTM/referrer/first-page ride along via `localStorage.leon_attr`.
+to `data/leads.jsonl` by default, and emailed when a supported delivery route is
+ready. Setting `LEON_DATA_DIR` moves leads, events and acquisition JSONL together to
+that directory. Resend/HTTPS is the production route on Render; SMTP remains a
+fallback for hosts that allow it. Chat leads include a model-written conversation
+summary. First/last referral touch, all five standard UTM values, and present
+`gclid`, `gbraid`, `wbraid`, `fbclid` or `msclkid` values ride along via the bounded
+`localStorage.leon_attr` record.
 
 `GET /api/health` is a liveness check and reports lead delivery separately:
 `leadEmailProvider`, `leadEmailState`, `leadEmailConfigured`, `leadEmailSupported`,
@@ -138,6 +150,76 @@ message delivered to `LEAD_TO_EMAIL`. The log and JSONL copies are not durable
 substitutes for the off-host copy. No generic webhook is treated as durable without
 a real receiving system selected and verified.
 
+## Acquisition measurement and CRM stages
+
+This repository has the measurement foundation, **not live advertising tags**. It
+does not load Google Ads, Google Analytics, Meta Pixel or another ad-network script,
+and it does not create audiences or make ad-account changes. The browser recognizes
+`utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `gclid`,
+`gbraid`, `wbraid`, `fbclid` and `msclkid`; retains bounded first- and last-touch
+records for up to 90 days; and sends them only to the first-party lead/event API.
+Referrers are reduced to their origin before storage. Quote submissions carry all
+ten fields. The Cal embed and direct fallback receive only the five standard UTMs;
+ad click IDs stay first-party unless a future, explicitly configured Cal field and
+privacy review justify forwarding them.
+
+After an embed reports a successful booking, its opaque booking UID links the
+browser's bounded first/last campaign touch to the CRM record. That browser signal
+is marked non-authoritative and cannot create or advance a stage; only a signed Cal
+webhook or the admin route can do that.
+
+The authoritative opportunity stages are `booked`, `attended`, `qualified`,
+`proposal`, `won`, `lost`, `cancelled`, and `no-show`. Cal can establish booked,
+cancelled and a true no-show update. The API deliberately does not infer attendance
+from `MEETING_ENDED`; Leon records attended and the downstream sales stages through
+the admin route. One JSONL stage row is allowed per booking UID plus stage, so Cal
+retries cannot double-count it.
+
+Configure a Cal webhook to POST JSON to
+`https://leon-assist.onrender.com/api/cal/webhook`, subscribe to booking created,
+rescheduled, cancelled and no-show-updated events, and set the same high-entropy
+secret in Cal and `CAL_WEBHOOK_SECRET`. The server verifies `x-cal-signature-256`
+against the exact raw body before parsing. It discards attendee names, email
+addresses, answers and notes; only the booking UID, mapped stage, event time and
+bounded attribution are written. The endpoint remains 404 while the secret is
+unset. Use Cal's standard payload (no custom payload template); the current
+`2026-07-27` version and the legacy `2021-10-20` shape are both accepted. See Cal's
+[webhook payload/signature guide](https://cal.com/docs/developing/guides/automation/webhooks)
+and [standard UTM tracking guide](https://cal.com/help/bookings/utm-tracking).
+
+```bash
+# Human-confirmed stage update. Never put LEADS_KEY in the URL.
+curl -sS https://leon-assist.onrender.com/api/acquisition/stage \
+  -H 'content-type: application/json' \
+  -H 'x-leads-key: YOUR_LEADS_KEY' \
+  --data '{"bookingUid":"CAL_BOOKING_UID","stage":"qualified"}'
+
+# Minimized records, current-stage materialization and counts as JSON.
+curl -sS 'https://leon-assist.onrender.com/api/acquisition?format=json' \
+  -H 'x-leads-key: YOUR_LEADS_KEY'
+```
+
+Opening `/api/acquisition` with the same header-only authentication shows a small
+human-readable scorecard; `?format=json` returns the records and materialized state.
+
+There are two supported durability strategies:
+
+1. Attach a Render persistent disk, create a dedicated directory on its mount,
+   and set `LEON_DATA_DIR` to that directory. The Blueprint intentionally does not
+   attach or price a disk automatically.
+2. Set `ACQUISITION_SINK_URL` to a verified HTTPS ingestion endpoint. The app sends
+   minimized JSON envelopes with `x-leon-event-id` and stable
+   `x-leon-dedupe-key`; set at least one of the Bearer or HMAC credential variables.
+   The receiver must make the dedupe key unique and persist
+   the record before returning 2xx. Do not call a sink durable until a test record
+   has been observed in its final store.
+
+`/api/health` reports `acquisitionStorageState`,
+`acquisitionDurableConfigured`, `acquisitionLocalMode`,
+`acquisitionSinkConfigured`, and `calWebhookConfigured` without revealing a path,
+URL, token or secret. `ephemeral-only` is an explicit warning, not a green storage
+claim.
+
 ## Publishing status
 
 `content/publication-ledger.csv` is the canonical current record of what was posted
@@ -149,12 +231,14 @@ Price-bearing ledger records carry a fingerprint of `tools/check_prices.py`'s
 canonical floors. A reprice makes the check fail until each affected external post
 is reviewed, so a live caption cannot silently drift behind the site again.
 
-**Analytics**: first-party, log-only — `EVT {...}` lines from `data-evt` clicks
+**Analytics**: first-party — `EVT {...}` lines from `data-evt` clicks
 (hero_quote_click, pricing_cta_click, email_click, phone_click, quote_form_*) and the
 widget (chat_open, chat_first_message, lead_submit). Records include a tab-scoped
 anonymous session ID plus separate first- and last-touch source fields. No cookies,
-contact fields or third parties. `/api/leads` and `/api/traffic` ignore `?key=`; use
-the `x-leads-key` header so the secret does not enter URL logs or browser history.
+contact fields or third-party analytics tags are used. JSONL lives on the application
+filesystem unless `LEON_DATA_DIR` is configured. `/api/leads` and `/api/traffic`
+ignore `?key=`; use the `x-leads-key` header so the secret does not enter URL logs or
+browser history.
 The traffic view separates raw event records from unique-session funnel rates and
 labels legacy records without a session ID instead of treating them as visitors.
 
@@ -193,7 +277,7 @@ nothing syncs for you**: the fleet data in `tools/build_pages.py` (then rerun it
 assistant's price list in `server/prompt.js`. Generated social and classified art is
 deliberately price-free; `tools/check_prices.py` enforces that and verifies fresh renders.
 
-**The page fleet** (`services/`, `industries/`, `quote.html`) is generated — copy edits go
+**The page fleet** (`services/`, `industries/`, `missed-lead-recovery.html`, `quote.html`) is generated — copy edits go
 in `tools/build_pages.py`'s SERVICES/INDUSTRIES data, never in the output files.
 
 **Icons** are `<symbol>`s in the sprite at the top of `index.html`, used as
