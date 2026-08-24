@@ -16,6 +16,11 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
   This is not $100 per platform and is not launch authorization.
 - Bids, cost goals, exact start/end dates, billing, audiences, and account IDs
   remain unset or unapproved. Do not infer or auto-fill them from these drafts.
+- The app-development Search lane is a separate **$0, unscheduled,
+  `HOLD_NO_BUDGET` hypothesis**. It may not borrow from the existing $100
+  contractor test. It is for Leon Builds business advertising only: never use a
+  Curio account, profile, page, community, pixel, audience, billing identity, or
+  developer account to distribute it.
 - Never type a made-up `gclid`, `gbraid`, `wbraid`, `fbclid`, or another click
   identifier into a URL. Platforms may append genuine identifiers later.
 - Do not put prospect or customer information in campaign names, UTMs, URLs,
@@ -40,6 +45,10 @@ python3 tools/check_ads_pack.py
   and preserved alternative/auto/restaurant drafts held for intent, copy, or
   product mismatch. It also contains reviewed negatives, conversion hierarchy,
   and a launch checklist.
+- `google-search-app-development-draft.csv` — a separate, zero-allocation app
+  development Search hypothesis with two exact/phrase ad groups, two held RSAs,
+  45 negatives, full UTM mapping, and twelve blockers. Every row remains
+  `HOLD_NO_BUDGET`; it does not share the approved contractor allocation.
 - `meta-build.csv` — one disabled Leads-objective plan using a website booking
   conversion, six mapped assets, qualification controls, retargeting gates, and
   a $0 first-test allocation.
@@ -66,13 +75,50 @@ available remotely across the United States. Every auto-shop and restaurant row
 is retained as a `HOLD_PRODUCT_MISMATCH` archive and is ineligible until it has a
 separately reviewed matching offer and landing page.
 
+## App-development lane — held for a separate decision
+
+The separate app Search draft maps both ad groups only to:
+
+`https://leonbuilds.org/services/mobile-apps`
+
+That existing service page states the current published starting point of
+**$3,500**, describes iOS and Android development, backend and account scope,
+store submission, fixed written quoting, ownership boundaries, and truthful
+live App Store product proof. The ad copy does not name the proof product or
+claim that it produced client revenue, downloads, bookings, or another business
+result. Before any future test, the page still needs a fresh mobile and desktop
+visual review against the exact ad combinations.
+
+The two held intent groups are deliberately narrow:
+
+- `business_app` — buyers explicitly looking for a business or custom app
+  developer;
+- `ios_android` — buyers explicitly looking for iOS, Android, or cross-platform
+  app development.
+
+Both groups use exact and phrase match only. Campaign negatives remove
+employment, education, free-code, download, game-engine, DIY-builder, and
+platform-support intent. `cost`, `agency`, `freelancer`, and `near me` are not
+excluded because they can occur in legitimate buying searches. If this lane is
+ever separately authorized, review the live Keyword Planner and Search terms
+instead of treating this offline list as current volume or competition data.
+
+The app lane has **no media allocation, schedule, bidding strategy, approved
+geography, or launch permission**. It cannot be uploaded, created, funded, or
+enabled merely because the CSV passes validation. Any later experiment needs a
+new budget decision, its own economics, current platform review, verified
+attribution, and explicit owner approval after landing-page and ad previews.
+
 ## Attribution contract
 
-Every draft final URL carries all five standard UTM parameters:
+Every draft final URL carries all five standard UTM parameters. Contractor
+Google and Meta drafts use `utm_campaign=ba-missed-lead-recovery-v1`; the held
+app Search draft uses `utm_campaign=us-app-development-draft-v1` so the two
+offers cannot be mistaken for one campaign:
 
 - `utm_source`
 - `utm_medium`
-- `utm_campaign=ba-missed-lead-recovery-v1`
+- the lane-specific `utm_campaign` value above
 - `utm_term` for the niche hypothesis
 - `utm_content` for the exact ad/RSA variant
 
@@ -179,7 +225,7 @@ current landing page. The four auto/restaurant cards remain preserved but held.
 
 ## Human launch boundary
 
-Passing the validator means the offline pack is internally consistent. It does
+Passing the validator means the offline pack is internally consistent. It
 records the owner's $100/10-calendar-day paid-media ceiling and Google-only first
 allocation. It does not approve launch, billing, bids, exact dates, tracking
 technology, targeting, copy, creative, privacy posture, or publication. A later

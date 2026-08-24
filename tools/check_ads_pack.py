@@ -22,6 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PACK = os.path.join(ROOT, "content", "ads")
 
 GOOGLE_FILE = os.path.join(PACK, "google-search-build.csv")
+APP_GOOGLE_FILE = os.path.join(PACK, "google-search-app-development-draft.csv")
 META_FILE = os.path.join(PACK, "meta-build.csv")
 ECONOMICS_FILE = os.path.join(PACK, "economics-calculator.csv")
 README_FILE = os.path.join(PACK, "README.md")
@@ -43,8 +44,12 @@ ECONOMICS_FIELDS = (
 )
 
 GOOGLE_CAMPAIGN = "DRAFT | BA | Search | Missed Lead Recovery"
+APP_GOOGLE_CAMPAIGN = "DRAFT | US | Search | App Development"
 META_CAMPAIGN = "DRAFT | BA | Meta | Missed Lead Recovery"
 CAMPAIGN_TAG = "ba-missed-lead-recovery-v1"
+APP_CAMPAIGN_TAG = "us-app-development-draft-v1"
+APP_STATUS = "HOLD_NO_BUDGET"
+APP_GROUPS = {"business_app", "ios_android"}
 WEDGES = {"home_services", "auto_repair", "restaurant_food"}
 ACTIVE_WEDGES = {"home_services"}
 ARCHIVED_WEDGES = WEDGES - ACTIVE_WEDGES
@@ -185,6 +190,8 @@ def check_readme(errors):
         "all five standard UTM", "message/landing mismatch",
         "$100 total across 10 calendar", "Meta receives $0",
         "not $100 per platform", "not launch authorization",
+        "google-search-app-development-draft.csv", "HOLD_NO_BUDGET",
+        "Leon Builds business advertising only", "/services/mobile-apps",
     ):
         if required not in text:
             errors.append(f"README.md: missing required contract text {required!r}")
@@ -351,6 +358,153 @@ def check_google(errors):
         errors.append("google-search-build.csv: prelaunch blockers are incomplete")
 
 
+def check_app_url(row, errors, prefix):
+    value = row.get("final_url", "")
+    parsed = urlparse(value)
+    query = parse_qs(parsed.query, keep_blank_values=True)
+    if parsed.scheme != "https" or parsed.netloc != "leonbuilds.org":
+        errors.append(f"{prefix}: final URL must use https://leonbuilds.org")
+    if parsed.path.rstrip("/") != "/services/mobile-apps":
+        errors.append(f"{prefix}: final URL must use /services/mobile-apps")
+    expected = {
+        "utm_source": row.get("utm_source", ""),
+        "utm_medium": row.get("utm_medium", ""),
+        "utm_campaign": row.get("utm_campaign", ""),
+        "utm_term": row.get("utm_term", ""),
+        "utm_content": row.get("utm_content", ""),
+    }
+    for key, expected_value in expected.items():
+        if not expected_value:
+            errors.append(f"{prefix}: {key} column must not be blank")
+        if query.get(key) != [expected_value]:
+            errors.append(f"{prefix}: URL {key} must match its column")
+    if expected["utm_source"] != "google" or expected["utm_medium"] != "cpc":
+        errors.append(f"{prefix}: unexpected paid source/medium")
+    if expected["utm_campaign"] != APP_CAMPAIGN_TAG:
+        errors.append(f"{prefix}: unexpected app-development campaign UTM")
+    if expected["utm_term"] not in APP_GROUPS:
+        errors.append(f"{prefix}: app-development utm_term must match an ad group")
+    present_click_ids = sorted(CLICK_IDS & set(query))
+    if present_click_ids:
+        errors.append(f"{prefix}: invented click-ID parameters present: {present_click_ids}")
+    extra = sorted(set(query) - set(expected))
+    if extra:
+        errors.append(f"{prefix}: unexpected query parameters: {extra}")
+
+
+def check_app_google(errors):
+    """Validate the separate, zero-allocation app-development hypothesis."""
+    label = "google-search-app-development-draft.csv"
+    rows = read_csv(APP_GOOGLE_FILE, GOOGLE_FIELDS, errors)
+    if not rows:
+        return
+    if {row.get("campaign") for row in rows} != {APP_GOOGLE_CAMPAIGN}:
+        errors.append(f"{label}: must contain exactly one app-development draft campaign")
+    for line_no, row in enumerate(rows, start=2):
+        if row.get("status") != APP_STATUS:
+            errors.append(f"{label} line {line_no}: every row must remain {APP_STATUS}")
+        public_fields = " ".join(
+            row.get(field, "")
+            for field in (
+                "campaign", "ad_group", "entity_id", "text", "final_url",
+                "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
+            )
+        )
+        if re.search(r"\bcurio\b", public_fields, re.I):
+            errors.append(f"{label} line {line_no}: Curio cannot appear in app campaign fields")
+
+    budget = one_setting(rows, "budget", errors, label)
+    if budget and budget.get("text") != "0 USD — NO ALLOCATION":
+        errors.append(f"{label}: budget must remain exactly zero with no allocation")
+    schedule = one_setting(rows, "schedule", errors, label)
+    if schedule and schedule.get("text") != "NOT SCHEDULED":
+        errors.append(f"{label}: schedule must remain unset")
+    bidding = one_setting(rows, "bidding_strategy", errors, label)
+    if bidding and bidding.get("text") != "UNSET":
+        errors.append(f"{label}: bidding strategy must remain unset")
+    networks = one_setting(rows, "networks", errors, label)
+    if networks and networks.get("text") != "Google Search only":
+        errors.append(f"{label}: draft network must be Google Search only")
+    account = one_setting(rows, "account_boundary", errors, label)
+    if account and account.get("text") != "Leon Builds business advertising only":
+        errors.append(f"{label}: Leon Builds-only account boundary is required")
+    landing = one_setting(rows, "landing_page", errors, label)
+    if landing and landing.get("text") != "https://leonbuilds.org/services/mobile-apps":
+        errors.append(f"{label}: canonical landing-page map changed")
+
+    keywords = [row for row in rows if row.get("record_type") == "keyword"]
+    if {row.get("ad_group") for row in keywords} != APP_GROUPS:
+        errors.append(f"{label}: expected exactly the two reviewed app ad groups")
+    for group in sorted(APP_GROUPS):
+        by_text = defaultdict(set)
+        for row in keywords:
+            if row.get("ad_group") == group:
+                by_text[row.get("text", "")].add(row.get("match_type"))
+        if len(by_text) != 4:
+            errors.append(f"{label}: {group} needs exactly four keyword concepts")
+        for keyword, match_types in by_text.items():
+            if match_types != {"exact", "phrase"}:
+                errors.append(f"{label}: {group} keyword {keyword!r} needs exact and phrase rows")
+
+    negatives = [row for row in rows if row.get("record_type") == "negative"]
+    if len(negatives) < 40:
+        errors.append(f"{label}: at least 40 reviewed negatives are required")
+    for row in negatives:
+        if row.get("scope") != "campaign":
+            errors.append(f"{label}: every negative must be campaign-scoped")
+        if row.get("match_type") not in {"broad", "phrase", "exact"}:
+            errors.append(f"{label}: negative keyword missing valid match type")
+
+    headlines = [row for row in rows if row.get("record_type") == "rsa_headline"]
+    descriptions = [row for row in rows if row.get("record_type") == "rsa_description"]
+    urls = [row for row in rows if row.get("record_type") == "rsa_url"]
+    rsa_ids = {row.get("entity_id") for row in headlines}
+    for group in sorted(APP_GROUPS):
+        ids = {row.get("entity_id") for row in headlines if row.get("ad_group") == group}
+        if len(ids) != 1:
+            errors.append(f"{label}: {group} needs exactly one held RSA")
+    for rsa_id in sorted(rsa_ids):
+        hs = [row for row in headlines if row.get("entity_id") == rsa_id]
+        ds = [row for row in descriptions if row.get("entity_id") == rsa_id]
+        us = [row for row in urls if row.get("entity_id") == rsa_id]
+        if not 8 <= len(hs) <= 15:
+            errors.append(f"{label}: {rsa_id} needs 8–15 headlines")
+        if not 2 <= len(ds) <= 4:
+            errors.append(f"{label}: {rsa_id} needs 2–4 descriptions")
+        if len({row.get("text") for row in hs}) != len(hs):
+            errors.append(f"{label}: {rsa_id} has duplicate headlines")
+        if len({row.get("text") for row in ds}) != len(ds):
+            errors.append(f"{label}: {rsa_id} has duplicate descriptions")
+        for row in hs:
+            if len(row.get("text", "")) > 30:
+                errors.append(f"{label}: {rsa_id} headline exceeds 30 characters")
+        for row in ds:
+            if len(row.get("text", "")) > 90:
+                errors.append(f"{label}: {rsa_id} description exceeds 90 characters")
+        creative = " ".join(row.get("text", "") for row in hs + ds).lower()
+        if re.search(r"\b(?:guarantee(?:d|s)?|proven results?|client results?)\b", creative):
+            errors.append(f"{label}: {rsa_id} contains an unsupported result claim")
+        if len(us) != 1:
+            errors.append(f"{label}: {rsa_id} needs exactly one final URL")
+        else:
+            check_app_url(us[0], errors, f"app Google {rsa_id}")
+
+    expected_conversions = [
+        "won_client", "qualified_app_call_held", "calendar_booking_success",
+        "quote_lead_accepted", "cta_click_or_form_start",
+    ]
+    conversions = [row for row in rows if row.get("record_type") == "conversion"]
+    observed = [
+        row.get("text")
+        for row in sorted(conversions, key=lambda row: int(row.get("priority", "999")))
+    ]
+    if observed != expected_conversions:
+        errors.append(f"{label}: conversion hierarchy is missing or out of order")
+    checks = [row for row in rows if row.get("record_type") == "launch_check"]
+    if len(checks) < 12 or any(row.get("priority") != "BLOCKER" for row in checks):
+        errors.append(f"{label}: twelve held prelaunch blockers are required")
+
+
 def png_dimensions(path):
     with open(path, "rb") as handle:
         header = handle.read(24)
@@ -489,7 +643,7 @@ def check_economics(errors):
 
 
 def check_no_fabricated_ids(errors):
-    for path in (README_FILE, GOOGLE_FILE, META_FILE, ECONOMICS_FILE):
+    for path in (README_FILE, GOOGLE_FILE, APP_GOOGLE_FILE, META_FILE, ECONOMICS_FILE):
         text = read_text(path, errors)
         for key in CLICK_IDS:
             if re.search(rf"[?&]{re.escape(key)}=", text, re.I):
@@ -506,6 +660,7 @@ def main():
         return 1
     check_readme(errors)
     check_google(errors)
+    check_app_google(errors)
     check_meta(errors)
     check_economics(errors)
     check_no_fabricated_ids(errors)
@@ -518,6 +673,7 @@ def main():
         "ads pack check ok — 1 disabled Google campaign / 1 eligible contractor ad group / "
         "1 eligible plus 5 held draft RSAs / 1 disabled Meta campaign / "
         "2 eligible plus 4 held mapped creatives / "
+        "1 zero-allocation held app-development Search draft / "
         "$100 Google campaign-total cap / 10 calendar days / Meta $0 / "
         "business-economics inputs blank / no click IDs"
     )

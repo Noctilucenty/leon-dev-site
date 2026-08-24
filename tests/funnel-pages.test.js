@@ -20,9 +20,14 @@ function inlineScripts(html) {
   return scripts;
 }
 
+function mainOnly(html) {
+  return html.match(/<main\b[^>]*>[\s\S]*?<\/main>/i)?.[0] || '';
+}
+
 test('quote submission waits for a receipt and keeps mailto as a fallback', () => {
   const html = read('quote.html');
 
+  assert.match(html, /<title>Get a Fixed Quote \| Leon Builds<\/title>/i);
   assert.match(html, /<form class="qform" id="qform" method="post" action="\/quote"/);
   assert.match(html, /<noscript>[\s\S]*mailto:leondragon3798@gmail\.com[\s\S]*tel:\+15108267735[\s\S]*<\/noscript>/);
   assert.match(html, /await fetch\(API\+'\/api\/lead'/);
@@ -57,10 +62,24 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
 
   const visibleRequired = html.match(/<(?:input|textarea|select)[^>]*\srequired(?:\s|>)/g) || [];
   assert.equal(visibleRequired.length, 2);
-  assert.match(html, /<details>/);
+  assert.match(html, /What are you trying to fix or build\? <i>\(required\)<\/i>/i);
+  assert.match(html, /Name <i>\(optional\)<\/i>/i);
+  assert.match(html, /Email <i>\(required\)<\/i>/i);
+  assert.match(html, /<details>[\s\S]*<summary>Add project details <i>\(optional\)<\/i><\/summary>/i);
+  assert.match(html, /<button[^>]*type="submit"[^>]*>[\s\S]*Send it to Leon/i);
+  assert.doesNotMatch(html, /Need help describing it\?|data-assist-open/i);
+  assert.match(html, /No payment or commitment\.[\s\S]*scope and price are agreed before work begins/i);
+  assert.ok(html.indexOf('name="problem"') < html.indexOf('name="email"'));
+  assert.ok(html.indexOf('name="email"') < html.indexOf('type="submit"'));
+  assert.ok(html.indexOf('type="submit"') < html.indexOf('<details>'));
+  const optionalDetails = html.match(/<details>[\s\S]*?<\/details>/i)?.[0] || '';
+  assert.match(optionalDetails, /name="name"/i, 'optional name stays inside optional project details');
   for (const field of ['company', 'currentTools', 'desiredOutcome', 'timeline', 'budget', 'phone']) {
     assert.match(html, new RegExp(`name="${field}"`));
   }
+
+  const ids = Array.from(html.matchAll(/\bid="([^"]+)"/g), match => match[1]);
+  assert.equal(new Set(ids).size, ids.length, 'quote page has no duplicate static IDs');
 
   for (const script of inlineScripts(html)) assert.doesNotThrow(() => new vm.Script(script));
 });
@@ -88,6 +107,9 @@ test('all booking pages expose a resilient, privacy-bounded calendar funnel', ()
     assert.match(html, /out\.utm_term=term/);
     assert.match(html, /out\.utm_content=content/);
     assert.match(html, /id="leon-cal-direct"/);
+    assert.match(html, /class="btn calendar-direct"[^>]*id="leon-cal-direct"/);
+    assert.ok(html.indexOf('id="leon-cal-direct"') < html.indexOf('id="leon-booker"'), 'direct booking fallback appears before the tall embed');
+    assert.match(html, /<body\b[^>]*data-assistant-launcher="hidden"/i);
     assert.match(html, /hideEventTypeDetails:false/);
     assert.match(html, /\['utm_source','utm_medium','utm_campaign','utm_term','utm_content'\]/);
     assert.doesNotMatch(html, /out\.(?:gclid|gbraid|wbraid|fbclid|msclkid)/);
@@ -121,35 +143,55 @@ test('generator remains the source for each localized booking variant', () => {
 
 test('contractor lead recovery is a focused website plus follow-up product', () => {
   const html = read('missed-lead-recovery.html');
+  const visible = html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const main = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/i)?.[0] || '';
+  const mainWords = main
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
 
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/missed-lead-recovery">/);
   assert.match(html, /"@type": "Service"/);
   assert.match(html, /"name": "Contractor Lead Recovery System"/);
   assert.match(html, /"name": "United States"/);
   assert.match(html, /"price": "1500"/);
-  assert.match(html, /10-business-day/);
-  assert.match(html, /contractor website \+ estimate follow-up/i);
+  assert.match(html, /Contractor website \+ missed-lead follow-up/i);
   assert.ok(html.indexOf('class="sec page-hero"') < html.indexOf('id="scope"'));
-  assert.doesNotMatch(html, /id="client-feedback"|data-testimonial-id|testimonial-stars|5 out of 5 stars/);
-  assert.match(html, /Give every website estimate request/i);
-  assert.match(html, /a clear path from form to follow-up/i);
-  assert.match(html, /structured estimate intake/i);
-  assert.match(html, /id="fit"/);
-  assert.match(html, /id="workflow"/);
-  assert.doesNotMatch(html, /id="automotive"|id="restaurants"/);
-  assert.match(html, /What is outside this \$1,500 starting scope/i);
-  assert.match(html, /technical evidence you can inspect before booking/i);
-  assert.match(html, /California-based · serving Bay Area contractors remotely/i);
-  assert.ok(html.indexOf('id="workflow"') < html.indexOf('id="scope"'));
-  assert.match(html, /30 days of fixes for defects against the agreed written scope/);
-  assert.match(html, /Phone, messaging, CRM, domain, and hosting providers keep their own fees/i);
+  assert.match(visible, /Give every website estimate request a clear path from form to follow-up\./i);
+  assert.match(visible, /A focused contractor site, estimate form, request acknowledgment, and follow-up path/i);
+  assert.match(visible, /fixed scope from \$1,500 and typically delivered in 10 business days/i);
+  assert.match(html, /structured (?:estimate )?intake/i);
+  assert.match(visible, /Based in California, working with Bay Area contractors and businesses across the U\.S\./i);
+  assert.doesNotMatch(html, /id="fit"|id="workflow"|id="automotive"|id="restaurants"|related-services/i, 'removed repetitive sections stay removed');
+  assert.match(html, /id="scope"/);
+  assert.match(html, /aria-labelledby="contractor-proof-title"/);
+  assert.match(html, /id="faq"/);
+  assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
+  assert.match(visible, /Operational decision support · client details private/i);
+  assert.match(visible, /Site intelligence/i);
+  assert.match(visible, /operational logic and handoff—not a promise of lead or revenue results/i);
+  assert.match(html, /href="\/work#work-site-intelligence"/i);
+  assert.match(html, /30 days of fixes (?:for defects )?against the (?:agreed )?written scope/);
+  assert.match(visible, /Provider fees remain with the provider/i);
   assert.match(html, /data-evt="cta_call_click"/);
   assert.match(html, /href="\/call\?service=contractor-lead-recovery" data-evt="cta_call_click"/);
   assert.match(html, /Book a free 15-minute website review/i);
   assert.match(html, /See the exact \$1,500 scope/i);
-  assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length >= 3, true);
+  assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length, 2, 'booking remains prominent in hero and final CTA');
+  assert.ok((html.match(/<section\b/g) || []).length <= 5, 'landing page stays to the approved focused structure');
+  assert.ok(mainWords.length <= 650, `contractor landing has ${mainWords.length} main words; maximum is 650`);
   assert.doesNotMatch(html, /\$2,500/);
   assert.doesNotMatch(html, /guarantee(?:d|s)? (?:leads|bookings|revenue)/);
+  assert.doesNotMatch(html, /id="client-feedback"|data-testimonial-id|testimonial-stars|5 out of 5 stars/);
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/missed-lead-recovery<\/loc>/);
 
   const call = read('call.html');
@@ -157,9 +199,9 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(call, /Book a free <em>15-minute website review<\/em>/);
   assert.match(read('app.js'), /closest\('\.contractor-landing,\.contractor-call-context'\)/);
 
-  assert.match(read('industries/contractors.html'), /href="\/missed-lead-recovery"/);
-  assert.doesNotMatch(read('industries/automotive.html'), /href="\/missed-lead-recovery/);
-  assert.doesNotMatch(read('industries/restaurants.html'), /href="\/missed-lead-recovery/);
+  assert.match(mainOnly(read('industries/contractors.html')), /href="\/missed-lead-recovery"/);
+  assert.doesNotMatch(mainOnly(read('industries/automotive.html')), /href="\/missed-lead-recovery/);
+  assert.doesNotMatch(mainOnly(read('industries/restaurants.html')), /href="\/missed-lead-recovery/);
 
   const copyGate = read('tools/check_copy.py');
   assert.match(copyGate, /'missed-lead-recovery\.html': \{'bay area'\}/);

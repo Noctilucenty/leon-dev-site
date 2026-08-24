@@ -47,6 +47,14 @@ MARKDOWN = {
         "## Partner targets",
         "## Permission-based handoff",
     ),
+    "app-development-community-drafts.md": (
+        "## Identity and proof boundary",
+        "## Manual current-rules check before any use",
+        "## Comment-first operating rule",
+        "## Post drafts",
+        "## Tracked source URL bank",
+        "## Human review record",
+    ),
     "qualification-and-stop-rules.md": (
         "## Fifteen-minute call structure",
         "## Individual-contact stop rules",
@@ -161,6 +169,78 @@ def check_structure(content, errors):
     expected_posts = {(kind, lang) for kind in ("process-map", "clinic") for lang in ("en", "es", "pt", "zh")}
     if posts != expected_posts:
         errors.append("community-and-partners.md: both post types must cover en, es, pt, and zh")
+
+    app_pack = content.get("app-development-community-drafts.md", "")
+    expected_app_drafts = {
+        "app-readiness", "mvp-scope", "build-or-buy", "app-rescue",
+        "classified-offer",
+    }
+    app_drafts = re.findall(r"<!-- app-community-draft: ([a-z-]+) -->", app_pack)
+    if set(app_drafts) != expected_app_drafts or len(app_drafts) != 5:
+        errors.append(
+            "app-development-community-drafts.md: exactly five distinct app draft markers are required"
+        )
+    app_sources = re.findall(r"<!-- app-source: ([a-z-]+) -->", app_pack)
+    if set(app_sources) != expected_app_drafts or len(app_sources) != 5:
+        errors.append(
+            "app-development-community-drafts.md: every app draft needs one distinct source marker"
+        )
+    for required in (
+        "PRIVATE REVIEW ONLY — NOTHING HAS BEEN POSTED",
+        "Never use a Curio account",
+        "No automation, bulk cross-posting",
+        "Leon Builds",
+        "Leon Kelvin Li",
+        "shipped a live App Store product",
+        "[RULES URL + YYYY-MM-DD]",
+        "[IF CURRENT RULES REQUIRE A RATE OR BUDGET FORMAT: DO NOT POST UNTIL LEON APPROVES THAT FIELD]",
+        "r/smallbusiness",
+        "r/startups",
+    ):
+        if required not in app_pack:
+            errors.append(
+                "app-development-community-drafts.md: missing required safety or proof text "
+                + repr(required)
+            )
+
+    draft_only = app_pack.split("## Post drafts", 1)[-1].split("## Tracked source URL bank", 1)[0]
+    if re.search(r"\bcurio\b", draft_only, re.I):
+        errors.append(
+            "app-development-community-drafts.md: post copy must not use Curio branding or identity"
+        )
+    for prohibited in ("guaranteed downloads", "guaranteed revenue", "mass DM", "bulk post"):
+        if prohibited.lower() in draft_only.lower():
+            errors.append(
+                f"app-development-community-drafts.md: post copy contains prohibited phrase {prohibited!r}"
+            )
+
+    app_urls = re.findall(
+        r"https://leonbuilds\.org/services/mobile-apps\?[^\s`]+", app_pack
+    )
+    if len(app_urls) != 5:
+        errors.append(
+            "app-development-community-drafts.md: exactly five mobile-app source URL templates are required"
+        )
+    seen_terms = set()
+    seen_content = set()
+    for value in app_urls:
+        query = parse_qs(urlparse(value).query)
+        if query.get("utm_source") != ["[community_slug]"]:
+            errors.append("app-development source URL must retain [community_slug]")
+        if query.get("utm_medium") != ["community"]:
+            errors.append("app-development source URL must use utm_medium=community")
+        if query.get("utm_campaign") != ["app-services-review-v1"]:
+            errors.append("app-development source URL has an unexpected campaign")
+        term = query.get("utm_term", [""])[0]
+        content_value = query.get("utm_content", [""])[0]
+        if not term or not content_value:
+            errors.append("app-development source URL is missing utm_term or utm_content")
+        seen_terms.add(term)
+        seen_content.add(content_value)
+    if len(seen_terms) != 5 or len(seen_content) != 5:
+        errors.append(
+            "app-development-community-drafts.md: source templates need distinct terms and content values"
+        )
 
     readme = content.get("README.md", "")
     social_source_path = os.path.join(ROOT, "tools", "make_social.py")
@@ -329,8 +409,9 @@ def main():
             print("  -", error)
         return 1
     print(
-        "outbound pack check ok — 6 unsent documents, 3 wedges, "
+        "outbound pack check ok — 7 unsent documents, 3 wedges, "
         "30 days, 12 cold touches, 8 multilingual community drafts, "
+        "5 app-community drafts, "
         f"{len(source_tags)} synthetic source tags, 1 synthetic CRM row"
     )
     return 0

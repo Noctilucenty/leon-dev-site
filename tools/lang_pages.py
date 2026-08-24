@@ -39,6 +39,16 @@ EN_COUNTERPART = {
     'automation': '/services/business-automation',
 }
 
+# Machine-readable floors mirror the public price source. These are starting
+# scopes, never instant quotes. Keep the $300 website offer framed as a limited
+# presence site in the authored copy; lead follow-up is the separate $1,500
+# product described on each localized website page.
+STARTING_PRICES = {
+    'websites': 300,
+    'ordering': 600,
+    'automation': 500,
+}
+
 # Everything language-specific that is chrome rather than copy.
 LANGS = {
     'pt': dict(
@@ -52,7 +62,7 @@ LANGS = {
         skip='pular para o conteúdo',
         crumb_home='início',
         other_label='outros serviços',
-        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atendo negócios em todos os Estados Unidos · <a href="/">english</a> · <a href="/es">español</a> · <a href="/zh">中文</a>',
+        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Builds</span> · by <span class="keepcase">Leon Kelvin Li</span> · california · atendo negócios em todos os Estados Unidos · <a href="/">english</a> · <a href="/es">español</a> · <a href="/zh">中文</a>',
         assist_starter='pode responder em português. meu negócio é o seguinte: ',
         call_label='agendar 15 minutos',
         privacy_label='privacidade',
@@ -68,7 +78,7 @@ LANGS = {
         skip='saltar al contenido',
         crumb_home='inicio',
         other_label='otros servicios',
-        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atiendo negocios en todo estados unidos · <a href="/">english</a> · <a href="/pt">português</a> · <a href="/zh">中文</a>',
+        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Builds</span> · by <span class="keepcase">Leon Kelvin Li</span> · california · atiendo negocios en todo estados unidos · <a href="/">english</a> · <a href="/pt">português</a> · <a href="/zh">中文</a>',
         assist_starter='puedes responder en español. mi negocio es el siguiente: ',
         call_label='agendar 15 minutos',
         privacy_label='privacidad',
@@ -91,7 +101,7 @@ LANGS = {
         skip='跳到正文',
         crumb_home='首页',
         other_label='其他服务',
-        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · 加州 · 全美国都接 · <a href="/">english</a> · <a href="/es">español</a> · <a href="/pt">português</a>',
+        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Builds</span> · by <span class="keepcase">Leon Kelvin Li</span> · 加州 · 全美国都接 · <a href="/">english</a> · <a href="/es">español</a> · <a href="/pt">português</a>',
         assist_starter='请用中文回复。我的生意是这样的：',
         call_label='预约 15 分钟',
         privacy_label='隐私',
@@ -165,16 +175,29 @@ def render(lang, key, page, ctx):
 
     faqs = [(f['q'], f['a']) for f in page['faqs']]
     schema = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebSite", "@id": f"{BASE}/#website",
+         "name": "Leon Builds", "alternateName": "Leon Builds by Leon Kelvin Li",
+         "url": f"{BASE}/"},
+        {"@type": "WebPage", "@id": f"{BASE}{path}#webpage",
+         "name": page['title'].split('|')[0].strip(),
+         "description": page['metaDescription'],
+         "inLanguage": L['html_lang'], "url": f"{BASE}{path}",
+         "isPartOf": {"@id": f"{BASE}/#website"},
+         "mainEntity": {"@id": f"{BASE}{path}#service"}},
         {"@type": "Service",
          "@id": f"{BASE}{path}#service",
          "name": page['title'].split('|')[0].strip(),
          "description": page['metaDescription'],
          "serviceType": page['h1_plain'] + ' ' + page['h1_em'],
+         "inLanguage": L['html_lang'],
          "provider": {"@id": f"{BASE}/#leon"},
          "areaServed": {"@type": "Country", "name": "United States"},
+         "offers": {"@type": "Offer", "price": str(STARTING_PRICES[key]),
+                    "priceCurrency": "USD", "description": page['pricetag'],
+                    "eligibleRegion": {"@type": "Country", "name": "United States"}},
          "url": f"{BASE}{path}"},
         {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
-         "url": f"{BASE}/about"},
+         "alternateName": "Leon Builds", "url": f"{BASE}/about"},
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": q,
              "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
@@ -224,13 +247,13 @@ def render(lang, key, page, ctx):
 <header class="nav" id="nav">
   <a class="mark" href="{L['home']}">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
-    <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Leon Builds</span>
+    <span class="mark-name">Leon Builds</span>
+    <span class="mark-handle">/ by Leon Kelvin Li</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
   <div class="nav-end">
     <a class="btn btn-solid magnet" href="{contact}"{_contact_attrs(L)} data-evt="contact_click_{lang}_nav"><span>{e(L['contact_label'])}</span></a>
-    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="Open menu"><span></span><span></span></button>
   </div>
 </header>'''
 
@@ -343,7 +366,7 @@ def render(lang, key, page, ctx):
 CALL_COPY = {
     'pt': dict(
         slug='agendar',
-        title='agendar uma conversa de 15 minutos | Leon Kelvin Li',
+        title='agendar uma conversa de 15 minutos | Leon Builds by Leon Kelvin Li',
         desc='quinze minutos, de graça, em português. você conta o que está lento ou manual no seu negócio e eu falo o que dá pra fazer e a partir de quanto sai.',
         h1_plain='quinze minutos pra saber se',
         h1_em='vale a pena fazer',
@@ -364,7 +387,7 @@ CALL_COPY = {
     ),
     'es': dict(
         slug='agendar',
-        title='agendar una llamada de 15 minutos | Leon Kelvin Li',
+        title='agendar una llamada de 15 minutos | Leon Builds by Leon Kelvin Li',
         desc='quince minutos, gratis, en español. me cuentas qué es lento o manual en tu negocio y te digo qué se puede hacer y desde cuánto sale.',
         h1_plain='quince minutos para saber si',
         h1_em='vale la pena hacerlo',
@@ -385,7 +408,7 @@ CALL_COPY = {
     ),
     'zh': dict(
         slug='yuyue',
-        title='预约 15 分钟通话 | Leon Kelvin Li',
+        title='预约 15 分钟通话 | Leon Builds by Leon Kelvin Li',
         desc='免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工，我告诉你能怎么做、大概从多少钱起。',
         h1_plain='十五分钟，先弄清楚',
         h1_em='这件事值不值得做',
@@ -430,15 +453,24 @@ def render_call(lang, booker, ctx):
                    for hl, href in call_alternates())
 
     schema = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebSite", "@id": f"{BASE}/#website",
+         "name": "Leon Builds", "alternateName": "Leon Builds by Leon Kelvin Li",
+         "url": f"{BASE}/"},
+        {"@type": "WebPage", "@id": f"{BASE}{path}#webpage",
+         "name": C['title'].split('|')[0].strip(), "description": C['desc'],
+         "inLanguage": L['html_lang'], "url": f"{BASE}{path}",
+         "isPartOf": {"@id": f"{BASE}/#website"},
+         "mainEntity": {"@id": f"{BASE}{path}#service"}},
         {"@type": "Service", "@id": f"{BASE}{path}#service",
          "name": C['title'].split('|')[0].strip(),
          "description": C['desc'],
+         "inLanguage": L['html_lang'],
          "provider": {"@id": f"{BASE}/#leon"},
          "areaServed": {"@type": "Country", "name": "United States"},
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
          "url": f"{BASE}{path}"},
         {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
-         "url": f"{BASE}/about"},
+         "alternateName": "Leon Builds", "url": f"{BASE}/about"},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": L['crumb_home'],
              "item": BASE + L['home']},
@@ -478,19 +510,19 @@ def render_call(lang, booker, ctx):
 <link rel="stylesheet" href="/assist.css">
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
-<body>{ICONS}<a class="skip" href="#main">{e(L['skip'])}</a>
+<body class="call-page" data-assistant-launcher="hidden">{ICONS}<a class="skip" href="#main">{e(L['skip'])}</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 <header class="nav" id="nav">
   <a class="mark" href="{L['home']}">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
-    <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Leon Builds</span>
+    <span class="mark-name">Leon Builds</span>
+    <span class="mark-handle">/ by Leon Kelvin Li</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
   <div class="nav-end">
     <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_call_nav"><span>{e(L['contact_label'])}</span></a>
-    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="Open menu"><span></span><span></span></button>
   </div>
 </header>
 

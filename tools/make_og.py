@@ -23,6 +23,7 @@ SANS = "/System/Library/Fonts/HelveticaNeue.ttc"
 
 root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 out = os.path.join(root, "assets", "og.png")
+app_out = os.path.join(root, "assets", "og-mobile-apps.png")
 
 img = Image.new("RGB", (W, H), BG)
 d = ImageDraw.Draw(img)
@@ -65,19 +66,44 @@ PAD = 84
 x = PAD
 d.text((x, 66), "[•]", font=f_mark, fill=AC)
 x += d.textlength("[•]  ", font=f_mark)
-d.text((x, 66), "Leon Kelvin Li", font=f_mark, fill=FG)
-x += d.textlength("Leon Kelvin Li  ", font=f_mark)
-d.text((x, 70), "/ Noctilucenty", font=f_hand, fill=FAINT)
+d.text((x, 66), "Leon Builds", font=f_mark, fill=FG)
+x += d.textlength("Leon Builds  ", font=f_mark)
+d.text((x, 70), "by Leon Kelvin Li", font=f_hand, fill=FAINT)
 
-d.text((PAD, 168), "i build the part of", font=f_disp, fill=DIM)
-d.text((PAD, 250), "your business you", font=f_disp, fill=DIM)
-d.text((PAD, 332), "still do by hand.", font=f_disp, fill=FG)
+d.text((PAD, 168), "turn website visitors", font=f_disp, fill=DIM)
+d.text((PAD, 250), "into calls, bookings", font=f_disp, fill=DIM)
+d.text((PAD, 332), "and quote requests.", font=f_disp, fill=FG)
 
-d.text((PAD, 452), "websites · apps · ai agents · automation", font=f_body, fill=(150, 150, 150))
-d.text((PAD, 484), "built for how your business actually works", font=f_body, fill=(150, 150, 150))
+d.text((PAD, 452), "websites + lead follow-up for small businesses", font=f_body, fill=(150, 150, 150))
+d.text((PAD, 484), "fixed price before work begins", font=f_body, fill=(150, 150, 150))
 
 d.line([(PAD, 546), (PAD + 86, 546)], fill=AC, width=3)
 d.text((PAD, 566), "R E M O T E   ·   B U S I N E S S E S   A C R O S S   T H E   U . S .", font=f_label, fill=FAINT)
 
 img.save(out, optimize=True)
 print("wrote", out)
+
+# App-service share card: the interface proof stays intact and the copy states
+# only the public offer. No rating, download count, or client outcome is added.
+app_img = Image.new("RGB", (W, H), BG)
+ad = ImageDraw.Draw(app_img)
+ad.text((PAD, 58), "[•]  Leon Builds", font=f_mark, fill=AC)
+ad.text((PAD, 118), "Custom apps for", font=f_disp, fill=DIM)
+ad.text((PAD, 198), "businesses.", font=f_disp, fill=FG)
+ad.text((PAD, 304), "iOS + Android  ·  fixed scope from $3,500", font=f_body, fill=(160, 160, 160))
+
+proof_path = os.path.join(root, "assets", "proof", "curio-appstore-current.png")
+proof = Image.open(proof_path).convert("RGB")
+proof.thumbnail((W - PAD * 2, 236), Image.Resampling.LANCZOS)
+proof_x = (W - proof.width) // 2
+proof_y = H - proof.height - 42
+ad.rounded_rectangle(
+    [proof_x - 8, proof_y - 8, proof_x + proof.width + 8, proof_y + proof.height + 8],
+    radius=14,
+    fill=(18, 18, 20),
+    outline=(48, 45, 67),
+    width=2,
+)
+app_img.paste(proof, (proof_x, proof_y))
+app_img.save(app_out, optimize=True)
+print("wrote", app_out)

@@ -525,6 +525,10 @@
 
     var SS = 'leon_chat';
     var state = { open: false, busy: false, history: [], sessionId: '', warmed: false, firstSent: false };
+    /* High-choice pages can keep attribution and explicit assistant triggers
+       without adding a competing floating launcher. The mode is declarative so
+       close() cannot accidentally make the launcher visible again. */
+    var launcherEnabled = document.body.getAttribute('data-assistant-launcher') !== 'hidden';
     var t = ui();
     if (/^\/(call|quote|es\/agendar|pt\/agendar|zh\/yuyue)(\/|$)/.test(location.pathname)) {
       document.documentElement.classList.add('as-high-intent');
@@ -604,6 +608,7 @@
 
     document.body.appendChild(launch);
     document.body.appendChild(panel);
+    launch.hidden = !launcherEnabled;
 
     var log = $('[data-as-log]', panel);
     var startsBox = $('[data-as-starts]', panel);
@@ -730,7 +735,7 @@
       if (starter) send(starter);
     }
     function close() {
-      panel.hidden = true; launch.hidden = false;
+      panel.hidden = true; launch.hidden = !launcherEnabled;
       state.open = false;
       document.documentElement.style.overflow = '';
       if (lastFocus && lastFocus.focus) lastFocus.focus();

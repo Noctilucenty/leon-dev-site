@@ -4,48 +4,48 @@
       "lang": "pt",
       "service": "websites",
       "page": {
-        "title": "criar site para empresa a partir de $300 | Leon Kelvin Li",
-        "metaDescription": "site do seu negócio a partir de $300, ou $625 quando ele precisa de login e banco de dados. preço fechado por escrito antes de começar. falo português.",
-        "h1_plain": "um site que você não tem vergonha de",
-        "h1_em": "mandar no whatsapp",
+        "title": "criar site para empresa e acompanhar leads | Leon Builds by Leon Kelvin Li",
+        "metaDescription": "site rápido para empresa a partir de $300. site com formulário de orçamento e rotina de acompanhamento a partir de $1,500. preço fixo por escrito. falo português.",
+        "h1_plain": "cada pedido de orçamento",
+        "h1_em": "com um próximo passo claro",
         "intro": [
-          "o cliente pede o seu site e você manda o instagram, porque site você não tem. ou manda o link de um que alguém fez uns anos atrás e nunca mais mexeu, torcendo pra ele abrir direito no celular.",
-          "eu faço o site direto com você, sem agência no meio. abre rápido no celular, mostra logo o que o cliente está procurando, e horário, preço e foto você mesmo troca depois. você me explica em português, do seu jeito, sem precisar saber o nome técnico de nada."
+          "um cliente encontra a empresa no celular, pede um orçamento e a mensagem cai no meio dos outros e-mails. quando ninguém sabe quem responde, a oportunidade fica parada sem que o dono perceba.",
+          "eu construo o site e, quando faz sentido, o caminho de acompanhamento: formulário, confirmação imediata, regra de quem assume o pedido e instruções de entrega. você fala direto comigo, em português, e recebe o escopo e o preço fixo antes de eu começar."
         ],
-        "pricetag": "a partir de $300 · o preço fechado sai por escrito antes de eu começar, e não muda depois",
+        "pricetag": "site institucional enxuto a partir de $300 · site + acompanhamento de leads a partir de $1,500 · preço fixo por escrito antes de começar",
         "pains_label": "reconhece alguma dessas?",
         "pains": [
-          "o cliente pergunta se você tem site e você acaba mandando o instagram",
-          "o site existe, mas você tem vergonha de mandar o link",
-          "no celular a letra fica minúscula e o telefone não dá pra clicar",
-          "mudou o horário do feriado e você tem que caçar quem fez o site",
-          "quem fez sumiu, o domínio está no nome dele e você não tem senha de nada"
+          "o cliente procura no celular e não entende em poucos segundos o que a empresa faz",
+          "o telefone, o whatsapp ou o botão de orçamento ficam difíceis de achar",
+          "o formulário envia um e-mail, mas ninguém sabe quem deve responder",
+          "o site existe, mas horário, serviços e fotos continuam desatualizados",
+          "o domínio ou as contas ficaram com quem fez o site antigo"
         ],
         "build_label": "o que eu entrego",
         "build": [
-          "as páginas do seu negócio: o que você faz, fotos, horário, endereço e telefone",
-          "botão de whatsapp que abre a conversa já com o texto escrito",
-          "carrega rápido no celular, mesmo com sinal ruim",
-          "você mesmo troca horário, preço e foto depois, sem precisar me chamar",
-          "o mesmo site em português e em inglês, quando os seus clientes falam os dois",
-          "o domínio, a hospedagem e as contas combinados no escopo ficam no seu nome; você recebe o código incluído e as instruções de configuração"
+          "no escopo de $300: uma presença institucional enxuta, rápida no celular, com serviços, fotos, horário e um caminho principal de contato",
+          "no produto de $1,500: site focado, formulário de orçamento, confirmação imediata, regras de acompanhamento e entrega documentada ao responsável",
+          "telefone, whatsapp, agendamento ou orçamento em destaque, conforme a ação mais importante para o negócio",
+          "português e inglês quando os clientes usam os dois idiomas",
+          "nome, serviços, área atendida e contato em uma estrutura que Google e assistentes de IA conseguem interpretar",
+          "o código e as contas de projeto definidos no escopo são entregues com instruções; serviços de terceiros mantêm os próprios termos"
         ],
-        "proof_label": "coisas rodando de verdade",
-        "proof_title": "uma cozinha só, várias marcas vendendo online ao mesmo tempo",
-        "proof_body": "o cliente monta um carrinho só, e o sistema separa o pedido por marca sozinho, com a conta de cada marca fechando separada. esse é o site de $625: login, banco de dados, área de administração. o site de $300 é a parte da frente disso — as páginas, as fotos, o horário, o contato. eu fiz os dois lados, sozinho, e quem escreve o código é a mesma pessoa que responde a sua mensagem.",
+        "proof_label": "protótipo público · pagamentos simulados",
+        "proof_title": "páginas de negócio, busca e carrinho de demonstração",
+        "proof_body": "The Home Screen é um protótipo público com páginas específicas para cada negócio, cardápios, busca e um carrinho de demonstração. pagamentos e a operação da cozinha não estão ao vivo. essa diferença fica visível para você avaliar o que existe hoje sem transformar um protótipo em resultado de cliente.",
         "faq_label": "o que perguntam primeiro",
         "faqs": [
           {
             "q": "quanto custa um site?",
-            "a": "um site institucional — as suas páginas, fotos, horário e contato — começa em $300. se o site precisar guardar ou processar informação, como login de cliente, banco de dados, área de administração, ou conversar com outro sistema que você já usa, começa em $625. nos dois casos esse é o ponto de partida: o preço fechado sai por escrito antes de eu começar, e ele não muda no final."
+            "a": "um site institucional enxuto começa em $300 e cobre uma presença clara com um caminho principal de contato. se precisar de login, banco de dados, área de administração ou API, começa em $625. o produto com site, formulário de orçamento, confirmação imediata, regras de acompanhamento e entrega ao responsável começa em $1,500. são pisos de escopo; o preço fixo sai por escrito antes de começar."
           },
           {
-            "q": "qual a diferença entre o site de $300 e o de $625?",
-            "a": "o site de $300 mostra informação: as suas páginas, as fotos, o cardápio ou a lista de serviços, o horário e o contato. o site de $625 guarda informação: alguém entra com senha, os dados ficam num banco de dados, e você tem uma área de administração pra ver e mudar tudo aquilo. a pergunta simples é essa — alguém precisa fazer login, ou o site precisa lembrar de alguma coisa? se a resposta for sim, é o segundo. se for não, é o primeiro, e você não precisa gastar mais que isso."
+            "q": "o que entra no site com acompanhamento de leads?",
+            "a": "o ponto de partida de $1,500 inclui um site focado, formulário de orçamento, confirmação imediata para quem enviou, regras escritas de acompanhamento e uma entrega documentada para o responsável. ele não promete que o cliente vai fechar nem responde pelo tempo da sua equipe; deixa cada pedido visível e com um próximo passo combinado."
           },
           {
             "q": "eu já tenho um site. preciso jogar fora e começar do zero?",
-            "a": "na maioria das vezes não precisa jogar fora. quase todo site tem um problema só: está lento, quebrado no celular, ou ninguém consegue mexer nele. um conserto pequeno começa em $75, e refazer do zero é cobrado como site novo, a partir de $300. eu olho o que você tem de graça e falo qual dos dois vale mais a pena, mesmo quando a resposta é o serviço menor, que rende menos pra mim."
+            "a": "na maioria das vezes não. primeiro eu verifico se o problema está na velocidade, no celular, no texto ou no caminho do formulário. um conserto pequeno começa em $75; refazer entra como site novo, a partir de $300. se o site atual puder receber o acompanhamento sem ser refeito, isso fica claro no escopo."
           },
           {
             "q": "como funciona o trabalho, do começo até o site no ar?",
@@ -54,7 +54,7 @@
         ],
         "cta_primary": "me chama no whatsapp",
         "cta_secondary": "me conta aqui mesmo",
-        "close": "se você já tem alguma coisa no ar, me manda o link que eu olho de graça e falo se vale mais arrumar ou refazer, mesmo que a resposta seja não mexer em nada."
+        "close": "se você já tem site, me mande o link e diga o que acontece depois que alguém pede orçamento. eu verifico se vale ajustar o que existe, refazer ou apenas organizar o acompanhamento."
       },
       "corrections": 11
     },
@@ -62,7 +62,7 @@
       "lang": "pt",
       "service": "ordering",
       "page": {
-        "title": "Sistema de pedido online e agendamento | Leon Kelvin Li",
+        "title": "sistema de pedido online e agendamento | Leon Builds by Leon Kelvin Li",
         "metaDescription": "Pedido online e agendamento no seu próprio site, a partir de $600. O cliente escolhe, paga no cartão e o pedido cai no seu celular. Falo português.",
         "h1_plain": "pedido online e agendamento no seu próprio site,",
         "h1_em": "sem a comissão do aplicativo",
@@ -120,7 +120,7 @@
       "lang": "pt",
       "service": "automation",
       "page": {
-        "title": "Automação e Chatbot para Negócios | Leon Kelvin Li",
+        "title": "automação e chatbot para negócios | Leon Builds by Leon Kelvin Li",
         "metaDescription": "Automação do trabalho repetitivo, chatbot e atendente de telefone com IA no seu negócio. A partir de $500, preço fechado antes de começar. Falo português.",
         "h1_plain": "o trabalho que se repete toda semana",
         "h1_em": "não precisa passar por você",
@@ -146,9 +146,9 @@
           "atendente de telefone com IA que resolve a pergunta de sempre e passa pra uma pessoa assim que o assunto sai do combinado",
           "o que for definido no escopo é montado nas contas do projeto combinadas com você; sua equipe recebe acesso, o código incluído e instruções de configuração, e serviços ou licenças de terceiros continuam seguindo os próprios termos"
         ],
-        "proof_label": "o que já está rodando",
-        "proof_title": "resposta de avaliação escrita com IA",
-        "proof_body": "uma ferramenta que lê as avaliações que o negócio recebe e já escreve a resposta usando só o que o próprio negócio confirmou: horário, política da casa, o que de fato aconteceu. ela não inventa nada fora dessa lista. e nada vai pro ar sozinho — uma pessoa lê e aperta enviar. é assim que eu monto IA pra negócio pequeno: a máquina escreve, a pessoa decide.",
+        "proof_label": "demonstração pública · etapas incompletas bem marcadas",
+        "proof_title": "formulário guiado, verificação e documento em PDF",
+        "proof_body": "a demonstração pública do Loqol reúne respostas salvas, verificações de consistência, uma área de trabalho para o agente e geração de PDF. a assinatura do comprador e do agente e o envio por e-mail ao vendedor ainda estão incompletos. o status fica explícito para você avaliar somente o que funciona hoje.",
         "faq_label": "perguntas que sempre aparecem",
         "faqs": [
           {
@@ -178,57 +178,57 @@
       "lang": "es",
       "service": "websites",
       "page": {
-        "title": "página web para tu negocio — desde $300 | Leon Kelvin Li",
-        "metaDescription": "hago la página de tu negocio desde $300, o desde $625 si necesita cuentas y base de datos. precio cerrado por escrito antes de empezar. hablo español.",
-        "h1_plain": "una página web que",
-        "h1_em": "no te dé pena mandar",
+        "title": "diseño web y seguimiento de prospectos | Leon Builds by Leon Kelvin Li",
+        "metaDescription": "página web para negocio desde $300. página con formulario de cotización y seguimiento desde $1,500. precio fijo por escrito. atención en español.",
+        "h1_plain": "cada solicitud de cotización",
+        "h1_em": "con un siguiente paso claro",
         "intro": [
-          "el cliente te busca en el celular antes de llamarte. si no encuentra nada, o encuentra una página vieja que en el teléfono se ve mal, llama al siguiente negocio de la lista y tú nunca te enteras de que estuvo ahí.",
-          "yo hago la página y la subo en las cuentas del proyecto que acordemos contigo. me explicas tu negocio en español, sin tecnicismos, y la persona que te contesta es la misma que escribe el código. el precio queda por escrito antes de empezar y no cambia al final."
+          "un cliente encuentra el negocio en el celular, pide una cotización y el mensaje queda enterrado entre otros correos. si nadie sabe quién debe responder, la solicitud se queda quieta sin que el dueño lo note.",
+          "yo construyo la página y, cuando hace falta, el camino de seguimiento: formulario, confirmación inmediata, una regla clara de responsable y entrega documentada. hablas directo conmigo en español y recibes el alcance y el precio fijo antes de que empiece."
         ],
-        "pricetag": "desde $300 · precio cerrado por escrito antes de empezar · trabajo en línea con negocios de todo el país",
+        "pricetag": "página informativa de alcance limitado desde $300 · página + seguimiento desde $1,500 · precio fijo por escrito antes de empezar",
         "pains_label": "¿te suena esto?",
         "pains": [
-          "no tienes página, y cuando alguien te la pide terminas mandando el facebook del negocio",
-          "la página que tienes es de hace años y ya no sabes quién la hizo ni cómo entrar",
-          "en el celular las letras salen chiquitas y el cliente tiene que hacer zoom para ver tu teléfono",
-          "cambiaste el horario o los precios hace meses y en la página siguen los de antes",
-          "te da pena mandar el enlace, entonces mandas una foto del menú o de la tarjeta por whatsapp"
+          "el cliente entra desde el celular y no entiende rápido qué hace el negocio",
+          "el teléfono, whatsapp o botón de cotización cuesta trabajo encontrarlo",
+          "el formulario manda un correo, pero nadie sabe quién debe responder",
+          "los horarios, servicios o fotos siguen desactualizados",
+          "el dominio o las cuentas quedaron con quien hizo la página anterior"
         ],
         "build_label": "esto es lo que te construyo",
         "build": [
-          "una página que abre rápido en el celular, con tu horario, tu dirección, tus fotos y un botón que marca tu teléfono",
-          "en español, en inglés o en los dos, según a quién le vendes",
-          "tú puedes cambiar precios, horarios y fotos después, sin escribirme ni pagar de nuevo",
-          "el dominio, el hosting y las cuentas acordados en el alcance quedan a tu nombre; recibes el código incluido y las instrucciones de configuración, mientras las licencias y servicios de terceros conservan sus propias condiciones",
-          "hecha para que te encuentren en google y también en los asistentes de inteligencia artificial, que es donde ya busca mucha gente",
-          "si la página necesita guardar datos —cuentas de clientes, base de datos, un panel para administrar— eso también lo construyo yo, y ahí entra el otro precio"
+          "en el alcance de $300: una presencia informativa y limitada, rápida en el celular, con servicios, fotos, horario y un camino principal de contacto",
+          "en el producto de $1,500: página enfocada, formulario de cotización, confirmación inmediata, reglas de seguimiento y entrega documentada al responsable",
+          "teléfono, whatsapp, reservación o cotización destacado según la acción más importante del negocio",
+          "contenido en español e inglés cuando los clientes usan los dos idiomas",
+          "nombre, servicios, zona atendida y contacto en una estructura que Google y los asistentes de IA pueden interpretar",
+          "el código y las cuentas del proyecto definidos en el alcance se entregan con instrucciones; los servicios externos mantienen sus propias condiciones"
         ],
-        "proof_label": "pruebas, no promesas",
-        "proof_title": "un sistema de pedidos donde una sola cocina vende bajo varias marcas",
-        "proof_body": "una cocina que vende bajo varias marcas. el cliente arma un solo carrito y el sistema lo separa por sí solo: cada marca recibe la parte del pedido que le toca y la contabilidad de cada una queda por separado. eso es lo que hay detrás cuando una página deja de ser un folleto y tiene que guardar y procesar datos. lo construí yo, de principio a fin, y es un sistema en uso, no una maqueta.",
+        "proof_label": "prototipo público · pagos simulados",
+        "proof_title": "páginas de negocio, búsqueda y carrito de demostración",
+        "proof_body": "The Home Screen es un prototipo público con páginas para cada negocio, menús, búsqueda y un carrito de demostración. los pagos y la operación de cocina no están en vivo. esa diferencia queda visible para que evalúes lo que existe hoy sin convertir un prototipo en resultado de cliente.",
         "faq_label": "lo que preguntan primero",
         "faqs": [
           {
             "q": "¿cuánto cuesta una página web?",
-            "a": "una página de negocio empieza en $300, y ahí entran las secciones, el texto, las fotos, el horario y el contacto, todo rápido en el celular. si la página además tiene que guardar o procesar datos, como cuentas de clientes, una base de datos, un panel de administración o conexión con otro sistema, entonces empieza en $625, porque detrás ya hay un programa y no solo páginas. son precios de partida: el número real depende del tamaño del proyecto, te lo doy cerrado y por escrito antes de empezar, y no cambia al final."
+            "a": "una página informativa de alcance limitado empieza en $300 y cubre una presencia clara con un camino principal de contacto. si necesita cuentas, base de datos, panel o API, empieza en $625. el producto con página, formulario de cotización, confirmación inmediata, reglas de seguimiento y entrega al responsable empieza en $1,500. son pisos de alcance; recibes el precio fijo por escrito antes de empezar."
+          },
+          {
+            "q": "¿qué incluye la página con seguimiento?",
+            "a": "el punto de partida de $1,500 incluye una página enfocada, formulario de cotización, confirmación inmediata para quien lo envía, reglas escritas de seguimiento y entrega documentada al responsable. no promete que el prospecto va a comprar ni controla el tiempo de tu equipo; hace visible cada solicitud y su siguiente paso."
           },
           {
             "q": "ya tengo página. ¿tengo que empezar de cero?",
-            "a": "casi nunca hay que empezar de cero. la mayoría de las páginas tienen un solo problema real: van lentas, se ven mal en el celular, o nadie sabe cómo cambiarles el texto. la reviso y te digo qué vale la pena conservar, y si lo que tienes ya está bien te lo digo también y no te vendo nada. un arreglo chico cuesta desde $75, y rehacerla completa se cobra como una página nueva, desde $300."
+            "a": "casi nunca. primero reviso si el problema es velocidad, vista en celular, contenido o el camino del formulario. un arreglo pequeño empieza en $75; rehacerla entra como página nueva, desde $300. si la página actual puede recibir el seguimiento sin rehacerse, eso queda claro en el alcance."
           },
           {
-            "q": "¿cuánto se tarda?",
-            "a": "la mayoría de las páginas de negocio toman una o dos semanas. cada semana te mando un enlace que puedes abrir en tu propio teléfono para ver cómo va, así me dices qué cambiar mientras todavía es fácil cambiarlo. si la página lleva cuentas o base de datos detrás, toma más tiempo, y te digo cuánto antes de empezar, no sobre la marcha."
-          },
-          {
-            "q": "¿la página queda a mi nombre?",
-            "a": "el dominio, el hosting y las cuentas del proyecto que figuran en el alcance se abren con tu correo. recibes el código incluido y las instrucciones de configuración; las licencias y los servicios de terceros siguen sus propias condiciones. si mañana quieres que otra persona continúe, puede hacerlo sin depender de mí."
+            "q": "¿cuánto se tarda y qué recibo al final?",
+            "a": "la mayoría de las páginas de negocio toman una o dos semanas. el producto enfocado de $1,500 suele tomar 10 días hábiles después de que estén listos el alcance, los accesos y el contenido aprobado. el dominio, las cuentas, el código y las instrucciones que figuren en el alcance se entregan según lo escrito; los servicios externos conservan sus propias condiciones."
           }
         ],
         "cta_primary": "cuéntame qué necesitas",
         "cta_secondary": "pregúntame aquí mismo",
-        "close": "si ya tienes página, mándame el enlace y le doy una revisada sin cobrarte: te digo en español si vale la pena arreglarla, rehacerla o dejarla como está."
+        "close": "si ya tienes página, mándame el enlace y dime qué pasa después de que alguien pide una cotización. reviso si conviene ajustar lo que existe, rehacerlo o solo ordenar el seguimiento."
       },
       "corrections": 16
     },
@@ -236,7 +236,7 @@
       "lang": "es",
       "service": "ordering",
       "page": {
-        "title": "Pedidos en línea y citas — desde $600 | Leon Kelvin Li",
+        "title": "pedidos en línea y citas — desde $600 | Leon Builds by Leon Kelvin Li",
         "metaDescription": "pedidos y citas desde tu propia página: el cliente paga con tarjeta y el pedido cae en tu celular. Leon no agrega comisión por pedido; atiendo en español.",
         "h1_plain": "pedidos y citas en tu propia página,",
         "h1_em": "sin comisión de Leon por cada pedido",
@@ -294,7 +294,7 @@
       "lang": "es",
       "service": "automation",
       "page": {
-        "title": "Automatización y Chatbots — desde $500 | Leon Kelvin Li",
+        "title": "automatización y chatbots — desde $500 | Leon Builds by Leon Kelvin Li",
         "metaDescription": "automatizo lo repetitivo de tu negocio y armo bots que contestan las preguntas de siempre. desde $500, precio cerrado por escrito. hablo español.",
         "h1_plain": "lo que repites todas las semanas",
         "h1_em": "puede hacerse solo",
@@ -320,9 +320,9 @@
           "un agente que contesta el teléfono cuando nadie puede, toma el recado y te pasa a ti las llamadas raras",
           "lo acordado en el alcance se monta en las cuentas del proyecto definidas contigo; tu equipo recibe acceso, el código incluido y pasos de configuración en español, mientras las licencias y servicios de terceros conservan sus propias condiciones"
         ],
-        "proof_label": "pruebas, no promesas",
-        "proof_title": "reseñas contestadas sin inventar nada",
-        "proof_body": "armé una herramienta que lee las reseñas que le dejan a un negocio y redacta la respuesta usando nada más los datos verificados de ese negocio: sus horarios, sus precios, sus reglas. si la respuesta no está en esa información, no se la inventa. deja el borrador listo y una persona es la que aprieta enviar. así armo todo lo que lleva inteligencia artificial: la máquina prepara el trabajo, la persona decide.",
+        "proof_label": "demostración pública · pasos incompletos bien marcados",
+        "proof_title": "captura guiada, controles de consistencia y documento PDF",
+        "proof_body": "la demostración pública de Loqol reúne respuestas guardadas, controles de consistencia, un espacio de trabajo para el agente y generación de PDF. las firmas del comprador y del agente y el envío por correo al vendedor siguen incompletos. el estado está visible para que evalúes solo lo que funciona hoy.",
         "faq_label": "lo que preguntan primero",
         "faqs": [
           {
@@ -352,57 +352,57 @@
       "lang": "zh",
       "service": "websites",
       "page": {
-        "title": "商家网站制作 $300 起，直接说中文 | Leon Kelvin Li",
-        "metaDescription": "给餐馆、美甲店、诊所、超市做网站：菜单、服务、照片、营业时间、电话、地图，手机上打开很快，点一下就能拨号导航。展示型网站 $300 起；要客人登录、数据库、后台管理的从 $625 起。我一个人写代码，全程用中文沟通，开工前把范围和固定价写清楚；范围内约定的域名、账号和源代码会交接给你。全美国线上合作。",
-        "h1_plain": "一个你敢直接发给客人的网站，",
-        "h1_em": "用中文跟我说就行",
+        "title": "商家网站和询价跟进系统 | Leon Builds by Leon Kelvin Li",
+        "metaDescription": "商家展示网站 $300 起；网站加询价表单、即时确认、跟进规则和负责人交接 $1,500 起。开工前写清固定价，全程可用中文沟通。",
+        "h1_plain": "让每一条网站询价",
+        "h1_em": "都有明确的下一步",
         "intro": [
-          "客人问你有没有网站，你只能发一张菜单照片，或者一个微信名片。也有的老板是有网站的，几年前找人做的，现在想改一个电话号码，都找不到那个人。",
-          "网站其实分两种，价钱差在这里：只是把信息给客人看的，$300 起；要记住东西的，比如客人登录、数据库、你自己能改内容的后台，$625 起。大部分店只需要第一种，我不会把你往贵的那边推。写代码的就是跟你说话的这个人，你用中文讲就行。"
+          "客人在手机上找到你，填完询价表，邮件却混在收件箱里。要是没有人明确负责，老板往往到很晚才发现这条消息一直没人处理。",
+          "我可以只做一个干净的商家网站，也可以把询价后的流程一起做好：表单提交、即时确认、谁来跟进、什么时候检查，最后都有交接说明。全程直接跟我用中文沟通，开工前把范围和固定价写清楚。"
         ],
-        "pricetag": "展示型网站 $300 起，带后台的 $625 起 · 开工之前把价钱写下来，做完不变 · 全美国都接，线上做",
+        "pricetag": "精简展示网站 $300 起 · 网站加询价跟进 $1,500 起 · 开工前书面确认固定价",
         "pains_label": "这些是不是很眼熟",
         "pains": [
-          "客人上网搜你的店，跳出来的是别人整理的页面，电话是老的，营业时间也是错的",
-          "菜单改了价，微信群里发过一遍，网上那份还是旧的，客人到店拿网上的旧价跟你理论",
-          "网站是几年前找人做的，那个人现在不回消息，换一张照片都换不了",
-          "网站在手机上要放大才看得清，客人找不到电话，直接就退出去了",
-          "客人问你网址，你不好意思发，只能说一句“你搜我们店名就行”"
+          "客人用手机打开网站，几秒钟还看不懂你具体做什么",
+          "电话、微信、预约或询价按钮藏得太深",
+          "表单只发一封邮件，没有人知道应该由谁回复",
+          "营业时间、服务和照片长期没人更新",
+          "域名和项目账号还在原来做网站的人手里"
         ],
         "build_label": "我会给你做什么",
         "build": [
-          "首页、菜单或者服务、照片、营业时间、地址、电话，一页一页写清楚，不凑字数",
-          "先做手机版，再做电脑版，你的客人基本都是用手机看你的店",
-          "电话点一下就拨出去，地址点一下就跳到地图导航",
-          "中文和英文放在同一个网站里，两套内容一起写，不用做两个站",
-          "店名、地址、营业时间、服务项目，按 Google 和 AI 读得懂的格式写进代码里",
-          "范围里约定的域名、服务器和项目账号开在你名下；包含的源代码和设置说明会交给你，第三方服务按各自条款使用"
+          "$300 的范围是一个精简展示网站：手机上打开快，服务、照片、营业时间和一个主要联系方式写清楚",
+          "$1,500 的范围是网站加询价表单、提交后的即时确认、书面跟进规则和负责人交接说明",
+          "电话、微信、预约或询价只突出最重要的一个，不让客人到处找",
+          "需要时可同时做中文和英文内容",
+          "店名、服务、服务地区和联系方式按 Google 与 AI 容易理解的结构写进页面",
+          "书面范围内约定的代码和项目账号会连同设置说明交接；第三方服务继续按各自条款使用"
         ],
-        "proof_label": "做过的东西，不是承诺",
-        "proof_title": "一个厨房，几个牌子，一个购物车自己分单",
-        "proof_body": "我做过一套网上点单系统：一个厨房同时跑几个牌子，客人在同一个购物车里可以放不同牌子的东西，下单的时候系统自己把订单拆开，每个牌子的账分开算。这比一个普通网站复杂得多。我提这个，只是想说明一件事：网站后面真要接数据、要算账的时候，我做得了。反过来也一样，你要是只需要一个干净的介绍页，我会直接告诉你不用做到那一步。",
+        "proof_label": "公开原型 · 付款为模拟流程",
+        "proof_title": "商家页面、菜单搜索和演示购物车",
+        "proof_body": "The Home Screen 是一个公开原型，可以查看不同商家的页面、菜单、搜索和演示购物车。目前付款和后厨运营都没有正式上线。页面会把这个限制写清楚，让你只按现在真正存在的功能判断，不把原型说成客户成果。",
         "faq_label": "常见问题",
         "faqs": [
           {
             "q": "做一个商家网站要多少钱？",
-            "a": "展示型网站 $300 起，包括页面、内容、照片、营业时间、联系方式这些，在手机上打开很快。如果网站要存东西或者处理数据，比如客人登录、数据库、后台管理页面、跟别的系统对接，那从 $625 起。这两个都是起步价，看完你的具体要求我会给一个固定价格，开工之前写下来，做的过程中不再变。"
+            "a": "精简展示网站 $300 起，重点是把业务信息和一个主要联系方式讲清楚。需要登录、数据库、后台或 API 的网站从 $625 起。网站加询价表单、即时确认、跟进规则和负责人交接从 $1,500 起。这些都是范围起步价；看完要求后，我会在开工前把固定价写清楚。"
           },
           {
-            "q": "$300 和 $625 的区别到底在哪里？",
-            "a": "区别在于网站要不要记住东西。只是把信息给客人看的，比如菜单、服务、照片、营业时间、地址、地图，属于 $300 那一档，页面是固定的，内容要改我帮你改。如果客人可以注册账号、可以查自己的订单，或者你要在后台自己加减内容，又或者要跟 Stripe、收银系统、预约系统对接，那就需要数据库和后台，属于 $625 那一档。大部分店其实只需要前面那一种。"
+            "q": "$1,500 的网站加跟进具体包括什么？",
+            "a": "起步范围包括一个目标清楚的网站、询价表单、提交后的即时确认、书面跟进规则，以及交给负责人的操作说明。它不能保证客人一定成交，也不能替你的员工控制回复速度；它解决的是每条询价都能看见，并且有约定好的下一步。"
           },
           {
-            "q": "以后内容我自己能改吗？",
-            "a": "$300 起的展示型网站，内容是我帮你改，小改动 $75 起，改电话、改价格、换照片这种一般当天就能好。如果你想自己动手，比如每周换特价、经常加新菜，那就给你做一个能自己改内容的后台，属于 $625 起的那一种，以后你在手机上就能改。要是每个月都有事情要改，也可以按 $400 一个月包起来，不用一次一次报价。"
+            "q": "已经有网站，还要全部重做吗？",
+            "a": "通常不用。先看问题是在手机速度、内容，还是表单后的流程。小修改 $75 起；重做按新网站范围，从 $300 起。如果现有网站可以直接接上跟进流程，我会在书面范围里说明，不会为了卖新网站把能用的部分丢掉。"
           },
           {
-            "q": "我英文不好，做的过程中怎么沟通？",
-            "a": "全程可以用中文，微信、电话、邮件都行。写代码的就是跟你说话的这个人，中间没有销售也没有翻译，你按平时说话的方式把问题讲一遍就可以。做的过程中每周会给你一个能在手机上点开的版本，你看着不对就说，不用等到最后才看到东西。英文、西班牙语、葡萄牙语我也能写，所以给说英文的客人看的那一版，我一起做。"
+            "q": "要多久，最后会交给我什么？",
+            "a": "大多数商家网站需要一到两周。$1,500 的固定范围在范围、账号权限和已确认文案都准备好之后，通常需要 10 个工作日。域名、项目账号、代码和设置说明以书面范围为准进行交接；第三方服务继续按各自条款使用。"
           }
         ],
         "cta_primary": "说说你的情况",
         "cta_secondary": "用中文问我",
-        "close": "你现在已经有网站的话，把网址发给我，我免费看一眼，告诉你问题出在哪、要不要重做，不用重做我也会直接说。"
+        "close": "如果你已经有网站，把网址发给我，再告诉我客人提交询价以后现在怎么处理。我会判断应该改现有网站、重做，还是只整理跟进流程。"
       },
       "corrections": 7
     },
@@ -410,7 +410,7 @@
       "lang": "zh",
       "service": "ordering",
       "page": {
-        "title": "网上点单和预约系统 $600 起 · 会说中文 | Leon Kelvin Li",
+        "title": "网上点单和预约系统 $600 起 | Leon Builds by Leon Kelvin Li",
         "metaDescription": "客人在你自己的网站上点单、刷卡付钱，单子直接进手机或后厨；预约也可自助完成。$600 起，开工前写清范围和价格。我不按订单抽成；刷卡、托管、短信和其他第三方费用按所选服务商与套餐另算。会说中文，全美国线上合作。",
         "h1_plain": "客人自己下单、自己约时间，",
         "h1_em": "单子直接进你的手机",
@@ -468,7 +468,7 @@
       "lang": "zh",
       "service": "automation",
       "page": {
-        "title": "AI 接电话、AI 客服、流程自动化 · 会说中文 | Leon Kelvin Li",
+        "title": "AI 接电话、AI 客服和流程自动化 | Leon Builds by Leon Kelvin Li",
         "metaDescription": "整天接的都是那几个电话，同一张单子在两个系统里各打一遍，发票和跟进全靠人记着？这些重复的活可以交给系统做。流程自动化 $500 起，AI 客服 $750 起，AI 接电话 $1,000 起。很多活其实用不上 AI，一个普通脚本更便宜也更稳，这种我会直接讲。我会说中文，写代码的就是我本人。全美国都接，线上做。",
         "h1_plain": "同样几句话一天讲二十遍，",
         "h1_em": "这部分可以不用人做",
@@ -494,9 +494,9 @@
           "把散在微信群、本子和 Excel 表里的东西收进一个地方，谁都查得到，不用等那一个人回来",
           "每天的数字系统自己算好：今天多少单、收了多少、哪几笔还没收，早上打开就能看"
         ],
-        "proof_label": "做过的东西，现在真的在跑",
-        "proof_title": "自动读客人评论，自动写好回复",
-        "proof_body": "客人留下的评论自动收进来，系统读完，用这家店自己核实过的资料写好一份回复——只照店里给的说法写，不自己编。写好之后停在那里等人看，按下发送的还是人，不是机器。这套东西现在真的在跑。",
+        "proof_label": "公开演示 · 未完成步骤明确标出",
+        "proof_title": "引导填写、一致性检查和 PDF 文件",
+        "proof_body": "Loqol 的公开演示可以保存填写内容、检查前后是否一致，提供经纪人工作区并生成 PDF。目前买方与经纪人签名、给卖方发送邮件这两部分还没有完成。页面会把状态写清楚，让你只按现在真正能用的部分判断。",
         "faq_label": "大家最先问的几个问题",
         "faqs": [
           {

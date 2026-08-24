@@ -10,6 +10,9 @@ const path = require('node:path');
 const ROOT = path.join(__dirname, '..');
 const SCRIPT = path.join(ROOT, 'tools', 'build_static.py');
 const TEMP = fs.mkdtempSync(path.join(os.tmpdir(), 'leon-static-build-'));
+const releasedTestimonials = JSON.parse(
+  fs.readFileSync(path.join(ROOT, 'content', 'client-success', 'testimonial-publication.json'), 'utf8')
+).approved_testimonials;
 
 after(() => {
   fs.rmSync(TEMP, { recursive: true, force: true });
@@ -60,7 +63,7 @@ test('static build publishes only pages and required referenced assets', () => {
   assert.equal(result.status, 0, diagnostic(result));
 
   for (const relative of [
-    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html', 'missed-lead-recovery.html',
+    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html', 'work.html', 'missed-lead-recovery.html',
     'services/index.html', 'services/websites.html', 'es/index.html',
     'styles.css', 'assist.css', 'app.js', 'assist.js',
     'assets/favicon.svg', 'assets/og.png', 'favicon.ico', 'apple-touch-icon.png',
@@ -70,6 +73,13 @@ test('static build publishes only pages and required referenced assets', () => {
     const published = path.join(output, relative);
     assert.equal(fs.existsSync(published) && fs.statSync(published).isFile(), true, relative);
   }
+
+  const reviewsOutput = path.join(output, 'reviews.html');
+  assert.equal(
+    fs.existsSync(reviewsOutput),
+    releasedTestimonials.length >= 3,
+    '/reviews is published only when at least three testimonials pass the release gate'
+  );
 
   for (const relative of [
     'content/publication-ledger.csv', 'content/posts.md',

@@ -162,8 +162,10 @@ function sourceOf(ev, touch) {
 }
 
 const HIGH_INTENT_NAMES = new Set([
-  'hero_quote_click', 'hero_call_click', 'pricing_cta_click',
+  'nav_quote_click', 'hero_quote_click', 'hero_call_click', 'pricing_cta_click',
   'nav_call_click', 'cta_call_click', 'contact_call_click', 'contact_quote_click',
+  'about_quote_click', 'work_quote_click', 'work_final_quote_click',
+  'reviews_quote_click', 'footer_email_click', 'footer_phone_click',
   'quote_form_start', 'quote_form_submit', 'quote_submit_attempt',
   'chat_first_message', 'lead_submit', 'lead_submit_attempt',
   'quote_to_calendar', 'lead_booking_click',

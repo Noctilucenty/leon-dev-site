@@ -42,7 +42,7 @@ proof_image = os.path.join(outdir, "05_curio_appstore.png")
 EXPECTED_DOMAIN = "leonbuilds.org"
 CANONICAL_DOMAIN = EXPECTED_DOMAIN
 RETIRED_DOMAIN = "leonkelvinli.onrender.com"
-WORDMARK = ("[•]", "Leon Kelvin Li", "/ Noctilucenty")
+WORDMARK = ("[•]", "Leon Builds", "by Leon Kelvin Li")
 PROOF_BADGE = "LIVE · APP STORE"
 
 # ── copy, written per language (never machine-translated) ────────────────

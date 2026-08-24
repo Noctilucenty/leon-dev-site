@@ -91,6 +91,8 @@ Chinese are communication capabilities, not separate promises of demand or fit.
 - `outreach-scripts.md` — warm requests, referral forwards, and three four-touch
   cold-email sequences.
 - `community-and-partners.md` — value-first community posts and partner system.
+- `app-development-community-drafts.md` — private-review app-development posts,
+  comment-first guardrails, manual current-rules gate, and source URL templates.
 - `qualification-and-stop-rules.md` — call rubric, channel gates, and stop rules.
 - `source-tag-schema.csv` — synthetic attribution examples that match the live
   site's existing `?s=` capture.

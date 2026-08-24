@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Generates the SEO page fleet: /services/*, /industries/*, both index pages,
-/missed-lead-recovery, /quote, sitemap.xml and robots.txt — all in the site's own visual language
+/work, conditional /reviews, /missed-lead-recovery, /quote, sitemap.xml and robots.txt — all in the site's own visual language
 (same styles.css, nav, footer, lowercase-by-CSS, one accent).
 
 Run after editing PAGE DATA below:   python3 tools/build_pages.py
@@ -19,6 +19,16 @@ TESTIMONIAL_DRAFTS, RELEASED_TESTIMONIALS = load_testimonial_release(
     Path(ROOT)
 )
 TESTIMONIAL_DRAFTS_BY_ID = {item["id"]: item for item in TESTIMONIAL_DRAFTS}
+TESTIMONIAL_DISPLAY_ORDER = [
+    "testimonial-04",  # contractor website
+    "testimonial-03",  # business homepage
+    "testimonial-05",  # dealership phone workflow
+    "testimonial-02",  # location-planning platform
+    "testimonial-07",  # renovation proposal
+    "testimonial-06",  # evidence-aware assistant
+    "testimonial-01",  # custom product design
+]
+REVIEWS_ROUTE_ENABLED = len(RELEASED_TESTIMONIALS) >= 3
 IDENTITY_URLS = [
     "https://trycurio.app/team.html#leon",
     "https://www.worldcubeassociation.org/persons/2016LILE01",
@@ -53,17 +63,20 @@ SERVICES = [
   web_guide=True,
   related=["booking-systems","seo","business-automation"]),
 
- dict(slug="mobile-apps", name="mobile apps", h1=("an app on the store,","not stuck in development"),
-  price="$3,500", title="iOS & Android App Development — from $3,500 | Leon Kelvin Li",
-  desc="Custom iOS and Android apps built end to end by one developer — through App Store review and onto the store. Fixed quotes, nationwide.",
-  intro=["most app projects die between the idea and the store. agencies quote six figures; freelancer marketplaces hand you code that never passes apple's review.",
-   "i've taken my own app through app store review solo — design, code, backend, subscriptions, the review process, and the appeal when review got it wrong. that whole path is what you're buying."],
-  pains=["you have an app idea and no technical team","your customers keep asking 'do you have an app?'","you got an agency quote with too many zeros","someone built you an app that never made it to the store","you need the backend, accounts and payments — not just screens"],
-  build=["ios and android from one codebase where that's the right call","the backend, accounts, notifications and payments behind it","app store and play submission handled, including review problems","subscriptions and in-app purchases wired correctly","agreed project accounts are set up in your name and included source code is handed over; app stores, libraries and vendors keep their terms"],
-  proof=("curio — live on the app store","a consumer ios app built solo end to end: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages."),
-  faqs=[("what does an app cost?","full builds start at $3,500. a simple internal app costs less than a consumer app with accounts, payments and push. you get a fixed written quote first — the number doesn't move after."),
-   ("ios first or both?","usually both from one codebase. if your customers are heavily iphone (common for consumer) or android (common for field crews), we start there."),
-   ("who owns the app?","the agreed project accounts and store listing are set up in your name, and the included source code and backend setup notes are handed over. app stores, hosting providers, libraries and other vendors keep their own terms.")],
+ dict(slug="mobile-apps", name="mobile apps", h1=("Turn your app idea into", "a working iPhone and Android product."),
+  price="$3,500", title="iOS & Android App Development — from $3,500 | Leon Builds",
+  desc="Custom iOS and Android app development for founders and small businesses—from first usable release through backend, testing and store submission. From $3,500.",
+  intro=["I design and build focused mobile apps for founders and businesses—from the first usable version through backend, testing, and store submission.",
+   "You work directly with me. I have shipped a live App Store product end to end, including subscriptions and review."],
+  pains=["You have an app idea and no technical team","Customers keep asking whether your business has an app","You need a first usable product before investing in a larger build","Your existing prototype still cannot be shipped","You need the backend, accounts, notifications, or payments—not just screens"],
+  build=["iPhone and Android from one codebase when that is the right technical choice","the backend, accounts, notifications, and payments behind the app","App Store and Google Play submission support, including review responses","subscriptions and in-app purchases wired to the agreed scope","agreed project accounts are set up in your name and included source code is handed over; app stores, libraries, and vendors keep their own terms"],
+  proof=("Curio — live App Store product","A consumer iOS app designed and shipped end to end, with a backend, subscriptions, App Store review, and content in four languages."),
+  faqs=[("What happens before you build, and what does an app cost?","We first define the smallest useful release, its users, required screens, accounts, integrations, and store plan. Focused app builds start at $3,500, and you receive a fixed written quote before work begins."),
+   ("Do I need an app or would a mobile website be enough?","A mobile website is usually the smaller first step when people only need to find, contact, book, or buy from you occasionally. An app becomes useful when customers return often or need accounts, notifications, offline access, or phone features. I will recommend the smaller option when it fits."),
+   ("Can you take over an existing prototype or codebase?","Often, but I inspect the code, accounts, backend, and store setup before quoting. If repairing it would cost more than rebuilding the focused first version, I will explain that before work starts."),
+   ("Should we start with iPhone, Android, or both?","That depends on your users and the fastest useful first release. When one shared codebase is a sound choice, I can build for both; otherwise I will explain why starting with one platform reduces risk."),
+   ("How long does launch take, and can you guarantee store approval?","The build timeline is written into the scope after the first version is defined. Store review happens on Apple or Google's schedule and approval cannot be guaranteed, but submission support and reasonable review responses are included when specified."),
+   ("Who owns the app, and what happens after launch?","The agreed project accounts and store listing are set up in your name, and the included source code and backend setup notes are handed over. Any maintenance or post-launch support is written separately; app stores, hosting providers, libraries, and other vendors keep their own terms.")],
   related=["custom-software","websites","booking-systems"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
@@ -358,21 +371,26 @@ def testimonial_cards(testimonial_ids, classes="testimonial-card"):
     return ''.join(testimonial_card(testimonial_id, classes) for testimonial_id in testimonial_ids)
 
 
+def released_testimonial_ids():
+    """Return released records in buyer-relevant order, never private drafts."""
+    ordered = [
+        testimonial_id for testimonial_id in TESTIMONIAL_DISPLAY_ORDER
+        if testimonial_id in RELEASED_TESTIMONIALS
+    ]
+    return ordered + [
+        testimonial_id for testimonial_id in RELEASED_TESTIMONIALS
+        if testimonial_id not in ordered
+    ]
+
+
 def homepage_testimonial_section():
     """Generate the homepage section only from the explicit release manifest."""
-    released_ids = [
-        item["id"] for item in TESTIMONIAL_DRAFTS if item["id"] in RELEASED_TESTIMONIALS
-    ]
+    released_ids = released_testimonial_ids()
     if not released_ids:
         return ''
     first = testimonial_cards(released_ids[:3])
-    remaining = testimonial_cards(released_ids[3:], "testimonial-card testimonial-wide")
-    more = ''
-    if remaining:
-        more = f'''<details class="testimonial-more">
-      <summary><span>See more approved client feedback</span></summary>
-      <div class="testimonial-grid testimonial-grid-more">{remaining}</div>
-    </details>'''
+    more = ('<a class="cx-mini" href="/reviews">Read all approved client feedback →</a>'
+            if REVIEWS_ROUTE_ENABLED else '')
     count = len(released_ids)
     noun = "review" if count == 1 else "reviews"
     return f'''<section class="sec reviews-early" id="testimonials">
@@ -388,42 +406,40 @@ def homepage_testimonial_section():
 </section>'''
 
 def nav():
-    return '''<a class="skip" href="#main">skip to content</a>
+    reviews_link = ('<a href="/reviews"><i>[</i><span>Reviews</span><i>]</i></a>\n    '
+                    if REVIEWS_ROUTE_ENABLED else '')
+    return f'''<a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
-<div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 <header class="nav" id="nav">
   <a class="mark" href="/">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
-    <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Leon Builds</span>
+    <span class="mark-name">Leon Builds</span>
+    <span class="mark-handle">by Leon Kelvin Li</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">
-    <a href="/#fix"><i>[</i><span>start here</span><i>]</i></a>
-    <a href="/services/"><i>[</i><span>services</span><i>]</i></a>
-    <a href="/industries/"><i>[</i><span>industries</span><i>]</i></a>
-    <a href="/#work"><i>[</i><span>work</span><i>]</i></a>
-    <a href="/#pricing"><i>[</i><span>pricing</span><i>]</i></a>
-    <a class="nav-book" href="/call"><i>[</i><span>book a 15-min call</span><i>]</i></a>
+    <a href="/#services"><i>[</i><span>Services &amp; pricing</span><i>]</i></a>
+    <a href="/work"><i>[</i><span>Work</span><i>]</i></a>
+    {reviews_link}<a href="/about"><i>[</i><span>About</span><i>]</i></a>
+    <a class="nav-book" href="/quote"><i>[</i><span>Get a fixed quote</span><i>]</i></a>
   </nav>
   <div class="nav-end">
-    <a class="btn btn-solid magnet" href="/call" data-evt="nav_call_click"><span>book a 15-min call</span></a>
-    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="menu"><span></span><span></span></button>
+    <a class="btn btn-solid magnet" href="/quote" data-evt="nav_quote_click"><span>Get a fixed quote</span></a>
+    <button class="burger" id="burger" aria-expanded="false" aria-controls="navMid" aria-label="Open menu"><span></span><span></span></button>
   </div>
 </header>'''
 
 def footer():
-    slinks = ''.join(f'<a href="/services/{s["slug"]}">{e(s["name"])}</a>' for s in SERVICES)
-    ilinks = ''.join(f'<a href="/industries/{i["slug"]}">{e(i["name"])}</a>' for i in INDUSTRIES)
+    reviews_link = '<a href="/reviews">approved client feedback</a>' if REVIEWS_ROUTE_ENABLED else ''
     return f'''<footer class="foot">
   <div class="rail foot-in">
     <div class="foot-brand">
-      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Kelvin Li</span><span class="mark-handle">/ Leon Builds</span></a>
-      <p>small-business web design and custom software, built directly by one developer for businesses across the united states.</p>
+      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Builds</span><span class="mark-handle">by Leon Kelvin Li</span></a>
+      <p>small-business websites, lead follow-up and workflow automation, built directly by one california-based developer.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
-    <nav><h4>services</h4>{slinks}</nav>
-    <nav><h4>industries</h4>{ilinks}</nav>
-    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">public work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="/privacy">privacy</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>services</h4><a href="/missed-lead-recovery">website + lead follow-up</a><a href="/services/websites">business websites</a><a href="/services/business-automation">workflow automation</a><a href="/services/">all services and prices</a></nav>
+    <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/about">about leon</a><a href="/industries/">browse industries</a><a href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a></nav>
+    <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
@@ -433,13 +449,19 @@ def footer():
 <script src="/app.js" defer></script>
 <script src="/assist.js" defer></script>'''
 
-def head(title, desc, path, schema, alts='', head_extra=''):
+def head(title, desc, path, schema, alts='', head_extra='', social_image='/assets/og.png', social_alt='Leon Builds — websites, apps and business systems'):
     """alts carries the hreflang cluster. Hreflang only works when it is
     RECIPROCAL — a Portuguese page pointing at its English twin while the twin
     stays silent is a cluster Google discards, so the English service pages that
     have translations must name them back. head_extra is reserved for page-only
     identity metadata so it does not leak into the generated page fleet."""
+    legacy_title_suffix = " | Leon Kelvin Li"
+    if title.endswith(legacy_title_suffix):
+        title = title[:-len(legacy_title_suffix)] + " | Leon Builds"
     head_links = "\n".join(link for link in (alts, head_extra) if link)
+    social_url = social_image if social_image.startswith('http') else BASE + social_image
+    social_dimensions = ('''<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">''' if social_image == '/assets/og-mobile-apps.png' else '')
     return f'''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -456,8 +478,12 @@ def head(title, desc, path, schema, alts='', head_extra=''):
 <meta property="og:site_name" content="Leon Builds">
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="{BASE}/assets/og.png">
+<meta property="og:image" content="{social_url}">
+<meta property="og:image:alt" content="{e(social_alt)}">
+{social_dimensions}
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{social_url}">
+<meta name="twitter:image:alt" content="{e(social_alt)}">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -486,10 +512,21 @@ def faq_html(faqs):
         out += f'<details><summary>{e(q)}<i></i></summary><p>{e(a)}</p></details>'
     return out + '</div>'
 
-def cta_block(starter):
+def cta_block(starter, quote_first=False):
+    primary = (f'<a class="btn btn-solid magnet" href="/quote" data-evt="pricing_cta_click"><span>get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'
+               if quote_first else
+               f'<a class="btn btn-solid magnet" href="/call" data-evt="cta_call_click"><span>book a free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>')
+    secondary = (f'<a class="btn magnet" href="/call" data-evt="cta_call_click"><span>book a free 15-minute call</span></a>'
+                 if quote_first else
+                 f'<a class="btn magnet" href="/quote" data-evt="pricing_cta_click"><span>get a fixed quote</span></a>')
+    if quote_first:
+        return f'''<div class="ctarow">
+      {primary}
+      {secondary}
+    </div>'''
     return f'''<div class="ctarow">
-      <a class="btn btn-solid magnet" href="/call" data-evt="cta_call_click"><span>book a free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-      <a class="btn magnet" href="/quote" data-evt="pricing_cta_click"><span>get a fixed quote</span></a>
+      {primary}
+      {secondary}
       <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
     </div>
     <p class="assist-fallback">Not ready to talk? <button class="linklike" type="button" data-assist-open data-assist-starter="{e(starter)}">Describe the problem to the site assistant.</button></p>'''
@@ -500,6 +537,8 @@ ICONS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true">
 # Proof links must land on visible, current public evidence. Unreleased client
 # feedback is never a proof destination.
 WORK_ANCHORS = [
+    ('site intelligence', '#work-site-intelligence'),
+    ('location', '#work-site-intelligence'),
     ('home screen', '#work-homescreen'),
     ('ordering', '#work-homescreen'),
     ('operator prototype', '#work-homescreen'),
@@ -511,28 +550,48 @@ def work_link(proof_title):
     t = (proof_title or '').lower()
     for needle, anchor in WORK_ANCHORS:
         if needle in t:
-            return '/' + anchor
-    return '/#work'
+            return '/work' + anchor
+    return '/work'
 
 def service_page(s):
     path = f'/services/{s["slug"]}'
     bc = [("home","/"),("services","/services/"),(s["name"], None)]
     offer_price = s["price"].replace('$', '').replace(',', '')
-    schema = [
-        {"@context":"https://schema.org","@type":"Service","@id":BASE+path+"#service",
-         "name":s["name"], "url":BASE+path, "serviceType":s["name"],
-         "mainEntityOfPage":BASE+path,
+    service_name = "iOS and Android app development" if s["slug"] == "mobile-apps" else s["name"]
+    page_id = BASE + path + "#webpage"
+    service_schema = {
+         "@context":"https://schema.org","@type":"Service","@id":BASE+path+"#service",
+         "name":service_name, "url":BASE+path, "serviceType":service_name,
+         "mainEntityOfPage":{"@id":page_id},
          "provider":{"@id":BASE+"/#leon"},
          "areaServed":{"@type":"Country","name":"United States"},
          "description":s["desc"],
          "offers":{"@type":"Offer","url":BASE+path,"price":offer_price,"priceCurrency":"USD",
-                   "description":"Published starting price; final fixed quote depends on the written scope."}},
+                   "description":"Published starting price; final fixed quote depends on the written scope."}}
+    if s["slug"] == "mobile-apps":
+        service_schema["audience"] = {"@type":"BusinessAudience", "audienceType":"Founders and small businesses"}
+    schema = [
+        {"@context":"https://schema.org","@type":"WebPage","@id":page_id,
+         "url":BASE+path,"name":s["title"],"description":s["desc"],
+         "isPartOf":{"@id":BASE+"/#website"},"mainEntity":{"@id":BASE+path+"#service"}},
+        service_schema,
         faq_schema(s["faqs"]), breadcrumb_schema(bc, path)]
     pains = ''.join(f'<li>{e(p)}</li>' for p in s["pains"])
     build = ''.join(f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(b)}</li>' for b in s["build"])
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
     related = ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
     starter = f'i\'m looking at {s["name"]} — here\'s my situation: '
+    quote_first = s["slug"] == "mobile-apps"
+    service_label = "Custom iOS and Android app development" if quote_first else f'leon --services {s["slug"]}'
+    pains_heading = "Is this the app problem you have?" if quote_first else "Does this sound familiar?"
+    build_heading = "What the first release can include" if quote_first else "What I build for this"
+    proof_label = "Public product proof" if quote_first else "proof, not promises"
+    proof_heading = "A live app you can verify" if quote_first else "Evidence related to this service"
+    faq_label = "Before scoping an app" if quote_first else "questions people ask first"
+    faq_heading = "App development questions" if quote_first else "Questions before starting"
+    proof_visual = ('''<figure class="service-proof-media">
+        <img src="/assets/proof/curio-appstore-current.png" alt="Current screens from Leon's live App Store product" loading="lazy" width="1559" height="510">
+      </figure>''' if quote_first else '')
     reviews = ''
     cards = testimonial_cards(s.get("review_ids", []), "service-review")
     if cards:
@@ -578,35 +637,42 @@ def service_page(s):
   </div>
 </section>
 '''
-    return head(s["title"], s["desc"], path, schema, EN_ALTS.get(s["slug"], "")) + ICONS + nav() + f'''
+    social_image = '/assets/og-mobile-apps.png' if quote_first else '/assets/og.png'
+    social_alt = ('Custom iOS and Android app development for businesses, with live product screens'
+                  if quote_first else 'Leon Builds — websites, apps and business systems')
+    page_head = head(s["title"], s["desc"], path, schema, EN_ALTS.get(s["slug"], ""),
+                     social_image=social_image, social_alt=social_alt)
+    if quote_first:
+        page_head = page_head.replace('<body>', '<body class="app-service" data-assistant-launcher="hidden">', 1)
+    return page_head + ICONS + nav() + f'''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
     {crumbs(bc)}
-    <p class="label">leon --services {s["slug"]}</p>
+    <p class="label">{e(service_label)}</p>
     <h1 class="dsp" >{e(s["h1"][0])} <em>{e(s["h1"][1])}</em></h1>
     {intro}
     <p class="pricetag">starting at <b>{s["price"]}</b> · written fixed quote before any work starts · based in california, working with businesses across the u.s.</p>
-    {cta_block(starter)}
+    {cta_block(starter, quote_first=quote_first)}
   </div>
 </section>
 {reviews}{web_guide}<section class="sec">
   <div class="rail two-col">
     <div>
-      <h2 class="page-section-title">Does this sound familiar?</h2>
+      <h2 class="page-section-title">{e(pains_heading)}</h2>
       <ul class="plist">{pains}</ul>
     </div>
     <div>
-      <h2 class="page-section-title">What I build for this</h2>
+      <h2 class="page-section-title">{e(build_heading)}</h2>
       <ul class="blist">{build}</ul>
     </div>
   </div>
 </section>
 <section class="sec">
   <div class="rail">
-    <p class="label">proof, not promises</p>
-    <h2 class="page-section-title">Evidence related to this service</h2>
-    <div class="proofcard">
+    <p class="label">{e(proof_label)}</p>
+    <h2 class="page-section-title">{e(proof_heading)}</h2>
+    <div class="proofcard">{proof_visual}
       <h3>{e(s["proof"][0])}</h3>
       <p class="sub">{e(s["proof"][1])}</p>
       <a class="cx-mini" href="{work_link(s["proof"][0])}">open the related proof →</a>
@@ -615,12 +681,12 @@ def service_page(s):
 </section>
 <section class="sec">
   <div class="rail">
-    <p class="label">questions people ask first</p>
-    <h2 class="page-section-title">Questions before starting</h2>
+    <p class="label">{e(faq_label)}</p>
+    <h2 class="page-section-title">{e(faq_heading)}</h2>
     {faq_html(s["faqs"])}
     <p class="label" style="margin-top:3rem">related</p>
     <div class="relrow">{related}</div>
-    {cta_block(starter)}
+    {cta_block(starter, quote_first=quote_first)}
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -770,33 +836,226 @@ def industry_page(i):
 </main>''' + footer() + '</body></html>'
 
 
-def missed_lead_recovery_page():
-    """Product page for the narrow contractor acquisition offer.
+def work_page():
+    """Long-form proof and project archive kept off the conversion homepage."""
+    path = '/work'
+    title = 'Work & Case Studies | Leon Builds'
+    desc = ('Inspect business systems, public prototypes and a live App Store product built by '
+            'Leon Builds. Every project is labelled with its current, honest status.')
+    bc = [("home", "/"), ("work and case studies", None)]
+    schema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "@id": f"{BASE}{path}#page",
+            "url": f"{BASE}{path}",
+            "name": "Leon Builds work and case studies",
+            "description": desc,
+            "isPartOf": {"@id": f"{BASE}/#website"},
+            "about": {"@id": f"{BASE}/#leon"},
+        },
+        breadcrumb_schema(bc, path),
+    ]
+    page_head = head(title, desc, path, schema).replace(
+        '<body>', '<body data-assistant-launcher="hidden">', 1
+    )
+    return page_head + ICONS + nav() + f'''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    {crumbs(bc)}
+    <p class="label">Work and case studies</p>
+    <h1 class="dsp">Real systems. <em>Honest status.</em></h1>
+    <p class="sub business-copy">Some projects are operational and anonymized, some are public prototypes, and one is a live App Store product. Each case says which it is, what problem it addresses, and what Leon built.</p>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a></div>
+  </div>
+</section>
 
-    The product combines the customer-facing lead path and its first follow-up
-    handoff. It deliberately sells an implementation, not leads or revenue.
-    """
+<section class="sec" aria-labelledby="selected-work-title">
+  <div class="rail">
+    <header class="sec-head">
+      <p class="label">Selected work</p>
+      <h2 class="page-section-title" id="selected-work-title">Business problems, working interfaces, and inspectable evidence.</h2>
+    </header>
+    <div class="case-grid">
+      <article class="case-card case-featured" id="work-site-intelligence">
+        <span id="work-zips" aria-hidden="true"></span>
+        <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="An anonymized nationwide site-intelligence map comparing expansion areas" loading="lazy" width="1200" height="480"></figure>
+        <div class="case-copy">
+          <p class="label">Operational project · client anonymized</p>
+          <h3>Site intelligence</h3>
+          <p class="business-copy"><b>Problem:</b> A training business needed a disciplined way to compare where to open, staff, and grow instead of trusting one headline score.</p>
+          <p class="business-copy"><b>Built:</b> Decision support across 33,772 U.S. ZIP codes and nine data sources, with uncertainty bands, screening verdicts, maps, and an export for review.</p>
+          <p class="business-copy"><b>Measured finding:</b> Leak-free validation reduced the old model's apparent correlation from 0.81 to 0.21. The useful outcome was catching false confidence before expansion decisions used it.</p>
+          <p class="case-role">Role: data product and full-stack developer · client identity withheld</p>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-homescreen">
+        <span id="work-ordering" aria-hidden="true"></span>
+        <figure class="case-media proof-phone-pair">
+          <img src="/assets/proof/home-screen-catalog.png" alt="The Home Screen catalog of local-business destinations" loading="lazy" width="380" height="844">
+          <img src="/assets/proof/home-screen-menu.png" alt="A business-specific menu and cart inside The Home Screen" loading="lazy" width="380" height="844">
+        </figure>
+        <div class="case-copy">
+          <p class="label">Prototype · mock payments</p>
+          <h3>The Home Screen</h3>
+          <p class="business-copy"><b>Problem:</b> Explore how many local-business menus could share one familiar, phone-first interface.</p>
+          <p class="business-copy"><b>Built:</b> A 37-business catalog with search, business-specific menus, a prototype cart, server-side repricing, and vendor-separated demo tickets.</p>
+          <p class="business-copy"><b>Honest boundary:</b> Payment and kitchen progression are simulations. It is not presented as a production ordering client.</p>
+          <p class="case-role">Role: full-stack prototype developer</p>
+          <a class="case-link" href="https://the-home-screen.onrender.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-curio-public">
+        <span id="work-curio" aria-hidden="true"></span>
+        <figure class="case-media">
+          <video controls muted playsinline preload="metadata" poster="/assets/proof/curio-appstore-current.png" aria-label="Curio product screen recording">
+            <source src="/assets/proof/curio-feed-demo.mp4" type="video/mp4">
+          </video>
+        </figure>
+        <div class="case-copy">
+          <p class="label">Live product · App Store</p>
+          <h3>Curio</h3>
+          <p class="business-copy"><b>Problem:</b> Turn passive scrolling into short, source-backed learning.</p>
+          <p class="business-copy"><b>Built:</b> The React and TypeScript client, native iOS shell, Express and Postgres backend, subscriptions, content pipeline, and four-language product experience.</p>
+          <p class="business-copy"><b>Public proof:</b> The product is downloadable on the U.S. App Store and its public founder profile identifies Leon's role.</p>
+          <p class="case-role">Role: solo product developer</p>
+          <div class="case-links">
+            <a class="case-link" href="https://apps.apple.com/app/apple-store/id6781121127?pt=129044256&amp;ct=leonbuilds-work&amp;mt=8" target="_blank" rel="noopener" data-evt="case_curio_click">Open on the App Store →</a>
+            <a class="case-link" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">View the founder profile →</a>
+            <a class="case-link" href="/services/mobile-apps" data-evt="case_app_service_click">See mobile app development →</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-loqol">
+        <figure class="case-media loqol-proof-grid">
+          <img src="/assets/proof/loqol-questionnaire.png" alt="Loqol seller questionnaire with conflicting public-sewer and septic-tank answers saved" loading="lazy" width="1800" height="900">
+          <img src="/assets/proof/loqol-filled-pdf.png" alt="Three-page California disclosure PDF generated from saved Loqol answers" loading="lazy" width="1800" height="900">
+          <img class="loqol-flag" src="/assets/proof/loqol-contradiction.png" alt="Loqol flags the sewer and septic contradiction for review" loading="lazy" width="350" height="360">
+        </figure>
+        <div class="case-copy">
+          <p class="label">Public demo · incomplete signing and email steps</p>
+          <h3>Loqol disclosures</h3>
+          <p class="business-copy"><b>Problem:</b> Translate a dense California disclosure form into a guided seller workflow.</p>
+          <p class="business-copy"><b>Built:</b> An 82-question seller flow, 16 consistency rules, an agent review workspace, saved answers, and a three-page PDF output.</p>
+          <p class="business-copy"><b>Honest boundary:</b> Buyer and agent signing plus seller email delivery are not complete.</p>
+          <p class="case-role">Role: full-stack product developer</p>
+          <div class="case-links">
+            <a class="case-link" href="https://loqol-tds.onrender.com/agent" target="_blank" rel="noopener" data-evt="case_loqol_click">Open the public demo →</a>
+            <a class="case-link" href="https://github.com/Noctilucenty/loqol-tds" target="_blank" rel="noopener" data-evt="case_loqol_source_click">Inspect the source →</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="work-archive" aria-labelledby="archive-title">
+  <div class="rail">
+    <header class="sec-head">
+      <p class="label">Additional project archive</p>
+      <h2 class="page-section-title" id="archive-title">Operational patterns behind the interfaces.</h2>
+      <p class="sub business-copy">These anonymized project notes preserve useful implementation detail. They are not presented as public client demos or outcome guarantees.</p>
+    </header>
+    <div class="case-grid">
+      <article class="case-card" id="work-reviews">
+        <div class="case-copy">
+          <p class="label">Internal workflow · client anonymized</p>
+          <h3>Review desk</h3>
+          <p class="business-copy"><b>Problem:</b> Review notifications arrived faster than a small team could classify and answer them consistently.</p>
+          <p class="business-copy"><b>Built:</b> An inbox workflow that classifies the issue, drafts from verified business facts, and routes a Gmail draft, Slack card, and sheet row to a person.</p>
+          <p class="business-copy"><b>Control:</b> The workflow never posts a reply. A human reviews and sends it.</p>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-docs">
+        <div class="case-copy">
+          <p class="label">Internal workflow · client anonymized</p>
+          <h3>Document control</h3>
+          <p class="business-copy"><b>Problem:</b> Company documents and approvals lived across folders, inboxes, and memory.</p>
+          <p class="business-copy"><b>Built:</b> A template request creates and files the document; approval locks it; publishing increments the version, writes the change log, and exports the external PDF.</p>
+          <p class="business-copy"><b>Handoff:</b> The workflow was implemented in Apps Script and as six editable n8n workflows.</p>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-assistant">
+        <div class="case-copy">
+          <p class="label">Regulated-market prototype · Chinese language</p>
+          <h3>Compliance-aware assistant</h3>
+          <p class="business-copy"><b>Problem:</b> Health-education answers needed source citations and deterministic safety limits in a market with strict advertising rules.</p>
+          <p class="business-copy"><b>Built:</b> Safety screening before the model, hybrid retrieval, evidence tiers, numbered citations, and a final legal-claim validator.</p>
+          <p class="business-copy"><b>Control:</b> If a revised answer still fails validation, the assistant declines rather than guessing.</p>
+        </div>
+      </article>
+    </div>
+    <p class="more">See the <a href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a> or <a href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">source repositories on GitHub</a>.</p>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_final_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="cx-mini" href="/about">More about Leon →</a></div>
+  </div>
+</section>
+</main>''' + footer() + '</body></html>'
+
+
+def reviews_page():
+    """Render all and only released feedback when three records make a real route."""
+    if not REVIEWS_ROUTE_ENABLED:
+        raise RuntimeError('reviews page requested without three released testimonials')
+    path = '/reviews'
+    title = 'Approved Client Feedback | Leon Builds'
+    desc = ('Project-specific client feedback published only after approval of the exact quote, '
+            'attribution and placement.')
+    bc = [("home", "/"), ("approved client feedback", None)]
+    ids = released_testimonial_ids()
+    cards = testimonial_cards(ids)
+    schema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": f"{BASE}{path}#page",
+            "url": f"{BASE}{path}",
+            "name": "Approved client feedback for Leon Builds",
+            "description": desc,
+            "isPartOf": {"@id": f"{BASE}/#website"},
+        },
+        breadcrumb_schema(bc, path),
+    ]
+    page_head = head(title, desc, path, schema).replace(
+        '<body>', '<body data-assistant-launcher="hidden">', 1
+    )
+    return page_head + ICONS + nav() + f'''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    {crumbs(bc)}
+    <p class="label">Approved client feedback</p>
+    <h1 class="dsp">What clients said <em>after the work.</em></h1>
+    <p class="sub business-copy">These are complete, project-specific quotes. Each one is published only after the client approved the exact wording, attribution, and placement.</p>
+  </div>
+</section>
+<section class="sec">
+  <div class="rail">
+    <div class="testimonial-grid">{cards}</div>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="reviews_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="cx-mini" href="/work">See real work →</a></div>
+  </div>
+</section>
+</main>''' + footer() + '</body></html>'
+
+
+def missed_lead_recovery_page():
+    """Focused Search landing page for the contractor acquisition offer."""
     path = '/missed-lead-recovery'
     title = 'Contractor Lead Recovery System | Website + Follow-Up | Leon Builds'
     desc = ('A fixed-scope contractor website and missed-lead follow-up system: estimate intake, '
             'prompt acknowledgment, owner handoff and tracking. Starting at $1,500.')
     faqs = [
-        ("is this a full contractor website?",
-         "the starting scope is a focused, phone-first contractor site built around one estimate-request path. extra service, location, financing, careers or content sections are scoped separately so the 10-business-day product stays bounded."),
-        ("can you improve my current website instead?",
-         "yes. if the current site is sound, the product can repair its estimate path and connect the follow-up workflow instead of replacing pages that already work."),
-        ("is this lead generation or ad management?",
-         "no. it improves how an existing visitor becomes an estimate request and how that request reaches your team. buying leads, running ads and ongoing campaign management are separate work."),
-        ("does this guarantee more bookings or revenue?",
-         "no. it makes the estimate and follow-up path measurable and consistent, but results still depend on traffic, lead quality, demand, pricing, availability and how your team handles the conversation."),
-        ("when does the 10-business-day window start?",
-         "after the written scope is approved and the compatible accounts, access and customer-facing copy are ready. delays in access, vendor approval or client feedback move the schedule."),
-        ("what if my phone, inbox or crm does not connect?",
-         "i check compatibility before the fixed quote. if the tools cannot connect reliably, i will propose a smaller alternative, price a separate integration or say the sprint is not a fit."),
-        ("what is handed over?",
-         "the agreed project accounts, included configuration or source, setup notes, a handoff session and 30 days of fixes to the written scope. phone, crm, messaging, hosting and other vendors keep their own terms and fees."),
-        ("what about consent for texts and emails?",
-         "you approve the copy and remain responsible for lawful permission to contact each lead. i implement the agreed stop, opt-out and human-handoff rules in the compatible tools used for the sprint."),
+        ("Can you improve my current website instead?",
+         "Yes. If the current site is sound, Leon can repair its estimate path and connect the follow-up workflow instead of replacing pages that already work."),
+        ("Is this lead generation, ad management, or a guarantee?",
+         "No. This product improves how an existing visitor becomes an estimate request and how that request reaches your team. Traffic, lead quality, pricing, availability, and your sales process still determine results."),
+        ("When do the 10 business days start, and what is handed over?",
+         "The window starts after the written scope, compatible access, and customer-facing copy are approved. Handoff includes the agreed project accounts, included source or configuration, setup notes, one handoff session, and 30 days of fixes against the written scope."),
     ]
     bc = [("home", "/"), ("contractor lead recovery system", None)]
     schema = [
@@ -822,124 +1081,84 @@ def missed_lead_recovery_page():
     ]
     call_cta = '''<a class="btn btn-solid magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Book a free 15-minute website review</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
     check = '<svg class="ic"><use href="#ic-check"/></svg>'
-    review_cards = testimonial_cards(
-        ["testimonial-04", "testimonial-05"], "service-review"
-    )
+    review_cards = testimonial_cards(["testimonial-04", "testimonial-05"], "service-review")
     reviews_section = ''
     if review_cards:
+        reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '/#testimonials'
         reviews_section = f'''<section class="sec service-reviews" id="client-feedback">
   <div class="rail">
-    <p class="label">direct client feedback</p>
+    <p class="label">Approved client feedback</p>
     <h2 class="page-section-title">Related website and follow-up work</h2>
     <div class="service-review-grid">{review_cards}</div>
-    <a class="cx-mini" href="/#testimonials">read approved client feedback →</a>
+    <a class="cx-mini" href="{reviews_href}">Read approved client feedback →</a>
   </div>
 </section>'''
     page_head = head(title, desc, path, schema).replace(
-        '<body>', '<body class="contractor-landing">', 1
+        '<body>', '<body class="contractor-landing" data-assistant-launcher="hidden">', 1
     )
-    landing_nav = nav().replace(
-        'href="/call"', 'href="/call?service=contractor-lead-recovery"'
-    )
-    return page_head + ICONS + landing_nav + f'''
+    return page_head + ICONS + nav() + f'''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
     {crumbs(bc)}
-    <p class="label">contractor website + estimate follow-up · fixed 10-business-day build</p>
+    <p class="label">Contractor website + missed-lead follow-up</p>
     <h1 class="dsp business-copy">Give every website estimate request <em>a clear path from form to follow-up.</em></h1>
-    <p class="sub business-copy">Leon builds the phone-first site, estimate form, immediate acknowledgment, follow-up rules, and owner handoff in one fixed scope—so every request has a clear next step.</p>
-    <p class="pricetag business-copy">From <b>$1,500</b> fixed scope · 10 business days once scope, access, and approved copy are ready · work directly with Leon.</p>
+    <p class="sub business-copy">A focused contractor site, estimate form, request acknowledgment, and follow-up path—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
     <div class="ctarow">{call_cta}<a class="btn magnet" href="#scope" data-evt="lead_scope_click"><span class="business-copy">See the exact $1,500 scope</span></a></div>
-    <p class="hero-local business-copy">California-based · serving Bay Area contractors remotely · available for U.S. projects</p>
+    <p class="hero-local business-copy">Based in California, working with Bay Area contractors and businesses across the U.S.</p>
   </div>
 </section>
 
-<section class="proof-strip" aria-labelledby="contractor-proof-title">
-  <div class="rail proof-in">
-    <p class="label" id="contractor-proof-title">technical evidence you can inspect before booking</p>
-    <div class="proof-grid">
-      <a class="proof-item" href="https://apps.apple.com/app/apple-store/id6781121127?pt=129044256&amp;ct=leonbuilds-contractor&amp;mt=8" target="_blank" rel="noopener" data-evt="contractor_proof_appstore_click"><span>live product</span><strong>Leon shipped an App Store product</strong><i>open the public listing →</i></a>
-      <a class="proof-item" href="/#work-loqol" data-evt="contractor_proof_demo_click"><span>public demo + source</span><strong>Inspect a working business workflow</strong><i>see the evidence →</i></a>
-      <a class="proof-item" href="/about" data-evt="contractor_proof_identity_click"><span>direct relationship</span><strong>Meet the developer doing the work</strong><i>about Leon →</i></a>
+<section class="sec" id="scope">
+  <div class="rail">
+    <p class="label">The $1,500 starting scope</p>
+    <h2 class="page-section-title business-copy">A complete estimate path, not just a nicer homepage.</h2>
+    <div class="two-col">
+      <div>
+        <ul class="blist">
+          <li>{check}one focused, phone-first contractor website or lead page</li>
+          <li>{check}services, service area, trust proof, and one primary estimate action</li>
+          <li>{check}structured intake for the agreed project details and optional photos</li>
+          <li>{check}one immediate email or SMS acknowledgment using approved copy</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="blist">
+          <li>{check}delivery to one agreed CRM, shared sheet, or monitored inbox</li>
+          <li>{check}up to two follow-ups with reply, stop, and opt-out rules</li>
+          <li>{check}one owner or staff handoff rule and one booking or contact link</li>
+          <li>{check}a basic received, sent, replied, and handed-off event log</li>
+          <li>{check}handoff session, setup notes, and included source or configuration</li>
+        </ul>
+      </div>
+    </div>
+    <div class="scope-boundary business-copy"><p><b>Boundaries:</b> Buying leads, ad management, a new CRM, live call answering, historical-data cleanup, and large multi-location sites are separate. Provider fees remain with the provider. Compatibility and consent requirements are checked before the fixed quote.</p></div>
+    <p class="pricetag business-copy"><b>From $1,500.</b> The typical 10-business-day window starts after the written scope, compatible access, and approved copy are ready.</p>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="contractor-proof-title">
+  <div class="rail">
+    <p class="label">Operational business-system proof</p>
+    <h2 class="page-section-title" id="contractor-proof-title">See how Leon turns a business decision into a reviewable workflow.</h2>
+    <div class="proofcard">
+      <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="An anonymized nationwide site-intelligence map with reviewable expansion areas" loading="lazy" width="1200" height="480"></figure>
+      <p class="label">Operational decision support · client details private</p>
+      <h3>Site intelligence</h3>
+      <p class="sub business-copy">Leon built a nationwide site-planning workflow that combines nine data sources, uncertainty bands, screening verdicts, maps, and an export for human review. It demonstrates operational logic and handoff—not a promise of lead or revenue results.</p>
+      <a class="cx-mini" href="/work#work-site-intelligence" data-evt="contractor_proof_demo_click">View the project details →</a>
     </div>
   </div>
 </section>
 
 {reviews_section}
 
-<section class="sec" id="workflow">
-  <div class="rail">
-    <p class="label">what hiring leon changes</p>
-    <h2 class="page-section-title business-copy">Every estimate request gets a clear next step.</h2>
-    <div class="fixrow">
-      <article class="fixcard"><h3>01 · visitor asks for an estimate</h3><p>the customer sends the service, location, project details and optional photos from a phone.</p></article>
-      <article class="fixcard"><h3>02 · they know it arrived</h3><p>approved email or sms copy confirms the request reached the business and explains what happens next.</p></article>
-      <article class="fixcard"><h3>03 · your team sees who owns it</h3><p>the request lands in one agreed inbox, sheet or crm with a visible owner and reply state.</p></article>
-      <article class="fixcard"><h3>04 · follow-up does not rely on memory</h3><p>up to two approved follow-ups stop when the customer replies or opts out.</p></article>
-    </div>
-    <p class="sub business-copy">The step between website visit and sales conversation becomes visible and consistent. Your traffic, availability, pricing, and closing process still determine the result.</p>
-    <a class="cx-mini business-copy" href="/#work">Inspect Leon's shipped product and public demos →</a>
-  </div>
-</section>
-
-<section class="sec" id="scope">
-  <div class="rail">
-    <p class="label">everything in the $1,500 starting scope</p>
-    <h2 class="page-section-title business-copy">A complete estimate path, not just a nicer homepage.</h2>
-    <div class="two-col">
-      <div>
-        <ul class="blist">
-          <li>{check}one focused, phone-first contractor website or lead page with services, service area, trust proof and one primary estimate action</li>
-          <li>{check}structured estimate intake for the agreed basics, such as service, location, project details, preferred contact and optional photos</li>
-          <li>{check}one immediate email or sms acknowledgment using copy you approve</li>
-          <li>{check}one destination: your current crm, a shared sheet or a monitored inbox</li>
-        </ul>
-      </div>
-      <div>
-        <ul class="blist">
-          <li>{check}up to two follow-ups, with reply, stop and opt-out rules</li>
-          <li>{check}one owner or staff handoff rule, plus one booking or contact link</li>
-          <li>{check}a basic event log so you can see received, sent, replied and handed off</li>
-          <li>{check}one handoff session, included configuration or source, and setup notes</li>
-          <li>{check}30 days of fixes for defects against the agreed written scope</li>
-        </ul>
-      </div>
-    </div>
-    <div class="scope-boundary business-copy">
-      <div class="faq"><details><summary>What is outside this $1,500 starting scope?<i></i></summary><p>Buying leads, paid-ad management, a large multi-location website, a new CRM, live call answering, historical-data cleanup, and ongoing campaign management are separate work. Phone, messaging, CRM, domain, and hosting providers keep their own fees.</p></details></div>
-    </div>
-    <details class="disclosure contractor-process">
-      <summary><span>See the 10-business-day build plan</span><small>map · build · test · hand off</small></summary>
-      <ol class="steps">
-        <li><span class="sn">01</span><h3>map one estimate path</h3><p>confirm the visitor, primary service, intake fields, destination, response copy, handoff owner and stop conditions. compatibility is checked before the quote.</p></li>
-        <li><span class="sn">02</span><h3>build site + follow-up</h3><p>build the focused web path, acknowledgment and follow-ups around the agreed tools and customer-facing copy.</p></li>
-        <li><span class="sn">03</span><h3>test the full handoff</h3><p>test phones, normal submissions, replies, opt-outs, duplicates and vendor failures before the fixed scope goes live.</p></li>
-        <li><span class="sn">04</span><h3>hand it over</h3><p>review the event log, document the setup and hand over the included source or configuration covered by the quote.</p></li>
-      </ol>
-      <p class="sub business-copy">The window starts only after scope, access, compatible tools and approved copy are ready. Vendor approval or delayed feedback moves the schedule.</p>
-    </details>
-  </div>
-</section>
-
-<section class="sec" id="fit">
-  <div class="rail">
-    <p class="label">who this product fits</p>
-    <div class="fixrow">
-      <article class="fixcard"><h3>good fit</h3><p>owner-run roofing, plumbing, electrical, hvac, landscaping, remodeling and similar home-service businesses with a real service area and an estimate workflow.</p></article>
-      <article class="fixcard"><h3>the observable problem</h3><p>the current site is call-only, uses a generic form, hides the next step on a phone or gives the owner no reliable view of what still needs a response.</p></article>
-      <article class="fixcard"><h3>needs a different scope</h3><p>buying leads, replacing a full field-service platform or building a large multi-location marketing site should not be squeezed into this ten-day product.</p></article>
-    </div>
-    <a class="cx-mini" href="/industries/contractors">read the contractor website decision guide →</a>
-  </div>
-</section>
-
 <section class="sec" id="faq">
   <div class="rail">
-    <p class="label">fit and boundaries</p>
+    <p class="label">Three questions before booking</p>
     {faq_html(faqs)}
     <div class="ctarow">{call_cta}</div>
-    <p class="sub business-copy">Bring your current website. In 15 minutes, Leon will show you the smallest sensible improvement and say plainly if this product is not the right fit.</p>
+    <p class="sub business-copy">Bring your current website. Leon will show you the smallest sensible improvement and say plainly if this product is not the right fit.</p>
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -986,7 +1205,7 @@ def about_page():
         "@type": "Person",
         "@id": f"{BASE}/#leon",
         "name": "Leon Kelvin Li",
-        "alternateName": ["Leon Li", "Noctilucenty"],
+        "alternateName": ["Leon Li"],
         "url": f"{BASE}/about",
         "mainEntityOfPage": {"@id": f"{BASE}/about#webpage"},
         "jobTitle": "Software Developer",
@@ -1059,8 +1278,7 @@ def about_page():
   <div class="rail">
     <p class="label">background</p>
     <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span>, an alumnus of <span class="keepcase">Green River College</span>, and a working developer with a live App Store product plus public demos. all three are true at once, and he would rather say so than hide any of them.</p>
-    <p class="sub">he writes under the name <span class="keepcase">Noctilucenty</span>, which is where his code lives on github.</p>
-    <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. older work remains in the <a class="cx-mini" href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a>.</p>
+    <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="cx-mini" href="/services/mobile-apps">mobile app development service</a>. source repositories are available through <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a>, and older work remains in the <a class="cx-mini" href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a>.</p>
     <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="/quote" data-evt="about_quote_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
@@ -1079,7 +1297,7 @@ ZH_CALL_DESCRIPTION = "免费 15 分钟，中文沟通。你说说生意里哪�
 CAL_COPY = {
     "en": {
         "loading": "loading live availability…",
-        "failed": "the inline calendar did not load. use the direct booking link below.",
+        "failed": "the inline calendar did not load. use the direct booking link above.",
         "booked_label": "you are booked",
         "booked": "cal.com will send the video link and calendar invitation to the email used for the booking.",
         "fallback": "calendar not showing?",
@@ -1090,7 +1308,7 @@ CAL_COPY = {
     },
     "pt": {
         "loading": "carregando os horários disponíveis…",
-        "failed": "o calendário não carregou aqui. use o link direto abaixo.",
+        "failed": "o calendário não carregou aqui. use o link direto acima.",
         "booked_label": "horário marcado",
         "booked": "o cal.com vai mandar o link da chamada e o convite para o e-mail usado no agendamento.",
         "fallback": "o calendário não apareceu?",
@@ -1101,7 +1319,7 @@ CAL_COPY = {
     },
     "es": {
         "loading": "cargando los horarios disponibles…",
-        "failed": "el calendario no cargó aquí. usa el enlace directo de abajo.",
+        "failed": "el calendario no cargó aquí. usa el enlace directo de arriba.",
         "booked_label": "llamada agendada",
         "booked": "cal.com enviará el enlace de video y la invitación al correo usado para agendar.",
         "fallback": "¿no aparece el calendario?",
@@ -1112,7 +1330,7 @@ CAL_COPY = {
     },
     "zh": {
         "loading": "正在加载可预约时间…",
-        "failed": "日历没有成功加载，请使用下面的直接预约链接。",
+        "failed": "日历没有成功加载，请使用上面的直接预约链接。",
         "booked_label": "预约成功",
         "booked": "cal.com 会把视频链接和日历邀请发到预约时填写的邮箱。",
         "fallback": "没有看到日历？",
@@ -1145,7 +1363,11 @@ def booker(lang="en"):
         )
 
     calendar_url = f"https://cal.com/{CAL_SLUG}?redirect=false"
-    template = r'''<div class="calwrap" id="leon-booker" aria-busy="true" style="min-height:680px;position:relative">
+    template = r'''<div class="calendar-direct-row">
+  <span>__FALLBACK__</span>
+  <a class="btn calendar-direct" id="leon-cal-direct" href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a>
+</div>
+<div class="calwrap" id="leon-booker" aria-busy="true" style="min-height:680px;position:relative">
   <div id="leon-cal-status" role="status" style="position:absolute;inset:0;z-index:2;min-height:680px;padding:2rem;background:#050505;pointer-events:none">
     <p class="label" id="leon-cal-status-text">__LOADING__</p>
     <div aria-hidden="true" style="margin-top:2rem;display:grid;gap:1rem">
@@ -1160,7 +1382,7 @@ def booker(lang="en"):
   <p class="label">__BOOKED_LABEL__</p>
   <p class="sub">__BOOKED__</p>
 </div>
-<p class="qnote">__FALLBACK__ <a id="leon-cal-direct" href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">__EMAIL__</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">__CALL__</a></p>
+<p class="qnote"><a href="mailto:leondragon3798@gmail.com" data-evt="calendar_email_fallback">__EMAIL__</a> · <a href="tel:+15108267735" data-evt="calendar_phone_fallback">__CALL__</a></p>
 <script>
 (function(){
   var scriptNode=document.currentScript;
@@ -1299,7 +1521,7 @@ def call_page():
         for hl, href in lang_pages.call_alternates())
     return head("Book a Free 15-Minute Call | Leon Kelvin Li",
         "Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.",
-        path, schema, call_alts) + ICONS + nav() + '''
+        path, schema, call_alts).replace('<body>', '<body class="call-page" data-assistant-launcher="hidden">', 1) + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
@@ -1356,30 +1578,31 @@ def quote_page():
     path = '/quote'
     bc = [("home","/"),("get a quote", None)]
     schema = [breadcrumb_schema(bc, path)]
-    return head("Get a Fixed Quote — Software & AI | Leon Kelvin Li",
-        "Describe what your business needs in plain words. Leon reads every request himself and replies with real questions or a fixed quote — usually same day.",
-        path, schema) + ICONS + nav() + '''
+    page_head = head("Get a Fixed Quote | Leon Builds",
+        "Tell Leon what is broken, manual, or missing. Plain words are enough to start a clear, fixed-scope project conversation.",
+        path, schema).replace('<body>', '<body class="quote-page" data-assistant-launcher="hidden">', 1)
+    return page_head + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label">leon --quote</p>
-    <h1 class="dsp">tell me what <em>you need</em></h1>
-    <p class="sub">plain words are perfect — "customers can't book online", "we retype everything", "i want an app". leon reads every one of these himself and replies with real questions or a number, usually the same day.</p>
-    <p class="assist-fallback">Not sure how to describe it? <button class="linklike" type="button" data-assist-open data-assist-starter="help me describe my project">Use the site assistant to draft a short project note.</button></p>
+    <p class="label">Fixed-scope project inquiry</p>
+    <h1 class="dsp">Tell me what is <em>broken, manual, or missing.</em></h1>
+    <p class="sub business-copy">Plain words are enough. Leon reads every request and will ask the questions needed to recommend a sensible first version.</p>
   </div>
 </section>
 <section class="sec">
   <div class="rail">
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
-      <label>what are you trying to fix or build? <i>(required)</i><textarea name="problem" rows="4" required placeholder="the part of the week that's still manual, the thing that's broken, or the thing you wish existed…"></textarea></label>
-      <div class="qrow">
-        <label>name<input name="name" type="text" autocomplete="name"></label>
-        <label>email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email"></label>
-      </div>
+      <label>What are you trying to fix or build? <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
+      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where Leon should reply"></label>
+      <button class="btn btn-solid magnet qsend" type="submit"><span>Send it to Leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email Leon</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
+      <p class="qnote" id="qnote">No payment or commitment. This goes directly to Leon; scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email Leon</a> · <a href="tel:+15108267735" data-evt="phone_click">Call Leon</a></p>
       <details>
-        <summary style="cursor:pointer;color:var(--dim);font-size:12px;letter-spacing:.05em">add project details <i>(optional)</i></summary>
+        <summary>Add project details <i>(optional)</i></summary>
         <div style="display:grid;gap:1.1rem;margin-top:1.1rem">
+          <label>Name <i>(optional)</i><input name="name" type="text" autocomplete="name"></label>
           <label>what does your business do?<input name="company" type="text" placeholder="two taquerias in dallas / a plumbing company / a dental office…"></label>
           <label>what do you currently use for it?<input name="currentTools" type="text" placeholder="paper + phone / spreadsheets / quickbooks / square / nothing…"></label>
           <label>what result would make this worth paying for?<input name="desiredOutcome" type="text" placeholder="phone stops ringing about status / orders without commission / one less hire…"></label>
@@ -1399,9 +1622,6 @@ def quote_page():
       <div id="qfail" hidden role="alert">
         <p class="sub">the site did not accept that request. your answers are still here. <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">open a prepared email</a>, then hit send in your email app; or use whatsapp or phone below.</p>
       </div>
-      <button class="btn btn-solid magnet qsend" type="submit"><span>send it to leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <noscript><p class="qnote">this form needs javascript to submit safely. email <a href="mailto:leondragon3798@gmail.com">leondragon3798@gmail.com</a> or call <a href="tel:+15108267735">(510) 826-7735</a>.</p></noscript>
-      <p class="qnote" id="qnote">the site sends this directly; it will not open your email app when it works. no sales team exists. prefer a manual route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">whatsapp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="phone_click">(510) 826-7735</a></p>
     </form>
     <div class="qok" id="qok" hidden tabindex="-1" aria-live="polite">
       <p class="label">received</p>
@@ -1497,7 +1717,7 @@ def quote_page():
       try{ fail.scrollIntoView({behavior:'smooth',block:'center'}); }catch(ignore){}
     }finally{
       if(timer)clearTimeout(timer);
-      submitting=false; button.disabled=false; button.removeAttribute('aria-busy'); buttonText.textContent='send it to leon';
+      submitting=false; button.disabled=false; button.removeAttribute('aria-busy'); buttonText.textContent='Send it to Leon';
     }
   });
   function line(label,val){ return val&&String(val).trim() ? label+': '+String(val).trim()+'\\n' : ''; }
@@ -1631,6 +1851,21 @@ for _lang in sorted({l for (l, _k) in LANG_COPY}):
         _pre, _rest = _s.split(_a, 1)
         _mid, _post = _rest.split(_b, 1)
         _new = _pre + _a + _links + _b + _post
+        # The localized homes are hand-written, but their generated link block
+        # is also the safe point where global brand chrome is synchronized.
+        # Keep the culturally written CTA copy; only normalize the shared brand
+        # and remove the obsolete custom-cursor element.
+        _new = _new.replace(
+            '<span class="mark-name">Leon Kelvin Li</span>\n'
+            '    <span class="mark-handle">/ Leon Builds</span>',
+            '<span class="mark-name">Leon Builds</span>\n'
+            '    <span class="mark-handle">by Leon Kelvin Li</span>',
+        )
+        _new = _new.replace(
+            '<div class="cursor" id="cursor" aria-hidden="true"><span></span></div>\n',
+            '',
+        )
+        _new = _new.replace('aria-label="menu"', 'aria-label="Open menu"')
         if _new != _s:
             with open(_p, 'w', encoding='utf-8') as f:
                 f.write(_new)
@@ -1654,12 +1889,17 @@ w('index.html', _home_new)
 w('quote.html', quote_page())
 w('about.html', about_page())
 w('call.html', call_page())
+w('work.html', work_page())
+if REVIEWS_ROUTE_ENABLED:
+    w('reviews.html', reviews_page())
 w('missed-lead-recovery.html', missed_lead_recovery_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/call', '/missed-lead-recovery', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/work', '/missed-lead-recovery', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
+if REVIEWS_ROUTE_ENABLED:
+    urls.append('/reviews')
 
 # A sitemap date means "this URL's content changed", not "the sitemap builder ran".
 # The old builder stamped TODAY on all forty URLs whenever one page changed, making
@@ -1698,7 +1938,9 @@ sm += '</urlset>\n'
 w('sitemap.xml', sm)
 w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
 
-print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, contractor product, quote, sitemap ({len(urls)} urls), robots.')
+print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, work, '
+      f'{"reviews, " if REVIEWS_ROUTE_ENABLED else ""}contractor product, quote, '
+      f'sitemap ({len(urls)} urls), robots.')
 
 # ── IndexNow ──────────────────────────────────────────────────────
 # There was no IndexNow code anywhere in this repo. README said "see git log for

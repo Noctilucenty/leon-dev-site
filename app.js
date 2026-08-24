@@ -191,10 +191,15 @@
   run(function () {
     var b = $('#burger'), m = $('#navMid');
     if (!b || !m) return;
-    var close = function () { m.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); };
+    var close = function () {
+      m.classList.remove('open');
+      b.setAttribute('aria-expanded', 'false');
+      b.setAttribute('aria-label', 'Open menu');
+    };
     b.addEventListener('click', function () {
       var open = m.classList.toggle('open');
       b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      b.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     });
     m.addEventListener('click', function (e) { if (e.target.closest('a')) close(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });

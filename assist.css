@@ -277,6 +277,10 @@
     display:flex; justify-content:center; gap:.15rem;
     padding:.55rem .3rem .35rem; border-top:1px solid var(--line,#1c1c1f);
   }
+  .as-langpick.in-menu a{
+    min-width:44px; min-height:44px; display:inline-flex;
+    align-items:center; justify-content:center;
+  }
 }
 @media (max-width:620px){
   .nav-end > .as-langpick{ display:none; }

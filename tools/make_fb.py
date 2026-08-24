@@ -32,13 +32,13 @@ out = os.path.join(root, "assets", "facebook.png")
 EXPECTED_DOMAIN = "leonbuilds.org"
 CANONICAL_DOMAIN = EXPECTED_DOMAIN
 RETIRED_DOMAIN = "leonkelvinli.onrender.com"
-WORDMARK = ("[•]", "Leon Kelvin Li", "/ Noctilucenty")
-OUTCOMES_LABEL = "W H A T   G E T S   B E T T E R"
+WORDMARK = ("[•]", "Leon Builds", "by Leon Kelvin Li")
+OUTCOMES_LABEL = "W H A T   Y O U   G E T"
 
 OUTCOMES = [
-    ("take orders without phone tag", "online ordering · booking · payments"),
-    ("answer repeat questions automatically", "web · chat · phone workflows"),
-    ("turn busywork into one clear flow", "automation · dashboards · custom tools"),
+    ("launch a fast business website", "clear offer · mobile-first · one next step"),
+    ("capture each new inquiry", "calls · bookings · quote requests"),
+    ("follow up before leads go cold", "simple alerts · routing · lead visibility"),
 ]
 
 BAYER = [
@@ -54,10 +54,10 @@ BAYER = [
 CELL = 6
 PAD = 84
 
-HEADLINE = ("i build the part of", "your business you", "still do by hand.")
-NOTE = "built around the way your business already works"
-CTA = "message me — show me the step that wastes the most time"
-FOOT = "remote  ·  working with businesses across the u.s."
+HEADLINE = ("turn website visitors", "into calls, bookings", "and quote requests.")
+NOTE = "websites + lead follow-up for small businesses"
+CTA = "get a fixed quote · leonbuilds.org"
+FOOT = "california-based  ·  serving businesses across the u.s."
 
 
 def checked_text(d, xy, value, *, font, fill, right=S - PAD, bottom=S - PAD):

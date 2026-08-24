@@ -14,15 +14,61 @@ const text = (html) => html
   .replace(/\s+/g, ' ')
   .trim();
 
-test('homepage clearly targets small-business web design and exposes inspectable proof early', () => {
+function publicHtmlFiles() {
+  const out = [];
+  const visit = (directory, prefix = '') => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      if (entry.name === 'dist' || entry.name.startsWith('.')) continue;
+      const absolute = path.join(directory, entry.name);
+      const relative = path.join(prefix, entry.name);
+      if (entry.isDirectory()) {
+        if (['assets', 'content', 'data', 'node_modules', 'private', 'research', 'server', 'tests', 'tools'].includes(entry.name)) continue;
+        visit(absolute, relative);
+      } else if (entry.name.endsWith('.html')) {
+        out.push(relative);
+      }
+    }
+  };
+  visit(ROOT);
+  return out.sort();
+}
+
+test('homepage metadata and first screen state the focused acquisition offer', () => {
   const html = read('index.html');
-  assert.match(html, /<title>Small Business Web Design &amp; Custom Software \| Leon Builds<\/title>/i);
-  assert.match(text(html), /small-business web design · custom software · california \/ u\.s\./i);
-  assert.ok(html.indexOf('class="proof-strip"') < html.indexOf('id="fix"'));
-  assert.ok(html.indexOf('class="proof-strip"') < html.indexOf('id="work"'));
-  assert.match(html, /href="\/services\/websites"[^>]*data-evt="hero_webdesign_click"/i);
-  assert.match(html, /href="#work"[^>]*data-evt="hero_work_click"/i);
-  assert.match(text(html), /contractor product website \+ lead follow-up/i);
+  assert.match(html, /<title>Small Business Websites &amp; Lead Follow-Up \| Leon Builds<\/title>/i);
+  assert.match(html, /<meta name="description" content="Leon Builds creates fast business websites, lead-follow-up systems, and workflow automation for small businesses in California and across the U\.S\.">/i);
+  assert.match(text(html), /websites \+ lead follow-up for small businesses/i);
+  assert.match(text(html), /turn website visitors into calls, bookings, and quote requests/i);
+  assert.ok(html.indexOf('id="services"') < html.indexOf('id="work"'));
+  assert.match(html, /href="\/quote"[^>]*data-evt="hero_quote_click"/i);
+  assert.match(html, /href="\/work"[^>]*data-evt="hero_work_click"/i);
+  assert.match(text(html), /website \+ follow-up from \$1,500/i);
+  assert.doesNotMatch(text(html), /small-business web design · custom software/i);
+});
+
+test('work archive is indexable, canonical, and honest about proof status', () => {
+  const html = read('work.html');
+  const visible = text(html);
+  assert.match(html, /<title>[^<]*(?:Work|Websites|Software)[^<]*\| Leon Builds<\/title>/i);
+  assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/work">/i);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 1);
+  assert.match(visible, /the home screen/i);
+  assert.match(visible, /prototype.*mock payments/is);
+  assert.match(visible, /loqol disclosures/i);
+  assert.match(visible, /public demo.*incomplete/is);
+  assert.match(visible, /curio/i);
+  assert.match(visible, /live product.*app store/is);
+  assert.doesNotMatch(html, /aggregateRating|reviewRating|ratingValue|"@type"\s*:\s*"Review"/i);
+  assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/work<\/loc>/i);
+});
+
+test('public pages route work and pricing links to the new real destinations', () => {
+  for (const file of publicHtmlFiles()) {
+    const html = read(file);
+    assert.doesNotMatch(html, /href=["']\/#(?:fix|outcomes|pricing|work(?:-[^"']*)?)(?:["'])/i, `${file} has no stale English homepage anchor`);
+    const title = html.match(/<title>([^<]+)<\/title>/i)?.[1] || '';
+    if (title) assert.match(title, /Leon Builds/i, `${file} uses the Leon Builds brand in its title`);
+  }
 });
 
 test('website pillar answers search, trust, scope, and next-action questions', () => {
@@ -43,6 +89,50 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   assert.ok(hero.indexOf('href="/call"') < hero.indexOf('href="/quote"'), 'calendar is the first service-page action');
 });
 
+test('app-development landing page is clear, credible, and quote-first', () => {
+  const html = read('services/mobile-apps.html');
+  const visible = text(html);
+  const hero = html.match(/<section class="sec page-hero">[\s\S]*?<\/section>/i)?.[0] || '';
+  const ctas = hero.match(/<div class="ctarow">[\s\S]*?<\/div>/i)?.[0] || '';
+
+  assert.match(html, /<title>iOS &amp; Android App Development — from \$3,500 \| Leon Builds<\/title>/i);
+  assert.match(visible, /turn your app idea into a working iPhone and Android product/i);
+  assert.match(visible, /founders and businesses/i);
+  assert.match(visible, /starting at \$3,500/i);
+  assert.match(visible, /fixed written quote|written fixed quote/i);
+  assert.match(visible, /custom iOS and Android app development/i);
+  assert.match(visible, /mobile website is usually the smaller first step/i);
+  assert.match(visible, /existing prototype or codebase/i);
+  assert.match(visible, /approval cannot be guaranteed/i);
+  assert.match(visible, /smallest useful release/i);
+  assert.match(html, /<body\b[^>]*class="app-service"[^>]*data-assistant-launcher="hidden"/i, 'paid app traffic gets its focused page treatment without a competing floating launcher');
+  assert.match(hero, /turn your app idea into[\s\S]*working iPhone and Android product/i);
+  assert.match(html, /<figure class="service-proof-media">[\s\S]*curio-appstore-current\.png[\s\S]*<\/figure>/i, 'app proof includes a real current product visual');
+  assert.ok(hero.indexOf('href="/quote"') < hero.indexOf('href="/call"'), 'fixed quote is the first app-page action');
+  assert.match(hero, /href="\/quote"[^>]*class="[^"]*btn-solid|class="[^"]*btn-solid[^"]*"[^>]*href="\/quote"/i, 'fixed quote is the filled app-page action');
+  assert.equal((ctas.match(/<a\b/gi) || []).length, 2, 'app hero has only the quote and call actions');
+  assert.doesNotMatch(hero, /mailto:|data-assist-open/i, 'app hero removes tertiary conversion choices');
+  assert.doesNotMatch(visible, /most app projects die|agencies quote six figures|marketplaces hand you code|too many zeros/i);
+  assert.match(html, /<meta property="og:image" content="https:\/\/leonbuilds\.org\/assets\/og-mobile-apps\.png">/i);
+  assert.match(html, /<meta property="og:image:width" content="1200">/i);
+  assert.match(html, /<meta property="og:image:height" content="630">/i);
+  assert.match(html, /<meta name="twitter:image" content="https:\/\/leonbuilds\.org\/assets\/og-mobile-apps\.png">/i);
+
+  const schema = Array.from(html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi), match => JSON.parse(match[1])).flat();
+  const page = schema.find(node => node['@type'] === 'WebPage');
+  const service = schema.find(node => node['@type'] === 'Service');
+  assert.equal(service.name, 'iOS and Android app development');
+  assert.equal(service.serviceType, 'iOS and Android app development');
+  assert.equal(service.audience['@type'], 'BusinessAudience');
+  assert.equal(page.mainEntity['@id'], service['@id']);
+});
+
+test('app service has natural authority links from relevant proof and identity pages', () => {
+  assert.match(read('index.html'), /href="\/services\/mobile-apps"[^>]*data-evt="service_mobile_apps_click"/i);
+  assert.match(read('work.html'), /work-curio-public[\s\S]*href="\/services\/mobile-apps"/i);
+  assert.match(read('about.html'), /shipped product[\s\S]*href="\/services\/mobile-apps"/i);
+});
+
 test('services index exposes starting floors without making buyers open nine pages', () => {
   const visible = text(read('services/index.html'));
   for (const floor of ['$300', '$3,500', '$750', '$1,000', '$500', '$1,500', '$600']) {
@@ -59,13 +149,14 @@ test('high-intent industry pages form a focused web-design and lead-recovery clu
 
   for (const [file, titlePattern, contentPattern] of pages) {
     const html = read(file);
+    const main = html.match(/<main\b[^>]*>[\s\S]*?<\/main>/i)?.[0] || '';
     assert.match(html, titlePattern, `${file} has a specific search title`);
     assert.match(text(html), contentPattern, `${file} has distinct buyer guidance`);
     assert.match(html, /href="\/services\/websites"/i, `${file} links to the web-design pillar`);
     if (file === 'industries/contractors.html') {
-      assert.match(html, /href="\/missed-lead-recovery"/i, `${file} links to the contractor product`);
+      assert.match(main, /href="\/missed-lead-recovery"/i, `${file} links to the contractor product`);
     } else {
-      assert.doesNotMatch(html, /href="\/missed-lead-recovery/i, `${file} does not point to a mismatched contractor product`);
+      assert.doesNotMatch(main, /href="\/missed-lead-recovery/i, `${file} main content does not point to a mismatched contractor product`);
     }
   }
 });
@@ -89,8 +180,17 @@ test('unreleased client feedback and ratings stay off every related service page
 
 test('GEO index states current proof and avoids stale contradictions', () => {
   const llms = read('llms.txt');
-  assert.match(llms, /Small-business web design/i);
-  assert.match(llms, /inspectable public work/i);
+  assert.match(llms, /business websites/i);
+  assert.match(llms, /lead follow-up/i);
+  assert.match(llms, /\$300/i);
+  assert.match(llms, /\$1,500/i);
+  assert.match(llms, /\$500/i);
+  assert.match(llms, /inspectable public (?:work|proof)/i);
   assert.match(llms, /Curio.*App Store/is);
-  assert.doesNotMatch(llms, /client testimonials|client reviews|five-star|all 5 stars|#testimonials|22-business operation/i);
+  assert.match(llms, /## Mobile app development/i);
+  assert.match(llms, /founders and small businesses/i);
+  assert.match(llms, /store.*approval.*does not guarantee|does not guarantee store approval/is);
+  assert.match(llms, /The Home Screen.*prototype.*(?:mock payments|payments are mocked)/is);
+  assert.match(llms, /Loqol.*public demo.*incomplete/is);
+  assert.doesNotMatch(llms, /there are no client names, testimonials, reviews or star ratings|seven direct client reviews|five-star|all 5 stars|#testimonials|22-business operation/i);
 });

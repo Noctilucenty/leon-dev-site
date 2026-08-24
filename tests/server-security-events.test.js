@@ -15,7 +15,7 @@ process.env.LEADS_KEY = 'header-only-test-key';
 process.env.OPENAI_API_KEY = '';
 
 const { app } = require('../server/index');
-const { normalizeEvent } = require('../server/events');
+const { normalizeEvent, funnelStats } = require('../server/events');
 
 let server;
 let base;
@@ -132,6 +132,31 @@ test('event beacon stores bounded anonymous session plus first/last attribution'
   assert.equal(event.lastMsclkid, 'fedcba9876543210fedcba9876543210');
   assert.equal(event.receipt, 'lead_example');
   assert.equal(event.bookingUid, 'booking_example');
+});
+
+test('every redesigned quote and direct-contact CTA remains a high-intent funnel action', () => {
+  const names = [
+    'nav_quote_click',
+    'hero_quote_click',
+    'contact_quote_click',
+    'about_quote_click',
+    'work_quote_click',
+    'work_final_quote_click',
+    'reviews_quote_click',
+    'footer_email_click',
+    'footer_phone_click',
+  ];
+  const events = names.flatMap((name, index) => {
+    const sessionId = `redesign-intent-${index}`;
+    return [
+      { name: 'page_view', sessionId, path: '/' },
+      { name, sessionId, path: '/' },
+    ];
+  });
+  const intent = funnelStats(events).stages.find(stage => stage.id === 'intent');
+  assert.equal(intent.eventCount, names.length);
+  assert.equal(intent.sessionCount, names.length);
+  assert.equal(intent.qualifiedCount, names.length);
 });
 
 test('all admin views ignore query-string keys and accept the header', async () => {

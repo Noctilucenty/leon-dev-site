@@ -1,0 +1,120 @@
+record_type,campaign,ad_group,entity_id,status,scope,match_type,priority,text,final_url,utm_source,utm_medium,utm_campaign,utm_term,utm_content,instruction
+campaign_setting,DRAFT | US | Search | App Development,,draft_state,HOLD_NO_BUDGET,campaign,,,DRAFT — REVIEW ONLY — DO NOT CREATE OR ENABLE,,,,,,,Offline planning row only; no live account action is authorized
+campaign_setting,DRAFT | US | Search | App Development,,account_boundary,HOLD_NO_BUDGET,campaign,,,Leon Builds business advertising only,,,,,,,Never use a Curio advertising social community developer or billing account for this lane
+campaign_setting,DRAFT | US | Search | App Development,,budget,HOLD_NO_BUDGET,campaign,,,0 USD — NO ALLOCATION,,,,,,,The existing $100 over 10 calendar days remains assigned only to the contractor Search test
+campaign_setting,DRAFT | US | Search | App Development,,schedule,HOLD_NO_BUDGET,campaign,,,NOT SCHEDULED,,,,,,,Dates remain unset and this draft cannot inherit the contractor flight
+campaign_setting,DRAFT | US | Search | App Development,,campaign_type,HOLD_NO_BUDGET,campaign,,,Search,,,,,,,Separate future campaign hypothesis only
+campaign_setting,DRAFT | US | Search | App Development,,networks,HOLD_NO_BUDGET,campaign,,,Google Search only,,,,,,,Display Network and Search Partners would remain off if a future test is separately approved
+campaign_setting,DRAFT | US | Search | App Development,,location,HOLD_NO_BUDGET,campaign,,,UNSET — define only with a separately approved app test,,,,,,,The service is available remotely across the United States but that does not authorize national targeting
+campaign_setting,DRAFT | US | Search | App Development,,location_option,HOLD_NO_BUDGET,campaign,,,Presence: people in or regularly in approved locations,,,,,,,Do not use Presence or Interest
+campaign_setting,DRAFT | US | Search | App Development,,language,HOLD_NO_BUDGET,campaign,,,English,,,,,,,Add languages only with reviewed matching ad and landing experiences
+campaign_setting,DRAFT | US | Search | App Development,,bidding_strategy,HOLD_NO_BUDGET,campaign,,,UNSET,,,,,,,Do not choose bids or a cost goal until separate budget economics and authorization exist
+campaign_setting,DRAFT | US | Search | App Development,,landing_page,HOLD_NO_BUDGET,campaign,,,https://leonbuilds.org/services/mobile-apps,,,,,,,Existing page states iOS and Android scope from $3500 and shows truthful App Store proof; visually review it again before any future use
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_01e,HOLD_NO_BUDGET,ad_group,exact,,business app developer,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_01p,HOLD_NO_BUDGET,ad_group,phrase,,business app developer,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_02e,HOLD_NO_BUDGET,ad_group,exact,,app developer for business,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_02p,HOLD_NO_BUDGET,ad_group,phrase,,app developer for business,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_03e,HOLD_NO_BUDGET,ad_group,exact,,custom app development,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_03p,HOLD_NO_BUDGET,ad_group,phrase,,custom app development,,,,,,,High-intent hypothesis; review actual search volume before any separate test
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_04e,HOLD_NO_BUDGET,ad_group,exact,,mobile app development company,,,,,,,Buyer language; ad copy remains truthful that Leon is one developer
+keyword,DRAFT | US | Search | App Development,business_app,app_kw_04p,HOLD_NO_BUDGET,ad_group,phrase,,mobile app development company,,,,,,,Buyer language; ad copy remains truthful that Leon is one developer
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_05e,HOLD_NO_BUDGET,ad_group,exact,,ios and android app developer,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_05p,HOLD_NO_BUDGET,ad_group,phrase,,ios and android app developer,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_06e,HOLD_NO_BUDGET,ad_group,exact,,iphone app development,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_06p,HOLD_NO_BUDGET,ad_group,phrase,,iphone app development,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_07e,HOLD_NO_BUDGET,ad_group,exact,,android app development,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_07p,HOLD_NO_BUDGET,ad_group,phrase,,android app development,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_08e,HOLD_NO_BUDGET,ad_group,exact,,cross platform app developer,,,,,,,Platform-specific purchase-intent hypothesis
+keyword,DRAFT | US | Search | App Development,ios_android,app_kw_08p,HOLD_NO_BUDGET,ad_group,phrase,,cross platform app developer,,,,,,,Platform-specific purchase-intent hypothesis
+negative,DRAFT | US | Search | App Development,,app_neg_001,HOLD_NO_BUDGET,campaign,broad,,job,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_002,HOLD_NO_BUDGET,campaign,broad,,jobs,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_003,HOLD_NO_BUDGET,campaign,broad,,career,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_004,HOLD_NO_BUDGET,campaign,broad,,careers,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_005,HOLD_NO_BUDGET,campaign,broad,,salary,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_006,HOLD_NO_BUDGET,campaign,broad,,salaries,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_007,HOLD_NO_BUDGET,campaign,broad,,internship,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_008,HOLD_NO_BUDGET,campaign,broad,,internships,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_009,HOLD_NO_BUDGET,campaign,broad,,resume,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_010,HOLD_NO_BUDGET,campaign,broad,,indeed,,,,,,,Employment intent
+negative,DRAFT | US | Search | App Development,,app_neg_011,HOLD_NO_BUDGET,campaign,broad,,course,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_012,HOLD_NO_BUDGET,campaign,broad,,courses,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_013,HOLD_NO_BUDGET,campaign,broad,,class,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_014,HOLD_NO_BUDGET,campaign,broad,,classes,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_015,HOLD_NO_BUDGET,campaign,broad,,training,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_016,HOLD_NO_BUDGET,campaign,broad,,tutorial,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_017,HOLD_NO_BUDGET,campaign,broad,,tutorials,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_018,HOLD_NO_BUDGET,campaign,broad,,bootcamp,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_019,HOLD_NO_BUDGET,campaign,broad,,certification,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_020,HOLD_NO_BUDGET,campaign,broad,,degree,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_021,HOLD_NO_BUDGET,campaign,broad,,university,,,,,,,Education intent
+negative,DRAFT | US | Search | App Development,,app_neg_022,HOLD_NO_BUDGET,campaign,broad,,free,,,,,,,Free-resource intent
+negative,DRAFT | US | Search | App Development,,app_neg_023,HOLD_NO_BUDGET,campaign,broad,,template,,,,,,,DIY-resource intent
+negative,DRAFT | US | Search | App Development,,app_neg_024,HOLD_NO_BUDGET,campaign,broad,,templates,,,,,,,DIY-resource intent
+negative,DRAFT | US | Search | App Development,,app_neg_025,HOLD_NO_BUDGET,campaign,phrase,,source code,,,,,,,Code-download intent
+negative,DRAFT | US | Search | App Development,,app_neg_026,HOLD_NO_BUDGET,campaign,phrase,,open source,,,,,,,Code-download intent
+negative,DRAFT | US | Search | App Development,,app_neg_027,HOLD_NO_BUDGET,campaign,broad,,github,,,,,,,Code-repository intent
+negative,DRAFT | US | Search | App Development,,app_neg_028,HOLD_NO_BUDGET,campaign,broad,,download,,,,,,,Download intent
+negative,DRAFT | US | Search | App Development,,app_neg_029,HOLD_NO_BUDGET,campaign,broad,,apk,,,,,,,Android package-download intent
+negative,DRAFT | US | Search | App Development,,app_neg_030,HOLD_NO_BUDGET,campaign,broad,,mod,,,,,,,Modified-app download intent
+negative,DRAFT | US | Search | App Development,,app_neg_031,HOLD_NO_BUDGET,campaign,broad,,cracked,,,,,,,Pirated-app intent
+negative,DRAFT | US | Search | App Development,,app_neg_032,HOLD_NO_BUDGET,campaign,broad,,game,,,,,,,Game-development intent
+negative,DRAFT | US | Search | App Development,,app_neg_033,HOLD_NO_BUDGET,campaign,broad,,games,,,,,,,Game-development intent
+negative,DRAFT | US | Search | App Development,,app_neg_034,HOLD_NO_BUDGET,campaign,broad,,unity,,,,,,,Game-engine intent
+negative,DRAFT | US | Search | App Development,,app_neg_035,HOLD_NO_BUDGET,campaign,broad,,unreal,,,,,,,Game-engine intent
+negative,DRAFT | US | Search | App Development,,app_neg_036,HOLD_NO_BUDGET,campaign,broad,,roblox,,,,,,,Game-platform intent
+negative,DRAFT | US | Search | App Development,,app_neg_037,HOLD_NO_BUDGET,campaign,phrase,,app ideas,,,,,,,Idea-browsing intent
+negative,DRAFT | US | Search | App Development,,app_neg_038,HOLD_NO_BUDGET,campaign,phrase,,app examples,,,,,,,Research intent
+negative,DRAFT | US | Search | App Development,,app_neg_039,HOLD_NO_BUDGET,campaign,phrase,,make your own,,,,,,,DIY intent
+negative,DRAFT | US | Search | App Development,,app_neg_040,HOLD_NO_BUDGET,campaign,phrase,,no code,,,,,,,No-code platform intent
+negative,DRAFT | US | Search | App Development,,app_neg_041,HOLD_NO_BUDGET,campaign,phrase,,app builder,,,,,,,DIY builder intent
+negative,DRAFT | US | Search | App Development,,app_neg_042,HOLD_NO_BUDGET,campaign,phrase,,app store connect,,,,,,,Platform-support intent
+negative,DRAFT | US | Search | App Development,,app_neg_043,HOLD_NO_BUDGET,campaign,phrase,,developer account,,,,,,,Platform-account support intent
+negative,DRAFT | US | Search | App Development,,app_neg_044,HOLD_NO_BUDGET,campaign,phrase,,google play console,,,,,,,Platform-support intent
+negative,DRAFT | US | Search | App Development,,app_neg_045,HOLD_NO_BUDGET,campaign,phrase,,apple developer support,,,,,,,Platform-support intent
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H01,Custom Apps For Business,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H02,From App Idea To Working MVP,,,,,,,Outcome-led without promising launch or approval
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H03,"Apps From $3,500",,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H04,One Developer Fixed Scope,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H05,From Idea To Store Review,,,,,,,Avoids implying that third-party store approval is guaranteed
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H06,Work Directly With Leon,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H07,Written Fixed Quote First,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H08,Agreed Source Code Handoff,,,,,,,Matches the written-scope boundary on the landing page
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H09,Backend And Accounts Too,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,H10,See Real App Store Proof,,,,,,,Truthful product proof; not a client-result claim
+rsa_description,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,D01,"Custom iOS and Android apps with backend, accounts and store submission in scope.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,D02,"Full builds start at $3,500. Get a written fixed quote before development begins.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,D03,"Work directly with Leon from scope and interface through review and handoff.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,D04,"See live App Store proof and a truthful breakdown of what was built.",,,,,,,No client-result claim
+rsa_url,DRAFT | US | Search | App Development,business_app,business_rsa_a,HOLD_NO_BUDGET,ad_group,,FINAL_URL,,https://leonbuilds.org/services/mobile-apps?utm_source=google&utm_medium=cpc&utm_campaign=us-app-development-draft-v1&utm_term=business_app&utm_content=search-business-rsa-a,google,cpc,us-app-development-draft-v1,business_app,search-business-rsa-a,No click-ID parameter; existing page must pass a fresh visual and truth review before future use
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H01,iOS And Android App Dev,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H02,One Codebase When It Fits,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H03,"Apps From $3,500",,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H04,App Store Submission Help,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H05,Backend Accounts And Payments,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H06,Work Directly With Leon,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H07,Written Fixed Quote First,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H08,Agreed Source Code Handoff,,,,,,,Matches the written-scope boundary on the landing page
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H09,From Scope To Store Review,,,,,,,Unpinned review draft
+rsa_headline,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,H10,See Real App Store Proof,,,,,,,Truthful product proof; not a client-result claim
+rsa_description,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,D01,"iOS and Android development with the backend and agreed store submission work.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,D02,"Full builds start at $3,500. Get a written fixed quote before development begins.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,D03,"Work directly with Leon from scope and interface through review and handoff.",,,,,,,Unpinned review draft
+rsa_description,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,D04,"See live App Store proof and a factual breakdown of the work.",,,,,,,No client-result claim
+rsa_url,DRAFT | US | Search | App Development,ios_android,platform_rsa_a,HOLD_NO_BUDGET,ad_group,,FINAL_URL,,https://leonbuilds.org/services/mobile-apps?utm_source=google&utm_medium=cpc&utm_campaign=us-app-development-draft-v1&utm_term=ios_android&utm_content=search-platform-rsa-a,google,cpc,us-app-development-draft-v1,ios_android,search-platform-rsa-a,No click-ID parameter; existing page must pass a fresh visual and truth review before future use
+conversion,DRAFT | US | Search | App Development,,app_conv_01,HOLD_NO_BUDGET,campaign,,1,won_client,,,,,,,Ultimate business outcome only after a reliable consented offline feedback process exists
+conversion,DRAFT | US | Search | App Development,,app_conv_02,HOLD_NO_BUDGET,campaign,,2,qualified_app_call_held,,,,,,,Preferred quality signal after the qualification definition is tested
+conversion,DRAFT | US | Search | App Development,,app_conv_03,HOLD_NO_BUDGET,campaign,,3,calendar_booking_success,,,,,,,Initial booking candidate only after one confirmed UID maps to one event
+conversion,DRAFT | US | Search | App Development,,app_conv_04,HOLD_NO_BUDGET,campaign,,4,quote_lead_accepted,,,,,,,Secondary action; never count it as a held qualified call
+conversion,DRAFT | US | Search | App Development,,app_conv_05,HOLD_NO_BUDGET,campaign,,5,cta_click_or_form_start,,,,,,,Diagnostic only and excluded from bidding goals
+launch_check,DRAFT | US | Search | App Development,,app_check_01,HOLD_NO_BUDGET,campaign,,BLOCKER,Separate app-development media budget explicitly approved,,,,,,,Do not borrow any part of the contractor test budget
+launch_check,DRAFT | US | Search | App Development,,app_check_02,HOLD_NO_BUDGET,campaign,,BLOCKER,Leon Builds account boundary confirmed,,,,,,,Do not use any Curio account profile page community pixel billing identity or audience
+launch_check,DRAFT | US | Search | App Development,,app_check_03,HOLD_NO_BUDGET,campaign,,BLOCKER,Mobile-app landing page reviewed on mobile and desktop,,,,,,,Confirm price scope proof status form calendar privacy and brand consistency
+launch_check,DRAFT | US | Search | App Development,,app_check_04,HOLD_NO_BUDGET,campaign,,BLOCKER,All five UTM fields persist through confirmed booking,,,,,,,Run one synthetic authorized pipeline test and verify exact attribution
+launch_check,DRAFT | US | Search | App Development,,app_check_05,HOLD_NO_BUDGET,campaign,,BLOCKER,App inquiry qualification fields approved,,,,,,,Capture platform users accounts payments integrations deadline and budget without collecting sensitive data in ad assets
+launch_check,DRAFT | US | Search | App Development,,app_check_06,HOLD_NO_BUDGET,campaign,,BLOCKER,Keyword planner and search intent reviewed in live account,,,,,,,Do not infer current volume bids or competition from this offline draft
+launch_check,DRAFT | US | Search | App Development,,app_check_07,HOLD_NO_BUDGET,campaign,,BLOCKER,Negative keywords checked for conflicts,,,,,,,Do not exclude high-intent cost agency freelancer or near-me searches by assumption
+launch_check,DRAFT | US | Search | App Development,,app_check_08,HOLD_NO_BUDGET,campaign,,BLOCKER,RSA combinations pass truth policy and character review,,,,,,,No client results guaranteed launch dates guaranteed approvals or revenue claims
+launch_check,DRAFT | US | Search | App Development,,app_check_09,HOLD_NO_BUDGET,campaign,,BLOCKER,Location language schedule bidding and dates separately approved,,,,,,,All are intentionally unset or held in this file
+launch_check,DRAFT | US | Search | App Development,,app_check_10,HOLD_NO_BUDGET,campaign,,BLOCKER,Privacy consent and conversion handling reviewed,,,,,,,Do not add advertising technology merely because this draft exists
+launch_check,DRAFT | US | Search | App Development,,app_check_11,HOLD_NO_BUDGET,campaign,,BLOCKER,Campaign and every child entity verified paused,,,,,,,A second person must confirm disabled state before a billing-capable action
+launch_check,DRAFT | US | Search | App Development,,app_check_12,HOLD_NO_BUDGET,campaign,,BLOCKER,Owner gives explicit launch approval after visual review,,,,,,,This repository approval gate cannot be satisfied automatically
