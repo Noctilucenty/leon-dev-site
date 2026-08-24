@@ -35,9 +35,11 @@ python3 tools/check_ads_pack.py
 ## Pack map
 
 - `google-search-build.csv` — one disabled Bay Area Search campaign with a $100
-  campaign-total budget over 10 calendar days, three intent-separated ad groups,
-  keywords, negatives, two RSAs per ad group, conversion hierarchy, and a launch
-  checklist.
+  campaign-total budget over 10 calendar days, one eligible contractor ad group,
+  one eligible contractor RSA, four natural contractor website-search themes,
+  and preserved alternative/auto/restaurant drafts held for intent, copy, or
+  product mismatch. It also contains reviewed negatives, conversion hierarchy,
+  and a launch checklist.
 - `meta-build.csv` — one disabled Leads-objective plan using a website booking
   conversion, six mapped assets, qualification controls, retargeting gates, and
   a $0 first-test allocation.
@@ -50,13 +52,19 @@ Every eligible ad resolves to:
 
 `https://leonbuilds.org/missed-lead-recovery`
 
-The page describes a Bay Area **Missed Lead Recovery Sprint** for contractors,
-auto shops, and restaurant catering/private-event inquiries. The published
-starting scope is $1,500, subject to a compatibility check and written fixed
-quote. The implementation window is 10 business days only after scope, access,
-compatible tools, and approved copy are ready. Ads must preserve those
-boundaries and must not recast the sprint as lead generation, ad management, a
-call center, or a revenue promise.
+The page describes a **Contractor Lead Recovery System**: a focused contractor
+website or lead page, estimate intake, prompt acknowledgment, up to two
+follow-ups, one owner handoff, and a basic event log. The published starting
+scope is $1,500, subject to a compatibility check and written fixed quote. The
+implementation window is 10 business days only after scope, access, compatible
+tools, and approved copy are ready. Ads must preserve those boundaries and must
+not recast the system as lead generation, ad management, a call center, or a
+revenue promise.
+
+The first test may target Bay Area contractors, but the service itself is
+available remotely across the United States. Every auto-shop and restaurant row
+is retained as a `HOLD_PRODUCT_MISMATCH` archive and is ineligible until it has a
+separately reviewed matching offer and landing page.
 
 ## Attribution contract
 
@@ -117,6 +125,14 @@ to held qualified call to won client.
   and [search terms
   report](https://support.google.com/google-ads/answer/2472708?hl=en).
 
+For this small first test, only one RSA is eligible so $100 is not split across
+two competing drafts. The active exact/phrase themes are `contractor website
+design`, `contractor web design`, `website design for contractors`, and `home
+service website design`. Unnatural software/form queries remain preserved but
+held. The generic `near me` negative also remains preserved but held because it
+can appear in a legitimate local B2B website-design search; use the actual
+search-terms report before adding narrower consumer-service negatives.
+
 Platform interfaces and policies change. Re-check the live help pages and the
 account UI immediately before any separately authorized build. If Campaign total
 budget is unavailable in the account, do not substitute a $10/day budget or
@@ -152,14 +168,14 @@ context-dependent, so this pack does not fabricate them.
 |---|---|---|
 | `assets/social/ad_01_contractor_after_hours.png` | Contractor after-hours inquiry | Disabled |
 | `assets/social/ad_02_contractor_flow.png` | Contractor workflow explanation | Disabled |
-| `assets/social/ad_03_auto_estimates.png` | Auto-shop inquiry workflow | Disabled |
-| `assets/social/ad_04_restaurant_direct.png` | Direct ordering | **Hold: message/landing mismatch** |
-| `assets/social/ad_05_founder_direct.png` | Founder-direct reassurance | Disabled |
-| `assets/social/ad_06_lead_leak_review.png` | Catering/private-event leak review | Disabled |
+| `assets/social/ad_03_auto_estimates.png` | Auto-shop inquiry workflow | **Hold: product/landing mismatch** |
+| `assets/social/ad_04_restaurant_direct.png` | Direct ordering | **Hold: message/landing mismatch and product mismatch** |
+| `assets/social/ad_05_founder_direct.png` | Auto-shop founder-direct reassurance | **Hold: product/landing mismatch** |
+| `assets/social/ad_06_lead_leak_review.png` | Catering/private-event leak review | **Hold: product/landing mismatch** |
 
 The six images are 1080×1350 (4:5). Preview every selected placement in the
-live tool. The restaurant direct-ordering card is not eligible for the current
-landing page because routine ordering is explicitly outside this sprint.
+live tool. Only the two contractor cards are eligible for review against the
+current landing page. The four auto/restaurant cards remain preserved but held.
 
 ## Human launch boundary
 

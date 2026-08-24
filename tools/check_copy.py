@@ -71,10 +71,9 @@ CITY = re.compile(
 # His actual school, and the automotive page's "repair bay", are both legitimate.
 CITY_OK = re.compile(r'cal state east bay|repair bay|service bay|bay door', re.I)
 
-# One acquisition experiment intentionally narrows its audience while the rest of
-# the catalog stays nationwide. Keep this exception page-and-phrase exact: it may
-# say "Bay Area", but it still may not name a city, offer in-person work or use any
-# of the other prohibited local-service promises in CITY.
+# The paid-search contractor page is the one reviewed local exception. It still
+# states that delivery is remote and U.S.-wide; the Bay Area cue only preserves
+# continuity with the campaign's actual location targeting.
 TARGETED_PLACE_OK = {
     'missed-lead-recovery.html': {'bay area'},
 }

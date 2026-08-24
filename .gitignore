@@ -4,7 +4,10 @@ _ovf.html
 _shot.html
 .env
 node_modules/
-data/
+data/*
+!data/*.template.csv
+!data/*.template.json
 __pycache__/
 /dist/
 /private/
+/content/client-success/testimonial-drafts.json

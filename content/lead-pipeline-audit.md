@@ -83,7 +83,7 @@ works. But it has three edges worth knowing:
 - **On mobile web and on webmail-only setups the mailto often opens nothing.**
   The visitor is then looking at a screen telling them their email app opened
   when it did not.
-- **It goes to `leondragon3798@gmail.com`,** not to `leon@leonbuilds.org`. Two
+- **It goes to `[private sending account]`,** not to `leon@leonbuilds.org`. Two
   different destinations for the same enquiry.
 
 None of that is broken exactly. But the mailto is the only path that reaches
@@ -96,9 +96,9 @@ mail client does, and the mailto becomes a bonus rather than the mechanism.
 - **`leon@leonbuilds.org` did not exist.** Namecheap showed *"You haven't defined
   any Email Redirect yet"*. The MX records were Namecheap's defaults, present on
   every domain, which is what made it look configured.
-- **`SMTP_USER`** set to `leondragon3798@gmail.com` on leon-assist. Send-only —
+- **`SMTP_USER`** set to `[private sending account]` on leon-assist. Send-only —
   it is an SMTP login, not an inbox anyone opens.
-- **`LEAD_TO_EMAIL` changed to `splk3798@gmail.com`.** It was
+- **`LEAD_TO_EMAIL` changed to `[private lead inbox]`.** It was
   `leon@leonbuilds.org`, which meant every lead crossed a Namecheap forwarding
   hop to reach a real mailbox. Leon's assessment of that hop — *"never works
   efficiently 100%"* — matches how free forwarding actually behaves: it
@@ -107,7 +107,7 @@ mail client does, and the mailto becomes a bonus rather than the mechanism.
   the same message delivered directly, and when it is dropped nobody is told.
   A lead is the wrong payload to route through a channel with silent losses.
   The hop is now out of the path entirely: Gmail SMTP → Gmail inbox, no relay.
-- **The `leon` forwarder was kept, and repointed** to `splk3798@gmail.com`.
+- **The `leon` forwarder was kept, and repointed** to `[private lead inbox]`.
   Deleting it would make `leon@leonbuilds.org` bounce for anyone who guesses the
   address, which is worse than an unreliable forward. Nothing depends on it now
   — it is a courtesy catch, and it lands in the same single inbox as everything
@@ -118,13 +118,13 @@ Verified from the health endpoint rather than the dashboard:
 
 ## Left for Leon
 
-1. **`SMTP_PASS`** — a Gmail app password generated on `leondragon3798@gmail.com`.
+1. **`SMTP_PASS`** — a Gmail app password generated on `[private sending account]`.
    Then `curl -s https://leon-assist.onrender.com/api/health` should read
    `"leadEmail":true` and `"leadEmailMissing":[]`.
 
    Note that Apple Mail on the Mac currently **cannot send through Google
    either** — it failed with *"Cannot send message using the server Google"* on
-   `splk3798@gmail.com` during this audit. Same root cause: Google no longer
+   `[private lead inbox]` during this audit. Same root cause: Google no longer
    accepts a plain account password from a mail client. Worth fixing separately,
    because until it is, every `mailto:` link on every site dead-ends into an
    Outbox.
@@ -132,8 +132,8 @@ Verified from the health endpoint rather than the dashboard:
    durable record is Leon's inbox. A Render disk, or appending each lead to a
    Google Sheet, would mean a lead survives an SMTP outage as well as a deploy.
 3. **Decide the public contact address.** The site publishes
-   `leondragon3798@gmail.com` in 41 built pages, and the quote form's `mailto:`
-   goes there. Leads now arrive at `splk3798@gmail.com`, so as things stand
+   `[private sending account]` in 41 built pages, and the quote form's `mailto:`
+   goes there. Leads now arrive at `[private lead inbox]`, so as things stand
    there are two inboxes to watch: one for form submissions, one for anyone who
    clicks "email leon directly". Consolidating is a find-and-replace in
    `tools/build_pages.py` and `tools/lang_pages.py` plus a rebuild — held

@@ -11,6 +11,7 @@
 <link rel="alternate" hreflang="en" href="https://leonbuilds.org/call"><link rel="alternate" hreflang="pt-BR" href="https://leonbuilds.org/pt/agendar"><link rel="alternate" hreflang="es" href="https://leonbuilds.org/es/agendar"><link rel="alternate" hreflang="zh" href="https://leonbuilds.org/zh/yuyue"><link rel="alternate" hreflang="x-default" href="https://leonbuilds.org/call">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://leonbuilds.org/call">
+<meta property="og:site_name" content="Leon Builds">
 <meta property="og:title" content="Book a Free 15-Minute Call | Leon Kelvin Li">
 <meta property="og:description" content="Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.">
 <meta property="og:image" content="https://leonbuilds.org/assets/og.png">
@@ -30,7 +31,7 @@
   <a class="mark" href="/">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
     <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Noctilucenty</span>
+    <span class="mark-handle">/ Leon Builds</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">
     <a href="/#fix"><i>[</i><span>start here</span><i>]</i></a>
@@ -49,10 +50,10 @@
 <section class="sec page-hero">
   <div class="rail">
     <p class="crumbs"><a href="/">home</a> <i>/</i> <span>book a call</span></p>
-    <p class="label">leon --call</p>
-    <h1 class="dsp">book a free <em>15-minute call</em></h1>
-    <p class="sub">fifteen minutes is enough to know whether there is a project here. you describe what is slow or manual in your week, and leon tells you what he would build, roughly what it starts at, and just as readily when you do not need him at all.</p>
-    <p class="pricetag">free · 15 minutes · weekday availability, pacific time · you talk to the person who writes the code</p>
+    <p class="label" id="call-context-label">leon --call</p>
+    <h1 class="dsp" id="call-context-title">book a free <em>15-minute call</em></h1>
+    <p class="sub" id="call-context-intro">fifteen minutes is enough to know whether there is a project here. you describe what is slow or manual in your week, and leon tells you what he would build, roughly what it starts at, and just as readily when you do not need him at all.</p>
+    <p class="pricetag" id="call-context-price">free · 15 minutes · weekday availability, pacific time · you talk to the person who writes the code</p>
   </div>
 </section>
 
@@ -180,7 +181,7 @@
 </script>
     </div>
     <div>
-      <p class="label">what happens on the call</p>
+      <p class="label" id="call-context-agenda">what happens on the call</p>
       <ul class="blist">
         <li><svg class="ic"><use href="#ic-check"/></svg>you describe the problem in plain words — no technical vocabulary needed</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>he asks about what you use today and where it actually breaks</li>
@@ -193,16 +194,35 @@
   </div>
 </section>
 </main>
+<script>
+(function(){
+  var params=new URLSearchParams(location.search);
+  if(params.get('service')!=='contractor-lead-recovery') return;
+  document.body.classList.add('contractor-call-context');
+  document.title='Book a Contractor Website Review | Leon Builds';
+  var label=document.getElementById('call-context-label');
+  var title=document.getElementById('call-context-title');
+  var intro=document.getElementById('call-context-intro');
+  var price=document.getElementById('call-context-price');
+  var agenda=document.getElementById('call-context-agenda');
+  if(label) label.textContent='Contractor website + follow-up review';
+  if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
+  if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
+  if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
+  if(agenda) agenda.textContent='What happens in the contractor review';
+  if(window.leonEvt) window.leonEvt('call_context_contractor');
+})();
+</script>
 <footer class="foot">
   <div class="rail foot-in">
     <div class="foot-brand">
-      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Kelvin Li</span><span class="mark-handle">/ Noctilucenty</span></a>
-      <p>custom software and ai, built directly by one developer for businesses across the united states.</p>
+      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Kelvin Li</span><span class="mark-handle">/ Leon Builds</span></a>
+      <p>small-business web design and custom software, built directly by one developer for businesses across the united states.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
-    <nav><h4>services</h4><a href="/services/websites">business websites</a><a href="/services/mobile-apps">mobile apps</a><a href="/services/ai-chatbots">ai chatbots</a><a href="/services/ai-phone-agents">ai phone agents</a><a href="/services/business-automation">business automation</a><a href="/services/custom-software">custom software</a><a href="/services/booking-systems">booking &amp; online ordering</a><a href="/services/business-dashboards">dashboards &amp; internal tools</a><a href="/services/seo">seo &amp; ai search</a></nav>
+    <nav><h4>services</h4><a href="/services/websites">small-business web design</a><a href="/services/mobile-apps">mobile apps</a><a href="/services/ai-chatbots">ai chatbots</a><a href="/services/ai-phone-agents">ai phone agents</a><a href="/services/business-automation">business automation</a><a href="/services/custom-software">custom software</a><a href="/services/booking-systems">booking &amp; online ordering</a><a href="/services/business-dashboards">dashboards &amp; internal tools</a><a href="/services/seo">technical seo &amp; ai search</a></nav>
     <nav><h4>industries</h4><a href="/industries/restaurants">restaurants &amp; food</a><a href="/industries/contractors">contractors &amp; home services</a><a href="/industries/automotive">auto repair &amp; automotive</a><a href="/industries/healthcare">medical &amp; dental</a><a href="/industries/real-estate">real estate &amp; property</a><a href="/industries/logistics">logistics &amp; warehousing</a><a href="/industries/gyms">gyms &amp; fitness</a><a href="/industries/retail">retail &amp; e-commerce</a><a href="/industries/professional-services">professional services</a><a href="/industries/startups">startups</a></nav>
-    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="/privacy">privacy</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
+    <nav><h4>site</h4><a href="/about">about leon</a><a href="/call">book a call</a><a href="/#work">public work</a><a href="/#pricing">pricing</a><a href="/#faq">faq</a><a href="/quote">get a quote</a><a href="/privacy">privacy</a><a href="https://github.com/Noctilucenty" target="_blank" rel="noopener">github</a></nav>
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>

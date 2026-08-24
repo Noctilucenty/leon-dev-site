@@ -93,7 +93,7 @@ function navBookRules(source) {
 
 test('homepage follows the B2B conversion section order', () => {
   const names = sectionLandmarks(html).map(item => item.name);
-  const expected = ['hero', 'proof', 'outcomes', 'work', 'testimonials', 'services', 'process', 'pricing', 'about', 'faq', 'contact'];
+  const expected = ['hero', 'proof', 'outcomes', 'work', 'services', 'pricing', 'process', 'about', 'faq', 'contact'];
   let cursor = -1;
   for (const name of expected) {
     const next = names.indexOf(name, cursor + 1);
@@ -105,42 +105,36 @@ test('homepage follows the B2B conversion section order', () => {
   assert.equal(workIds.length, 1, 'homepage has exactly one id="work" landmark');
 });
 
-test('client feedback is attributed, project-specific, and not inflated into schema ratings', () => {
-  const testimonials = sectionWithId(html, 'testimonials');
-  const cards = testimonials.match(/<article\b[\s\S]*?<\/article>/gi) || [];
-  assert.equal(cards.length, 7, 'homepage includes the seven approved client testimonials');
-
-  const testimonialText = plainText(testimonials).toLowerCase();
-  for (const name of ['ALLCPR', 'ONPECY AI Lab', 'Paul', '明途 Client', 'Jayson', 'Glenn', 'Heather']) {
-    assert.ok(testimonialText.includes(name.toLowerCase()), `${name} is attributed`);
-  }
-  assert.equal((testimonials.match(/aria-label=["']5 out of 5 stars["']/gi) || []).length, 7);
-  assert.match(plainText(testimonials), /feedback shared directly by clients/i);
-  assert.match(testimonials, /<details\b[^>]*class=["'][^"']*testimonial-more/i, 'four secondary reviews use progressive disclosure');
-  assert.match(plainText(testimonials), /see four more client reviews/i);
-  assert.doesNotMatch(plainText(testimonials), /more than 300 locations/i, 'unsupported 300+ location claim is not published');
-
+test('unreleased feedback and supplied ratings are absent from the homepage', () => {
+  assert.doesNotMatch(html, /id=["']testimonials["']/i);
+  assert.doesNotMatch(html, /href=["']#testimonials["']/i);
+  assert.doesNotMatch(html, /testimonial-(?:card|stars|person|project)/i);
+  assert.doesNotMatch(html, /5 out of 5 stars|★★★★★|direct client reviews?/i);
   const schemaBlocks = Array.from(html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi), match => match[1]);
   assert.ok(schemaBlocks.length > 0, 'homepage includes structured data');
-  assert.doesNotMatch(schemaBlocks.join('\n'), /aggregateRating|reviewRating|ratingValue/i, 'direct feedback is not presented as a platform aggregate rating');
+  assert.doesNotMatch(schemaBlocks.join('\n'), /aggregateRating|reviewRating|ratingValue/i, 'no rating schema is emitted');
 });
 
-test('client feedback is discoverable without scrolling through the case studies', () => {
+test('verifiable public work is discoverable before service detail', () => {
   const nav = sectionWithId(html.replace('<header class="nav"', '<section id="site-nav" class="nav"').replace('</header>', '</section>'), 'site-nav');
   const navLinks = Array.from(nav.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi), match => {
     const attrs = attributes(match[0].slice(0, match[0].indexOf('>') + 1));
     return { href: attrs.href, text: plainText(match[0]).toLowerCase() };
   });
-  assert.ok(navLinks.some(link => link.href === '#testimonials' && link.text === '[ reviews ]'), 'desktop and mobile navigation link directly to reviews');
+  assert.ok(navLinks.some(link => link.href === '#work' && link.text === '[ work ]'), 'desktop and mobile navigation link directly to work');
+  assert.ok(!navLinks.some(link => link.href === '#testimonials'), 'navigation does not imply unreleased reviews exist');
 
   const hero = sectionWithId(html, 'top');
-  assert.match(hero, /href=["']#testimonials["'][^>]*data-evt=["']hero_reviews_click["']/i, 'hero links directly to reviews');
-  assert.match(plainText(hero), /read 7 client reviews/i, 'hero exposes the amount of client feedback');
+  assert.match(hero, /href=["']#work["'][^>]*data-evt=["']hero_work_click["']/i, 'hero links directly to public work');
+  assert.match(plainText(hero), /see shipped work and public demos/i, 'hero offers inspectable proof as the secondary step');
+
+  const landmarks = sectionLandmarks(html).map(item => item.name);
+  assert.ok(landmarks.indexOf('proof') < landmarks.indexOf('outcomes'), 'verified proof appears before the service explanation');
+  assert.ok(landmarks.indexOf('proof') < landmarks.indexOf('work'), 'proof strip appears before the long case-study section');
 
   const workIndex = navLinks.findIndex(link => link.href === '#work');
-  const reviewIndex = navLinks.findIndex(link => link.href === '#testimonials');
   const servicesIndex = navLinks.findIndex(link => link.href === '#services');
-  assert.ok(workIndex < reviewIndex && reviewIndex < servicesIndex, 'navigation anchors follow homepage section order');
+  assert.ok(workIndex >= 0 && workIndex < servicesIndex, 'navigation anchors follow homepage section order');
   assert.ok(navLinks.some(link => link.href === '#pricing' && link.text === '[ pricing ]'), 'navigation links directly to pricing information');
 });
 
@@ -156,9 +150,11 @@ test('hero offers the two plain-language next steps', () => {
     'hero primary CTA says "Tell me what you need" and opens /quote'
   );
   assert.ok(
-    links.some(link => link.href === '#work' && link.text === "see real systems i've built"),
-    'hero proof CTA says "See real systems I\'ve built" and jumps to #work'
+    links.some(link => link.href === '#work' && link.text === 'see shipped work and public demos'),
+    'hero proof CTA opens inspectable public work'
   );
+  assert.match(hero, /class=["'][^"']*hero-product[^"']*["'][\s\S]*?assets\/proof\/curio-appstore-current\.png/i, 'hero shows a real shipped-product visual');
+  assert.match(plainText(hero), /app store product · public demo \+ source/i, 'hero shows a compact verifiable proof signal');
 });
 
 test('selected work uses inspectable assets and labels limitations honestly', () => {
@@ -217,11 +213,16 @@ test('homepage structured data matches the business-facing positioning', () => {
   assert.ok(block, 'homepage includes JSON-LD');
   const graph = JSON.parse(block[1])['@graph'];
   const person = graph.find(node => node['@type'] === 'Person');
-  const business = graph.find(node => node['@type'] === 'ProfessionalService');
+  const business = graph.find(node => node['@type'] === 'Organization');
+  const website = graph.find(node => node['@type'] === 'WebSite');
   assert.equal(person.jobTitle, 'Independent Software Developer');
   assert.doesNotMatch(person.description, /student|college|university/i);
   assert.equal(person.email, undefined, 'unverified domain email and personal Gmail are omitted from Person schema');
-  assert.equal(business.email, undefined, 'unverified domain email and personal Gmail are omitted from business schema');
+  assert.equal(business.name, 'Leon Builds');
+  assert.equal(business.contactPoint.email, 'leondragon3798@gmail.com');
+  assert.deepEqual(business.contactPoint.availableLanguage, ['en', 'zh', 'pt-BR', 'es']);
+  assert.equal(website.name, 'Leon Builds');
+  assert.ok(!graph.some(node => node['@type'] === 'ProfessionalService'), 'deprecated LocalBusiness-style schema is not used');
   assert.doesNotMatch(JSON.stringify([person.alternateName, person.sameAs, business.sameAs]), /Noctilucenty/i);
 });
 

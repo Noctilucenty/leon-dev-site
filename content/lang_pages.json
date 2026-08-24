@@ -88,18 +88,18 @@
           "agenda separada por profissional, com duração de cada serviço e intervalo entre um cliente e outro",
           "lembrete automático antes do horário e um link pro cliente remarcar sozinho, sem te ligar"
         ],
-        "proof_label": "prova, não promessa",
-        "proof_title": "uma cozinha, várias marcas, um carrinho só",
-        "proof_body": "eu construí um sistema de pedido online pra uma cozinha que toca várias marcas ao mesmo tempo. o cliente monta um carrinho só, mistura itens de marcas diferentes sem perceber, e, na hora de fechar, o sistema separa sozinho: cada marca recebe o pedido dela e a contabilidade de cada uma continua separada. quem pediu não vê nada disso, vê um pedido. se o seu caso for mais simples que esse, é o mesmo trabalho com menos peças em cima.",
+        "proof_label": "protótipo público, com limites claros",
+        "proof_title": "várias marcas, um carrinho de demonstração",
+        "proof_body": "eu construí um protótipo público de pedidos para uma operação com várias marcas. você pode abrir as páginas dos negócios, pesquisar os cardápios e testar o carrinho de demonstração. pagamentos e a operação da cozinha ainda não estão ao vivo; eu deixo essa diferença visível para você avaliar exatamente o que existe hoje.",
         "faq_label": "o que perguntam primeiro",
         "faqs": [
           {
             "q": "quanto custa um sistema de pedido online ou de agendamento?",
-            "a": "pedido online e agendamento começam em $600. esse é o piso: o preço final depende do tamanho do cardápio, das formas de entrega e de quantos profissionais entram na agenda. eu fecho esse número por escrito antes de começar qualquer coisa, e ele não muda depois. é pagamento único: não tem mensalidade nem porcentagem em cima de cada pedido. o único custo que continua por fora é a taxa do cartão, hoje em torno de 2,9% + 30 centavos por transação, que vai pra empresa de pagamento e não pra mim."
+            "a": "pedido online e agendamento começam em $600. esse é o piso: o preço final depende do tamanho do cardápio, das formas de entrega e de quantos profissionais entram na agenda. eu fecho esse número por escrito antes de começar qualquer coisa, e ele não muda depois. eu não acrescento uma porcentagem minha por pedido. processamento de cartão, hospedagem, mensagens, integrações e outros serviços de terceiros variam por provedor e plano e ficam fora do preço do desenvolvimento quando o escopo disser."
           },
           {
             "q": "então vale a pena sair dos aplicativos de entrega?",
-            "a": "não, sair dos aplicativos de entrega de uma vez quase nunca é a melhor conta, e quem responde sim na hora está te vendendo alguma coisa. o aplicativo fica com algo entre 10% e 30% dependendo se é retirada, entrega feita por você ou entrega feita por eles, e ainda tem a taxa do cartão em cima. só que parte desse dinheiro está comprando cliente novo, gente que nunca ouviu falar de você e te achou lá dentro. o seu site sozinho não faz isso. na maioria dos casos a conta que fecha é ficar com os dois: o aplicativo trazendo gente nova, e quem já é seu cliente pedindo direto com você. pega o que você vendeu online no mês passado e multiplica pela comissão que te cobram. esse valor é o que sai da sua mão todo mês, e é com ele que você compara o custo de ter o seu próprio site."
+            "a": "não, sair dos aplicativos de entrega de uma vez quase nunca é a melhor conta. as tarifas variam por plataforma, plano, tipo de entrega, região e contrato. parte desse dinheiro também pode estar trazendo cliente novo, gente que nunca ouviu falar de você e te achou lá dentro. na maioria dos casos vale comparar os dois usando o extrato e o contrato reais do último mês: plataforma de um lado; desenvolvimento, cartão, hospedagem, mensagens, integrações e entrega do outro. assim você decide com os seus números, não com uma média genérica."
           },
           {
             "q": "hoje meus pedidos chegam pelo WhatsApp. dá pra continuar assim?",
@@ -237,12 +237,12 @@
       "service": "ordering",
       "page": {
         "title": "Pedidos en línea y citas — desde $600 | Leon Kelvin Li",
-        "metaDescription": "pedidos y citas desde tu propia página: el cliente paga con tarjeta y el pedido cae en tu celular. sin comisión por pedido, y me lo explicas en español.",
+        "metaDescription": "pedidos y citas desde tu propia página: el cliente paga con tarjeta y el pedido cae en tu celular. Leon no agrega comisión por pedido; atiendo en español.",
         "h1_plain": "pedidos y citas en tu propia página,",
-        "h1_em": "sin comisión por cada pedido",
+        "h1_em": "sin comisión de Leon por cada pedido",
         "intro": [
           "el teléfono suena y tienes las manos ocupadas. cuando por fin lo agarras, el cliente ya colgó y ya pidió en otro lado. y el pedido que sí entró por la aplicación te llega con la comisión ya descontada.",
-          "antes de decidir nada, saca la cuenta: agarra lo que vendiste en línea el mes pasado y multiplícalo por la comisión que te cobran. esa comisión cambia según si es para recoger, si la entrega la haces con tu propia gente o si la hace la plataforma: anda entre 10% y 30%, más lo de la tarjeta. en tu página el sistema se paga una vez y después solo queda la tarjeta, como 2.9% + 30 centavos por cobro."
+          "antes de decidir nada, revisa el estado de cuenta y el contrato real de la plataforma. sus comisiones y los costos de tarjeta, entrega, hosting, mensajes e integraciones cambian según el proveedor y el plan. yo no agrego una comisión por cada pedido, pero los servicios de terceros siguen teniendo sus propios costos."
         ],
         "pricetag": "desde $600 · precio cerrado por escrito antes de empezar · atiendo negocios en todo estados unidos, en línea",
         "pains_label": "¿te suena esto?",
@@ -262,9 +262,9 @@
           "depósito por adelantado o tarjeta guardada al momento de reservar",
           "recordatorio automático por mensaje antes de la cita, y el cliente puede cambiar su hora sin llamarte"
         ],
-        "proof_label": "lo que ya hice, funcionando",
-        "proof_title": "una cocina, varias marcas, un solo carrito",
-        "proof_body": "hice el sistema de pedidos de una cocina que trabaja con varias marcas a la vez. el cliente pide de más de una marca en el mismo carrito y el sistema lo separa solo: cada marca recibe lo suyo y la cuenta de cada una queda por separado. lo escribí yo completo, de principio a fin.",
+        "proof_label": "prototipo público, con límites claros",
+        "proof_title": "varias marcas, un carrito de demostración",
+        "proof_body": "construí un prototipo público de pedidos para una operación con varias marcas. puedes abrir las páginas de los negocios, buscar menús y probar el carrito de demostración. los pagos y la operación de cocina todavía no están en vivo; dejo esa diferencia clara para que evalúes exactamente lo que existe hoy.",
         "faq_label": "lo que preguntan primero",
         "faqs": [
           {
@@ -277,7 +277,7 @@
           },
           {
             "q": "¿cómo sé si de verdad me conviene?",
-            "a": "agarra lo que vendiste en línea el mes pasado y multiplícalo por la comisión que te cobran. esa comisión cambia según si es para recoger, si la entrega la haces con tu propia gente o si la hace la plataforma: anda entre 10% y 30%, y encima va lo de la tarjeta. ese resultado es lo que entregas cada mes. con tu propio sistema pagas una sola vez y después solo queda la tarjeta, más o menos 2.9% + 30 centavos por cobro. si ese número mensual te sale bajo, te lo digo y no te hago el sistema."
+            "a": "usa las cifras reales del último mes: revisa el estado de cuenta y el contrato de la plataforma, y compara ese total con el desarrollo más tarjeta, hosting, mensajes, integraciones y entrega. todos esos costos cambian según proveedor y plan. si tus números no justifican un sistema propio, te lo digo antes de construirlo."
           },
           {
             "q": "¿de quién es el sistema cuando terminas?",
@@ -411,7 +411,7 @@
       "service": "ordering",
       "page": {
         "title": "网上点单和预约系统 $600 起 · 会说中文 | Leon Kelvin Li",
-        "metaDescription": "客人在你自己的网站上点单、刷卡付钱，单子直接进你手机或者后厨打印机；要预约的店，客人自己在你的时间表上挑时段，不用再打电话。$600 起，开工前把价钱白纸黑字写下来，做完不变。外卖平台按单抽成 10-30%，自己的系统只剩刷卡手续费。我会说中文，你用中文把店里的规矩讲给我听就行，全美国都接。",
+        "metaDescription": "客人在你自己的网站上点单、刷卡付钱，单子直接进手机或后厨；预约也可自助完成。$600 起，开工前写清范围和价格。我不按订单抽成；刷卡、托管、短信和其他第三方费用按所选服务商与套餐另算。会说中文，全美国线上合作。",
         "h1_plain": "客人自己下单、自己约时间，",
         "h1_em": "单子直接进你的手机",
         "intro": [
@@ -436,14 +436,14 @@
           "预约按你店里的规矩排：一个时段接几个人、每个项目做多久、中间留多少空档、周几不接；到点自动发短信提醒，客人自己改时间",
           "停单时间、节假日、卖完下架、改价钱，你自己在后台点几下就行，不用来找我"
         ],
-        "proof_label": "做过的，现在真的在跑",
-        "proof_title": "一个厨房几个牌子，一个购物车自己分单",
-        "proof_body": "这套我真的做过：同一个厨房挂着好几个牌子，客人一次下单可以点到不同牌子的东西，系统在后面自己把这一单拆开，每个牌子的账各算各的。规矩全部放在服务器上跑，客人在自己手机上改不动。你店里那些拆单、分账、这个牌子几点以后不做的特殊做法，多半我已经碰到过了。",
+        "proof_label": "公开原型，限制写清楚",
+        "proof_title": "多个品牌，一个演示购物车",
+        "proof_body": "我做了一个面向多品牌经营场景的公开点单原型。你可以打开商家页面、搜索菜单并试用演示购物车。目前付款和后厨运营还没有正式上线；这条限制会明确写出来，让你按现在真正存在的功能判断。",
         "faq_label": "大家最先问的几个问题",
         "faqs": [
           {
             "q": "做一套网上点单或者预约要多少钱？",
-            "a": "网上点单和预约 $600 起。实际多少要看菜单有多大、是不是好几个牌子共用一个厨房、要不要送货、预约要不要排班这些。开工前我把范围和价钱写下来给你确认，做完不变，中间不会再加钱。做的过程中每个星期给你一个能在手机上打开的版本，你自己点点看。上线以后你不用每个月交钱给我，也没有按单抽成，剩下的只有刷卡手续费，大概每笔 2.9% 加 $0.30。"
+            "a": "网上点单和预约 $600 起。实际多少要看菜单有多大、是不是好几个牌子共用一个厨房、要不要送货、预约要不要排班这些。开工前我把范围和价钱写下来给你确认，做完不变。做的过程中每个星期给你一个能在手机上打开的版本。上线以后我不按订单抽成；刷卡处理、服务器、短信和第三方集成等费用按服务商和套餐另算，书面范围会说明。"
           },
           {
             "q": "有了自己的点单系统，是不是就可以不上平台了？",
@@ -451,7 +451,7 @@
           },
           {
             "q": "平台到底抽多少？自己做一套之后省下来的是哪一部分？",
-            "a": "看你走的是哪一种：客人自己来取的一般抽得最少，你自己派人送的在中间，平台派人送的最贵，整体大概在 10% 到 30% 之间，另外还有刷卡手续费。自己做一套只花一次建站的钱，之后就只剩刷卡手续费，大概每笔 2.9% 加 $0.30。省下来的是抽成那一部分，不是全部：送货的人工、包装、客人不来取这些成本还在你身上，得先算清楚再决定要不要做。"
+            "a": "平台费用会随平台、套餐、配送方式、地区和合同变化。用上个月的真实账单和合同来比较最准确：一边是平台的全部费用，另一边是开发、刷卡、托管、短信、第三方集成、配送和包装等成本。我不按订单抽成，但这些外部费用仍然存在；先用你自己的数字算清楚再决定。"
           },
           {
             "q": "店里的人不太会用电脑，管得住吗？",

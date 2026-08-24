@@ -17,6 +17,8 @@ import xml.etree.ElementTree as ET
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 
+from testimonial_gate import TestimonialGateError, testimonial_release_errors
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "dist"
@@ -292,6 +294,20 @@ def build_manifest() -> dict[PurePosixPath, Path]:
             raise StaticBuildError(f"forbidden path entered static manifest: {relative.as_posix()}")
         if relative.suffix.lower() in {".csv", ".json", ".md", ".py", ".yaml", ".yml"}:
             raise StaticBuildError(f"source file entered static manifest: {relative.as_posix()}")
+    documents = {
+        relative.as_posix(): source.read_text(encoding="utf-8")
+        for relative, source in manifest.items()
+        if relative.suffix.lower() == ".html" or relative.as_posix() == "llms.txt"
+    }
+    try:
+        release_errors = testimonial_release_errors(documents, ROOT)
+    except TestimonialGateError as exc:
+        raise StaticBuildError(f"testimonial release gate is invalid: {exc}") from exc
+    if release_errors:
+        detail = "; ".join(release_errors[:8])
+        if len(release_errors) > 8:
+            detail += f"; and {len(release_errors) - 8} more"
+        raise StaticBuildError("testimonial release gate blocked public output: " + detail)
     return dict(sorted(manifest.items(), key=lambda item: item[0].as_posix()))
 
 

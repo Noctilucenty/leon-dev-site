@@ -290,16 +290,17 @@ add a proper noun that must keep its capitals, add the class.
 
 **Every claim on the page must be real.** Do not name an employer's client or publish a
 testimonial, rating, result, download figure, or revenue figure without the speaker's
-permission and supporting record. The homepage's seven direct project testimonials and
-five-star ratings were supplied and approved by the site owner; approval evidence belongs
-under the gitignored `private/testimonials/` path, never in the public repository. If you
-add a number, make sure it is one you would be happy to substantiate on a call.
+permission and supporting record. Owner approval is not client approval. Supplied quote
+drafts remain verbatim in the gitignored local `content/client-success/testimonial-drafts.json`;
+public release is fail-closed through `content/client-success/testimonial-publication.json`
+and private speaker evidence. Quote permission and rating permission are separate. If you add a
+number, make sure it is one you would be happy to substantiate on a call.
 
 ## Deploying
 
 Live at **https://leonbuilds.org** — a Render static site on
-`Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, no build command,
-publish directory `.`. Pushing to `main` redeploys it.
+`Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, build command
+`npm run build:static`, publish directory `dist`. Pushing to `main` redeploys it.
 
 The 32-hex `*.txt` file at the root is the IndexNow key — Bing/DuckDuckGo/Yahoo read
 it to trust our URL submissions. Keep it deployed; resubmit URLs after big content

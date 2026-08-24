@@ -52,7 +52,7 @@ LANGS = {
         skip='pular para o conteúdo',
         crumb_home='início',
         other_label='outros serviços',
-        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atendo negócios nos estados unidos inteiros · <a href="/">english</a> · <a href="/es">español</a> · <a href="/zh">中文</a>',
+        foot='© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · atendo negócios em todos os Estados Unidos · <a href="/">english</a> · <a href="/es">español</a> · <a href="/zh">中文</a>',
         assist_starter='pode responder em português. meu negócio é o seguinte: ',
         call_label='agendar 15 minutos',
         privacy_label='privacidade',
@@ -170,10 +170,8 @@ def render(lang, key, page, ctx):
          "name": page['title'].split('|')[0].strip(),
          "description": page['metaDescription'],
          "serviceType": page['h1_plain'] + ' ' + page['h1_em'],
-         "inLanguage": L['hreflang'],
          "provider": {"@id": f"{BASE}/#leon"},
          "areaServed": {"@type": "Country", "name": "United States"},
-         "availableLanguage": ["English", "Spanish", "Portuguese", "Chinese"],
          "url": f"{BASE}{path}"},
         {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
          "url": f"{BASE}/about"},
@@ -202,6 +200,7 @@ def render(lang, key, page, ctx):
 {alts}
 <meta property="og:type" content="website">
 <meta property="og:url" content="{BASE}{path}">
+<meta property="og:site_name" content="Leon Builds">
 <meta property="og:title" content="{e(page['title'])}">
 <meta property="og:description" content="{e(page['metaDescription'])}">
 <meta property="og:image" content="{BASE}/assets/og.png">
@@ -226,7 +225,7 @@ def render(lang, key, page, ctx):
   <a class="mark" href="{L['home']}">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
     <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Noctilucenty</span>
+    <span class="mark-handle">/ Leon Builds</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
   <div class="nav-end">
@@ -433,7 +432,7 @@ def render_call(lang, booker, ctx):
     schema = {"@context": "https://schema.org", "@graph": [
         {"@type": "Service", "@id": f"{BASE}{path}#service",
          "name": C['title'].split('|')[0].strip(),
-         "description": C['desc'], "inLanguage": L['hreflang'],
+         "description": C['desc'],
          "provider": {"@id": f"{BASE}/#leon"},
          "areaServed": {"@type": "Country", "name": "United States"},
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
@@ -486,7 +485,7 @@ def render_call(lang, booker, ctx):
   <a class="mark" href="{L['home']}">
     <span class="mark-dot">[<span class="blink">•</span>]</span>
     <span class="mark-name">Leon Kelvin Li</span>
-    <span class="mark-handle">/ Noctilucenty</span>
+    <span class="mark-handle">/ Leon Builds</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">{navlinks}</nav>
   <div class="nav-end">

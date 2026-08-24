@@ -311,6 +311,12 @@
     ];
     var els = [];
     groups.forEach(function (sel) { els = els.concat($$(sel)); });
+    /* Paid-search visitors should never wait for decorative reveals before
+       they can read the offer or choose a time. These two pages optimize for
+       clarity and speed, while the rest of the site keeps the subtle motion. */
+    els = els.filter(function (el) {
+      return !el.closest('.contractor-landing,.contractor-call-context');
+    });
     if (!els.length) return;
 
     document.documentElement.classList.add('js');

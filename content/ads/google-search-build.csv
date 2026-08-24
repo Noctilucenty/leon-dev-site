@@ -15,42 +15,46 @@ campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,end_date,DISABLED,c
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,ad_schedule,DISABLED,campaign,,,UNSET,,,,,,,Set only after response coverage and time-zone handling are confirmed
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,auto_tagging,DISABLED,campaign,,,REVIEW REQUIRED,,,,,,,If later enabled let Google append genuine click IDs; never put one in this sheet
 campaign_setting,DRAFT | BA | Search | Missed Lead Recovery,,auto_created_assets,DISABLED,campaign,,,OFF FOR CONTROLLED TEST,,,,,,,Review current account controls before any launch
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_01e,DISABLED,ad_group,exact,,missed call automation for contractors,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_01p,DISABLED,ad_group,phrase,,missed call automation for contractors,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_02e,DISABLED,ad_group,exact,,contractor lead follow up,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_02p,DISABLED,ad_group,phrase,,contractor lead follow up,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_03e,DISABLED,ad_group,exact,,contractor inquiry automation,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_03p,DISABLED,ad_group,phrase,,contractor inquiry automation,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_04e,DISABLED,ad_group,exact,,home service lead follow up,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_04p,DISABLED,ad_group,phrase,,home service lead follow up,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_05e,DISABLED,ad_group,exact,,contractor crm automation,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_05p,DISABLED,ad_group,phrase,,contractor crm automation,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_06e,DISABLED,ad_group,exact,,quote request follow up system,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_06p,DISABLED,ad_group,phrase,,quote request follow up system,,,,,,,Owner-operator intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_01e,DISABLED,ad_group,exact,,auto repair lead follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_01p,DISABLED,ad_group,phrase,,auto repair lead follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_02e,DISABLED,ad_group,exact,,auto shop inquiry automation,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_02p,DISABLED,ad_group,phrase,,auto shop inquiry automation,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_03e,DISABLED,ad_group,exact,,auto repair crm automation,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_03p,DISABLED,ad_group,phrase,,auto repair crm automation,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_04e,DISABLED,ad_group,exact,,auto shop missed call system,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_04p,DISABLED,ad_group,phrase,,auto shop missed call system,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_05e,DISABLED,ad_group,exact,,service advisor lead follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_05p,DISABLED,ad_group,phrase,,service advisor lead follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_06e,DISABLED,ad_group,exact,,auto shop customer follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_06p,DISABLED,ad_group,phrase,,auto shop customer follow up,,,,,,,Shop-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_01e,DISABLED,ad_group,exact,,restaurant catering inquiry system,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_01p,DISABLED,ad_group,phrase,,restaurant catering inquiry system,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_02e,DISABLED,ad_group,exact,,catering lead follow up,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_02p,DISABLED,ad_group,phrase,,catering lead follow up,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_03e,DISABLED,ad_group,exact,,private event inquiry software,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_03p,DISABLED,ad_group,phrase,,private event inquiry software,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_04e,DISABLED,ad_group,exact,,restaurant inquiry automation,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_04p,DISABLED,ad_group,phrase,,restaurant inquiry automation,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_05e,DISABLED,ad_group,exact,,catering inquiry follow up,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_05p,DISABLED,ad_group,phrase,,catering inquiry follow up,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_06e,DISABLED,ad_group,exact,,restaurant event lead management,,,,,,,Manager-owner intent hypothesis
-keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_06p,DISABLED,ad_group,phrase,,restaurant event lead management,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_01e,HOLD_INTENT_MISMATCH,ad_group,exact,,contractor website lead follow up,,,,,,,Preserved draft; unnatural query for a $100 buyer-intent test
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_01p,HOLD_INTENT_MISMATCH,ad_group,phrase,,contractor website lead follow up,,,,,,,Preserved draft; unnatural query for a $100 buyer-intent test
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_02e,DISABLED,ad_group,exact,,contractor website design,,,,,,,Contractor-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_02p,DISABLED,ad_group,phrase,,contractor website design,,,,,,,Contractor-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_03e,HOLD_INTENT_MISMATCH,ad_group,exact,,contractor estimate request website,,,,,,,Preserved draft; likely DIY or software intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_03p,HOLD_INTENT_MISMATCH,ad_group,phrase,,contractor estimate request website,,,,,,,Preserved draft; likely DIY or software intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_04e,DISABLED,ad_group,exact,,home service website design,,,,,,,Contractor-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_04p,DISABLED,ad_group,phrase,,home service website design,,,,,,,Contractor-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_05e,HOLD_INTENT_MISMATCH,ad_group,exact,,contractor quote request form,,,,,,,Preserved draft; likely form-template intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_05p,HOLD_INTENT_MISMATCH,ad_group,phrase,,contractor quote request form,,,,,,,Preserved draft; likely form-template intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_06e,HOLD_INTENT_MISMATCH,ad_group,exact,,contractor lead follow up system,,,,,,,Preserved draft; likely software research intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_06p,HOLD_INTENT_MISMATCH,ad_group,phrase,,contractor lead follow up system,,,,,,,Preserved draft; likely software research intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_07e,DISABLED,ad_group,exact,,contractor web design,,,,,,,Natural service-buyer intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_07p,DISABLED,ad_group,phrase,,contractor web design,,,,,,,Natural service-buyer intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_08e,DISABLED,ad_group,exact,,website design for contractors,,,,,,,Natural service-buyer intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,home_services,kw_hs_08p,DISABLED,ad_group,phrase,,website design for contractors,,,,,,,Natural service-buyer intent
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_01e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,auto repair lead follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_01p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto repair lead follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_02e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,auto shop inquiry automation,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_02p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto shop inquiry automation,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_03e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,auto repair crm automation,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_03p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto repair crm automation,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_04e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,auto shop missed call system,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_04p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto shop missed call system,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_05e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,service advisor lead follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_05p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,service advisor lead follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_06e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,auto shop customer follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,kw_ar_06p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto shop customer follow up,,,,,,,Shop-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_01e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,restaurant catering inquiry system,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_01p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,restaurant catering inquiry system,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_02e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,catering lead follow up,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_02p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,catering lead follow up,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_03e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,private event inquiry software,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_03p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,private event inquiry software,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_04e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,restaurant inquiry automation,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_04p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,restaurant inquiry automation,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_05e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,catering inquiry follow up,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_05p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,catering inquiry follow up,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_06e,HOLD_PRODUCT_MISMATCH,ad_group,exact,,restaurant event lead management,,,,,,,Manager-owner intent hypothesis
+keyword,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,kw_rf_06p,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,restaurant event lead management,,,,,,,Manager-owner intent hypothesis
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_001,DISABLED,campaign,broad,,job,,,,,,,Employment intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_002,DISABLED,campaign,broad,,jobs,,,,,,,Employment intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_003,DISABLED,campaign,broad,,career,,,,,,,Employment intent
@@ -77,7 +81,7 @@ negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_023,DISABLED,campaign,b
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_024,DISABLED,campaign,broad,,reddit,,,,,,,Research intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_025,DISABLED,campaign,phrase,,how to,,,,,,,DIY intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_026,DISABLED,campaign,phrase,,do it yourself,,,,,,,DIY intent
-negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_027,DISABLED,campaign,phrase,,near me,,,,,,,Consumer local-service intent
+negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_027,HOLD_INTENT_MISMATCH,campaign,phrase,,near me,,,,,,,Preserved draft; do not apply because local B2B website intent can include this phrase
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_028,DISABLED,campaign,phrase,,buy leads,,,,,,,Outside offer
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_029,DISABLED,campaign,phrase,,lead list,,,,,,,Outside offer
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_030,DISABLED,campaign,phrase,,lead generation,,,,,,,Outside offer
@@ -100,85 +104,88 @@ negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_046,DISABLED,campaign,b
 negative,DRAFT | BA | Search | Missed Lead Recovery,home_services,neg_hs_01,DISABLED,ad_group,phrase,,auto repair,,,,,,,Keep niche intent separated
 negative,DRAFT | BA | Search | Missed Lead Recovery,home_services,neg_hs_02,DISABLED,ad_group,broad,,restaurant,,,,,,,Keep niche intent separated
 negative,DRAFT | BA | Search | Missed Lead Recovery,home_services,neg_hs_03,DISABLED,ad_group,broad,,catering,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_01,DISABLED,ad_group,broad,,contractor,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_02,DISABLED,ad_group,phrase,,home service,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_03,DISABLED,ad_group,broad,,restaurant,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_04,DISABLED,ad_group,broad,,catering,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_01,DISABLED,ad_group,broad,,contractor,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_02,DISABLED,ad_group,phrase,,home service,,,,,,,Keep niche intent separated
-negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_03,DISABLED,ad_group,phrase,,auto repair,,,,,,,Keep niche intent separated
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H01,Contractor Lead Follow-Up,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H02,Missed Call Follow-Up,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H03,Stop Losing Quote Requests,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H04,One Clear Owner Handoff,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H05,10-Business-Day Sprint,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H06,Built Directly By Leon,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H07,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H08,Bay Area Contractor Systems,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D01,"Connect one quote source to prompt acknowledgment, follow-up and an owner handoff.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D02,"Starting scope is $1,500 after a compatibility check and written fixed quote.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D03,"For Bay Area contractors. No promise of leads, bookings or revenue. Book a fit check.",,,,,,,Unpinned draft asset
+negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_01,HOLD_PRODUCT_MISMATCH,ad_group,broad,,contractor,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_02,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,home service,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_03,HOLD_PRODUCT_MISMATCH,ad_group,broad,,restaurant,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,neg_ar_04,HOLD_PRODUCT_MISMATCH,ad_group,broad,,catering,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_01,HOLD_PRODUCT_MISMATCH,ad_group,broad,,contractor,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_02,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,home service,,,,,,,Keep niche intent separated
+negative,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,neg_rf_03,HOLD_PRODUCT_MISMATCH,ad_group,phrase,,auto repair,,,,,,,Keep niche intent separated
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H01,Contractor Website Design,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H02,Website + Lead Follow-Up,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H03,For Bay Area Contractors,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H04,Make Estimate Requests Easier,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H05,Know Which Leads Need A Reply,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H06,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H07,Work Directly With Leon,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H08,10-Business-Day Build,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H09,Mobile-Friendly Estimate Form,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H10,Book A Free 15-Minute Call,,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D01,"A focused contractor site, estimate form and follow-up flow built around your team.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D02,"Turn a generic contact form into a clear estimate request and follow-up process.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D03,"Fixed scope from $1,500. Built in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D04,"Work directly with Leon. Start with a free 15-minute review of your current website.",,,,,,,Unpinned draft asset
 rsa_url,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=home_services&utm_content=search-hs-rsa-a,google,cpc,ba-missed-lead-recovery-v1,home_services,search-hs-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H01,Contractor Inquiry Workflow,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H02,Contractor Follow-Up System,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H03,Connect Your Existing Tools,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H05,Written Fixed Quote First,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H07,See The Workflow Clearly,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,D01,"Use an existing form, compatible missed-call event or shared inquiry inbox.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Unpinned draft asset
-rsa_url,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=home_services&utm_content=search-hs-rsa-b,google,cpc,ba-missed-lead-recovery-v1,home_services,search-hs-rsa-b,No click-ID parameter; platform auto-tagging may append a genuine value later
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H01,Auto Shop Lead Follow-Up,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H02,Missed Call Workflow,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H03,Route Service Inquiries,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H04,One Clear Advisor Handoff,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H05,10-Business-Day Sprint,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H06,Built Directly By Leon,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H07,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,H08,Bay Area Auto Shop Systems,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,D01,"Connect one service-inquiry source to acknowledgment, follow-up and advisor handoff.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,D02,"Starting scope is $1,500 after a compatibility check and written fixed quote.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,D03,"For Bay Area auto shops. No promise of leads, bookings or revenue. Book a fit check.",,,,,,,Unpinned draft asset
-rsa_url,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=auto_repair&utm_content=search-ar-rsa-a,google,cpc,ba-missed-lead-recovery-v1,auto_repair,search-ar-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H01,Auto Repair Inquiry System,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H02,Auto Shop Follow-Up Process,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H03,Connect Your Existing Tools,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H05,Written Fixed Quote First,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H07,See The Workflow Clearly,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,D01,"Use an existing form, compatible missed-call event or shared inquiry inbox.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Unpinned draft asset
-rsa_url,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=auto_repair&utm_content=search-ar-rsa-b,google,cpc,ba-missed-lead-recovery-v1,auto_repair,search-ar-rsa-b,No click-ID parameter; platform auto-tagging may append a genuine value later
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H01,Catering Lead Follow-Up,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H02,Private Event Inquiries,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H03,Missed Inquiry Workflow,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H04,One Clear Manager Handoff,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H05,10-Business-Day Sprint,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H06,Built Directly By Leon,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H07,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,H08,Bay Area Restaurant Systems,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,D01,"Connect one catering or private-event source to follow-up and a manager handoff.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,D02,"Starting scope is $1,500 after a compatibility check and written fixed quote.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,D03,"For Bay Area restaurants. No promise of leads, bookings or revenue. Book a fit check.",,,,,,,Unpinned draft asset
-rsa_url,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=restaurant_food&utm_content=search-rf-rsa-a,google,cpc,ba-missed-lead-recovery-v1,restaurant_food,search-rf-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H01,Restaurant Inquiry System,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H02,Catering Follow-Up Process,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H03,Connect Your Existing Tools,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H05,Written Fixed Quote First,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H07,See The Workflow Clearly,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,D01,"Use one existing catering or private-event inquiry path and the tools you already have.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Unpinned draft asset
-rsa_url,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=restaurant_food&utm_content=search-rf-rsa-b,google,cpc,ba-missed-lead-recovery-v1,restaurant_food,search-rf-rsa-b,No click-ID parameter; platform auto-tagging may append a genuine value later
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H01,Contractor Website + Leads,,,,,,,Preserved draft; implies lead supply and is not eligible
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H02,Built-In Lead Follow-Up,,,,,,,Preserved alternative RSA
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H03,Phone-First Estimate Form,,,,,,,Preserved alternative RSA
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Preserved draft; internal language
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H05,Written Fixed Quote First,,,,,,,Preserved alternative RSA
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Preserved alternative RSA
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H07,See The Workflow Clearly,,,,,,,Preserved draft; internal language
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Preserved draft; seller-centered CTA
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,D01,"A focused site, estimate intake, up to two follow-ups and a clear human handoff.",,,,,,,Preserved alternative RSA
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Preserved alternative RSA
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Preserved alternative RSA
+rsa_url,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=home_services&utm_content=search-hs-rsa-b,google,cpc,ba-missed-lead-recovery-v1,home_services,search-hs-rsa-b,Preserved alternative RSA; do not build or enable
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H01,Auto Shop Lead Follow-Up,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H02,Missed Call Workflow,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H03,Route Service Inquiries,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H04,One Clear Advisor Handoff,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H05,10-Business-Day Sprint,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H06,Built Directly By Leon,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H07,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H08,Bay Area Auto Shop Systems,,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D01,"Connect one service-inquiry source to acknowledgment, follow-up and advisor handoff.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D02,"Starting scope is $1,500 after a compatibility check and written fixed quote.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D03,"For Bay Area auto shops. No promise of leads, bookings or revenue. Book a fit check.",,,,,,,Unpinned draft asset
+rsa_url,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=auto_repair&utm_content=search-ar-rsa-a,google,cpc,ba-missed-lead-recovery-v1,auto_repair,search-ar-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H01,Auto Repair Inquiry System,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H02,Auto Shop Follow-Up Process,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H03,Connect Your Existing Tools,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H05,Written Fixed Quote First,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H07,See The Workflow Clearly,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D01,"Use an existing form, compatible missed-call event or shared inquiry inbox.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Unpinned draft asset
+rsa_url,DRAFT | BA | Search | Missed Lead Recovery,auto_repair,ar_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=auto_repair&utm_content=search-ar-rsa-b,google,cpc,ba-missed-lead-recovery-v1,auto_repair,search-ar-rsa-b,No click-ID parameter; platform auto-tagging may append a genuine value later
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H01,Catering Lead Follow-Up,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H02,Private Event Inquiries,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H03,Missed Inquiry Workflow,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H04,One Clear Manager Handoff,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H05,10-Business-Day Sprint,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H06,Built Directly By Leon,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H07,"Fixed Scope From $1,500",,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,H08,Bay Area Restaurant Systems,,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D01,"Connect one catering or private-event source to follow-up and a manager handoff.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D02,"Starting scope is $1,500 after a compatibility check and written fixed quote.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,D03,"For Bay Area restaurants. No promise of leads, bookings or revenue. Book a fit check.",,,,,,,Unpinned draft asset
+rsa_url,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_a,HOLD_PRODUCT_MISMATCH,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=restaurant_food&utm_content=search-rf-rsa-a,google,cpc,ba-missed-lead-recovery-v1,restaurant_food,search-rf-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H01,Restaurant Inquiry System,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H02,Catering Follow-Up Process,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H03,Connect Your Existing Tools,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H04,Prompt Inquiry Acknowledgment,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H05,Written Fixed Quote First,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H06,30 Days Of Scoped Fixes,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H07,See The Workflow Clearly,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,H08,Book A 15-Min Fit Check,,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D01,"Use one existing catering or private-event inquiry path and the tools you already have.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D02,"Leon builds the agreed flow in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,D03,"See received, sent, replied and handed-off events in one basic log.",,,,,,,Unpinned draft asset
+rsa_url,DRAFT | BA | Search | Missed Lead Recovery,restaurant_food,rf_rsa_b,HOLD_PRODUCT_MISMATCH,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=restaurant_food&utm_content=search-rf-rsa-b,google,cpc,ba-missed-lead-recovery-v1,restaurant_food,search-rf-rsa-b,No click-ID parameter; platform auto-tagging may append a genuine value later
 conversion,DRAFT | BA | Search | Missed Lead Recovery,,conv_01,DISABLED,campaign,,1,won_client,,,,,,,Ultimate CRM or offline business outcome; import only after consent and reliable deduplication
 conversion,DRAFT | BA | Search | Missed Lead Recovery,,conv_02,DISABLED,campaign,,2,qualified_call_held,,,,,,,Preferred quality optimization signal after the definition and upload process are stable
 conversion,DRAFT | BA | Search | Missed Lead Recovery,,conv_03,DISABLED,campaign,,3,calendar_booking_success,,,,,,,Initial primary candidate; verify exactly one confirmed booking UID produces one conversion

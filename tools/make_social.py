@@ -67,7 +67,7 @@ CARDS = {
             ("multi-brand ordering", "one kitchen · several brands · one cart routes orders"),
             ("review desk", "reads business reviews · drafts owner replies"),
         ),
-        "note": "real systems in production · built and shipped by one developer",
+        "note": "live product + public demos · built and shipped by one developer",
     },
     "ad_01_contractor_after_hours.png": {
         "label": "leon --missed-leads",

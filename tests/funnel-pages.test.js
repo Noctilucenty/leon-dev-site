@@ -88,6 +88,7 @@ test('all booking pages expose a resilient, privacy-bounded calendar funnel', ()
     assert.match(html, /out\.utm_term=term/);
     assert.match(html, /out\.utm_content=content/);
     assert.match(html, /id="leon-cal-direct"/);
+    assert.match(html, /hideEventTypeDetails:false/);
     assert.match(html, /\['utm_source','utm_medium','utm_campaign','utm_term','utm_content'\]/);
     assert.doesNotMatch(html, /out\.(?:gclid|gbraid|wbraid|fbclid|msclkid)/);
     assert.doesNotMatch(html, /forwardQueryParams/);
@@ -118,33 +119,50 @@ test('generator remains the source for each localized booking variant', () => {
   assert.doesNotMatch(source, /CALL_JS|id="callform"/);
 });
 
-test('missed lead recovery is a focused, bounded booking funnel', () => {
+test('contractor lead recovery is a focused website plus follow-up product', () => {
   const html = read('missed-lead-recovery.html');
 
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/missed-lead-recovery">/);
   assert.match(html, /"@type": "Service"/);
-  assert.match(html, /"name": "Missed Lead Recovery Sprint"/);
-  assert.match(html, /San Francisco Bay Area/);
+  assert.match(html, /"name": "Contractor Lead Recovery System"/);
+  assert.match(html, /"name": "United States"/);
   assert.match(html, /"price": "1500"/);
   assert.match(html, /10-business-day/);
-  assert.match(html, /id="contractors"/);
-  assert.match(html, /id="automotive"/);
-  assert.match(html, /id="restaurants"/);
-  assert.match(html, /not a call center, a lead list or a promise of booked work/);
+  assert.match(html, /contractor website \+ estimate follow-up/i);
+  assert.ok(html.indexOf('class="sec page-hero"') < html.indexOf('id="scope"'));
+  assert.doesNotMatch(html, /id="client-feedback"|data-testimonial-id|testimonial-stars|5 out of 5 stars/);
+  assert.match(html, /Give every website estimate request/i);
+  assert.match(html, /a clear path from form to follow-up/i);
+  assert.match(html, /structured estimate intake/i);
+  assert.match(html, /id="fit"/);
+  assert.match(html, /id="workflow"/);
+  assert.doesNotMatch(html, /id="automotive"|id="restaurants"/);
+  assert.match(html, /What is outside this \$1,500 starting scope/i);
+  assert.match(html, /technical evidence you can inspect before booking/i);
+  assert.match(html, /California-based · serving Bay Area contractors remotely/i);
+  assert.ok(html.indexOf('id="workflow"') < html.indexOf('id="scope"'));
   assert.match(html, /30 days of fixes for defects against the agreed written scope/);
-  assert.match(html, /third-party phone, messaging, crm and hosting fees/);
+  assert.match(html, /Phone, messaging, CRM, domain, and hosting providers keep their own fees/i);
   assert.match(html, /data-evt="cta_call_click"/);
-  assert.match(html, /href="\/call" data-evt="cta_call_click"/);
+  assert.match(html, /href="\/call\?service=contractor-lead-recovery" data-evt="cta_call_click"/);
+  assert.match(html, /Book a free 15-minute website review/i);
+  assert.match(html, /See the exact \$1,500 scope/i);
+  assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length >= 3, true);
   assert.doesNotMatch(html, /\$2,500/);
   assert.doesNotMatch(html, /guarantee(?:d|s)? (?:leads|bookings|revenue)/);
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/missed-lead-recovery<\/loc>/);
 
-  for (const slug of ['contractors', 'automotive', 'restaurants']) {
-    assert.match(read(`industries/${slug}.html`), /href="\/missed-lead-recovery#/);
-  }
+  const call = read('call.html');
+  assert.match(call, /service'\)!=='contractor-lead-recovery'/);
+  assert.match(call, /Book a free <em>15-minute website review<\/em>/);
+  assert.match(read('app.js'), /closest\('\.contractor-landing,\.contractor-call-context'\)/);
+
+  assert.match(read('industries/contractors.html'), /href="\/missed-lead-recovery"/);
+  assert.doesNotMatch(read('industries/automotive.html'), /href="\/missed-lead-recovery/);
+  assert.doesNotMatch(read('industries/restaurants.html'), /href="\/missed-lead-recovery/);
 
   const copyGate = read('tools/check_copy.py');
-  assert.match(copyGate, /TARGETED_PLACE_OK = \{[\s\S]*'missed-lead-recovery\.html': \{'bay area'\}/);
+  assert.match(copyGate, /'missed-lead-recovery\.html': \{'bay area'\}/);
 });
 
 test('metadata, handoff copy, and generated footer stay honest and synchronized', () => {

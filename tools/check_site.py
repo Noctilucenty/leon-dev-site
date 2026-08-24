@@ -220,6 +220,42 @@ def validate_pages(pages: list[Page], errors: list[str], warnings: list[str]) ->
             elif not any("@context" in item for item in values):
                 errors.append(f"{page.label}:{line}: JSON-LD has no @context")
 
+            def walk_schema(node):
+                if isinstance(node, dict):
+                    yield node
+                    for child in node.values():
+                        yield from walk_schema(child)
+                elif isinstance(node, list):
+                    for child in node:
+                        yield from walk_schema(child)
+
+            for node in walk_schema(value):
+                node_types = node.get("@type", [])
+                node_types = [node_types] if isinstance(node_types, str) else node_types
+                if "ProfessionalService" in node_types:
+                    errors.append(
+                        f"{page.label}:{line}: deprecated ProfessionalService schema is not allowed; "
+                        "reference the canonical Organization or Person instead"
+                    )
+                if any(t in {"Review", "AggregateRating"} for t in node_types):
+                    errors.append(
+                        f"{page.label}:{line}: self-published client feedback must not use Review/AggregateRating schema"
+                    )
+                if "aggregateRating" in node or "reviewRating" in node:
+                    errors.append(
+                        f"{page.label}:{line}: rating properties are not allowed on self-published client feedback"
+                    )
+                if "availableLanguage" in node and "ContactPoint" not in node_types:
+                    errors.append(
+                        f"{page.label}:{line}: availableLanguage belongs on ContactPoint, not {node_types or 'an untyped node'}"
+                    )
+                if "Service" in node_types and ("provider" in node or str(node.get("@id", "")).endswith("#service")):
+                    provider = node.get("provider")
+                    if provider != {"@id": f"{SITE_ORIGIN}/#leon"}:
+                        errors.append(
+                            f"{page.label}:{line}: Service provider must reference the canonical #leon Person"
+                        )
+
     return by_canonical
 
 
@@ -320,6 +356,70 @@ def validate_links(pages: list[Page], by_canonical: dict[str, Page], errors: lis
                 )
 
 
+def validate_geo_source(errors: list[str]) -> None:
+    path = ROOT / "llms.txt"
+    try:
+        text = path.read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as exc:
+        errors.append(f"llms.txt: cannot read: {exc}")
+        return
+    lowered = text.lower()
+    forbidden = (
+        "there are no client names, testimonials, reviews or star ratings",
+        "seven direct client reviews",
+        "all 5 stars",
+        "https://leonbuilds.org/#testimonials",
+        "the four systems under \"real work\" are the complete set",
+        "changing direction early costs nothing",
+        "code, repository, domain and accounts all go in the client's name",
+    )
+    for phrase in forbidden:
+        if phrase in lowered:
+            errors.append(f"llms.txt: stale or overbroad claim remains: {phrase!r}")
+    for required in ("public proof you can inspect", "payments and kitchen operations are not live"):
+        if required not in lowered:
+            errors.append(f"llms.txt: missing current GEO fact: {required!r}")
+
+
+def validate_truth_claims(pages: list[Page], errors: list[str]) -> None:
+    """Reject disproven or time-sensitive claims in rendered public copy."""
+    forbidden = (
+        "saved hours usually repay it within months",
+        "answering first wins jobs",
+        "call category mostly disappears",
+        "no-show-killing",
+        "actually cut no-shows",
+        "automatic reminders fix the second",
+        "the reminder is the part that pays for the build",
+        "15-30% a delivery app takes",
+        "delivery apps take up to 30%",
+        "highest return-per-dollar software",
+        "commission-free ordering on your own site",
+        "ordering on your own site has no per-order cut",
+        "10% y 30%",
+        "2.9% + 30",
+        "solo queda la tarjeta",
+        "10% e 30%",
+        "2,9% + 30",
+        "o único custo que continua por fora é a taxa do cartão",
+        "10-30%",
+        "10% 到 30%",
+        "剩下的只有刷卡手续费",
+        "之后就只剩刷卡手续费",
+        "lo que ya hice, funcionando",
+        "做过的，现在真的在跑",
+    )
+    for page in pages:
+        try:
+            lowered = page.file.read_text(encoding="utf-8").lower()
+        except (OSError, UnicodeError) as exc:
+            errors.append(f"{page.label}: cannot check public claims: {exc}")
+            continue
+        for phrase in forbidden:
+            if phrase.lower() in lowered:
+                errors.append(f"{page.label}: unsupported or stale public claim remains: {phrase!r}")
+
+
 def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
@@ -331,6 +431,8 @@ def main() -> int:
     validate_sitemap(by_canonical, errors)
     validate_hreflang(by_canonical, errors)
     validate_links(pages, by_canonical, errors)
+    validate_geo_source(errors)
+    validate_truth_claims(pages, errors)
 
     for warning in sorted(set(warnings)):
         print(f"site check warning: {warning}")

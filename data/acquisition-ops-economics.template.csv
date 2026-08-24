@@ -1,0 +1,24 @@
+row_type,key,label,input,calculated_value,unit,decision_note
+input,average_contract_revenue,Average collected contract revenue,,,USD,Use private historical or quoted economics; do not commit client data
+input,direct_delivery_cost,Direct delivery cost per won client,,,USD,Include directly attributable delivery cost
+input,acceptable_acquisition_share,Maximum share of contribution profit allowed for acquisition,,,decimal,Owner-selected risk limit from zero to one
+input,expected_show_rate,Expected held-call rate from booked calls,,,decimal,Use private held data or an approved planning assumption
+input,expected_qualification_rate,Expected qualified-call rate from held calls,,,decimal,Use the same written qualification definition
+input,expected_close_rate,Expected won-client rate from qualified calls,,,decimal,Use the same offer and niche
+input,target_booked_calls_per_week,Target booked calls per week,,,count,Capacity target chosen by the owner; not a forecast
+input,actual_ad_spend,Actual ad spend for the review window,,,USD,Enter the reconciled platform value
+input,actual_clicks,Actual eligible clicks for the review window,,,count,Do not substitute impressions
+input,actual_booked_calls,Actual confirmed booked calls,,,count,Must reconcile to authoritative acquisition JSONL
+input,actual_held_calls,Actual attended calls,,,count,Must reconcile to authoritative attended stages
+input,actual_qualified_calls,Actual qualified calls,,,count,Must reconcile to authoritative qualified stages
+input,actual_won_clients,Actual won clients,,,count,Must reconcile to authoritative won stages
+input,actual_contribution_profit,Actual contribution profit from won clients,,,USD,Collected revenue less direct delivery cost
+input,maximum_zero_booking_spend,Pause threshold when confirmed bookings remain zero,,,USD,Owner-defined before launch
+input,maximum_cost_per_booked_call_override,Optional stricter booked-call cost limit,,,USD,Leave blank to use the calculated maximum
+input,minimum_qualified_call_rate,Minimum acceptable qualified-call rate from held calls,,,decimal,Owner-defined before launch
+input,minimum_contribution_return,Minimum acceptable contribution return on ad spend,,,ratio,Owner-defined before launch
+input,minimum_wins_before_profit_rule,Minimum won clients before the profit rule is eligible,,,count,Owner-defined evidence threshold
+input,approved_test_media_cap,Owner-approved paid-media cap,100,,USD,Hard total across Google and Meta; not launch authorization
+input,approved_test_days,Owner-approved test duration,10,,calendar_days,Ten consecutive calendar dates including start
+input,google_test_allocation,Google Search allocation,100,,USD,One disabled Search campaign with campaign total budget
+input,meta_test_allocation,Meta allocation,0,,USD,Meta remains disabled and unscheduled for the first test

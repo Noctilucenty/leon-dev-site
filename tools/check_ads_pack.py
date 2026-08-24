@@ -46,6 +46,8 @@ GOOGLE_CAMPAIGN = "DRAFT | BA | Search | Missed Lead Recovery"
 META_CAMPAIGN = "DRAFT | BA | Meta | Missed Lead Recovery"
 CAMPAIGN_TAG = "ba-missed-lead-recovery-v1"
 WEDGES = {"home_services", "auto_repair", "restaurant_food"}
+ACTIVE_WEDGES = {"home_services"}
+ARCHIVED_WEDGES = WEDGES - ACTIVE_WEDGES
 CLICK_IDS = {"gclid", "gbraid", "wbraid", "fbclid", "msclkid", "dclid"}
 ASSETS = {
     "assets/social/ad_01_contractor_after_hours.png",
@@ -195,9 +197,25 @@ def check_google(errors):
     campaigns = {row.get("campaign") for row in rows}
     if campaigns != {GOOGLE_CAMPAIGN}:
         errors.append("google-search-build.csv: must contain exactly one named campaign")
+    held_intent_ids = {
+        "kw_hs_01e", "kw_hs_01p", "kw_hs_03e", "kw_hs_03p",
+        "kw_hs_05e", "kw_hs_05p", "kw_hs_06e", "kw_hs_06p",
+        "neg_027",
+    }
     for line_no, row in enumerate(rows, start=2):
-        if row.get("status") != "DISABLED":
-            errors.append(f"google-search-build.csv line {line_no}: status must be DISABLED")
+        if row.get("ad_group") in ARCHIVED_WEDGES:
+            expected_status = "HOLD_PRODUCT_MISMATCH"
+        elif row.get("entity_id") in held_intent_ids:
+            expected_status = "HOLD_INTENT_MISMATCH"
+        elif row.get("entity_id") == "hs_rsa_b":
+            expected_status = "HOLD_COPY_MISMATCH"
+        else:
+            expected_status = "DISABLED"
+        if row.get("status") != expected_status:
+            errors.append(
+                f"google-search-build.csv line {line_no}: expected {expected_status} "
+                f"for {row.get('ad_group') or 'campaign-level'} row"
+            )
 
     budget_type = one_setting(rows, "budget_type", errors, "google-search-build.csv")
     if budget_type and budget_type.get("text") != "Campaign total budget":
@@ -227,7 +245,7 @@ def check_google(errors):
     keywords = [row for row in rows if row.get("record_type") == "keyword"]
     groups = {row.get("ad_group") for row in keywords}
     if groups != WEDGES:
-        errors.append("google-search-build.csv: keyword ad groups must be the three niche wedges")
+        errors.append("google-search-build.csv: archived keyword concepts must remain preserved")
     for group in sorted(WEDGES):
         group_rows = [row for row in keywords if row.get("ad_group") == group]
         by_text = defaultdict(set)
@@ -242,6 +260,18 @@ def check_google(errors):
                 errors.append(
                     f"google-search-build.csv: {group} keyword {keyword!r} needs exact and phrase rows"
                 )
+        active_rows = [row for row in group_rows if row.get("status") == "DISABLED"]
+        active_by_text = defaultdict(set)
+        for row in active_rows:
+            active_by_text[row.get("text", "")].add(row.get("match_type"))
+        if group == "home_services":
+            if len(active_by_text) != 4:
+                errors.append("google-search-build.csv: the $100 contractor test needs exactly four active keyword concepts")
+            for keyword, match_types in active_by_text.items():
+                if match_types != {"exact", "phrase"}:
+                    errors.append(
+                        f"google-search-build.csv: active contractor keyword {keyword!r} needs exact and phrase rows"
+                    )
 
     negatives = [row for row in rows if row.get("record_type") == "negative"]
     campaign_negatives = [row for row in negatives if row.get("scope") == "campaign"]
@@ -254,6 +284,9 @@ def check_google(errors):
     for row in negatives:
         if row.get("match_type") not in {"broad", "phrase", "exact"}:
             errors.append("google-search-build.csv: negative keyword missing valid match type")
+    near_me = [row for row in negatives if row.get("entity_id") == "neg_027"]
+    if len(near_me) != 1 or near_me[0].get("status") != "HOLD_INTENT_MISMATCH":
+        errors.append("google-search-build.csv: generic 'near me' must remain preserved but unapplied")
 
     headlines = [row for row in rows if row.get("record_type") == "rsa_headline"]
     descriptions = [row for row in rows if row.get("record_type") == "rsa_description"]
@@ -262,11 +295,22 @@ def check_google(errors):
     for group in sorted(WEDGES):
         ids = {row.get("entity_id") for row in headlines if row.get("ad_group") == group}
         if len(ids) != 2:
-            errors.append(f"google-search-build.csv: {group} requires exactly two draft RSAs")
+            errors.append(f"google-search-build.csv: {group} requires exactly two preserved draft RSAs")
+        active_ids = {
+            row.get("entity_id") for row in headlines
+            if row.get("ad_group") == group and row.get("status") == "DISABLED"
+        }
+        expected_active = 1 if group == "home_services" else 0
+        if len(active_ids) != expected_active:
+            errors.append(
+                f"google-search-build.csv: {group} requires exactly {expected_active} eligible RSA draft(s)"
+            )
     for rsa_id in sorted(rsa_ids):
         hs = [row for row in headlines if row.get("entity_id") == rsa_id]
         ds = [row for row in descriptions if row.get("entity_id") == rsa_id]
         us = [row for row in urls if row.get("entity_id") == rsa_id]
+        if len({row.get("status") for row in hs + ds + us}) != 1:
+            errors.append(f"google-search-build.csv: {rsa_id} mixes release states")
         if not 8 <= len(hs) <= 15:
             errors.append(f"google-search-build.csv: {rsa_id} needs 8–15 headlines")
         if not 2 <= len(ds) <= 4:
@@ -322,10 +366,19 @@ def check_meta(errors):
     campaigns = {row.get("campaign") for row in rows}
     if campaigns != {META_CAMPAIGN}:
         errors.append("meta-build.csv: must contain exactly one named campaign")
-    allowed_status = {"DISABLED", "HOLD_MESSAGE_MISMATCH"}
+    allowed_status = {"DISABLED", "HOLD_PRODUCT_MISMATCH"}
     for line_no, row in enumerate(rows, start=2):
         if row.get("status") not in allowed_status:
             errors.append(f"meta-build.csv line {line_no}: invalid no-launch status")
+        expected_status = (
+            "HOLD_PRODUCT_MISMATCH"
+            if row.get("record_type") == "creative" and row.get("ad_set") in ARCHIVED_WEDGES
+            else "DISABLED"
+        )
+        if row.get("status") != expected_status:
+            errors.append(
+                f"meta-build.csv line {line_no}: expected {expected_status} for this row"
+            )
         if row.get("objective") != "Leads":
             errors.append(f"meta-build.csv line {line_no}: objective must be Leads")
         if row.get("conversion_location") != "Website":
@@ -357,9 +410,15 @@ def check_meta(errors):
         ).lower()
         if re.search(r"\bguarantee(?:d|s)?\b", combined):
             errors.append(f"meta-build.csv: {row.get('variant_id')} contains a guarantee claim")
-    holds = [row for row in creatives if row.get("status") == "HOLD_MESSAGE_MISMATCH"]
-    if len(holds) != 1 or not holds[0].get("asset_path", "").endswith("ad_04_restaurant_direct.png"):
-        errors.append("meta-build.csv: only ad_04 must be held for message/landing mismatch")
+    holds = [row for row in creatives if row.get("status") == "HOLD_PRODUCT_MISMATCH"]
+    expected_held_paths = {
+        "assets/social/ad_03_auto_estimates.png",
+        "assets/social/ad_04_restaurant_direct.png",
+        "assets/social/ad_05_founder_direct.png",
+        "assets/social/ad_06_lead_leak_review.png",
+    }
+    if {row.get("asset_path") for row in holds} != expected_held_paths:
+        errors.append("meta-build.csv: every non-contractor creative must remain held")
 
     qualifications = [row for row in rows if row.get("record_type") == "qualification"]
     gates = [row for row in rows if row.get("record_type") == "retarget_gate"]
@@ -456,8 +515,9 @@ def main():
             print("  -", error)
         return 1
     print(
-        "ads pack check ok — 1 disabled Google campaign / 3 niche ad groups / "
-        "6 draft RSAs / 1 disabled Meta campaign / 6 mapped creatives / "
+        "ads pack check ok — 1 disabled Google campaign / 1 eligible contractor ad group / "
+        "1 eligible plus 5 held draft RSAs / 1 disabled Meta campaign / "
+        "2 eligible plus 4 held mapped creatives / "
         "$100 Google campaign-total cap / 10 calendar days / Meta $0 / "
         "business-economics inputs blank / no click IDs"
     )

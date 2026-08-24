@@ -43,7 +43,7 @@ FLOORS = {
 # Figures a given service page may legitimately mention besides its own floor,
 # because the copy deliberately points at a neighbouring service.
 CROSS = {
-    'websites': {625, 75, 300},          # the backend tier, small fixes
+    'websites': {625, 600, 75, 300},     # backend, booking/ordering, small fixes
     'booking-systems': {600, 300},       # ordering sits with booking
     'custom-software': {1500, 3500},     # apps are the bigger sibling
     'business-automation': {500, 600},   # integrations quoted alongside booking
@@ -54,10 +54,9 @@ CROSS = {
     'mobile-apps': {3500, 1500},
 }
 
-# Card-processing constants that legitimately appear in the ordering copy, where
-# the honest comparison is "platform commission vs 2.9% + $0.30". They are not
-# service prices, so they are named here rather than being let through by a
+# Legacy card-processing constants are named explicitly rather than allowed by a
 # blanket "small numbers are fine" rule — a stray "$50 website" must still fail.
+# Public copy must keep third-party fees provider- and plan-dependent.
 FEE_CONSTANTS = {0.30}
 
 

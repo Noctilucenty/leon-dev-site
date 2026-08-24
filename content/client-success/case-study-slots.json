@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "slots": [
+    {
+      "slot_id": "case-study-01",
+      "status": "EMPTY",
+      "project_id": "",
+      "project_label": "",
+      "client_display_label": "",
+      "before": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "after": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "metrics": [],
+      "screenshots": [
+        {
+          "stage": "before",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        },
+        {
+          "stage": "after",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        }
+      ],
+      "approval": {
+        "status": "NOT_REQUESTED",
+        "draft_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": "leonbuilds.org and related project marketing"
+        },
+        "approved_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": ""
+        },
+        "approved_at": "",
+        "approval_evidence_path": "",
+        "rating_evidence_path": "",
+        "packet_sha256": ""
+      }
+    },
+    {
+      "slot_id": "case-study-02",
+      "status": "EMPTY",
+      "project_id": "",
+      "project_label": "",
+      "client_display_label": "",
+      "before": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "after": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "metrics": [],
+      "screenshots": [
+        {
+          "stage": "before",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        },
+        {
+          "stage": "after",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        }
+      ],
+      "approval": {
+        "status": "NOT_REQUESTED",
+        "draft_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": "leonbuilds.org and related project marketing"
+        },
+        "approved_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": ""
+        },
+        "approved_at": "",
+        "approval_evidence_path": "",
+        "rating_evidence_path": "",
+        "packet_sha256": ""
+      }
+    },
+    {
+      "slot_id": "case-study-03",
+      "status": "EMPTY",
+      "project_id": "",
+      "project_label": "",
+      "client_display_label": "",
+      "before": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "after": {
+        "fact": "",
+        "observed_at": "",
+        "evidence_paths": []
+      },
+      "metrics": [],
+      "screenshots": [
+        {
+          "stage": "before",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        },
+        {
+          "stage": "after",
+          "path": "",
+          "caption": "",
+          "captured_at": "",
+          "permission_evidence_path": ""
+        }
+      ],
+      "approval": {
+        "status": "NOT_REQUESTED",
+        "draft_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": "leonbuilds.org and related project marketing"
+        },
+        "approved_publication": {
+          "title": "",
+          "before_fact": "",
+          "after_fact": "",
+          "quote": "",
+          "attribution": "",
+          "rating": "",
+          "screenshot_paths": [],
+          "placement": ""
+        },
+        "approved_at": "",
+        "approval_evidence_path": "",
+        "rating_evidence_path": "",
+        "packet_sha256": ""
+      }
+    }
+  ]
+}

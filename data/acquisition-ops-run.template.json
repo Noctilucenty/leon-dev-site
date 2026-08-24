@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "testComplete": false,
+  "limits": {
+    "totalMediaBudgetUsd": 100,
+    "calendarDays": 10
+  },
+  "window": {
+    "startDate": "YYYY-MM-DD",
+    "endDate": "YYYY-MM-DD"
+  },
+  "scope": {
+    "mode": "utm-campaign",
+    "utmCampaign": "REPLACE_WITH_EXACT_UTM_CAMPAIGN",
+    "utmSource": "google"
+  },
+  "dataReadiness": {
+    "eventsComplete": false,
+    "leadsComplete": false,
+    "acquisitionComplete": false
+  },
+  "intentReview": {
+    "completed": false,
+    "definition": "A reviewed search term clearly expresses active intent to hire for the advertised service and geography; informational, job-seeker, DIY, student, and unrelated terms do not qualify.",
+    "reviewedClicks": null,
+    "qualifiedIntentClicks": null,
+    "minimumQualifiedIntentRate": 0.75
+  }
+}
