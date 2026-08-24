@@ -8,7 +8,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { randomUUID } = require('crypto');
+const { createHash, randomUUID } = require('crypto');
 const { normalizeAttribution } = require('./attribution');
 const { dataFile } = require('./storage');
 
@@ -27,6 +27,7 @@ const clean = (v, max, multiline) => {
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const IDEMPOTENCY_KEY_RE = /^leadreq_[A-Za-z0-9-]{16,80}$/;
 const newReceiptId = () => 'lead_' + randomUUID();
 
 const present = v => typeof v === 'string' ? !!v.trim() : !!v;
@@ -112,6 +113,14 @@ function validateLead(body) {
   // response cannot be used to tell which check rejected them. Give the fake
   // success the same receipt shape as a real submission, but do not persist it.
   if (body.website) return { bot: true, receiptId: newReceiptId() };
+  const rawIdempotencyKey = body.idempotencyKey;
+  const idempotencyKey = typeof rawIdempotencyKey === 'string'
+    ? rawIdempotencyKey.trim()
+    : '';
+  if (rawIdempotencyKey != null && rawIdempotencyKey !== ''
+      && !IDEMPOTENCY_KEY_RE.test(idempotencyKey)) {
+    return { error: 'invalid idempotency key' };
+  }
   const currentAttribution = normalizeAttribution(body);
   const firstAttribution = normalizeAttribution(body, 'first');
   const lastAttribution = normalizeAttribution(body, 'last');
@@ -166,6 +175,7 @@ function validateLead(body) {
     lastMsclkid: lastAttribution.msclkid || currentAttribution.msclkid || '',
     analyticsSessionId: clean(body.analyticsSessionId, 96),
     chatSessionId: clean(body.chatSessionId, 96),
+    idempotencyKey,
     via: clean(body.via, 30) || 'site',           // 'chat' | 'quote-form' | 'site'
     conversationSummary: clean(body.conversationSummary, 8000, true)
   };
@@ -174,14 +184,35 @@ function validateLead(body) {
   return { lead };
 }
 
+/* A retry receives a new timestamp and candidate receipt before it reaches the
+   route, so neither belongs in the equality check. Empty fields are also
+   omitted: adding a new optional field to the schema must not make an old,
+   otherwise identical durable record look like a different submission. */
+function leadFingerprint(lead) {
+  const canonical = {};
+  for (const key of Object.keys(lead || {}).sort()) {
+    if (key === 'ts' || key === 'receiptId' || key === 'idempotencyKey') continue;
+    const value = lead[key];
+    if (value === '' || value == null) continue;
+    canonical[key] = value;
+  }
+  return createHash('sha256').update(JSON.stringify(canonical)).digest('hex');
+}
+
 function persistLead(lead) {
   // 1. stdout — the sink that always works
   console.log('LEAD ' + JSON.stringify(lead));
-  // 2. jsonl — best effort
+  // 2. jsonl — required before the visitor is told the request was saved
   try {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.appendFileSync(LEADS_FILE, JSON.stringify(lead) + '\n');
-  } catch (e) { console.error('lead file write failed:', lead.receiptId, e.message); }
+  } catch (e) {
+    console.error('lead file write failed:', lead.receiptId, e.message);
+    // Do not start email after a failed write. The route returns 503 so the
+    // client can retry; emailing here would turn that retry into a duplicate
+    // owner notification while the lead still was not durably recorded.
+    return { stored: false };
+  }
   // 3. email — the only off-host copy the owner currently watches
   // Host + recipient alone looked like enough and is not:
   // nodemailer will happily connect unauthenticated, Gmail will refuse it, and
@@ -221,7 +252,7 @@ function persistLead(lead) {
         .catch(err => console.error(
           `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
           '— the lead remains in this log and the configured JSONL store'));
-      return;
+      return { stored: true };
     }
     openTransport()
       .then(({ t, port }) => t.sendMail({
@@ -240,6 +271,7 @@ function persistLead(lead) {
         '— tried ports', portsToTry().join(', '),
         '— the lead remains in this log and the configured JSONL store'));
   }
+  return { stored: true };
 }
 
 /* Everything captured since the last deploy, newest first. Backs GET /api/leads,
@@ -254,6 +286,24 @@ function readLeads(limit) {
   }
   out.reverse();
   return out.slice(0, limit || 200);
+}
+
+/* Read newest-to-oldest and stop at the first matching durable record. This is
+   intentionally separate from readLeads' display limit: idempotency must still
+   work after the store grows beyond the 200 records shown by default. */
+function findLeadByIdempotencyKey(key) {
+  if (!IDEMPOTENCY_KEY_RE.test(String(key || ''))) return null;
+  let raw = '';
+  try { raw = fs.readFileSync(LEADS_FILE, 'utf8'); } catch (e) { return null; }
+  const lines = raw.split('\n');
+  for (let i = lines.length - 1; i >= 0; i -= 1) {
+    if (!lines[i].trim()) continue;
+    try {
+      const lead = JSON.parse(lines[i]);
+      if (lead && lead.idempotencyKey === key) return lead;
+    } catch (e) { /* skip a torn line */ }
+  }
+  return null;
 }
 
 /* ── HTTP email, and why it is the default when configured ──────────────────
@@ -474,6 +524,8 @@ module.exports = {
   validateLead,
   persistLead,
   readLeads,
+  findLeadByIdempotencyKey,
+  leadFingerprint,
   clean,
   verifyMail,
   leadDeliveryConfig,

@@ -433,15 +433,19 @@
      lead form stayed English, which made the handoff feel untrustworthy. */
   var UI = {
     en: {
-      launch: 'ask about your project', label: "leon's ai project assistant",
-      status: 'ai project assistant', leadOpen: 'send to leon', fresh: 'new',
+      launch: 'ask about your project', label: "leon's ai project assistant", assistantTitle: 'Project assistant',
+      status: 'ai project assistant', leadOpen: 'send project', leadSent: 'sent ✓', fresh: 'new',
       freshTitle: 'start over', close: 'close chat',
       intro: "tell me what your business does and what part of the week is still done by hand — i'll suggest the smallest useful next step, a realistic starting range, and tell you when you do not need custom software.",
       leadIntro: '<b>Send this conversation securely to Leon.</b> He usually replies the same business day. You will get a receipt here; no email app is required.',
       name: 'name', email: 'email (required)', phone: 'phone (optional)', problem: 'what should Leon help with? (required)',
       submit: 'send securely', later: 'not yet', invalidEmail: 'that email does not look right.',
       sending: 'sending securely…', sent: 'Sent to Leon. Save this receipt:',
-      book: 'book a free 15-minute workflow review', fallback: 'email Leon instead',
+      offerTitle: 'Ready to involve Leon?', offerBody: 'Send this project and our conversation. No payment or commitment.',
+      offerSend: 'Send this project to Leon', offerLater: 'Keep chatting',
+      successTitle: 'Project sent to Leon', successBody: 'We received your request and saved this conversation for Leon. He usually replies to the email you provided the same business day.',
+      receiptLabel: 'Submission receipt', successBack: 'Return to the conversation',
+      book: 'Book a free 15-minute call', fallback: 'email Leon instead',
       failed: 'That did not reach the server. Your details are still here — retry, or use the email fallback.',
       attached: 'attached photo', remove: 'remove photo', attach: 'attach a photo',
       placeholder: 'describe your business, or attach a photo…', send: 'send',
@@ -452,15 +456,19 @@
       photoOnly: 'here is a photo of what i have now.', streamFailed: 'The assistant stopped before finishing. Here is Leon directly:'
     },
     es: {
-      launch: 'cuéntame tu proyecto', label: 'asistente de proyectos de Leon',
-      status: 'asistente de proyectos con IA', leadOpen: 'enviar a Leon', fresh: 'nuevo',
+      launch: 'cuéntame tu proyecto', label: 'asistente de proyectos de Leon', assistantTitle: 'Asistente de proyecto',
+      status: 'asistente de proyectos con IA', leadOpen: 'enviar proyecto', leadSent: 'enviado ✓', fresh: 'nuevo',
       freshTitle: 'empezar de nuevo', close: 'cerrar chat',
       intro: 'Cuéntame qué hace tu negocio y qué parte de la semana todavía haces a mano. Te sugeriré el paso útil más pequeño, un precio inicial realista y también te diré si no necesitas software a medida.',
       leadIntro: '<b>Envía esta conversación de forma segura a Leon.</b> Suele responder el mismo día laborable. Recibirás un comprobante aquí; no necesitas abrir el correo.',
       name: 'nombre', email: 'correo (obligatorio)', phone: 'teléfono (opcional)', problem: '¿en qué debe ayudarte Leon? (obligatorio)',
       submit: 'enviar de forma segura', later: 'ahora no', invalidEmail: 'ese correo no parece correcto.',
       sending: 'enviando de forma segura…', sent: 'Enviado a Leon. Guarda este comprobante:',
-      book: 'reserva una revisión gratuita de 15 minutos', fallback: 'enviar correo a Leon',
+      offerTitle: '¿Listo para incluir a Leon?', offerBody: 'Envía este proyecto y nuestra conversación. Sin pago ni compromiso.',
+      offerSend: 'Enviar este proyecto a Leon', offerLater: 'Seguir conversando',
+      successTitle: 'Proyecto enviado a Leon', successBody: 'Tu solicitud y esta conversación se guardaron para Leon. Suele responder al correo que diste el mismo día laborable.',
+      receiptLabel: 'Comprobante de envío', successBack: 'Volver a la conversación',
+      book: 'Reservar una llamada gratuita de 15 minutos', fallback: 'enviar correo a Leon',
       failed: 'No llegó al servidor. Tus datos siguen aquí: inténtalo otra vez o usa el correo.',
       attached: 'foto adjunta', remove: 'quitar foto', attach: 'adjuntar una foto',
       placeholder: 'describe tu negocio o adjunta una foto…', send: 'enviar',
@@ -471,15 +479,19 @@
       photoOnly: 'aquí tienes una foto de lo que uso ahora.', streamFailed: 'El asistente se detuvo antes de terminar. Habla directamente con Leon:'
     },
     pt: {
-      launch: 'conte sobre seu projeto', label: 'assistente de projetos do Leon',
-      status: 'assistente de projetos com IA', leadOpen: 'enviar ao Leon', fresh: 'novo',
+      launch: 'conte sobre seu projeto', label: 'assistente de projetos do Leon', assistantTitle: 'Assistente de projeto',
+      status: 'assistente de projetos com IA', leadOpen: 'enviar projeto', leadSent: 'enviado ✓', fresh: 'novo',
       freshTitle: 'começar de novo', close: 'fechar chat',
       intro: 'Conte o que seu negócio faz e qual parte da semana ainda é manual. Vou sugerir o menor próximo passo útil, uma faixa inicial realista e também dizer quando você não precisa de software sob medida.',
       leadIntro: '<b>Envie esta conversa com segurança ao Leon.</b> Ele costuma responder no mesmo dia útil. Você receberá um comprovante aqui; não precisa abrir o e-mail.',
       name: 'nome', email: 'e-mail (obrigatório)', phone: 'telefone (opcional)', problem: 'como o Leon pode ajudar? (obrigatório)',
       submit: 'enviar com segurança', later: 'agora não', invalidEmail: 'esse e-mail não parece correto.',
       sending: 'enviando com segurança…', sent: 'Enviado ao Leon. Guarde este comprovante:',
-      book: 'agende uma análise gratuita de 15 minutos', fallback: 'enviar e-mail ao Leon',
+      offerTitle: 'Pronto para envolver o Leon?', offerBody: 'Envie este projeto e nossa conversa. Sem pagamento ou compromisso.',
+      offerSend: 'Enviar este projeto ao Leon', offerLater: 'Continuar conversando',
+      successTitle: 'Projeto enviado ao Leon', successBody: 'Seu pedido e esta conversa foram salvos para o Leon. Ele costuma responder no e-mail informado no mesmo dia útil.',
+      receiptLabel: 'Comprovante de envio', successBack: 'Voltar para a conversa',
+      book: 'Agendar uma conversa gratuita de 15 minutos', fallback: 'enviar e-mail ao Leon',
       failed: 'Não chegou ao servidor. Seus dados continuam aqui — tente novamente ou use o e-mail.',
       attached: 'foto anexada', remove: 'remover foto', attach: 'anexar uma foto',
       placeholder: 'descreva seu negócio ou anexe uma foto…', send: 'enviar',
@@ -490,15 +502,19 @@
       photoOnly: 'aqui está uma foto do que uso hoje.', streamFailed: 'O assistente parou antes de terminar. Fale direto com o Leon:'
     },
     zh: {
-      launch: '聊聊你的项目', label: 'Leon 的项目助手',
-      status: 'AI 项目助手', leadOpen: '发送给 Leon', fresh: '新对话',
+      launch: '聊聊你的项目', label: 'Leon 的项目助手', assistantTitle: '项目助手',
+      status: 'AI 项目助手', leadOpen: '发送项目', leadSent: '已发送 ✓', fresh: '新对话',
       freshTitle: '重新开始', close: '关闭聊天',
       intro: '告诉我你的生意做什么，以及每周哪些工作还要手动完成。我会建议最小且有用的下一步、现实的起步范围；如果你不需要定制软件，我也会直接说明。',
       leadIntro: '<b>安全地把这段对话发送给 Leon。</b>他通常会在同一个工作日回复。页面会显示回执，无需打开邮件应用。',
       name: '姓名', email: '邮箱（必填）', phone: '电话（选填）', problem: '希望 Leon 帮你解决什么？（必填）',
       submit: '安全发送', later: '暂不发送', invalidEmail: '这个邮箱地址好像不正确。',
       sending: '正在安全发送…', sent: '已发送给 Leon。请保存回执：',
-      book: '预约免费的 15 分钟业务流程分析', fallback: '改用邮箱联系 Leon',
+      offerTitle: '准备让 Leon 接手吗？', offerBody: '发送这个项目和我们的对话，无需付款，也没有承诺。',
+      offerSend: '把这个项目发送给 Leon', offerLater: '继续聊天',
+      successTitle: '项目已发送给 Leon', successBody: '你的请求和这段对话已为 Leon 保存。他通常会在同一个工作日回复你提供的邮箱。',
+      receiptLabel: '提交回执', successBack: '返回对话',
+      book: '预约免费的 15 分钟通话', fallback: '改用邮箱联系 Leon',
       failed: '没有成功到达服务器。你的资料仍保留在表格中，请重试或使用邮箱。',
       attached: '已附照片', remove: '移除照片', attach: '添加照片',
       placeholder: '描述你的生意，或添加一张照片…', send: '发送',
@@ -524,7 +540,11 @@
     window.__leonAssist = true;
 
     var SS = 'leon_chat';
-    var state = { open: false, busy: false, history: [], sessionId: '', warmed: false, firstSent: false };
+    var state = {
+      open: false, busy: false, history: [], sessionId: '', warmed: false, firstSent: false,
+      leadOfferShown: false, leadOfferDismissed: false, leadSubmitted: false,
+      leadSuccessDismissed: false, leadReceipt: '', leadIdempotencyKey: ''
+    };
     /* High-choice pages can keep attribution and explicit assistant triggers
        without adding a competing floating launcher. The mode is declarative so
        close() cannot accidentally make the launcher visible again. */
@@ -536,7 +556,17 @@
 
     try {
       var saved = JSON.parse(sessionStorage.getItem(SS) || 'null');
-      if (saved && Array.isArray(saved.history)) { state.history = saved.history; state.sessionId = saved.sessionId || ''; }
+      if (saved && Array.isArray(saved.history)) {
+        state.history = saved.history;
+        state.sessionId = saved.sessionId || '';
+        state.leadOfferShown = saved.leadOfferShown === true;
+        state.leadOfferDismissed = saved.leadOfferDismissed === true;
+        state.leadSubmitted = saved.leadSubmitted === true;
+        state.leadSuccessDismissed = saved.leadSuccessDismissed === true;
+        state.leadReceipt = String(saved.leadReceipt || '').slice(0, 120);
+        state.leadIdempotencyKey = String(saved.leadIdempotencyKey || '').slice(0, 96);
+        state.firstSent = state.history.some(function (message) { return message && message.role === 'user'; });
+      }
     } catch (e) {}
     if (!state.sessionId) {
       state.sessionId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
@@ -549,7 +579,15 @@
         var slim = state.history.slice(-60).map(function (m) {
           return { role: m.role, content: plainText(m.content) };
         });
-        sessionStorage.setItem(SS, JSON.stringify({ history: slim, sessionId: state.sessionId }));
+        sessionStorage.setItem(SS, JSON.stringify({
+          history: slim, sessionId: state.sessionId,
+          leadOfferShown: state.leadOfferShown,
+          leadOfferDismissed: state.leadOfferDismissed,
+          leadSubmitted: state.leadSubmitted,
+          leadSuccessDismissed: state.leadSuccessDismissed,
+          leadReceipt: state.leadReceipt,
+          leadIdempotencyKey: state.leadIdempotencyKey
+        }));
       } catch (e) {}
     }
 
@@ -570,13 +608,22 @@
     panel.innerHTML =
       '<header class="as-head">' +
         '<span class="dot">[<span aria-hidden="true">•</span>]</span>' +
-        '<div><h2>leon --assist</h2><div class="st" data-as-status>' + esc(t.status) + '</div></div>' +
+        '<div><h2 data-as-title>' + esc(t.assistantTitle) + '</h2><div class="st" data-as-status>' + esc(t.status) + '</div></div>' +
         '<span class="sp"></span>' +
-        '<button class="as-hbtn" type="button" data-as-lead-open>' + esc(t.leadOpen) + '</button>' +
+        '<button class="as-hbtn as-hbtn-lead" type="button" data-as-lead-open>' + esc(t.leadOpen) + '</button>' +
         '<button class="as-hbtn" type="button" data-as-new title="' + esc(t.freshTitle) + '">' + esc(t.fresh) + '</button>' +
         '<button class="as-hbtn" type="button" data-as-close aria-label="' + esc(t.close) + '">✕</button>' +
       '</header>' +
       '<div class="as-log" data-as-log aria-live="polite"></div>' +
+      '<section class="as-success" data-as-success hidden role="region" aria-labelledby="as-success-title" tabindex="-1">' +
+        '<span class="as-success-mark" aria-hidden="true">✓</span>' +
+        '<p class="as-success-kicker" role="status" aria-live="assertive" aria-atomic="true">' + esc(t.leadSent) + '</p>' +
+        '<h3 id="as-success-title" data-as-success-title>' + esc(t.successTitle) + '</h3>' +
+        '<p data-as-success-body>' + esc(t.successBody) + '</p>' +
+        '<p class="as-success-receipt"><span data-as-receipt-label>' + esc(t.receiptLabel) + '</span><code data-as-receipt></code></p>' +
+        '<div class="as-success-actions"><a data-as-success-book href="' + esc(BOOKING_PAGE[lang()] || BOOKING_PAGE.en) + '">' + esc(t.book) + '</a>' +
+        '<button type="button" data-as-success-back>' + esc(t.successBack) + '</button></div>' +
+      '</section>' +
       '<div class="as-lang" data-as-lang hidden><p></p><div class="opts"></div></div>' +
       '<div class="as-starts" data-as-starts></div>' +
       '<form class="as-lead" data-as-lead hidden>' +
@@ -619,14 +666,19 @@
     var statusEl = $('[data-as-status]', panel);
     var leadForm = $('[data-as-lead]', panel);
     var leadErr = $('[data-as-err]', panel);
+    var leadOpenBtn = $('[data-as-lead-open]', panel);
+    var successView = $('[data-as-success]', panel);
     var lastFocus = null;
 
     function applyUi() {
       var launchText = $('span', launch); if (launchText) launchText.textContent = t.launch;
       launch.setAttribute('aria-label', t.launch);
       panel.setAttribute('aria-label', t.label);
+      $('[data-as-title]', panel).textContent = t.assistantTitle;
       if (!state.busy) statusEl.textContent = t.status;
-      $('[data-as-lead-open]', panel).textContent = t.leadOpen;
+      leadOpenBtn.textContent = state.leadSubmitted ? t.leadSent : t.leadOpen;
+      leadOpenBtn.classList.toggle('is-sent', state.leadSubmitted);
+      leadOpenBtn.setAttribute('aria-label', state.leadSubmitted ? t.successTitle : t.offerSend);
       var fresh = $('[data-as-new]', panel); fresh.textContent = t.fresh; fresh.title = t.freshTitle;
       $('[data-as-close]', panel).setAttribute('aria-label', t.close);
       var leadIntro = leadForm.firstElementChild;
@@ -637,6 +689,13 @@
       });
       $('[data-as-lead] button[type="submit"]', panel).textContent = t.submit;
       $('[data-as-lead-close]', panel).textContent = t.later;
+      $('[data-as-success-title]', panel).textContent = t.successTitle;
+      $('[data-as-success-body]', panel).textContent = t.successBody;
+      $('[data-as-receipt-label]', panel).textContent = t.receiptLabel;
+      $('[data-as-success-book]', panel).textContent = t.book;
+      $('[data-as-success-book]', panel).href = BOOKING_PAGE[lang()] || BOOKING_PAGE.en;
+      $('[data-as-success-back]', panel).textContent = t.successBack;
+      $('.as-success-kicker', panel).textContent = t.leadSent;
       var clip = $('[data-as-clip]', panel); clip.title = t.attach; clip.setAttribute('aria-label', t.attach);
       input.placeholder = t.placeholder; input.setAttribute('aria-label', t.placeholder);
       sendBtn.setAttribute('aria-label', t.send);
@@ -666,13 +725,94 @@
       return d;
     }
     function renderHistory() {
+      if (state.leadSubmitted && !state.leadSuccessDismissed) {
+        showLeadSuccess(state.leadReceipt, false);
+        return;
+      }
+      hideLeadSuccess();
       log.innerHTML = '';
       if (!state.history.length) {
         msgEl('assistant', t.intro);
       }
       state.history.forEach(function (m) { msgEl(m.role, plainText(m.content)); });
+      renderConversionOffer();
       renderStarters();
       renderLangChoice();
+    }
+
+    function userConversationText() {
+      return state.history
+        .filter(function (m) { return m.role === 'user'; })
+        .map(function (m) { return plainText(m.content).trim(); })
+        .filter(Boolean);
+    }
+
+    function directSendIntent(text) {
+      return /\b(send|submit|forward)\b.{0,35}\b(leon|project|conversation|this)\b|\b(leon|project|conversation|this)\b.{0,35}\b(send|submit|forward)\b/i.test(text)
+        || /(envia|enviar|manda|mandar).{0,25}(leon|projeto|conversa)|(leon|projeto|conversa).{0,25}(envia|enviar|manda|mandar)/i.test(text)
+        || /(envía|enviar|manda|mandar).{0,25}(leon|proyecto|conversación)|(leon|proyecto|conversación).{0,25}(envía|enviar|manda|mandar)/i.test(text)
+        || /(发给|发送|提交).{0,12}(Leon|项目|对话)|(Leon|项目|对话).{0,12}(发给|发送|提交)/i.test(text);
+    }
+
+    function affirmativeIntent(text) {
+      return /^(yes|yeah|yep|sure|ok|okay|please|do it|send it|go ahead)[.!\s]*$/i.test(text)
+        || /^(sim|claro|pode|manda|envia|por favor)[.!\s]*$/i.test(text)
+        || /^(sí|si|claro|vale|envíalo|mandalo|por favor)[.!\s]*$/i.test(text)
+        || /^(好|好的|可以|发吧|发送|请发)[。！!\s]*$/.test(text);
+    }
+
+    function readyForHandoff() {
+      var userText = userConversationText();
+      var chars = userText.join(' ').length;
+      var latest = userText[userText.length - 1] || '';
+      return directSendIntent(latest) || chars >= 80 || (userText.length >= 2 && chars >= 24);
+    }
+
+    function markHandoffReady() {
+      if (state.leadSubmitted || state.leadOfferShown || !readyForHandoff()) return false;
+      state.leadOfferShown = true;
+      state.leadOfferDismissed = false;
+      save();
+      evt('chat_handoff_offer_shown');
+      return true;
+    }
+
+    function renderConversionOffer() {
+      var old = $('[data-as-convert]', log);
+      if (old) old.remove();
+      if (!state.leadOfferShown || state.leadOfferDismissed || state.leadSubmitted) return;
+      var box = document.createElement('section');
+      box.className = 'as-convert';
+      box.setAttribute('data-as-convert', '');
+      box.setAttribute('aria-label', t.offerTitle);
+      box.innerHTML = '<p class="as-convert-kicker">' + esc(t.offerTitle) + '</p>'
+        + '<p>' + esc(t.offerBody) + '</p>'
+        + '<div><button class="as-convert-go" type="button" data-as-convert-go>' + esc(t.offerSend) + '</button>'
+        + '<button class="as-convert-later" type="button" data-as-convert-later>' + esc(t.offerLater) + '</button></div>';
+      log.appendChild(box);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function hideLeadSuccess() {
+      panel.classList.remove('as-is-sent');
+      successView.hidden = true;
+    }
+
+    function showLeadSuccess(receipt, shouldFocus) {
+      state.leadSubmitted = true;
+      state.leadSuccessDismissed = false;
+      state.leadReceipt = String(receipt || state.leadReceipt || '').slice(0, 120);
+      state.leadOfferShown = true;
+      save();
+      applyUi();
+      $('[data-as-receipt]', successView).textContent = state.leadReceipt;
+      successView.hidden = false;
+      leadForm.hidden = true;
+      panel.classList.add('as-is-sent');
+      if (shouldFocus) {
+        try { successView.focus({ preventScroll: true }); } catch (e) { successView.focus(); }
+        try { successView.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'nearest' }); } catch (e) {}
+      }
     }
     function renderStarters() {
       startsBox.innerHTML = '';
@@ -731,7 +871,10 @@
       warm();
       if (langBar) { langBar.remove(); langBar = null; }
       evt('chat_open');
-      setTimeout(function () { input.focus(); }, 60);
+      setTimeout(function () {
+        if (state.leadSubmitted && !state.leadSuccessDismissed) successView.focus();
+        else input.focus();
+      }, 60);
       if (starter) send(starter);
     }
     function close() {
@@ -848,6 +991,8 @@
       // A photo on its own is a complete message — "here is my menu" needs no
       // sentence — so an empty box with an attachment must still send.
       if ((!text && !shots.length) || state.busy) return;
+      var acceptedVisibleOffer = state.leadOfferShown && !state.leadOfferDismissed && affirmativeIntent(text);
+      var requestedDirectSend = directSendIntent(text);
       input.value = ''; input.style.height = '';
       startsBox.innerHTML = '';
       var lbox = $('[data-as-lang]', panel); if (lbox) lbox.hidden = true;
@@ -866,6 +1011,16 @@
       } else {
         state.history.push({ role: 'user', content: text });
         msgEl('user', text);
+      }
+      if (acceptedVisibleOffer || requestedDirectSend) {
+        if (!state.leadOfferShown) {
+          state.leadOfferShown = true;
+          evt('chat_handoff_offer_shown');
+        }
+        save();
+        evt('chat_handoff_offer_click');
+        openLead();
+        return;
       }
       save();
       setBusy(true);
@@ -890,6 +1045,7 @@
           sessionId: state.sessionId,
           page: location.pathname,
           lang: storedLang() || PAGE_LANG,
+          handoffOffered: state.leadOfferShown || state.leadSubmitted,
           messages: state.history.slice(-40)
         })
       }).then(function (res) {
@@ -916,7 +1072,9 @@
         return pump().then(function (full) {
           if (!String(full || '').trim()) throw new Error('empty assistant response');
           state.history.push({ role: 'assistant', content: full });
+          var newlyReady = markHandoffReady();
           save();
+          if (newlyReady) renderConversionOffer();
         });
       }).catch(function (err) {
         clearTimeout(slowNote);
@@ -926,6 +1084,13 @@
         // A failed reply must not end the conversation. Give them the channels
         // that always work, as buttons — not an address to copy by hand.
         handoffRow();
+        if (!state.leadSubmitted && !state.leadOfferShown) {
+          state.leadOfferShown = true;
+          state.leadOfferDismissed = false;
+          save();
+          evt('chat_handoff_offer_shown');
+          renderConversionOffer();
+        }
       }).finally(function () {
         clearTimeout(timeout);
         setBusy(false);
@@ -995,13 +1160,23 @@
 
     /* lead form */
     function openLead() {
+      if (state.leadSubmitted) {
+        showLeadSuccess(state.leadReceipt, true);
+        return;
+      }
+      hideLeadSuccess();
       leadForm.hidden = false;
       leadErr.textContent = '';
       var problem = $('textarea[name="problem"]', leadForm);
       if (problem && !problem.value) {
-        var firstUser = state.history.filter(function (m) { return m.role === 'user'; })[0];
-        if (firstUser) problem.value = plainText(firstUser.content).slice(0, 1500);
+        var recentUser = state.history
+          .filter(function (m) { return m.role === 'user'; })
+          .slice(-4)
+          .map(function (m) { return plainText(m.content).trim(); })
+          .filter(Boolean);
+        if (recentUser.length) problem.value = recentUser.join('\n').slice(0, 1500);
       }
+      evt('lead_form_open');
       $('input[name="email"]', leadForm).focus();
     }
 
@@ -1041,15 +1216,18 @@
       }).then(function (res) {
         return res.json().catch(function () { return {}; }).then(function (data) {
           if (res.ok && data.ok) return data;
-          if (!isRetry) {
-            var slim = {};
-            for (var k in payload) if (k !== 'conversationSummary') slim[k] = payload[k];
-            slim.problem = String(payload.problem || '').slice(0, 1500);
+          if (!isRetry && res.status >= 500) {
             evt('lead_submit_retry');
-            return postLead(slim, true);
+            return postLead(payload, true);
           }
           throw new Error(data.error || 'lead submission failed');
         });
+      }, function (error) {
+        if (!isRetry) {
+          evt('lead_submit_retry');
+          return postLead(payload, true);
+        }
+        throw error;
       });
     }
 
@@ -1065,9 +1243,16 @@
       var summary = budgetedHistory(state.history, 7000).map(function (m) {
         return (m.role === 'user' ? 'visitor: ' : 'assistant: ') + plainText(m.content);
       }).join('\n\n');
+      if (!state.leadIdempotencyKey) {
+        state.leadIdempotencyKey = 'leadreq_' + ((window.crypto && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : String(Date.now()) + '-' + Math.random().toString(16).slice(2));
+        save();
+      }
       var leadBody = {
         via: 'chat', name: name, email: email, phone: phone,
         website: String(f.get('website') || ''), problem: problem,
+        idempotencyKey: state.leadIdempotencyKey,
         conversationSummary: summary,
         sourcePage: location.pathname,
         referrer: attribution.referrer || '',
@@ -1085,12 +1270,10 @@
       submit.textContent = t.sending;
       evt('lead_submit_attempt');
       postLead(leadBody, false).then(function (data) {
-        var receipt = String(data.receipt || data.receiptId || 'accepted');
-        leadForm.hidden = true;
+        var receipt = String(data.receipt || data.receiptId || '');
+        if (!/^lead_[A-Za-z0-9-]{16,}$/.test(receipt)) throw new Error('missing receipt');
         evt('lead_submit_success', { receipt: receipt, status: 'accepted' });
-        var confirmation = msgEl('sys', t.sent + ' ' + receipt);
-        confirmation.classList.add('as-lead-success');
-        leadActions(mailFallback(name, email, phone));
+        showLeadSuccess(receipt, true);
       }).catch(function () {
         evt('lead_submit_failed', { status: 'failed' });
         leadErr.textContent = t.failed;
@@ -1115,9 +1298,48 @@
     launch.addEventListener('pointerdown', warm, { once: true });
     panel.addEventListener('click', function (e) {
       if (e.target.closest('[data-as-close]')) close();
-      if (e.target.closest('[data-as-lead-open]')) openLead();
+      if (e.target.closest('[data-as-lead-open]')) {
+        evt(state.leadSubmitted ? 'lead_success_reopened' : 'chat_handoff_offer_click');
+        openLead();
+      }
+      if (e.target.closest('[data-as-convert-go]')) {
+        evt('chat_handoff_offer_click');
+        openLead();
+      }
+      if (e.target.closest('[data-as-convert-later]')) {
+        state.leadOfferDismissed = true;
+        save();
+        evt('chat_handoff_offer_dismissed');
+        renderConversionOffer();
+        input.focus();
+      }
       if (e.target.closest('[data-as-lead-close]')) leadForm.hidden = true;
-      if (e.target.closest('[data-as-new]')) { state.history = []; save(); leadForm.hidden = true; renderHistory(); }
+      if (e.target.closest('[data-as-success-book]')) evt('lead_booking_click');
+      if (e.target.closest('[data-as-success-back]')) {
+        state.leadSuccessDismissed = true;
+        save();
+        hideLeadSuccess();
+        renderHistory();
+        input.focus();
+      }
+      if (e.target.closest('[data-as-new]')) {
+        state.history = [];
+        state.sessionId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+        state.leadOfferShown = false;
+        state.leadOfferDismissed = false;
+        state.leadSubmitted = false;
+        state.leadSuccessDismissed = false;
+        state.leadReceipt = '';
+        state.leadIdempotencyKey = '';
+        state.firstSent = false;
+        leadForm.reset();
+        leadForm.hidden = true;
+        hideLeadSuccess();
+        applyUi();
+        save();
+        renderHistory();
+        input.focus();
+      }
       if (e.target.closest('[data-as-clip]')) { fileIn.click(); return; }
       if (e.target.closest('[data-as-send]')) send();
     });

@@ -140,11 +140,12 @@ def _contact_attrs(L):
 def _footer_contacts(lang, L):
     """Localized contact choices with a separate analytics label per action."""
     contact = _contact_href(L)
+    email_label = {"es": "enviar correo", "pt": "enviar e-mail", "zh": "发邮件给 Leon"}.get(lang, "Email Leon")
     return (
         f'<a href="{contact}"{_contact_attrs(L)} '
         f'data-evt="footer_contact_click_{lang}">{L["contact_label"]}</a> · '
         f'<a href="mailto:leondragon3798@gmail.com" '
-        f'data-evt="footer_email_click_{lang}">leondragon3798@gmail.com</a> · '
+        f'data-evt="footer_email_click_{lang}">{email_label}</a> · '
         f'<a href="tel:+15108267735" '
         f'data-evt="footer_phone_click_{lang}">(510) 826-7735</a> · '
         f'<a href="/privacy" '

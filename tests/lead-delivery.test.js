@@ -131,6 +131,18 @@ test('validated leads and honeypot successes receive opaque receipt IDs', () => 
   assert.match(bot.receiptId, /^lead_[0-9a-f]{8}-[0-9a-f-]{27}$/);
   assert.notEqual(first.receiptId, second.receiptId);
   assert.equal(bot.bot, true);
+
+  const keyed = validateLead({
+    email: 'keyed@example.com',
+    problem: 'Build a safe retry path.',
+    idempotencyKey: 'leadreq_12345678-1234-1234-1234-123456789abc'
+  });
+  assert.equal(keyed.lead.idempotencyKey, 'leadreq_12345678-1234-1234-1234-123456789abc');
+  assert.equal(validateLead({
+    email: 'bad-key@example.com',
+    problem: 'This key contains unsafe punctuation.',
+    idempotencyKey: 'leadreq_not/allowed'
+  }).error, 'invalid idempotency key');
 });
 
 test('lead validation preserves bounded first/last attribution and anonymous correlation IDs', () => {
@@ -206,7 +218,7 @@ test('lead validation preserves bounded first/last attribution and anonymous cor
   assert.equal(lead.chatSessionId, 'chat_xyz789');
 });
 
-test('one receipt correlates API response, persistence, logs, and email', async () => {
+test('one idempotency key returns one receipt and persists/emails only once', async () => {
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -225,7 +237,7 @@ test('one receipt correlates API response, persistence, logs, and email', async 
   const logs = [];
   const errors = [];
   const appended = [];
-  let mailRequest = null;
+  const mailRequests = [];
 
   fs.mkdirSync = () => {};
   fs.appendFileSync = (file, data) => appended.push({ file, data });
@@ -233,29 +245,51 @@ test('one receipt correlates API response, persistence, logs, and email', async 
   console.error = (...args) => errors.push(args.join(' '));
   global.fetch = async (url, options) => {
     if (String(url) === 'https://api.resend.com/emails') {
-      mailRequest = { url: String(url), options };
+      mailRequests.push({ url: String(url), options });
       return { ok: true, json: async () => ({ id: 'resend-test-id' }) };
     }
     return original.fetch(url, options);
   };
 
   try {
+    const requestBody = {
+      name: 'Pipeline check',
+      email: 'pipeline-check@example.com',
+      problem: 'Receipt correlation test tag PIPELINE-CHECK-TEST',
+      via: 'pipeline-check',
+      idempotencyKey: 'leadreq_aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee'
+    };
     const response = await global.fetch(base + '/api/lead', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        name: 'Pipeline check',
-        email: 'pipeline-check@example.com',
-        problem: 'Receipt correlation test tag PIPELINE-CHECK-TEST',
-        via: 'pipeline-check'
-      })
+      body: JSON.stringify(requestBody)
     });
     const result = await response.json();
+    const retryResponse = await global.fetch(base + '/api/lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    const retryResult = await retryResponse.json();
+    const conflictResponse = await global.fetch(base + '/api/lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ...requestBody, problem: 'A materially different project.' })
+    });
+    const conflictResult = await conflictResponse.json();
     await new Promise(resolve => setImmediate(resolve));
 
     assert.equal(response.status, 200);
     assert.equal(result.ok, true);
     assert.match(result.receiptId, /^lead_[0-9a-f-]{36}$/);
+    assert.equal(retryResponse.status, 200);
+    assert.deepEqual(retryResult, {
+      ok: true,
+      receiptId: result.receiptId,
+      deduplicated: true
+    });
+    assert.equal(conflictResponse.status, 409);
+    assert.match(conflictResult.error, /already used for a different lead/);
 
     const leadLog = logs.find(line => line.startsWith('LEAD {'));
     assert.ok(leadLog);
@@ -264,8 +298,8 @@ test('one receipt correlates API response, persistence, logs, and email', async 
     assert.equal(appended.length, 1);
     assert.equal(JSON.parse(appended[0].data).receiptId, result.receiptId);
 
-    assert.ok(mailRequest);
-    const mail = JSON.parse(mailRequest.options.body);
+    assert.equal(mailRequests.length, 1);
+    const mail = JSON.parse(mailRequests[0].options.body);
     assert.match(mail.subject, new RegExp(result.receiptId));
     assert.match(mail.text, new RegExp(`receiptId: ${result.receiptId}`));
     assert.match(mail.text, /PIPELINE-CHECK-TEST/);
@@ -278,6 +312,126 @@ test('one receipt correlates API response, persistence, logs, and email', async 
     console.log = original.log;
     console.error = original.error;
     restoreEnv();
+    await new Promise((resolve, reject) => {
+      server.close(err => err ? reject(err) : resolve());
+    });
+  }
+});
+
+test('lead intake returns retryable 503 and does not email when JSONL persistence fails', async () => {
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    log: console.log,
+    error: console.error
+  };
+  let mailRequests = 0;
+  const errors = [];
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = () => { throw new Error('simulated disk failure'); };
+  console.log = () => {};
+  console.error = (...args) => errors.push(args.join(' '));
+  global.fetch = async (url, options) => {
+    if (String(url) === 'https://api.resend.com/emails') {
+      mailRequests += 1;
+      return { ok: true, json: async () => ({ id: 'should-not-send' }) };
+    }
+    return original.fetch(url, options);
+  };
+
+  try {
+    const response = await global.fetch(base + '/api/lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        email: 'retryable@example.com',
+        problem: 'Save this lead only when durable storage works.',
+        idempotencyKey: 'leadreq_ffffffff-eeee-4ddd-8ccc-bbbbbbbbbbbb'
+      })
+    });
+    const result = await response.json();
+
+    assert.equal(response.status, 503);
+    assert.equal(response.headers.get('retry-after'), '2');
+    assert.match(result.error, /could not save/i);
+    assert.equal(mailRequests, 0);
+    assert.ok(errors.some(line => line.includes('lead file write failed:')));
+  } finally {
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+    await new Promise((resolve, reject) => {
+      server.close(err => err ? reject(err) : resolve());
+    });
+  }
+});
+
+test('lead idempotency recovers the accepted receipt from durable JSONL after a restart', async () => {
+  const requestBody = {
+    name: 'Durable retry',
+    email: 'durable-retry@example.com',
+    problem: 'Recover the first accepted receipt after a process restart.',
+    via: 'quote-form',
+    idempotencyKey: 'leadreq_11111111-2222-4333-8444-555555555555'
+  };
+  const storedLead = validateLead(requestBody).lead;
+  storedLead.ts = '2026-08-24T00:00:00.000Z';
+  storedLead.receiptId = 'lead_11111111-1111-4111-8111-111111111111';
+
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const original = {
+    fetch: global.fetch,
+    readFileSync: fs.readFileSync,
+    appendFileSync: fs.appendFileSync
+  };
+  let writes = 0;
+  let mailRequests = 0;
+
+  fs.readFileSync = () => JSON.stringify(storedLead) + '\n';
+  fs.appendFileSync = () => { writes += 1; };
+  global.fetch = async (url, options) => {
+    if (String(url) === 'https://api.resend.com/emails') {
+      mailRequests += 1;
+      return { ok: true, json: async () => ({ id: 'should-not-send' }) };
+    }
+    return original.fetch(url, options);
+  };
+
+  try {
+    const response = await global.fetch(base + '/api/lead', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(requestBody)
+    });
+    const result = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(result, {
+      ok: true,
+      receiptId: storedLead.receiptId,
+      deduplicated: true
+    });
+    assert.equal(writes, 0);
+    assert.equal(mailRequests, 0);
+  } finally {
+    global.fetch = original.fetch;
+    fs.readFileSync = original.readFileSync;
+    fs.appendFileSync = original.appendFileSync;
     await new Promise((resolve, reject) => {
       server.close(err => err ? reject(err) : resolve());
     });

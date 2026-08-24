@@ -167,7 +167,7 @@ const HIGH_INTENT_NAMES = new Set([
   'about_quote_click', 'work_quote_click', 'work_final_quote_click',
   'reviews_quote_click', 'footer_email_click', 'footer_phone_click',
   'quote_form_start', 'quote_form_submit', 'quote_submit_attempt',
-  'chat_first_message', 'lead_submit', 'lead_submit_attempt',
+  'chat_first_message', 'chat_handoff_offer_click', 'lead_submit', 'lead_submit_attempt',
   'quote_to_calendar', 'lead_booking_click',
   'calendar_direct_fallback', 'calendar_email_fallback', 'calendar_phone_fallback',
   'quote_manual_email', 'lead_email_fallback', 'email_click', 'phone_click'

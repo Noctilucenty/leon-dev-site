@@ -443,7 +443,7 @@ def footer():
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
-    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">leondragon3798@gmail.com</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
+    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">Email Leon</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
@@ -1509,11 +1509,11 @@ def call_page():
     bc = [("home","/"),("book a call", None)]
     schema = [breadcrumb_schema(bc, path), {
         "@context": "https://schema.org", "@type": "Service",
-        "name": "Free 15-minute consultation",
+        "name": "Free 15-minute project-fit call",
         "provider": {"@id": f"{BASE}/#leon"},
         "areaServed": {"@type": "Country", "name": "United States"},
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "description": "A free 15-minute call to look at what you have now and say honestly whether it is worth changing.",
+        "description": "A free 15-minute call with Leon to identify the smallest useful next step or whether custom work is unnecessary.",
     }]
     booker_html = booker("en")
     call_alts = ''.join(
@@ -1526,10 +1526,10 @@ def call_page():
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label" id="call-context-label">leon --call</p>
-    <h1 class="dsp" id="call-context-title">book a free <em>15-minute call</em></h1>
-    <p class="sub" id="call-context-intro">fifteen minutes is enough to know whether there is a project here. you describe what is slow or manual in your week, and leon tells you what he would build, roughly what it starts at, and just as readily when you do not need him at all.</p>
-    <p class="pricetag" id="call-context-price">free · 15 minutes · weekday availability, pacific time · you talk to the person who writes the code</p>
+    <p class="label" id="call-context-label">Free project-fit call</p>
+    <h1 class="dsp" id="call-context-title">Book a free <em>15-minute call</em></h1>
+    <p class="sub" id="call-context-intro">Show Leon what is slow, manual, or missing. In 15 minutes, you will get a direct view of the smallest useful next step, what it starts at, or whether you do not need custom work.</p>
+    <p class="pricetag" id="call-context-price">Free · 15 minutes · weekday availability, Pacific time · directly with Leon</p>
   </div>
 </section>
 
@@ -1623,13 +1623,15 @@ def quote_page():
         <p class="sub">the site did not accept that request. your answers are still here. <a id="qmail" href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">open a prepared email</a>, then hit send in your email app; or use whatsapp or phone below.</p>
       </div>
     </form>
-    <div class="qok" id="qok" hidden tabindex="-1" aria-live="polite">
-      <p class="label">received</p>
-      <h2 class="dsp">the site accepted your <em>project note.</em></h2>
-      <p class="sub">your reference is <code id="qreceipt"></code>. save it if you want leon to trace this exact submission.</p>
+    <div class="qok" id="qok" hidden tabindex="-1" role="region" aria-labelledby="qok-title">
+      <span class="qok-mark" aria-hidden="true">✓</span>
+      <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
+      <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon.</em></h2>
+      <p class="sub">We received your request and saved it for Leon. He usually replies to the email you provided the same business day.</p>
+      <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
-        <a class="btn btn-solid magnet" href="/call" data-evt="quote_to_calendar"><span>book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-        <a class="btn magnet" href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email"><span>email leon directly</span></a>
+        <a class="btn btn-solid magnet" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn magnet" href="/work"><span>See Leon's work</span></a>
       </div>
     </div>
   </div>
@@ -1642,7 +1644,7 @@ def quote_page():
   var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
   var button=f.querySelector('button[type="submit"]'),buttonText=button.querySelector('span');
   var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt');
-  var started=false,submitting=false;
+  var started=false,submitting=false,submissionKey='';
   function track(name,extra){ if(window.leonEvt) window.leonEvt(name,extra); }
   f.addEventListener('input',function(ev){
     if(!started){ started=true; track('quote_form_start'); }
@@ -1664,6 +1666,8 @@ def quote_page():
       track('quote_validation_failed');
       return;
     }
+    if(!submissionKey) submissionKey='leadreq_'+((window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2));
+    d.idempotencyKey=submissionKey;
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
     d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||'';
     d.utmSource=attr.utmSource||''; d.utmMedium=attr.utmMedium||''; d.utmCampaign=attr.utmCampaign||''; d.utmTerm=attr.utmTerm||''; d.utmContent=attr.utmContent||'';

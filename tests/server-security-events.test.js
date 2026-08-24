@@ -143,6 +143,7 @@ test('every redesigned quote and direct-contact CTA remains a high-intent funnel
     'work_quote_click',
     'work_final_quote_click',
     'reviews_quote_click',
+    'chat_handoff_offer_click',
     'footer_email_click',
     'footer_phone_click',
   ];
@@ -301,6 +302,51 @@ test('chat timeout before the first byte returns 504 so the client can hand off'
     assert.match(body.error, /email/i);
   } finally {
     delete app.locals.chatTimeoutMs;
+    delete app.locals.chatStreamFactory;
+  }
+});
+
+test('chat requires a one-time human handoff when useful project context exists', async () => {
+  const captured = [];
+  app.locals.chatStreamFactory = async (request) => {
+    captured.push(request);
+    return (async function * reply() {
+      yield { type: 'response.output_text.delta', delta: 'A short useful answer.' };
+    }());
+  };
+  try {
+    const ready = await postJson('/api/chat', {
+      sessionId: 'handoff-ready-session',
+      page: '/services/business-automation',
+      lang: 'en',
+      handoffOffered: false,
+      messages: [
+        { role: 'user', content: 'I manage rental properties and produce tenant document packs by hand.' },
+        { role: 'assistant', content: 'A small document tool could create those from your existing data.' },
+        { role: 'user', content: 'The data is in spreadsheets and folders of Word files.' }
+      ]
+    });
+    assert.equal(ready.status, 200);
+    await ready.text();
+    assert.match(captured[0].instructions, /HANDOFF THIS TURN/);
+    assert.match(captured[0].instructions, /I have enough to brief Leon\. Would you like me to send this project to him\?/);
+    assert.match(captured[0].instructions, /do not ask another discovery question/i);
+
+    const alreadyShown = await postJson('/api/chat', {
+      sessionId: 'handoff-once-session',
+      page: '/',
+      lang: 'en',
+      handoffOffered: true,
+      messages: [
+        { role: 'user', content: 'I manage rental properties and produce tenant document packs by hand.' },
+        { role: 'assistant', content: 'Would you like me to send this project to Leon?' },
+        { role: 'user', content: 'Not yet, I have another question.' }
+      ]
+    });
+    assert.equal(alreadyShown.status, 200);
+    await alreadyShown.text();
+    assert.doesNotMatch(captured[1].instructions, /HANDOFF THIS TURN/);
+  } finally {
     delete app.locals.chatStreamFactory;
   }
 });

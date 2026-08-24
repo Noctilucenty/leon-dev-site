@@ -45,6 +45,8 @@ const {
   validateLead,
   persistLead,
   readLeads,
+  findLeadByIdempotencyKey,
+  leadFingerprint,
   clean,
   verifyMail,
   leadDeliveryConfig
@@ -159,6 +161,51 @@ setInterval(() => {
   const now = Date.now();
   for (const [k, v] of sessions) if (now - v.ts > 2 * 60 * 60_000) sessions.delete(k);
 }, 10 * 60_000).unref();
+
+/* A client keeps one opaque key while a lead submission is pending. Cache the
+   accepted receipt before persistence/email so overlapping retries in this
+   process collapse to one side effect; the JSONL lookup below restores the
+   same guarantee after a restart. Only a hash of the lead stays in memory. */
+const leadIdempotency = new Map(); // key -> {receiptId, fingerprint}
+function rememberLeadIdempotency(key, receiptId, fingerprint) {
+  leadIdempotency.set(key, { receiptId, fingerprint });
+  // The durable JSONL file remains authoritative, so a bounded cache is enough.
+  if (leadIdempotency.size > 2000) {
+    const oldest = leadIdempotency.keys().next().value;
+    leadIdempotency.delete(oldest);
+  }
+}
+
+function forgetLeadIdempotency(lead) {
+  if (!lead.idempotencyKey) return;
+  const accepted = leadIdempotency.get(lead.idempotencyKey);
+  if (accepted && accepted.receiptId === lead.receiptId) {
+    leadIdempotency.delete(lead.idempotencyKey);
+  }
+}
+
+function resolveLeadIdempotency(lead) {
+  const key = lead.idempotencyKey;
+  if (!key) return { fresh: true };
+  const fingerprint = leadFingerprint(lead);
+  let accepted = leadIdempotency.get(key);
+  if (!accepted) {
+    const durable = findLeadByIdempotencyKey(key);
+    if (durable) {
+      accepted = {
+        receiptId: String(durable.receiptId || ''),
+        fingerprint: leadFingerprint(durable)
+      };
+      rememberLeadIdempotency(key, accepted.receiptId, accepted.fingerprint);
+    }
+  }
+  if (accepted) {
+    if (accepted.fingerprint !== fingerprint) return { conflict: true };
+    return { duplicate: true, receiptId: accepted.receiptId };
+  }
+  rememberLeadIdempotency(key, lead.receiptId, fingerprint);
+  return { fresh: true };
+}
 
 const RECENT_WINDOW = 14;   // messages passed verbatim
 const HARD_MSG_CAP = 60;    // absolute conversation cap
@@ -317,6 +364,35 @@ function langLine(v) {
   return `\n\nREPLY LANGUAGE\nAnswer in ${name}, no matter which language the visitor writes in, unless they explicitly ask you to switch. Keep the same short, plain, one-question-at-most style. Prices stay in US dollars.`;
 }
 
+/* The general prompt asks for a handoff once the problem is useful. This
+   per-request instruction makes the timing deterministic: a detailed first
+   message or two substantive turns are enough. The client tells us when the
+   offer has already been rendered so the model never nags after a decline. */
+const HANDOFF_QUESTION = {
+  en: 'I have enough to brief Leon. Would you like me to send this project to him?',
+  pt: 'Já tenho informações suficientes para explicar o projeto ao Leon. Quer que eu envie para ele?',
+  es: 'Ya tengo suficiente información para explicarle el proyecto a Leon. ¿Quieres que se lo envíe?',
+  zh: '我已经有足够的信息向 Leon 说明这个项目。要我现在把项目发给他吗？'
+};
+function shouldOfferHandoff(history, alreadyOffered) {
+  if (alreadyOffered) return false;
+  const userText = history
+    .filter(message => message.role === 'user')
+    .map(message => textOf(message).trim())
+    .filter(Boolean);
+  const chars = userText.join(' ').length;
+  const latest = userText.at(-1) || '';
+  const directIntent = /\b(hire|quote|start|send|submit|forward)\b.{0,45}\b(leon|project|app|website|this)\b|\b(leon|project|app|website|this)\b.{0,45}\b(hire|quote|start|send|submit|forward)\b/i.test(latest)
+    || /(contratar|orçamento|presupuesto|enviar|mandar).{0,35}(leon|projeto|proyecto|aplicativo|app|site|web)/i.test(latest)
+    || /(发给|发送|提交|报价|开始).{0,18}(Leon|项目|应用|网站)/i.test(latest);
+  return directIntent || chars >= 80 || (userText.length >= 2 && chars >= 24);
+}
+function handoffLine(lang) {
+  const code = String(lang || '').slice(0, 2).toLowerCase();
+  const question = HANDOFF_QUESTION[code] || HANDOFF_QUESTION.en;
+  return '\n\nHANDOFF THIS TURN\nThe visitor has given enough useful context. Answer their current point briefly, do not ask another discovery question, then end with this exact sentence: "' + question + '" Do not add text after it.';
+}
+
 /* What the visitor is told when the model call fails for any reason. Always
    names a human channel — email and phone — in their own language. */
 const DOWN_MSG = {
@@ -365,9 +441,13 @@ app.post('/api/chat', async (req, res) => {
   if (page) input.push({ role: 'developer', content: 'The visitor is currently on this page of the site: ' + page });
   for (const m of history) input.push(m);
 
+  const handoffInstruction = shouldOfferHandoff(history, req.body.handoffOffered === true)
+    ? handoffLine(req.body.lang)
+    : '';
+
   const request = {
     model: MODEL,
-    instructions: SYSTEM_PROMPT + langLine(req.body.lang),
+    instructions: SYSTEM_PROMPT + langLine(req.body.lang) + handoffInstruction,
     input,
     max_output_tokens: MAX_OUTPUT,
     stream: true,
@@ -444,7 +524,19 @@ app.post('/api/lead', async (req, res) => {
   const { lead, error, bot, receiptId } = validateLead(body);
   if (bot) return res.json({ ok: true, receiptId }); // same shape as a real submission
   if (error) return res.status(400).json({ error });
-  persistLead(lead);
+  const idempotency = resolveLeadIdempotency(lead);
+  if (idempotency.conflict) {
+    return res.status(409).json({ error: 'idempotency key already used for a different lead' });
+  }
+  if (idempotency.duplicate) {
+    return res.json({ ok: true, receiptId: idempotency.receiptId, deduplicated: true });
+  }
+  const persistence = persistLead(lead);
+  if (!persistence.stored) {
+    forgetLeadIdempotency(lead);
+    res.setHeader('Retry-After', '2');
+    return res.status(503).json({ error: 'could not save the request — please try again.' });
+  }
   res.json({ ok: true, receiptId: lead.receiptId });
 
   // The condensed version is a nicety; it lands in the log after the answer went out.
