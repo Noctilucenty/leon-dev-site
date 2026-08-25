@@ -22,10 +22,16 @@ const LEAD_EMAIL_OUTBOX_FILE = dataFile(
   'lead-email-outbox.jsonl',
   'LEAD_EMAIL_OUTBOX_FILE'
 );
+const LEAD_EMAIL_CONFIRMATIONS_FILE = dataFile(
+  'lead-email-confirmations.jsonl',
+  'LEAD_EMAIL_CONFIRMATIONS_FILE'
+);
 const EMAIL_OUTBOX_VERSION = 1;
+const EMAIL_CONFIRMATION_VERSION = 1;
 const EMAIL_OUTBOX_RETRY_BASE_MS = 60_000;
 const EMAIL_OUTBOX_RETRY_MAX_MS = 60 * 60_000;
 const EMAIL_OUTBOX_SCAN_MS = 60_000;
+const RECEIPT_ID_RE = /^lead_[0-9a-f-]{36}$/i;
 
 /* Single-line by default: every control character goes, including the CR/LF that
    would otherwise ride into an SMTP header. Pass multiline for the long free-text
@@ -244,6 +250,30 @@ function createResendOutbox(lead, env = process.env) {
   };
 }
 
+/* A confirmation is valid only for the exact provider/from/to configuration
+ * exercised by the probe. If the destination or sender changes later, health
+ * automatically returns to unverified until the new path reaches the inbox. */
+function leadDeliveryFingerprint(env = process.env) {
+  const provider = String(leadDeliveryConfig(env).provider || '');
+  const from = String(env.LEAD_FROM_EMAIL || 'Leon Builds <onboarding@resend.dev>').trim();
+  const to = String(env.LEAD_TO_EMAIL || '').trim().toLowerCase();
+  return createHash('sha256')
+    .update(JSON.stringify({ provider, from, to }))
+    .digest('hex');
+}
+
+function outboxDeliveryFingerprint(outbox) {
+  const payload = outbox && outbox.payload;
+  if (!payload || !Array.isArray(payload.to) || !payload.to[0]) return null;
+  return createHash('sha256')
+    .update(JSON.stringify({
+      provider: String(outbox.provider || ''),
+      from: String(payload.from || '').trim(),
+      to: String(payload.to[0] || '').trim().toLowerCase()
+    }))
+    .digest('hex');
+}
+
 function publicLead(lead) {
   if (!lead || typeof lead !== 'object') return lead;
   const { _emailOutbox, ...visible } = lead;
@@ -299,10 +329,29 @@ function readLeadEmailOutbox({ required = false } = {}) {
   for (let index = 0; index < events.length; index += 1) {
     const event = events[index];
     if (!event || event.version !== EMAIL_OUTBOX_VERSION
-        || !/^lead_[0-9a-f-]{36}$/i.test(String(event.receiptId || ''))
+        || !RECEIPT_ID_RE.test(String(event.receiptId || ''))
         || !['queued', 'failed', 'sent'].includes(event.state)) {
       throw new Error(
         `invalid lead email outbox event: ${path.basename(LEAD_EMAIL_OUTBOX_FILE)} record ${index + 1}`);
+    }
+  }
+  return events;
+}
+
+function readLeadEmailConfirmations() {
+  const events = readJsonl(LEAD_EMAIL_CONFIRMATIONS_FILE, {
+    strict: true,
+    missingOkay: true
+  });
+  for (let index = 0; index < events.length; index += 1) {
+    const event = events[index];
+    if (!event || event.version !== EMAIL_CONFIRMATION_VERSION
+        || !RECEIPT_ID_RE.test(String(event.receiptId || ''))
+        || event.state !== 'inbox_confirmed'
+        || !/^\d{4}-\d{2}-\d{2}T/.test(String(event.at || ''))
+        || !/^[0-9a-f]{64}$/.test(String(event.configFingerprint || ''))) {
+      throw new Error(
+        `invalid lead email confirmation event: ${path.basename(LEAD_EMAIL_CONFIRMATIONS_FILE)} record ${index + 1}`);
     }
   }
   return events;
@@ -569,12 +618,123 @@ function persistLead(lead) {
   return { stored: true };
 }
 
-/* Everything captured since the last deploy, newest first. Backs GET /api/leads,
-   which is the only way to read them without digging through Render's log tail. */
-function readLeads(limit) {
-  const out = readStoredLeads().map(publicLead);
+/* Genuine leads captured since the last deploy, newest first. Admin-created
+   delivery probes stay durable for outbox recovery and audit, but normal views
+   exclude them so a pipeline check never becomes a reported inquiry. */
+function readLeads(limit, { includeSynthetic = false } = {}) {
+  const out = readStoredLeads()
+    .filter(lead => includeSynthetic === true || lead.synthetic !== true)
+    .map(publicLead);
   out.reverse();
   return out.slice(0, limit || 200);
+}
+
+/* Return only operational delivery metadata for one opaque receipt. The
+ * immutable email payload deliberately stays private: it contains both the
+ * configured destination and any contact details supplied by a real lead. */
+function leadEmailStatus(receiptId) {
+  const wanted = String(receiptId || '');
+  if (!RECEIPT_ID_RE.test(wanted)) return null;
+  const events = readLeadEmailOutbox();
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.receiptId !== wanted) continue;
+    const status = {
+      receiptId: wanted,
+      state: event.state,
+      at: event.at,
+      attempts: event.attempts,
+      provider: event.provider
+    };
+    if (event.providerMessageId) status.providerMessageId = event.providerMessageId;
+    if (event.nextAttemptAt) status.nextAttemptAt = event.nextAttemptAt;
+    return status;
+  }
+  return null;
+}
+
+function findStoredLeadByReceipt(receiptId) {
+  const wanted = String(receiptId || '');
+  if (!RECEIPT_ID_RE.test(wanted)) return null;
+  const leads = readStoredLeads({ strict: true });
+  for (let index = leads.length - 1; index >= 0; index -= 1) {
+    if (leads[index] && leads[index].receiptId === wanted) return leads[index];
+  }
+  return null;
+}
+
+/* Record the operator's literal inbox observation without editing either
+ * append-only delivery ledger. Only a sent, server-generated synthetic probe is
+ * eligible, so this route cannot turn an ordinary lead into health evidence. */
+function confirmLeadEmailInbox(receiptId, { now = Date.now(), env = process.env } = {}) {
+  const wanted = String(receiptId || '');
+  if (!RECEIPT_ID_RE.test(wanted)) return { ok: false, reason: 'invalid_receipt' };
+  const lead = findStoredLeadByReceipt(wanted);
+  if (!lead) return { ok: false, reason: 'not_found' };
+  if (lead.synthetic !== true || lead.recordType !== 'delivery_probe') {
+    return { ok: false, reason: 'not_synthetic_probe' };
+  }
+  const status = leadEmailStatus(wanted);
+  if (!status || status.state !== 'sent' || !status.providerMessageId) {
+    return { ok: false, reason: 'not_sent' };
+  }
+
+  const fingerprint = outboxDeliveryFingerprint(lead._emailOutbox);
+  if (!fingerprint || fingerprint !== leadDeliveryFingerprint(env)) {
+    return { ok: false, reason: 'configuration_changed' };
+  }
+  const confirmations = readLeadEmailConfirmations();
+  const prior = confirmations.find(event => (
+    event.receiptId === wanted && event.configFingerprint === fingerprint
+  ));
+  if (prior) {
+    return {
+      ok: true,
+      receiptId: wanted,
+      confirmedAt: prior.at,
+      deduplicated: true
+    };
+  }
+
+  const event = {
+    version: EMAIL_CONFIRMATION_VERSION,
+    receiptId: wanted,
+    state: 'inbox_confirmed',
+    at: new Date(now).toISOString(),
+    configFingerprint: fingerprint
+  };
+  try {
+    fs.mkdirSync(path.dirname(LEAD_EMAIL_CONFIRMATIONS_FILE), { recursive: true });
+    fs.appendFileSync(LEAD_EMAIL_CONFIRMATIONS_FILE, JSON.stringify(event) + '\n');
+  } catch (error) {
+    console.error(
+      `lead email confirmation write failed: ${wanted}`,
+      String(error && error.message || error).slice(0, 300));
+    return { ok: false, reason: 'store_failed' };
+  }
+  return {
+    ok: true,
+    receiptId: wanted,
+    confirmedAt: event.at,
+    deduplicated: false
+  };
+}
+
+function leadEmailVerification(env = process.env) {
+  const fingerprint = leadDeliveryFingerprint(env);
+  const confirmations = readLeadEmailConfirmations();
+  for (let index = confirmations.length - 1; index >= 0; index -= 1) {
+    const event = confirmations[index];
+    if (event.configFingerprint !== fingerprint) continue;
+    const lead = findStoredLeadByReceipt(event.receiptId);
+    const status = lead && lead.synthetic === true && lead.recordType === 'delivery_probe'
+      ? leadEmailStatus(event.receiptId)
+      : null;
+    if (status && status.state === 'sent' && status.providerMessageId) {
+      return { verified: true, confirmedAt: event.at };
+    }
+  }
+  return { verified: false, confirmedAt: null };
 }
 
 /* Read newest-to-oldest and stop at the first matching durable record. This is
@@ -752,8 +912,8 @@ async function openTransport() {
  *
  * A verification that induces the failure it is testing for is worse than no
  * verification, because it reads as evidence. Run it ONCE after a change. To
- * confirm the pipeline end to end, post one uniquely tagged lead, look for
- * LEAD_MAILED, and confirm that same tag arrived in the target inbox. */
+ * confirm the pipeline end to end, run one admin delivery probe, verify its
+ * provider ID, and record that same receipt/tag observed in the target inbox. */
 async function verifyMail() {
   const delivery = leadDeliveryConfig();
   if (!delivery.configured) {
@@ -781,7 +941,7 @@ async function verifyMail() {
       ok: null,
       provider: 'resend',
       level: 'configuration',
-      reason: 'Resend HTTPS delivery is configured but not verified. Submit one uniquely tagged test lead and confirm both LEAD_MAILED and receipt in the target inbox.'
+      reason: 'Resend HTTPS delivery is configured but not verified. Run one admin delivery probe, confirm provider acceptance, then record the matching receipt observed in the target inbox.'
     };
   }
   try {
@@ -816,6 +976,9 @@ module.exports = {
   leadDeliveryConfig,
   drainLeadEmailOutbox,
   readLeadEmailOutbox,
+  leadEmailStatus,
+  confirmLeadEmailInbox,
+  leadEmailVerification,
   startLeadEmailOutbox,
   maskEmail,
   isRenderRuntime

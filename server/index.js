@@ -7,6 +7,9 @@
      GET  /api/health   — warm-up ping (the widget calls it when the panel opens)
      POST /api/chat     — streams assistant text (plain chunked text, not SSE)
      POST /api/lead     — validated lead intake (chat handoff + quote form)
+     POST /api/lead-delivery-probe — admin-only synthetic delivery check
+     GET  /api/lead-delivery-status/:receiptId — admin-only outbox metadata
+     POST /api/lead-delivery-confirm/:receiptId — admin-only inbox observation
      POST /api/event    — tiny first-party analytics beacon -> stdout ("EVT ...")
      POST /api/cal/webhook — signed Cal lifecycle events -> acquisition stages
      GET  /api/acquisition — admin-only booking/opportunity stage records
@@ -50,6 +53,9 @@ const {
   clean,
   verifyMail,
   leadDeliveryConfig,
+  leadEmailStatus,
+  confirmLeadEmailInbox,
+  leadEmailVerification,
   startLeadEmailOutbox
 } = require('./leads');
 const { persistEvent, readEvents, sourceOf, normalizeEvent, funnelStats } = require('./events');
@@ -314,20 +320,30 @@ app.get('/api/health', async (req, res) => {
   }
   const delivery = leadDeliveryConfig();
   const acquisitionStorage = acquisitionStorageConfig();
+  let emailVerification = { verified: false, confirmedAt: null };
+  if (delivery.ready && delivery.provider === 'resend') {
+    try {
+      emailVerification = leadEmailVerification();
+    } catch (error) {
+      console.error(
+        'lead email verification read failed:',
+        String(error && error.message || error).slice(0, 200));
+    }
+  }
   const body = {
     ok: true,
     model: client ? MODEL : null,
     vision: !!client,
     leadEmailProvider: delivery.provider,
     leadEmailTransport: delivery.transport,
-    leadEmailState: delivery.state,
+    leadEmailState: emailVerification.verified ? 'verified' : delivery.state,
     leadEmailConfigured: delivery.configured,
     leadEmailSupported: delivery.supported,
     leadEmailReady: delivery.ready,
     // Backward-compatible name, with corrected semantics: a complete but known-
     // blocked SMTP setup on Render is false instead of a false green.
     leadEmail: delivery.ready,
-    leadEmailVerified: false,
+    leadEmailVerified: emailVerification.verified,
     leadEmailMissing: delivery.missing,
     leadEmailWarning: delivery.warning,
     leadEmailTo: delivery.recipient,
@@ -337,6 +353,9 @@ app.get('/api/health', async (req, res) => {
     acquisitionSinkConfigured: acquisitionStorage.sinkConfigured,
     calWebhookConfigured: !!String(process.env.CAL_WEBHOOK_SECRET || '').trim()
   };
+  if (emailVerification.confirmedAt) {
+    body.leadEmailVerifiedAt = emailVerification.confirmedAt;
+  }
   if (deep) {
     const v = await verifyMail();
     // A connection/auth check is not an end-to-end inbox-delivery test. Keep the
@@ -510,6 +529,111 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+/* ── lead delivery probe ──
+   This is not a public form variant. It accepts no visitor data, requires the
+   header-only admin key, and marks its durable row so normal lead counts exclude
+   it. The fixed reserved address exercises the real Reply-To/outbox shape
+   without inventing or disclosing a person's contact details. */
+app.post('/api/lead-delivery-probe', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'lead delivery probe is not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  if (req.body && Object.keys(req.body).length) {
+    return res.status(400).json({ error: 'lead delivery probe does not accept caller data' });
+  }
+  const delivery = leadDeliveryConfig();
+  if (!delivery.ready || delivery.provider !== 'resend') {
+    return res.status(503).json({
+      error: 'Resend lead delivery is not ready',
+      state: delivery.state
+    });
+  }
+  const ip = req.ip || 'x';
+  if (limited('lp:' + ip, 1, 10 * 60_000)) {
+    return res.status(429).json({ error: 'a lead delivery probe was already requested recently' });
+  }
+
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+  const tag = `PIPELINE-CHECK-${stamp}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+  const checked = validateLead({
+    name: 'PIPELINE CHECK (not a lead)',
+    email: 'pipeline-check@example.com',
+    company: 'SYNTHETIC DELIVERY PROBE',
+    service: 'lead-delivery-probe',
+    problem: `Synthetic end-to-end delivery check; never count as a lead or client. Tag ${tag}`,
+    via: 'pipeline-check',
+    idempotencyKey: `leadreq_${crypto.randomUUID()}`
+  });
+  if (!checked.lead) return res.status(500).json({ error: 'could not create delivery probe' });
+  checked.lead.synthetic = true;
+  checked.lead.recordType = 'delivery_probe';
+  const persistence = persistLead(checked.lead);
+  if (!persistence.stored) {
+    res.setHeader('Retry-After', '2');
+    return res.status(503).json({ error: 'could not save the delivery probe' });
+  }
+  return res.status(202).json({
+    ok: true,
+    synthetic: true,
+    receiptId: checked.lead.receiptId,
+    tag,
+    statusPath: `/api/lead-delivery-status/${checked.lead.receiptId}`
+  });
+});
+
+app.get('/api/lead-delivery-status/:receiptId', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'lead delivery status is not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  let status;
+  try {
+    status = leadEmailStatus(req.params.receiptId);
+  } catch (error) {
+    console.error('lead delivery status read failed:', String(error && error.message || error).slice(0, 200));
+    return res.status(503).json({ error: 'lead delivery status is unavailable' });
+  }
+  if (!status) return res.status(404).json({ error: 'delivery receipt not found' });
+  return res.json(status);
+});
+
+app.post('/api/lead-delivery-confirm/:receiptId', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store');
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'lead delivery confirmation is not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  if (req.body && Object.keys(req.body).length) {
+    return res.status(400).json({ error: 'lead delivery confirmation does not accept caller data' });
+  }
+  let confirmation;
+  try {
+    confirmation = confirmLeadEmailInbox(req.params.receiptId);
+  } catch (error) {
+    console.error('lead delivery confirmation failed:', String(error && error.message || error).slice(0, 200));
+    return res.status(503).json({ error: 'lead delivery confirmation is unavailable' });
+  }
+  if (!confirmation.ok) {
+    if (confirmation.reason === 'not_found' || confirmation.reason === 'invalid_receipt') {
+      return res.status(404).json({ error: 'delivery receipt not found' });
+    }
+    if (confirmation.reason === 'store_failed') {
+      return res.status(503).json({ error: 'could not save inbox confirmation' });
+    }
+    if (confirmation.reason === 'configuration_changed') {
+      return res.status(409).json({ error: 'delivery configuration changed after this probe' });
+    }
+    return res.status(409).json({ error: 'only a sent synthetic delivery probe can be confirmed' });
+  }
+  return res.json({
+    ok: true,
+    verified: true,
+    receiptId: confirmation.receiptId,
+    confirmedAt: confirmation.confirmedAt,
+    deduplicated: confirmation.deduplicated
+  });
+});
+
 /* ── lead intake ── */
 app.post('/api/lead', async (req, res) => {
   const ip = req.ip || 'x';
@@ -559,7 +683,12 @@ app.get('/api/leads', (req, res) => {
   if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
 
   const asked = Math.floor(Number(req.query.limit));
-  const leads = readLeads(Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200);
+  const includeSynthetic = req.query.includeSynthetic === '1'
+    || req.query.includeSynthetic === 'true';
+  const leads = readLeads(
+    Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200,
+    { includeSynthetic }
+  );
   if (req.query.format === 'json') return res.json({ count: leads.length, leads });
 
   const card = l => '<article><h2>' + escapeHtml(l.name || l.email) + ' <small>' + escapeHtml(l.via) + ' · ' + escapeHtml(l.ts) + ' · ' + escapeHtml(l.receiptId || 'legacy-no-receipt') + '</small></h2>'

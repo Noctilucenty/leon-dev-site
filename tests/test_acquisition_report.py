@@ -148,6 +148,26 @@ class AcquisitionReportTests(unittest.TestCase):
         self.assertTrue(report["intentReview"]["passed"])
         self.assertNotIn("SCALE", json.dumps(report))
 
+    def test_synthetic_delivery_probes_never_count_as_inquiries(self):
+        synthetic_probe = {
+            "ts": DAY,
+            "receiptId": "lead_synthetic_probe",
+            "firstUtmCampaign": "contractor-test",
+            "firstUtmSource": "google",
+            "synthetic": True,
+            "recordType": "delivery_probe",
+        }
+        report = self.build(lead_rows=leads() + [synthetic_probe])
+
+        self.assertEqual(report["funnel"]["inquiries"], 4)
+        self.assertEqual(report["data"]["leads"]["recordsRead"], 5)
+        self.assertEqual(report["data"]["leads"]["scopedRecords"], 4)
+        self.assertEqual(report["data"]["leads"]["syntheticRecordsExcluded"], 1)
+        self.assertIn(
+            "Excluded 1 synthetic lead-delivery probe record(s)",
+            " ".join(report["findings"]["notes"]),
+        )
+
     def test_budget_duration_and_meta_allocation_fail_closed(self):
         config = complete_config()
         config["limits"]["totalMediaBudgetUsd"] = 101

@@ -6,8 +6,11 @@ const fs = require('node:fs');
 const test = require('node:test');
 
 const {
+  confirmLeadEmailInbox,
   drainLeadEmailOutbox,
   leadDeliveryConfig,
+  leadEmailVerification,
+  leadEmailStatus,
   maskEmail,
   persistLead,
   readLeadEmailOutbox,
@@ -153,6 +156,15 @@ test('validated leads and honeypot successes receive opaque receipt IDs', () => 
     problem: 'This key contains unsafe punctuation.',
     idempotencyKey: 'leadreq_not/allowed'
   }).error, 'invalid idempotency key');
+
+  const publicSyntheticAttempt = validateLead({
+    email: 'ordinary@example.com',
+    problem: 'This must remain an ordinary lead.',
+    synthetic: true,
+    recordType: 'delivery_probe'
+  }).lead;
+  assert.equal(Object.hasOwn(publicSyntheticAttempt, 'synthetic'), false);
+  assert.equal(Object.hasOwn(publicSyntheticAttempt, 'recordType'), false);
 });
 
 test('lead validation preserves bounded first/last attribution and anonymous correlation IDs', () => {
@@ -260,7 +272,8 @@ test('one idempotency key returns one receipt and persists/emails only once', as
   fs.readFileSync = (file, ...args) => {
     const key = String(file);
     if (files.has(key)) return files.get(key);
-    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-email-confirmations.jsonl')) {
       const error = new Error(`ENOENT: ${key}`);
       error.code = 'ENOENT';
       throw error;
@@ -345,6 +358,230 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     assert.match(mail.text, /PIPELINE-CHECK-TEST/);
     assert.ok(logs.some(line => line.includes(`LEAD_MAILED receiptId=${result.receiptId}`)));
     assert.deepEqual(errors, []);
+  } finally {
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+    await new Promise((resolve, reject) => {
+      server.close(err => err ? reject(err) : resolve());
+    });
+  }
+});
+
+test('admin delivery probe is fixed, synthetic, filtered and receipt-status only', async () => {
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com',
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>',
+    LEADS_KEY: 'probe-admin-key'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
+    log: console.log,
+    error: console.error
+  };
+  const files = new Map();
+  const mailRequests = [];
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-email-confirmations.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
+  console.log = () => {};
+  console.error = () => {};
+  global.fetch = async (url, options) => {
+    if (String(url) === 'https://api.resend.com/emails') {
+      mailRequests.push({ url: String(url), options });
+      return { ok: true, json: async () => ({ id: 'resend-probe-message-id' }) };
+    }
+    return original.fetch(url, options);
+  };
+
+  try {
+    const unauthorized = await global.fetch(base + '/api/lead-delivery-probe', {
+      method: 'POST'
+    });
+    assert.equal(unauthorized.status, 401);
+
+    const queryOnly = await global.fetch(base + '/api/lead-delivery-probe?key=probe-admin-key', {
+      method: 'POST'
+    });
+    assert.equal(queryOnly.status, 401);
+
+    const callerData = await global.fetch(base + '/api/lead-delivery-probe', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-leads-key': 'probe-admin-key'
+      },
+      body: JSON.stringify({
+        email: 'private-person@example.net',
+        problem: 'Caller text must never enter a probe.'
+      })
+    });
+    assert.equal(callerData.status, 400);
+    assert.equal(mailRequests.length, 0);
+
+    const response = await global.fetch(base + '/api/lead-delivery-probe', {
+      method: 'POST',
+      headers: { 'x-leads-key': 'probe-admin-key' }
+    });
+    const result = await response.json();
+    assert.equal(response.status, 202);
+    assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.equal(result.ok, true);
+    assert.equal(result.synthetic, true);
+    assert.match(result.receiptId, /^lead_[0-9a-f-]{36}$/);
+    assert.match(result.tag, /^PIPELINE-CHECK-\d{8}T\d{6}Z-[A-F0-9]{8}$/);
+    assert.equal(result.statusPath, `/api/lead-delivery-status/${result.receiptId}`);
+
+    await new Promise(resolve => setImmediate(resolve));
+    await drainLeadEmailOutbox();
+    assert.equal(mailRequests.length, 1);
+
+    const mail = JSON.parse(mailRequests[0].options.body);
+    assert.equal(mail.reply_to, 'pipeline-check@example.com');
+    assert.deepEqual(mail.to, ['owner@example.com']);
+    assert.match(mail.subject, new RegExp(result.receiptId));
+    assert.match(mail.text, new RegExp(result.tag));
+    assert.match(mail.text, /synthetic: true/);
+    assert.match(mail.text, /recordType: delivery_probe/);
+    assert.doesNotMatch(mail.text, /private-person|Caller text/);
+
+    assert.deepEqual(readLeads(10), []);
+    const probes = readLeads(10, { includeSynthetic: true });
+    assert.equal(probes.length, 1);
+    assert.equal(probes[0].receiptId, result.receiptId);
+    assert.equal(probes[0].synthetic, true);
+    assert.equal(probes[0].recordType, 'delivery_probe');
+    assert.equal(probes[0].email, 'pipeline-check@example.com');
+    assert.equal(Object.hasOwn(probes[0], '_emailOutbox'), false);
+
+    const defaultList = await global.fetch(base + '/api/leads?format=json', {
+      headers: { 'x-leads-key': 'probe-admin-key' }
+    });
+    assert.equal(defaultList.status, 200);
+    assert.equal((await defaultList.json()).count, 0);
+
+    const includedList = await global.fetch(base + '/api/leads?format=json&includeSynthetic=1', {
+      headers: { 'x-leads-key': 'probe-admin-key' }
+    });
+    const includedBody = await includedList.json();
+    assert.equal(includedList.status, 200);
+    assert.equal(includedBody.count, 1);
+    assert.equal(includedBody.leads[0].receiptId, result.receiptId);
+
+    const missingStatusAuth = await global.fetch(base + result.statusPath);
+    assert.equal(missingStatusAuth.status, 401);
+    const statusResponse = await global.fetch(base + result.statusPath, {
+      headers: { 'x-leads-key': 'probe-admin-key' }
+    });
+    const status = await statusResponse.json();
+    assert.equal(statusResponse.status, 200);
+    assert.equal(statusResponse.headers.get('cache-control'), 'no-store');
+    assert.deepEqual(Object.keys(status).sort(), [
+      'at', 'attempts', 'provider', 'providerMessageId', 'receiptId', 'state'
+    ]);
+    assert.equal(status.receiptId, result.receiptId);
+    assert.equal(status.state, 'sent');
+    assert.equal(status.attempts, 1);
+    assert.equal(status.provider, 'resend');
+    assert.equal(status.providerMessageId, 'resend-probe-message-id');
+    assert.doesNotMatch(JSON.stringify(status), /owner@example|pipeline-check@example|SYNTHETIC/);
+    assert.deepEqual(leadEmailStatus(result.receiptId), status);
+
+    const healthBefore = await global.fetch(base + '/api/health');
+    const healthBeforeBody = await healthBefore.json();
+    assert.equal(healthBefore.status, 200);
+    assert.equal(healthBeforeBody.leadEmailVerified, false);
+    assert.equal(Object.hasOwn(healthBeforeBody, 'leadEmailVerifiedAt'), false);
+
+    const unauthorizedConfirmation = await global.fetch(
+      base + `/api/lead-delivery-confirm/${result.receiptId}`,
+      { method: 'POST' }
+    );
+    assert.equal(unauthorizedConfirmation.status, 401);
+
+    const confirmationResponse = await global.fetch(
+      base + `/api/lead-delivery-confirm/${result.receiptId}`,
+      {
+        method: 'POST',
+        headers: { 'x-leads-key': 'probe-admin-key' }
+      }
+    );
+    const confirmation = await confirmationResponse.json();
+    assert.equal(confirmationResponse.status, 200);
+    assert.equal(confirmation.ok, true);
+    assert.equal(confirmation.verified, true);
+    assert.equal(confirmation.receiptId, result.receiptId);
+    assert.equal(confirmation.deduplicated, false);
+    assert.match(confirmation.confirmedAt, /^\d{4}-\d{2}-\d{2}T/);
+
+    const repeatedConfirmation = await global.fetch(
+      base + `/api/lead-delivery-confirm/${result.receiptId}`,
+      {
+        method: 'POST',
+        headers: { 'x-leads-key': 'probe-admin-key' }
+      }
+    );
+    const repeatedConfirmationBody = await repeatedConfirmation.json();
+    assert.equal(repeatedConfirmation.status, 200);
+    assert.equal(repeatedConfirmationBody.deduplicated, true);
+    assert.equal(repeatedConfirmationBody.confirmedAt, confirmation.confirmedAt);
+
+    const verified = leadEmailVerification();
+    assert.deepEqual(verified, {
+      verified: true,
+      confirmedAt: confirmation.confirmedAt
+    });
+    assert.deepEqual(leadEmailVerification({
+      RENDER: 'true',
+      RESEND_API_KEY: 'test-key',
+      LEAD_TO_EMAIL: 'different-owner@example.com',
+      LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>'
+    }), { verified: false, confirmedAt: null });
+
+    const healthAfter = await global.fetch(base + '/api/health');
+    const healthAfterBody = await healthAfter.json();
+    assert.equal(healthAfter.status, 200);
+    assert.equal(healthAfterBody.leadEmailVerified, true);
+    assert.equal(healthAfterBody.leadEmailState, 'verified');
+    assert.equal(healthAfterBody.leadEmailVerifiedAt, confirmation.confirmedAt);
+    assert.doesNotMatch(JSON.stringify(healthAfterBody), new RegExp(result.receiptId));
+
+    const directConfirmation = confirmLeadEmailInbox(result.receiptId);
+    assert.equal(directConfirmation.ok, true);
+    assert.equal(directConfirmation.deduplicated, true);
+
+    const repeated = await global.fetch(base + '/api/lead-delivery-probe', {
+      method: 'POST',
+      headers: { 'x-leads-key': 'probe-admin-key' }
+    });
+    assert.equal(repeated.status, 429);
+    assert.equal(mailRequests.length, 1);
   } finally {
     global.fetch = original.fetch;
     fs.mkdirSync = original.mkdirSync;
@@ -740,7 +977,17 @@ test('lead idempotency recovers the accepted receipt from durable JSONL after a 
 test('health keeps service liveness separate from delivery readiness', async t => {
   const server = app.listen(0, '127.0.0.1');
   await once(server, 'listening');
+  const originalReadFileSync = fs.readFileSync;
+  fs.readFileSync = (file, ...args) => {
+    if (String(file).endsWith('/lead-email-confirmations.jsonl')) {
+      const error = new Error(`ENOENT: ${file}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return originalReadFileSync(file, ...args);
+  };
   t.after(() => new Promise((resolve, reject) => {
+    fs.readFileSync = originalReadFileSync;
     server.close(err => err ? reject(err) : resolve());
   }));
   const base = `http://127.0.0.1:${server.address().port}`;

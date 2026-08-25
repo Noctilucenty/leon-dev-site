@@ -412,6 +412,15 @@ def build_report(
     acquisition: JsonlInput,
 ) -> dict[str, Any]:
     findings = Findings()
+    reportable_lead_records = [
+        record for record in leads.records if record.get("synthetic") is not True
+    ]
+    synthetic_leads_excluded = len(leads.records) - len(reportable_lead_records)
+    if synthetic_leads_excluded:
+        findings.add_note(
+            f"Excluded {synthetic_leads_excluded} synthetic lead-delivery probe "
+            "record(s) from inquiry reporting."
+        )
 
     if config.get("schemaVersion") != 1:
         findings.add_pause("Run manifest schemaVersion must be 1.")
@@ -460,8 +469,11 @@ def build_report(
             )
         if not truthy(nested(config, "dataReadiness", name + "Complete")):
             findings.add_iterate(f"dataReadiness.{name}Complete is not confirmed.")
+        integrity_records = (
+            reportable_lead_records if name == "leads" else input_data.records
+        )
         missing_timestamps = sum(
-            1 for record in input_data.records if record_day(record) is None
+            1 for record in integrity_records if record_day(record) is None
         )
         if missing_timestamps:
             findings.add_pause(
@@ -476,7 +488,9 @@ def build_report(
     if valid_window and valid_scope:
         assert start is not None and end is not None
         scoped_events = scoped_records(events.records, start, end, mode, campaign, source)
-        scoped_leads = scoped_records(leads.records, start, end, mode, campaign, source)
+        scoped_leads = scoped_records(
+            reportable_lead_records, start, end, mode, campaign, source
+        )
         scoped_acquisition = acquisition_records(
             acquisition, start, end, mode, campaign, source
         )
@@ -941,6 +955,7 @@ def build_report(
                 "available": leads.available,
                 "recordsRead": len(leads.records),
                 "scopedRecords": len(scoped_leads),
+                "syntheticRecordsExcluded": synthetic_leads_excluded,
             },
             "acquisition": {
                 "available": acquisition.available,

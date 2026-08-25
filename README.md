@@ -81,7 +81,7 @@ The frontend finds the API through **one constant**: `API_BASE` at the top of
 | `RESEND_API_KEY` + `LEAD_TO_EMAIL` | no | recommended on Render; sends the off-host lead copy over HTTPS |
 | `LEAD_FROM_EMAIL` | no | Resend sender; use an address/domain allowed by that Resend account |
 | `SMTP_HOST/USER/PASS` (+ optional `SMTP_PORT`) + `LEAD_TO_EMAIL` | no | fallback only on hosts that permit outbound SMTP; the current Render service does not |
-| `LEADS_KEY` | no | admin key for lead/traffic views and deep health; all three accept it only via `x-leads-key` |
+| `LEADS_KEY` | no | admin key for lead/traffic views, delivery probes/status and deep health; accepted only via `x-leads-key` |
 | `EXTRA_ORIGIN` | no | one extra allowed browser origin |
 | `LEON_DATA_DIR` | no | directory for leads/events/acquisition and lead-email outbox JSONL; on Render, set only inside an attached persistent disk |
 | `CAL_WEBHOOK_SECRET` | no | enables `/api/cal/webhook`; must exactly match the signing secret configured in Cal |
@@ -131,26 +131,39 @@ curl -s https://leon-assist.onrender.com/api/health?deep=1 \
 
 ### Verify lead delivery end to end
 
-There is one honest delivery check: submit exactly one uniquely tagged lead and save
-the non-sensitive `receiptId` returned by `POST /api/lead`. Confirm that receipt in
-the Render `LEAD {...}` record, the following `LEAD_MAILED receiptId=...` line, and
-the target inbox's subject/body. The human-readable tag appears in the stored lead
-and email body; the API response intentionally returns only status plus the receipt.
-Neither a green environment dashboard nor `/api/health?deep=1` replaces the inbox
-check.
+There is one honest delivery check: send exactly one admin-generated synthetic
+probe and save its non-sensitive `receiptId` and tag. The probe accepts no request
+body or caller-supplied contact data. It uses the real durable Resend outbox with a
+reserved `example.com` Reply-To, is marked `synthetic:true`, and is excluded from
+normal `/api/leads` results and counts. The public `POST /api/lead` route cannot set
+that marker. Neither a green environment dashboard nor `/api/health?deep=1`
+replaces the inbox check.
 
 ```bash
-curl -i https://leon-assist.onrender.com/api/lead \
-  -H 'content-type: application/json' \
-  --data '{"name":"PIPELINE-CHECK-YYYYMMDD-HHMM","email":"pipeline-check@example.com","problem":"End-to-end delivery check; tag PIPELINE-CHECK-YYYYMMDD-HHMM","via":"pipeline-check"}'
+curl -i -X POST https://leon-assist.onrender.com/api/lead-delivery-probe \
+  -H 'x-leads-key: YOUR_LEADS_KEY'
+
+curl -s https://leon-assist.onrender.com/api/lead-delivery-status/RECEIPT_ID \
+  -H 'x-leads-key: YOUR_LEADS_KEY'
+
+# Run only after the same receipt/tag is visibly present in the target inbox.
+curl -s -X POST \
+  https://leon-assist.onrender.com/api/lead-delivery-confirm/RECEIPT_ID \
+  -H 'x-leads-key: YOUR_LEADS_KEY'
 ```
 
-Run this once after changing delivery configuration. A passing run has HTTP 200 with
-`{"ok":true,"receiptId":"lead_..."}`, the same receipt in `LEAD`, a matching
-`LEAD_MAILED` line (not `LEAD_MAIL_FAILED`), and the receipt plus test tag in the
-message delivered to `LEAD_TO_EMAIL`. The log and JSONL copies are not durable
-substitutes for the off-host copy. No generic webhook is treated as durable without
-a real receiving system selected and verified.
+Run this once after changing delivery configuration. A probe request returns HTTP
+202, its opaque receipt and tag, and a status path. Poll that authenticated path
+until it reports `state:"sent"`; it exposes only operational state and the Resend
+provider message ID, never the payload or an address. Then confirm that exact ID is
+`delivered` in Resend and that the same receipt/tag is visible in the target inbox.
+Provider acceptance alone is not inbox proof. The final confirmation writes a
+minimal append-only observation tied to the exact sender/recipient configuration;
+only then can `/api/health` report `leadEmailVerified:true` and a confirmation time.
+A later configuration change automatically returns health to unverified. Synthetic
+rows remain available for audit through authenticated
+`/api/leads?format=json&includeSynthetic=1`; do not edit the append-only lead,
+outbox or confirmation ledgers to clean up a probe.
 
 ## Acquisition measurement and CRM stages
 
