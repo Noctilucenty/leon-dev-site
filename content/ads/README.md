@@ -6,6 +6,14 @@
 does not authorize creating, enabling, publishing, funding, or changing a live
 Google or Meta campaign. No row in these files is evidence that an ad ran.
 
+> **Live-state reconciliation — 2026-08-24 PT:** the owner later gave separate
+> launch authorization and one Google Search campaign was published in the live
+> Leon Builds account. The CSVs remain a frozen, fail-closed build specification;
+> they are not the live-account ledger. See
+> [`live-campaign-checkpoint-2026-08-24.md`](live-campaign-checkpoint-2026-08-24.md)
+> for the verified pre-start state and its proof limits. Meta and the separate
+> app-development draft remain disabled at $0.
+
 ## Safety contract
 
 - Keep every campaign, ad group, ad set, ad, and conversion action disabled
