@@ -13,6 +13,12 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > [`live-campaign-checkpoint-2026-08-24.md`](live-campaign-checkpoint-2026-08-24.md)
 > for the verified pre-start state and its proof limits. Meta and the separate
 > app-development draft remain disabled at $0.
+>
+> **Current live-state reconciliation — 2026-08-25 PT:** see
+> [`live-campaign-checkpoint-2026-08-25.md`](live-campaign-checkpoint-2026-08-25.md)
+> for the enabled Orlando/Phoenix campaign, paused legacy Bay RSA, clean
+> replacement RSA, campaign-total spend controls, zero-spend activation receipt,
+> and the remaining earlier-metro-RSA cleanup.
 
 ## Safety contract
 
