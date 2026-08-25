@@ -286,32 +286,50 @@ function readAcquisition(limit) {
 
 function acquisitionStats(records) {
   const stageCounts = Object.fromEntries(FUNNEL_STAGES.map(stage => [stage, 0]));
+  const replacementByUid = new Map();
+  for (const record of records || []) {
+    if (!record || record.kind !== 'funnel_stage' || !record.bookingUid) continue;
+    const previousUid = bookingUid(record.context && record.context.previousBookingUid);
+    if (previousUid && previousUid !== record.bookingUid) replacementByUid.set(previousUid, record.bookingUid);
+  }
+  const canonicalUid = uid => {
+    let current = uid;
+    const seen = new Set();
+    while (replacementByUid.has(current) && !seen.has(current)) {
+      seen.add(current);
+      current = replacementByUid.get(current);
+    }
+    return current;
+  };
   const latestByBooking = new Map();
   const touchesByBooking = new Map();
+  const countedStages = new Set();
+  for (const record of records || []) {
+    if (!record || record.kind !== 'booking_attribution' || !record.bookingUid) continue;
+    const uid = canonicalUid(record.bookingUid);
+    const touches = touchesByBooking.get(uid) || { first: {}, last: {} };
+    touches.first = { ...touches.first, ...(record.firstAttribution || {}) };
+    touches.last = { ...touches.last, ...(record.lastAttribution || {}) };
+    touchesByBooking.set(uid, touches);
+  }
   for (const record of records || []) {
     if (!record) continue;
-    if (record.kind === 'booking_attribution' && record.bookingUid) {
-      const touches = touchesByBooking.get(record.bookingUid) || { first: {}, last: {} };
-      touches.first = { ...touches.first, ...(record.firstAttribution || {}) };
-      touches.last = { ...touches.last, ...(record.lastAttribution || {}) };
-      touchesByBooking.set(record.bookingUid, touches);
-      const current = latestByBooking.get(record.bookingUid);
-      if (current) {
-        current.firstAttribution = { ...current.firstAttribution, ...touches.first };
-        current.lastAttribution = { ...current.lastAttribution, ...touches.last };
-        // Signed Cal fields already present on the stage win; browser fields fill
-        // gaps such as ad click IDs that Cal intentionally does not receive.
-        current.attribution = { ...touches.last, ...current.attribution };
-        current.browserAttributionObserved = true;
-      }
-      continue;
-    }
+    if (record.kind === 'booking_attribution') continue;
     if (record.kind !== 'funnel_stage' || !FUNNEL_STAGE_SET.has(record.stage)) continue;
-    stageCounts[record.stage] += 1;
-    const previous = latestByBooking.get(record.bookingUid);
-    const touches = touchesByBooking.get(record.bookingUid) || { first: {}, last: {} };
-    latestByBooking.set(record.bookingUid, {
-      bookingUid: record.bookingUid,
+    // Cal may emit a cancellation for the old slot as part of a reschedule.
+    // Once that UID is explicitly superseded, the old-slot cancellation is
+    // transport history, not a cancelled sales opportunity.
+    if (record.stage === 'cancelled' && replacementByUid.has(record.bookingUid)) continue;
+    const uid = canonicalUid(record.bookingUid);
+    const stageKey = `${uid}:${record.stage}`;
+    if (!countedStages.has(stageKey)) {
+      countedStages.add(stageKey);
+      stageCounts[record.stage] += 1;
+    }
+    const previous = latestByBooking.get(uid);
+    const touches = touchesByBooking.get(uid) || { first: {}, last: {} };
+    latestByBooking.set(uid, {
+      bookingUid: uid,
       stage: record.stage,
       occurredAt: record.occurredAt,
       attribution: {

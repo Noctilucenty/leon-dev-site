@@ -132,6 +132,7 @@ function validateLead(body) {
     phone: clean(body.phone, 40),
     company: clean(body.company, 160),
     industry: clean(body.industry, 120),
+    service: clean(body.service, 120),
     problem: clean(body.problem, 4000, true),
     currentTools: clean(body.currentTools, 500),
     desiredOutcome: clean(body.desiredOutcome, 1000, true),
@@ -241,7 +242,7 @@ function persistLead(lead) {
      * must never hold the request open. openTransport() picks whichever port
      * this host can actually reach — see SMTP_PORTS above for why that is not
      * a fixed value. */
-    const subj = `New website lead [${lead.receiptId}] — ${lead.industry || lead.company || 'unknown'} — ${lead.via}`;
+    const subj = `New website lead [${lead.receiptId}] — ${lead.service || lead.industry || lead.company || 'unknown'} — ${lead.via}`;
     const rows = Object.entries(lead)
       .filter(([, v]) => v)
       .map(([k, v]) => `${k}: ${v}`)

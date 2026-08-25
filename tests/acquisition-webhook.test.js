@@ -20,6 +20,7 @@ process.env.OPENAI_API_KEY = '';
 const { app } = require('../server/index');
 const {
   FUNNEL_STAGES,
+  acquisitionStats,
   acquisitionStorageConfig,
   deliverToSink,
   verifyCalSignature
@@ -161,6 +162,36 @@ test('Cal reschedules use the new UID and retain the documented prior UID', asyn
   assert.equal(stored.bookingUid, 'cal_booking_rescheduled_new');
   assert.equal(stored.stage, 'booked');
   assert.equal(stored.context.previousBookingUid, 'cal_booking_rescheduled_old');
+});
+
+test('Cal reschedules remain one active booking in acquisition reporting', () => {
+  const funnel = acquisitionStats([
+    {
+      kind: 'funnel_stage', stage: 'booked', bookingUid: 'cal_chain_original',
+      occurredAt: '2026-08-23T17:30:00.000Z', attribution: { utmSource: 'google' }, context: {}
+    },
+    {
+      kind: 'booking_attribution', bookingUid: 'cal_chain_original',
+      firstAttribution: { gclid: 'gclid.original' }, lastAttribution: { utmMedium: 'cpc' }
+    },
+    {
+      kind: 'funnel_stage', stage: 'booked', bookingUid: 'cal_chain_new',
+      occurredAt: '2026-08-23T18:30:00.000Z', attribution: {},
+      context: { previousBookingUid: 'cal_chain_original' }
+    },
+    {
+      kind: 'funnel_stage', stage: 'cancelled', bookingUid: 'cal_chain_original',
+      occurredAt: '2026-08-23T18:31:00.000Z', attribution: {}, context: {}
+    }
+  ]);
+  assert.equal(funnel.stageCounts.booked, 1);
+  assert.equal(funnel.stageCounts.cancelled, 0, 'the superseded slot is not a cancelled opportunity');
+  assert.equal(funnel.bookingCount, 1);
+  assert.equal(funnel.latestByBooking[0].bookingUid, 'cal_chain_new');
+  assert.equal(funnel.latestByBooking[0].stage, 'booked');
+  assert.equal(funnel.latestByBooking[0].attribution.utmSource, 'google');
+  assert.equal(funnel.latestByBooking[0].attribution.utmMedium, 'cpc');
+  assert.equal(funnel.latestByBooking[0].firstAttribution.gclid, 'gclid.original');
 });
 
 test('browser booking signal enriches attribution without creating a stage', async () => {

@@ -207,7 +207,7 @@ def check_google(errors):
     held_intent_ids = {
         "kw_hs_01e", "kw_hs_01p", "kw_hs_03e", "kw_hs_03p",
         "kw_hs_05e", "kw_hs_05p", "kw_hs_06e", "kw_hs_06p",
-        "neg_027",
+        "neg_027", "neg_043", "neg_045",
     }
     for line_no, row in enumerate(rows, start=2):
         if row.get("ad_group") in ARCHIVED_WEDGES:

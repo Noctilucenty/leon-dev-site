@@ -1079,7 +1079,8 @@ def missed_lead_recovery_page():
         faq_schema(faqs),
         breadcrumb_schema(bc, path),
     ]
-    call_cta = '''<a class="btn btn-solid magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Book a free 15-minute website review</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
+    review_cta = '''<a class="btn btn-solid magnet" href="/quote?service=contractor-lead-recovery" data-evt="contractor_review_click"><span class="business-copy">Get a free 3-point website review</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
+    call_cta = '''<a class="btn magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Book a free 15-minute review</span></a>'''
     check = '<svg class="ic"><use href="#ic-check"/></svg>'
     review_cards = testimonial_cards(["testimonial-04", "testimonial-05"], "service-review")
     reviews_section = ''
@@ -1102,9 +1103,9 @@ def missed_lead_recovery_page():
   <div class="rail">
     {crumbs(bc)}
     <p class="label">Contractor website + missed-lead follow-up</p>
-    <h1 class="dsp business-copy">Give every website estimate request <em>a clear path from form to follow-up.</em></h1>
-    <p class="sub business-copy">A focused contractor site, estimate form, request acknowledgment, and follow-up path—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
-    <div class="ctarow">{call_cta}<a class="btn magnet" href="#scope" data-evt="lead_scope_click"><span class="business-copy">See the exact $1,500 scope</span></a></div>
+    <h1 class="dsp business-copy">A contractor website that captures estimate requests <em>and follows up automatically.</em></h1>
+    <p class="sub business-copy">Leon builds the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
+    <div class="ctarow">{review_cta}{call_cta}</div>
     <p class="hero-local business-copy">Based in California, working with Bay Area contractors and businesses across the U.S.</p>
   </div>
 </section>
@@ -1157,7 +1158,7 @@ def missed_lead_recovery_page():
   <div class="rail">
     <p class="label">Three questions before booking</p>
     {faq_html(faqs)}
-    <div class="ctarow">{call_cta}</div>
+    <div class="ctarow">{review_cta}{call_cta}</div>
     <p class="sub business-copy">Bring your current website. Leon will show you the smallest sensible improvement and say plainly if this product is not the right fit.</p>
   </div>
 </section>
@@ -1586,15 +1587,15 @@ def quote_page():
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label">Fixed-scope project inquiry</p>
-    <h1 class="dsp">Tell me what is <em>broken, manual, or missing.</em></h1>
-    <p class="sub business-copy">Plain words are enough. Leon reads every request and will ask the questions needed to recommend a sensible first version.</p>
+    <p class="label" id="quote-context-label">Fixed-scope project inquiry</p>
+    <h1 class="dsp" id="quote-context-title">Tell me what is <em>broken, manual, or missing.</em></h1>
+    <p class="sub business-copy" id="quote-context-intro">Plain words are enough. Leon reads every request and will ask the questions needed to recommend a sensible first version.</p>
   </div>
 </section>
 <section class="sec">
   <div class="rail">
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
-      <label>What are you trying to fix or build? <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
+      <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
       <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where Leon should reply"></label>
       <button class="btn btn-solid magnet qsend" type="submit"><span>Send it to Leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
       <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email Leon</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
@@ -1617,6 +1618,7 @@ def quote_page():
           <label>phone <i>(optional)</i><input name="phone" type="tel" autocomplete="tel"></label>
         </div>
       </details>
+      <input name="service" type="hidden" value="">
       <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
       <p class="qerr" id="qerr" role="alert" aria-live="polite"></p>
       <div id="qfail" hidden role="alert">
@@ -1644,8 +1646,35 @@ def quote_page():
   var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
   var button=f.querySelector('button[type="submit"]'),buttonText=button.querySelector('span');
   var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt');
-  var started=false,submitting=false,submissionKey='';
+  var started=false,submitting=false,submissionKey='',attemptStorage='leon_quote_attempt_v1';
+  var service=(new URLSearchParams(location.search)).get('service')||'';
+  var contractorReview=service==='contractor-lead-recovery';
+  var idleButtonText=contractorReview?'Request the 3-point review':'Send it to Leon';
+  if(contractorReview){
+    f.elements.service.value=service;
+    document.getElementById('quote-context-label').textContent='Free contractor website review';
+    document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
+    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. Leon will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
+    document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
+    f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
+    buttonText.textContent=idleButtonText;
+  }
   function track(name,extra){ if(window.leonEvt) window.leonEvt(name,extra); }
+  function fingerprint(d){
+    var raw=['service','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
+      .map(function(k){return String(d[k]||'');}).join('\\u001f');
+    var hash=2166136261;
+    for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
+    return 'v1_'+(hash>>>0).toString(16);
+  }
+  function submissionKeyFor(d){
+    var fp=fingerprint(d),saved={};
+    try{saved=JSON.parse(sessionStorage.getItem(attemptStorage)||'{}')||{};}catch(e){}
+    if(saved.fingerprint===fp&&/^leadreq_[A-Za-z0-9-]{16,80}$/.test(saved.key||'')) return saved.key;
+    var key='leadreq_'+((window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2));
+    try{sessionStorage.setItem(attemptStorage,JSON.stringify({key:key,fingerprint:fp}));}catch(e){}
+    return key;
+  }
   f.addEventListener('input',function(ev){
     if(!started){ started=true; track('quote_form_start'); }
     if(ev.target&&ev.target.removeAttribute) ev.target.removeAttribute('aria-invalid');
@@ -1666,7 +1695,7 @@ def quote_page():
       track('quote_validation_failed');
       return;
     }
-    if(!submissionKey) submissionKey='leadreq_'+((window.crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(16).slice(2));
+    submissionKey=submissionKeyFor(d);
     d.idempotencyKey=submissionKey;
     var attr={}; try{attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')}catch(e){}
     d.via='quote-form'; d.sourcePage=location.pathname; d.referrer=attr.referrer||'';
@@ -1721,7 +1750,7 @@ def quote_page():
       try{ fail.scrollIntoView({behavior:'smooth',block:'center'}); }catch(ignore){}
     }finally{
       if(timer)clearTimeout(timer);
-      submitting=false; button.disabled=false; button.removeAttribute('aria-busy'); buttonText.textContent='Send it to Leon';
+      submitting=false; button.disabled=false; button.removeAttribute('aria-busy'); buttonText.textContent=idleButtonText;
     }
   });
   function line(label,val){ return val&&String(val).trim() ? label+': '+String(val).trim()+'\\n' : ''; }
@@ -1738,7 +1767,7 @@ def quote_page():
       + (d.desiredOutcome ? '\\nwhat would make it worth paying for:\\n'+String(d.desiredOutcome).trim()+'\\n' : '')
       + '\\n— sent from leonbuilds.org'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
     if(body.length>1600) body=body.slice(0,1600)+'\\n…';
-    var subject='project inquiry'+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
+    var subject=(d.service==='contractor-lead-recovery'?'contractor website review':'project inquiry')+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
     return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   }
 })();

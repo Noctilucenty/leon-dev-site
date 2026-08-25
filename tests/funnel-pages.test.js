@@ -52,6 +52,11 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
     'analyticsSessionId'
   ]) assert.match(html, new RegExp(`d\\.${field}=`));
   assert.match(html, /sessionStorage\.getItem\('leon_analytics_session'\)/);
+  assert.match(html, /sessionStorage\.getItem\(attemptStorage\)/);
+  assert.match(html, /sessionStorage\.setItem\(attemptStorage/);
+  assert.match(html, /submissionKey=submissionKeyFor\(d\)/);
+  assert.match(html, /service==='contractor-lead-recovery'/);
+  assert.match(html, /Request the 3-point review/);
 
   for (const event of [
     'quote_submit_attempt',
@@ -62,7 +67,7 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
 
   const visibleRequired = html.match(/<(?:input|textarea|select)[^>]*\srequired(?:\s|>)/g) || [];
   assert.equal(visibleRequired.length, 2);
-  assert.match(html, /What are you trying to fix or build\? <i>\(required\)<\/i>/i);
+  assert.match(html, /What are you trying to fix or build\?<\/span> <i>\(required\)<\/i>/i);
   assert.match(html, /Name <i>\(optional\)<\/i>/i);
   assert.match(html, /Email <i>\(required\)<\/i>/i);
   assert.match(html, /<details>[\s\S]*<summary>Add project details <i>\(optional\)<\/i><\/summary>/i);
@@ -166,8 +171,8 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(html, /"price": "1500"/);
   assert.match(html, /Contractor website \+ missed-lead follow-up/i);
   assert.ok(html.indexOf('class="sec page-hero"') < html.indexOf('id="scope"'));
-  assert.match(visible, /Give every website estimate request a clear path from form to follow-up\./i);
-  assert.match(visible, /A focused contractor site, estimate form, request acknowledgment, and follow-up path/i);
+  assert.match(visible, /A contractor website that captures estimate requests and follows up automatically\./i);
+  assert.match(visible, /Leon builds the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff/i);
   assert.match(visible, /fixed scope from \$1,500 and typically delivered in 10 business days/i);
   assert.match(html, /structured (?:estimate )?intake/i);
   assert.match(visible, /Based in California, working with Bay Area contractors and businesses across the U\.S\./i);
@@ -184,9 +189,11 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(visible, /Provider fees remain with the provider/i);
   assert.match(html, /data-evt="cta_call_click"/);
   assert.match(html, /href="\/call\?service=contractor-lead-recovery" data-evt="cta_call_click"/);
-  assert.match(html, /Book a free 15-minute website review/i);
-  assert.match(html, /See the exact \$1,500 scope/i);
+  assert.match(html, /href="\/quote\?service=contractor-lead-recovery" data-evt="contractor_review_click"/);
+  assert.match(html, /Get a free 3-point website review/i);
+  assert.match(html, /Book a free 15-minute review/i);
   assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length, 2, 'booking remains prominent in hero and final CTA');
+  assert.equal((html.match(/href="\/quote\?service=contractor-lead-recovery"/g) || []).length, 2, 'the lower-friction written review remains prominent');
   assert.ok((html.match(/<section\b/g) || []).length <= 5, 'landing page stays to the approved focused structure');
   assert.ok(mainWords.length <= 650, `contractor landing has ${mainWords.length} main words; maximum is 650`);
   assert.doesNotMatch(html, /\$2,500/);

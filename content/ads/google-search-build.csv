@@ -97,9 +97,9 @@ negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_039,DISABLED,campaign,p
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_040,DISABLED,campaign,phrase,,make a reservation,,,,,,,Consumer restaurant intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_041,DISABLED,campaign,phrase,,oil change,,,,,,,Consumer auto intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_042,DISABLED,campaign,phrase,,car repair,,,,,,,Consumer auto intent
-negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_043,DISABLED,campaign,phrase,,home repair,,,,,,,Consumer home-service intent
+negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_043,HOLD_INTENT_MISMATCH,campaign,phrase,,home repair,,,,,,,Preserved draft; do not apply because legitimate contractor website searches can include this phrase
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_044,DISABLED,campaign,phrase,,catering near me,,,,,,,Consumer catering intent
-negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_045,DISABLED,campaign,phrase,,emergency service,,,,,,,Consumer urgent-service intent
+negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_045,HOLD_INTENT_MISMATCH,campaign,phrase,,emergency service,,,,,,,Preserved draft; do not apply because legitimate contractor website searches can include this phrase
 negative,DRAFT | BA | Search | Missed Lead Recovery,,neg_046,DISABLED,campaign,broad,,login,,,,,,,Existing-user support intent
 negative,DRAFT | BA | Search | Missed Lead Recovery,home_services,neg_hs_01,DISABLED,ad_group,phrase,,auto repair,,,,,,,Keep niche intent separated
 negative,DRAFT | BA | Search | Missed Lead Recovery,home_services,neg_hs_02,DISABLED,ad_group,broad,,restaurant,,,,,,,Keep niche intent separated
@@ -120,11 +120,11 @@ rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,D
 rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H07,Work Directly With Leon,,,,,,,Unpinned draft asset
 rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H08,10-Business-Day Build,,,,,,,Unpinned draft asset
 rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H09,Mobile-Friendly Estimate Form,,,,,,,Unpinned draft asset
-rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H10,Book A Free 15-Minute Call,,,,,,,Unpinned draft asset
+rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,H10,Get A Free 3-Point Review,,,,,,,Unpinned draft asset
 rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D01,"A focused contractor site, estimate form and follow-up flow built around your team.",,,,,,,Unpinned draft asset
 rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D02,"Turn a generic contact form into a clear estimate request and follow-up process.",,,,,,,Unpinned draft asset
 rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D03,"Fixed scope from $1,500. Built in 10 business days after scope and access are ready.",,,,,,,Unpinned draft asset
-rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D04,"Work directly with Leon. Start with a free 15-minute review of your current website.",,,,,,,Unpinned draft asset
+rsa_description,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,D04,"Work directly with Leon. Get three specific observations about your current website.",,,,,,,Unpinned draft asset
 rsa_url,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_a,DISABLED,ad_group,,FINAL_URL,,https://leonbuilds.org/missed-lead-recovery?utm_source=google&utm_medium=cpc&utm_campaign=ba-missed-lead-recovery-v1&utm_term=home_services&utm_content=search-hs-rsa-a,google,cpc,ba-missed-lead-recovery-v1,home_services,search-hs-rsa-a,No click-ID parameter; platform auto-tagging may append a genuine value later
 rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H01,Contractor Website + Leads,,,,,,,Preserved draft; implies lead supply and is not eligible
 rsa_headline,DRAFT | BA | Search | Missed Lead Recovery,home_services,hs_rsa_b,HOLD_COPY_MISMATCH,ad_group,,H02,Built-In Lead Follow-Up,,,,,,,Preserved alternative RSA

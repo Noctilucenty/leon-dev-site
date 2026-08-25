@@ -135,9 +135,11 @@ test('validated leads and honeypot successes receive opaque receipt IDs', () => 
   const keyed = validateLead({
     email: 'keyed@example.com',
     problem: 'Build a safe retry path.',
+    service: 'contractor-lead-recovery',
     idempotencyKey: 'leadreq_12345678-1234-1234-1234-123456789abc'
   });
   assert.equal(keyed.lead.idempotencyKey, 'leadreq_12345678-1234-1234-1234-123456789abc');
+  assert.equal(keyed.lead.service, 'contractor-lead-recovery');
   assert.equal(validateLead({
     email: 'bad-key@example.com',
     problem: 'This key contains unsafe punctuation.',
