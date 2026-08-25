@@ -162,6 +162,19 @@ def _alternates(key, path):
     return out
 
 
+def _identity_schema_nodes(BASE):
+    """Keep the person and the business distinct on every localized page."""
+    return [
+        {"@type": "Person", "@id": f"{BASE}/#leon",
+         "name": "Leon Kelvin Li", "alternateName": "Leon Li",
+         "url": f"{BASE}/about", "worksFor": {"@id": f"{BASE}/#business"}},
+        {"@type": "Organization", "@id": f"{BASE}/#business",
+         "name": "Leon Builds", "url": f"{BASE}/",
+         "founder": {"@id": f"{BASE}/#leon"},
+         "employee": {"@id": f"{BASE}/#leon"}},
+    ]
+
+
 def render(lang, key, page, ctx):
     """One service page in one language. ctx carries build_pages' helpers."""
     e, BASE, FONTS, ICONS = ctx['e'], ctx['BASE'], ctx['FONTS'], ctx['ICONS']
@@ -197,8 +210,7 @@ def render(lang, key, page, ctx):
                     "priceCurrency": "USD", "description": page['pricetag'],
                     "eligibleRegion": {"@type": "Country", "name": "United States"}},
          "url": f"{BASE}{path}"},
-        {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
-         "alternateName": "Leon Builds", "url": f"{BASE}/about"},
+        *_identity_schema_nodes(BASE),
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": q,
              "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]},
@@ -470,8 +482,7 @@ def render_call(lang, booker, ctx):
          "areaServed": {"@type": "Country", "name": "United States"},
          "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
          "url": f"{BASE}{path}"},
-        {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li",
-         "alternateName": "Leon Builds", "url": f"{BASE}/about"},
+        *_identity_schema_nodes(BASE),
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": L['crumb_home'],
              "item": BASE + L['home']},

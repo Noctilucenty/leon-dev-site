@@ -768,6 +768,7 @@ app.get('/api/traffic', (req, res) => {
     + `<p class="note">* event counts include all records; unique sessions exclude ${funnel.sessionlessEventCount} of ${funnel.funnelEventCount} funnel records with no session ID (including legacy data). † each step-rate numerator includes only session IDs also recorded in every preceding row. Direct calendar bookings remain visible in their row's unique-session total even when no accepted-lead event was recorded for that session.</p>`
     + `<h2>page views by first-touch source</h2><table>${rows(bySource)}</table>`
     + `<h2>page views by last-touch source</h2><table>${rows(byLastSource)}</table>`
+    + '<p class="note">Known AI-domain referral means the browser supplied that domain as the referrer. It does not prove Leon Builds was cited, mentioned, or recommended in an answer.</p>'
     + `<h2>page views by language page</h2><table>${rows(byLang)}</table>`
     + `<h2>page views by page</h2><table>${rows(byPath)}</table>`
     + `<h2>events</h2><table>${rows(byName)}</table>`

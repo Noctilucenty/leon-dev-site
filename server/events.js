@@ -146,6 +146,22 @@ function readEvents(limit) {
 /* One event -> which bucket it counts toward on the dashboard.
    Priority: explicit tag (?s= or utm_source) > referrer domain > direct.
    Acquisition is the default; pass "last" for the latest campaign touch. */
+const KNOWN_AI_REFERRERS = new Map([
+  ['chatgpt.com', 'ChatGPT'],
+  ['chat.openai.com', 'ChatGPT'],
+  ['perplexity.ai', 'Perplexity'],
+  ['claude.ai', 'Claude'],
+  ['gemini.google.com', 'Gemini'],
+  ['bard.google.com', 'Gemini'],
+  ['copilot.microsoft.com', 'Microsoft Copilot']
+]);
+
+function knownAiReferrer(hostname) {
+  const host = String(hostname || '').toLowerCase().replace(/^www\./, '');
+  const product = KNOWN_AI_REFERRERS.get(host);
+  return product ? `AI referral — ${product}` : '';
+}
+
 function sourceOf(ev, touch) {
   const last = touch === 'last';
   const utm = last ? (ev.lastUtm || ev.utm) : (ev.firstUtm || ev.utm);
@@ -154,6 +170,8 @@ function sourceOf(ev, touch) {
   if (ref) {
     try {
       const h = new URL(ref).hostname.replace(/^www\./, '');
+      const aiReferral = knownAiReferrer(h);
+      if (aiReferral) return aiReferral;
       if (h && !h.includes('leonbuilds') && !h.includes('leonkelvinli')) return h;
       return 'internal';
     } catch (e) { return 'unknown-ref'; }

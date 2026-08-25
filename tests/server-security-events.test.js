@@ -15,7 +15,7 @@ process.env.LEADS_KEY = 'header-only-test-key';
 process.env.OPENAI_API_KEY = '';
 
 const { app } = require('../server/index');
-const { normalizeEvent, funnelStats } = require('../server/events');
+const { normalizeEvent, sourceOf, funnelStats } = require('../server/events');
 
 let server;
 let base;
@@ -66,6 +66,44 @@ test('anonymous correlation rejects contact-like session values and strips refer
   }, '2026-08-22T12:00:00.000Z');
   assert.equal(event.sessionId, '');
   assert.equal(event.firstRef, 'https://example.com');
+});
+
+test('known AI referrers are referral signals, not citation claims', () => {
+  const cases = [
+    ['chatgpt.com', 'ChatGPT'],
+    ['chat.openai.com', 'ChatGPT'],
+    ['www.perplexity.ai', 'Perplexity'],
+    ['claude.ai', 'Claude'],
+    ['gemini.google.com', 'Gemini'],
+    ['bard.google.com', 'Gemini'],
+    ['copilot.microsoft.com', 'Microsoft Copilot']
+  ];
+
+  for (const [host, product] of cases) {
+    assert.equal(
+      sourceOf({ firstRef: `https://${host}/answer/123` }),
+      `AI referral — ${product}`,
+      host
+    );
+  }
+  assert.equal(
+    sourceOf({ lastRef: 'https://claude.ai/chat/example' }, 'last'),
+    'AI referral — Claude'
+  );
+  assert.equal(
+    sourceOf({ firstRef: 'https://chatgpt.com.attacker.example/path' }),
+    'chatgpt.com.attacker.example',
+    'lookalike domains must not enter an AI bucket'
+  );
+  assert.equal(
+    sourceOf({ firstUtm: 'partner-newsletter', firstRef: 'https://chatgpt.com/' }),
+    'partner-newsletter',
+    'an explicit source tag keeps priority over the referrer'
+  );
+  assert.doesNotMatch(
+    cases.map(([, product]) => `AI referral — ${product}`).join(' '),
+    /cited|citation|mentioned|recommended/i
+  );
 });
 
 test('event beacon stores bounded anonymous session plus first/last attribution', async () => {
@@ -207,6 +245,24 @@ test('traffic dashboard shows an honest session funnel and correlation IDs', asy
   assert.match(html, /receipt lead_funnel_a/);
   assert.match(html, /booking booking_funnel_a/);
   assert.match(html, /booking booking_direct_b/);
+});
+
+test('traffic dashboard explains that an AI referrer does not prove a citation', async () => {
+  fs.appendFileSync(EVENTS_FILE, JSON.stringify({
+    ts: '2026-08-22T12:02:00.000Z',
+    name: 'page_view',
+    sessionId: 'session-ai-referral',
+    path: '/',
+    firstRef: 'https://chatgpt.com'
+  }) + '\n');
+
+  const response = await fetch(base + '/api/traffic', {
+    headers: { 'x-leads-key': 'header-only-test-key' }
+  });
+  assert.equal(response.status, 200);
+  const html = await response.text();
+  assert.match(html, /AI referral — ChatGPT/);
+  assert.match(html, /does not prove Leon Builds was cited, mentioned, or recommended in an answer/i);
 });
 
 test('traffic HTML escapes every historical event field', async () => {

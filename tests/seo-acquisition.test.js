@@ -147,6 +147,31 @@ test('localized service and booking titles keep native intent with the concise b
   }
 });
 
+test('localized schemas keep Leon Kelvin Li and Leon Builds as linked, distinct entities', () => {
+  const files = publicHtmlFiles().filter(file => /^(?:es|pt|zh)\/[^/]+\.html$/.test(file));
+  const personId = 'https://leonbuilds.org/#leon';
+  const businessId = 'https://leonbuilds.org/#business';
+
+  for (const file of files) {
+    const nodes = schemaNodes(read(file));
+    const person = nodes.find(node => node['@id'] === personId);
+    const business = nodes.find(node => node['@id'] === businessId);
+    assert.ok(person, `${file} defines the canonical Person node`);
+    assert.equal(person['@type'], 'Person', `${file} keeps Leon as a Person`);
+    assert.equal(person.name, 'Leon Kelvin Li', `${file} uses Leon's canonical name`);
+    assert.equal(person.alternateName, 'Leon Li', `${file} keeps the business name off the Person`);
+    assert.equal(person.worksFor?.['@id'], businessId, `${file} links Leon to Leon Builds`);
+    assert.ok(business, `${file} defines the referenced business node`);
+    assert.equal(business['@type'], 'Organization', `${file} keeps Leon Builds as an Organization`);
+    assert.equal(business.name, 'Leon Builds', `${file} uses the canonical business name`);
+    assert.equal(business.founder?.['@id'], personId, `${file} links the business to its founder`);
+    assert.equal(business.employee?.['@id'], personId, `${file} links the business to Leon`);
+
+    const ids = nodes.map(node => node['@id']).filter(Boolean);
+    assert.equal(new Set(ids).size, ids.length, `${file} has no duplicate schema node IDs`);
+  }
+});
+
 test('website pillar answers search, trust, scope, and next-action questions', () => {
   const html = read('services/websites.html');
   const visible = text(html);
