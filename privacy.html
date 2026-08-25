@@ -54,7 +54,7 @@
       <p class="label">leon --privacy</p>
       <h1 class="dsp">Your project details should be treated like <em>your project details</em></h1>
       <p class="sub">This page explains what leonbuilds.org collects, why it is used and which outside services process it. The short version: the site does not sell personal information, and you do not need to use the AI assistant to contact Leon.</p>
-      <p class="mini">effective august 23, 2026</p>
+      <p class="mini">effective august 24, 2026</p>
     </div>
   </section>
 
@@ -100,6 +100,7 @@
           <li><span class="keepcase">OpenAI</span> processes assistant messages and attached photos to generate a reply</li>
           <li><span class="keepcase">Resend</span> may deliver a copy of a submitted inquiry to Leon's inbox</li>
           <li><span class="keepcase">Cal.com</span> provides the booking calendar and handles the information entered there</li>
+          <li><span class="keepcase">Google Ads</span> receives standard tag data and conversion-measurement events only after you select “Allow measurement”</li>
           <li>a separately configured storage or CRM receiver may receive minimized booking-stage records; it is not used unless Leon configures and verifies it</li>
         </ul>
         <p class="sub">Signed Cal.com lifecycle updates are reduced before storage to a booking identifier, stage, time and bounded campaign fields; the webhook's attendee names, email addresses, answers and notes are not copied into the acquisition-stage record. Links to email, phone, WhatsApp and WeChat leave this site and are governed by those services and your device settings.</p>
@@ -109,10 +110,13 @@
 
   <section class="sec">
     <div class="rail two-col">
-      <div>
+      <div id="conversion-measurement">
         <p class="label">retention and your choices</p>
         <p class="sub">Inquiry receipts, opportunity stages and copies are kept only as long as reasonably needed to respond, work on the requested project, maintain business records, understand acquisition and resolve delivery problems. Browser attribution expires after no more than 90 days unless a new referral touch refreshes it. Hosting logs follow the hosting provider's retention settings. Local JSONL files may reset during deployments unless durable storage is explicitly configured.</p>
-        <p class="sub">The main site does not require an advertising cookie, and it does not currently load an advertising-network tracking tag. Campaign values already present in the landing link are read by first-party code. You can avoid the assistant, clear this site's browser storage, use email or phone instead, and open the direct Cal.com link if the embedded calendar is blocked.</p>
+        <p class="sub">Google Ads conversion measurement is optional. Until you select “Allow measurement,” the Google tag is not requested and no data is sent to Google. If you allow it, the standard Google tag may receive the page URL—including campaign or advertising-click identifiers already in it—plus IP and device/browser signals and advertising-cookie identifiers. It uses those signals to connect an ad click with an API-accepted quote request, successful booking completed in the embedded Cal calendar, phone-link click or WhatsApp-link click. A link click does not prove that a call connected or a message was sent.</p>
+        <p class="sub">Leon does not put names, email addresses, phone numbers, form contents or chat messages in these Google conversion events. The tag and every conversion event explicitly override Google's user-provided-data field with an empty value, and ad personalization stays denied. Quote receipts and opaque booking identifiers are used only to prevent the same conversion from being counted twice; no monetary value is assigned to these actions. Choosing “No thanks” does not limit the site.</p>
+        <p class="sub">Your choice is kept in this browser. <a class="cx-mini" href="#conversion-measurement" data-ads-consent-manage>Review or change the conversion-measurement choice</a>. You can also clear this site's browser storage. If you revoke a prior grant, the already loaded tag receives a denied-consent update and no further conversion events are sent on that page; later pages keep the tag blocked. Campaign values already present in the landing link remain available to bounded first-party measurement whether or not you allow Google measurement.</p>
+        <p class="sub">You can avoid the assistant, use email or phone instead, and open the direct Cal.com link if the embedded calendar is blocked.</p>
       </div>
       <div>
         <p class="label">important limits</p>

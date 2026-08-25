@@ -1,6 +1,38 @@
 /* ═══ leon --assist · floating project assistant ═══
    Same tokens as styles.css. Terminal, black, mono, one accent. */
 
+/* Google Ads stays completely blocked until one of these equal-weight choices
+   is made. This is a non-modal dialog so the underlying site remains usable. */
+.ads-consent{
+  position:fixed; left:50%; bottom:18px; z-index:160;
+  width:min(520px,calc(100vw - 36px)); transform:translateX(-50%);
+  padding:1rem 1.05rem; box-sizing:border-box;
+  background:#050505; color:var(--fg,#fafafa);
+  border:1px solid var(--line-2,#262626); border-radius:12px;
+  box-shadow:0 22px 70px rgba(0,0,0,.72);
+  font-family:var(--mono,'JetBrains Mono',monospace); text-transform:none;
+}
+.ads-consent[hidden]{ display:none; }
+.ads-consent:focus-visible{ outline:2px solid var(--ac,#9b8cff); outline-offset:3px; }
+.ads-consent p{ margin:0; color:var(--mid,#aaa); font-size:12px; line-height:1.55; letter-spacing:.01em; }
+.ads-consent .ads-consent-title{ margin-bottom:.4rem; color:var(--fg,#fafafa); font-size:13px; font-weight:700; }
+.ads-consent a{ color:var(--ac,#9b8cff); text-underline-offset:3px; }
+.ads-consent > div{ display:flex; gap:.55rem; margin-top:.8rem; }
+.ads-consent button{
+  min-height:44px; flex:1; padding:.62rem .75rem; cursor:pointer;
+  border:1px solid var(--line-2,#262626); border-radius:8px;
+  background:#0b0b0e; color:var(--fg,#fafafa);
+  font:600 12px/1.3 var(--mono,'JetBrains Mono',monospace);
+}
+.ads-consent button:hover{ border-color:var(--ac,#9b8cff); }
+.ads-consent button:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.ads-consent-open .as-launch{ visibility:hidden; }
+
+@media (max-width:520px){
+  .ads-consent{ bottom:calc(10px + env(safe-area-inset-bottom,0px)); width:calc(100vw - 20px); padding:.9rem; }
+  .ads-consent > div{ flex-direction:column; }
+}
+
 .as-launch{
   position:fixed; right:18px; bottom:18px; z-index:120;
   display:inline-flex; align-items:center; gap:.55rem;

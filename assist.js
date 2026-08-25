@@ -1,7 +1,8 @@
 /* leon --assist · the site's floating project assistant + event/utm plumbing.
    Same discipline as app.js: everything in guarded blocks, content never depends
-   on this file. No frameworks, no keys — the browser only ever talks to our own
-   backend (see server/), never to OpenAI directly.
+   on this file. No frameworks, no keys — AI requests only ever go to our own
+   backend (see server/), never to OpenAI directly. Optional consent-gated Google
+   Ads conversion measurement is isolated below.
 
    The ONE deploy-time constant: API_BASE. After creating the Render service,
    if its URL differs from https://leon-assist.onrender.com, change it here. */
@@ -16,6 +17,223 @@
 
   var run = function (fn) { try { fn(); } catch (e) { /* fail soft */ } };
   var $ = function (s, r) { return (r || document).querySelector(s); };
+
+  /* ══ optional Google Ads conversion measurement ══════════
+     Basic consent mode: the Google tag is not requested and no data is sent
+     to Google until the visitor explicitly allows conversion measurement.
+     No contact field is ever passed to gtag; user-provided data and ad
+     personalization stay off for this measurement. */
+  var ADS_ACCOUNT_ID = 'AW-18407115426';
+  var ADS_CONSENT_KEY = 'leon_ads_consent_v1';
+  var ADS_ACTIONS = {
+    quote: 'AW-18407115426/ldkYCNKtreccEKKVmclE',
+    booking: 'AW-18407115426/owGxCNWtreccEKKVmclE',
+    phone: 'AW-18407115426/UrycCNitreccEKKVmclE',
+    whatsapp: 'AW-18407115426/CGJTCNutreccEKKVmclE'
+  };
+  var adsConsent = '';
+  var adsDefaultQueued = false;
+  var adsTagStarted = false;
+  var adsPending = [];
+  var adsSent = {};
+  var adsConsentReturnFocus = null;
+
+  function adsGtag() {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    return window.gtag;
+  }
+
+  function queueAdsConsentDefault() {
+    if (adsDefaultQueued) return;
+    adsGtag()('consent', 'default', {
+      ad_storage: 'denied',
+      ad_user_data: 'denied',
+      ad_personalization: 'denied',
+      analytics_storage: 'denied'
+    });
+    adsDefaultQueued = true;
+  }
+
+  function adsConsentUpdate(value) {
+    adsGtag()('consent', 'update', {
+      ad_storage: value,
+      ad_user_data: value,
+      ad_personalization: 'denied',
+      analytics_storage: 'denied'
+    });
+  }
+
+  function startGoogleAdsTag() {
+    if (adsTagStarted || adsConsent !== 'granted') return;
+    adsTagStarted = true;
+    queueAdsConsentDefault();
+    adsConsentUpdate('granted');
+    adsGtag()('set', 'allow_ad_personalization_signals', false);
+    adsGtag()('set', 'ads_data_redaction', true);
+    // An explicit empty override prevents account-level automatic
+    // user-provided-data detection from reading contact fields in the DOM.
+    adsGtag()('set', 'user_data', {});
+    adsGtag()('js', new Date());
+    // Google Ads makes page-view detection read-only in the account UI. Keep
+    // the base configuration from emitting one so only approved conversions
+    // are reported after consent.
+    adsGtag()('config', ADS_ACCOUNT_ID, { send_page_view: false });
+    var script = document.createElement('script');
+    script.async = true;
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(ADS_ACCOUNT_ID);
+    script.setAttribute('data-leon-ads-tag', '');
+    document.head.appendChild(script);
+  }
+
+  function adsKey(action, transactionId) {
+    return action + ':' + (transactionId || 'session');
+  }
+
+  function adsAlreadySent(key) {
+    if (adsSent[key]) return true;
+    try { return sessionStorage.getItem('leon_ads_sent:' + key) === '1'; }
+    catch (e) { return false; }
+  }
+
+  function markAdsSent(key) {
+    adsSent[key] = true;
+    try { sessionStorage.setItem('leon_ads_sent:' + key, '1'); } catch (e) {}
+  }
+
+  function sendAdsConversion(action, transactionId) {
+    var sendTo = ADS_ACTIONS[action];
+    if (!sendTo) return false;
+    var id = String(transactionId || '').replace(/[^A-Za-z0-9._~-]/g, '').slice(0, 120);
+    if (action === 'quote' && !/^lead_[A-Za-z0-9-]{16,115}$/.test(id)) return false;
+    if (action === 'booking' && !/^[A-Za-z0-9._~-]{8,120}$/.test(id)) return false;
+    var key = adsKey(action, id);
+    if (adsAlreadySent(key) || adsConsent === 'denied') return false;
+    if (adsConsent !== 'granted') {
+      if (!adsPending.some(function (item) { return item.key === key; })) {
+        adsPending.push({ action: action, transactionId: id, key: key });
+      }
+      return false;
+    }
+    startGoogleAdsTag();
+    // Keep this empty even if user-provided-data collection is later enabled in
+    // the Ads UI. These actions measure counts, not contact data or lead value.
+    var fields = { send_to: sendTo, user_data: {} };
+    if (id) fields.transaction_id = id;
+    adsGtag()('event', 'conversion', fields);
+    markAdsSent(key);
+    return true;
+  }
+
+  function flushAdsConversions() {
+    var pending = adsPending.slice();
+    adsPending = [];
+    pending.forEach(function (item) {
+      sendAdsConversion(item.action, item.transactionId);
+    });
+  }
+
+  function consentCopy() {
+    var lang = ((document.documentElement.getAttribute('lang') || 'en').slice(0, 2)).toLowerCase();
+    var copy = {
+      en: {
+        title: 'Allow conversion measurement?',
+        body: 'If you allow, Google Ads may use cookies to connect an ad click with a quote request, booked call, phone click or WhatsApp click. Form details and other user-provided data are blocked, and the data is not used for ad personalization.',
+        allow: 'Allow measurement', deny: 'No thanks', privacy: 'Privacy details'
+      },
+      es: {
+        title: '\u00bfPermitir la medici\u00f3n de conversiones?',
+        body: 'Si aceptas, Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Se bloquean los datos del formulario y otros datos proporcionados por el usuario, y no se usan para personalizar anuncios.',
+        allow: 'Permitir medici\u00f3n', deny: 'No, gracias', privacy: 'Detalles de privacidad'
+      },
+      pt: {
+        title: 'Permitir medi\u00e7\u00e3o de convers\u00f5es?',
+        body: 'Se voc\u00ea permitir, o Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. Os dados do formul\u00e1rio e outros dados fornecidos pelo usu\u00e1rio ficam bloqueados e n\u00e3o s\u00e3o usados para personalizar an\u00fancios.',
+        allow: 'Permitir medi\u00e7\u00e3o', deny: 'N\u00e3o, obrigado', privacy: 'Detalhes de privacidade'
+      },
+      zh: {
+        title: '\u5141\u8bb8\u8f6c\u5316\u8861\u91cf\uff1f',
+        body: '\u5982\u679c\u5141\u8bb8\uff0cGoogle Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002\u8868\u5355\u5185\u5bb9\u548c\u5176\u4ed6\u7528\u6237\u63d0\u4f9b\u7684\u6570\u636e\u4f1a\u88ab\u963b\u6b62\uff0c\u4e14\u4e0d\u7528\u4e8e\u4e2a\u6027\u5316\u5e7f\u544a\u3002',
+        allow: '\u5141\u8bb8\u8861\u91cf', deny: '\u4e0d\u7528\u4e86', privacy: '\u9690\u79c1\u8be6\u60c5'
+      }
+    };
+    return copy[lang] || copy.en;
+  }
+
+  function ensureConsentBanner() {
+    var banner = document.querySelector('[data-ads-consent]');
+    if (banner) return banner;
+    var copy = consentCopy();
+    banner = document.createElement('section');
+    banner.className = 'ads-consent';
+    banner.hidden = true;
+    banner.setAttribute('data-ads-consent', '');
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-modal', 'false');
+    banner.setAttribute('aria-labelledby', 'ads-consent-title');
+    banner.setAttribute('aria-describedby', 'ads-consent-description');
+    banner.setAttribute('tabindex', '-1');
+    banner.innerHTML = '<p class="ads-consent-title" id="ads-consent-title">' + copy.title + '</p>' +
+      '<p id="ads-consent-description">' + copy.body + ' <a href="/privacy#conversion-measurement">' + copy.privacy + '</a>.</p>' +
+      '<div><button type="button" data-ads-consent-allow>' + copy.allow + '</button>' +
+      '<button type="button" data-ads-consent-deny>' + copy.deny + '</button></div>';
+    document.body.appendChild(banner);
+    return banner;
+  }
+
+  function showConsentBanner(focus) {
+    var banner = ensureConsentBanner();
+    banner.hidden = false;
+    document.body.classList.add('ads-consent-open');
+    if (focus) {
+      var active = document.activeElement;
+      if (active && active !== document.body && active !== banner) adsConsentReturnFocus = active;
+      banner.focus();
+    }
+  }
+
+  function hideConsentBanner() {
+    var banner = document.querySelector('[data-ads-consent]');
+    if (banner) banner.hidden = true;
+    document.body.classList.remove('ads-consent-open');
+    var returnFocus = adsConsentReturnFocus;
+    adsConsentReturnFocus = null;
+    if (returnFocus && typeof returnFocus.focus === 'function') {
+      try { returnFocus.focus(); } catch (e) {}
+    }
+  }
+
+  function setAdsConsent(value) {
+    if (value !== 'granted' && value !== 'denied') return;
+    adsConsent = value;
+    try { localStorage.setItem(ADS_CONSENT_KEY, value); } catch (e) {}
+    hideConsentBanner();
+    if (value === 'granted') {
+      startGoogleAdsTag();
+      flushAdsConversions();
+    } else {
+      adsPending = [];
+      if (adsTagStarted) {
+        adsGtag()('set', 'ads_data_redaction', true);
+        adsConsentUpdate('denied');
+      }
+    }
+  }
+
+  run(function () {
+    queueAdsConsentDefault();
+    try { adsConsent = localStorage.getItem(ADS_CONSENT_KEY) || ''; } catch (e) {}
+    if (adsConsent === 'granted') startGoogleAdsTag();
+    else if (adsConsent !== 'denied') { adsConsent = ''; showConsentBanner(true); }
+    document.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('[data-ads-consent-allow]')) setAdsConsent('granted');
+      else if (e.target && e.target.closest && e.target.closest('[data-ads-consent-deny]')) setAdsConsent('denied');
+      else if (e.target && e.target.closest && e.target.closest('[data-ads-consent-manage]')) {
+        e.preventDefault();
+        showConsentBanner(true);
+      }
+    });
+  });
 
   /* ══ attribution + anonymous visit session ════════════════
      Keep first-touch immutable and last-touch separate. The earlier shape
@@ -147,6 +365,7 @@
 
   /* ══ event beacon (first-party, log-only) ════════════════ */
   function evt(name, extra) {
+    extra = extra || {};
     try {
       var payload = {
         name: name, path: location.pathname,
@@ -168,7 +387,6 @@
       };
       applyAttribution(payload);
       // Correlation identifiers are safe; contact details never belong here.
-      extra = extra || {};
       ['receipt', 'bookingUid', 'status'].forEach(function (k) {
         if (extra[k]) payload[k] = String(extra[k]).slice(0, 120);
       });
@@ -178,6 +396,10 @@
       } else {
         fetch(API_BASE + '/api/event', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
       }
+    } catch (e) {}
+    try {
+      if (name === 'quote_lead_accepted') sendAdsConversion('quote', extra.receipt);
+      else if (name === 'calendar_booking_success') sendAdsConversion('booking', extra.bookingUid);
     } catch (e) {}
   }
   window.leonEvt = evt;
@@ -190,6 +412,18 @@
     document.addEventListener('click', function (e) {
       var el = e.target && e.target.closest && e.target.closest('[data-evt]');
       if (el) evt(el.getAttribute('data-evt'));
+      var link = e.target && e.target.closest && e.target.closest('a[href]');
+      if (!link) return;
+      var href = String(link.getAttribute('href') || '');
+      if (/^tel:/i.test(href)) sendAdsConversion('phone');
+      else {
+        try {
+          var host = new URL(href, location.href).hostname.toLowerCase();
+          if (host === 'wa.me' || host === 'api.whatsapp.com' || host === 'web.whatsapp.com') {
+            sendAdsConversion('whatsapp');
+          }
+        } catch (err) {}
+      }
     }, { passive: true });
   });
 

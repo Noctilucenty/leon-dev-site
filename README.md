@@ -154,16 +154,31 @@ a real receiving system selected and verified.
 
 ## Acquisition measurement and CRM stages
 
-This repository has the measurement foundation, **not live advertising tags**. It
-does not load Google Ads, Google Analytics, Meta Pixel or another ad-network script,
-and it does not create audiences or make ad-account changes. The browser recognizes
+This repository includes consent-gated Google Ads conversion measurement. It does
+not load Google Analytics, Meta Pixel or another ad-network script, and it does not
+create audiences or make ad-account changes. The Google tag is blocked under basic
+consent mode until the visitor selects **Allow measurement**; a first-time decline
+does not load the tag or send Google a consent ping. When allowed, the standard
+Google tag may process the page URL (including campaign or click identifiers), IP
+and device/browser signals, and advertising-cookie identifiers. The site sends four
+explicit conversion events: API-accepted quote submissions, successful embedded
+Cal bookings, phone-link clicks and WhatsApp-link clicks. A quote receipt or opaque
+booking UID is required and used as the transaction identifier; contact-link events
+are limited to one per action per tab and do not prove a call or message occurred.
+No monetary value is assigned to these actions. The tag and each conversion event
+set `user_data` to an empty object, and ad personalization stays denied; the site
+does not provide form fields, contact details or chat text to Google's
+user-provided-data interface. Revoking a prior grant sends the required denied
+consent update, stops further conversion events on that page, and keeps the tag
+blocked on later page loads.
+
+The browser also recognizes
 `utm_source`, `utm_medium`, `utm_campaign`, `utm_term`, `utm_content`, `gclid`,
 `gbraid`, `wbraid`, `fbclid` and `msclkid`; retains bounded first- and last-touch
-records for up to 90 days; and sends them only to the first-party lead/event API.
+records for up to 90 days; and sends them to the first-party lead/event API.
 Referrers are reduced to their origin before storage. Quote submissions carry all
 ten fields. The Cal embed and direct fallback receive only the five standard UTMs;
-ad click IDs stay first-party unless a future, explicitly configured Cal field and
-privacy review justify forwarding them.
+ad click IDs are not forwarded into Cal.
 
 After an embed reports a successful booking, its opaque booking UID links the
 browser's bounded first/last campaign touch to the CRM record. That browser signal
