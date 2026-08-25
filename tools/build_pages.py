@@ -29,6 +29,7 @@ TESTIMONIAL_DISPLAY_ORDER = [
     "testimonial-01",  # custom product design
 ]
 REVIEWS_ROUTE_ENABLED = len(RELEASED_TESTIMONIALS) >= 3
+REVIEWS_PUBLISHED = bool(RELEASED_TESTIMONIALS)
 IDENTITY_URLS = [
     "https://trycurio.app/team.html#leon",
     "https://www.worldcubeassociation.org/persons/2016LILE01",
@@ -50,7 +51,7 @@ SERVICES = [
    "i design fast, phone-first business websites around that decision. you work directly with the developer, see a working link during the build, and get a written scope and handover."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
   build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — i speak all four"],
-  proof=("public product and workflow evidence","inspect a live app-store product, a public document-workflow demo and a clearly labelled operator prototype."),
+  proof=("public product and workflow evidence","inspect a live app-store product, a public document-workflow demo and a clearly labelled client website with demo ordering."),
   faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
    ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and i'll tell you which parts are worth keeping."),
    ("how long does it take?","most focused business sites take one to two weeks after the scope, content and required access are ready. you get a working link to review during the build."),
@@ -123,10 +124,10 @@ SERVICES = [
   price="$1,500", title="Custom Software Development | Leon Builds",
   desc="Custom business software built end to end by one developer: portals, platforms, operations systems. Fixed written quotes. U.S.-wide, remote.",
   intro=["off-the-shelf software fits the average business. yours isn't average — that's why there's still a spreadsheet holding part of it together.",
-   "custom software is for when nothing on the menu is the shape of your problem. the public Home Screen prototype, for example, tests server-side pricing and vendor-separated order logic while clearly keeping payments and kitchen operations mocked."],
+   "custom software is for when nothing on the menu is the shape of your problem. the client-funded Home Screen website, for example, pairs public business pages with server-side pricing and vendor-separated demo order logic while clearly keeping payments and kitchen operations mocked."],
   pains=["you've outgrown the spreadsheet that runs part of the business","off-the-shelf tools each do 70% of what you need","your industry has a workflow no product understands","you're paying for five subscriptions to approximate one system"],
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
-  proof=("the Home Screen operator prototype","a public prototype with business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
+  proof=("the Home Screen client website","a client website with public business pages, menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
  faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — i'll tell you so in the free call. custom wins when the missing 30% is the part your business actually runs on."),
    ("what does custom software cost?","full builds start at $1,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
    ("what happens if you get hit by a bus?","the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make me irreplaceable.")],
@@ -182,13 +183,13 @@ INDUSTRIES = [
   title="Restaurant Website Design & Online Ordering | Leon Builds",
   desc="Phone-first restaurant website design, direct online ordering, menu updates and call automation from one California-based developer serving U.S. businesses.",
   intro=["restaurants run on thin margins while marketplace terms vary and the phone pulls staff away during a rush. a direct website can add a channel you control alongside the platforms that bring discovery.",
-   "the public Home Screen prototype shows the underlying interaction: business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations remain mocked."],
+   "the client Home Screen website shows the underlying interaction: business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations remain mocked."],
   pains=["delivery apps take a commission on orders that were already yours","the phone rings out during every rush","your menu is a pdf nobody can read on a phone","'are you open' and 'do you have parking' — forty times a day","multiple locations or brands, zero shared systems"],
   fixes=[("online ordering you own","direct ordering with no per-order commission added by Leon — cart, payment, kitchen ticket. from $600","booking-systems"),
    ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000","ai-phone-agents"),
    ("a menu-first website","fast, phone-first, editable by you when prices change. from $300","websites"),
    ("review desk","every review read and a reply drafted for you — a human presses send. from $750",None)],
-  proof=("the Home Screen operator prototype","open the public prototype to inspect business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
+  proof=("the Home Screen client website","open the public website to inspect business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
   faqs=[("can i stop paying delivery-app commissions?","you can give regular customers a direct pickup or own-delivery option without Leon adding a per-order cut. marketplaces can still be useful for discovery, while payment, hosting, messaging and delivery providers keep their own terms."),
    ("what does online ordering cost?","from $600 one-time for ordering on your own site; leon charges no per-order cut. payment, hosting and other provider fees still apply. compare that to a month of commissions."),
    ("i have two locations with different menus.","that can be handled with a shared site and separate location menus, hours and order routing. the exact payment and kitchen integrations are verified before quoting.")],
@@ -220,7 +221,7 @@ INDUSTRIES = [
    ("online booking","customers pick a slot; your calendar stays sane. from $600","booking-systems"),
    ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000","ai-phone-agents"),
    ("shop website","services, trust proof, booking and a clear call path on any phone. from $300","websites")],
-  proof=("public implementation evidence","inspect shipped product screens, a public workflow demo and a clearly labelled operator prototype; none is presented as an automotive outcome claim."),
+  proof=("public implementation evidence","inspect shipped product screens, a public workflow demo and a clearly labelled client website with demo ordering; none is presented as an automotive outcome claim."),
   faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. i verify yours specifically before quoting anything."),
    ("what is a focused first step?","status notifications can reduce manual update calls when the shop system exposes reliable status data. i verify that data and define what will be measured before quoting."),
    ("multiple locations?","yes — shared platform, per-location calendars and numbers is a normal build.")],
@@ -300,7 +301,7 @@ INDUSTRIES = [
    ("order automation","every channel's orders into one queue with alerts. from $600","business-automation"),
    ("sales dashboard","today's numbers without opening five systems. from $1,000","business-dashboards"),
    ("storefront","fast product pages, clean checkout, no template bloat. from $300","websites")],
-  proof=("the Home Screen operator prototype","a public prototype showing business-specific catalogs, menus, server-side pricing and vendor-scoped demo tickets. payments and fulfillment are not live."),
+  proof=("the Home Screen client website","a public client website showing business-specific catalogs, menus, server-side pricing and vendor-scoped demo tickets. payments and fulfillment are not live."),
   faqs=[("we're on shopify / square. is that a problem?","no — keep them. most retail builds connect and automate around the platform you're on."),
    ("can inventory sync between online and the register?","usually yes, depending on your pos. i verify the specific integration before quoting."),
    ("what should we fix first?","whatever loses money silently — usually inventory drift or unwatched online orders.")],
@@ -404,8 +405,9 @@ def homepage_testimonial_section():
 </section>'''
 
 def nav():
-    reviews_link = ('<a href="/reviews"><i>[</i><span>Reviews</span><i>]</i></a>\n    '
-                    if REVIEWS_ROUTE_ENABLED else '')
+    reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '/#testimonials'
+    reviews_link = (f'<a href="{reviews_href}"><i>[</i><span>Reviews</span><i>]</i></a>\n    '
+                    if REVIEWS_PUBLISHED else '')
     return f'''<a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="nav" id="nav">
@@ -427,7 +429,9 @@ def nav():
 </header>'''
 
 def footer():
-    reviews_link = '<a href="/reviews">approved client feedback</a>' if REVIEWS_ROUTE_ENABLED else ''
+    reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '/#testimonials'
+    reviews_link = (f'<a href="{reviews_href}">approved client feedback</a>'
+                    if REVIEWS_PUBLISHED else '')
     return f'''<footer class="foot">
   <div class="rail foot-in">
     <div class="foot-brand">
@@ -835,7 +839,7 @@ def work_page():
     """Long-form proof and project archive kept off the conversion homepage."""
     path = '/work'
     title = 'Work & Case Studies | Leon Builds'
-    desc = ('Inspect business systems, public prototypes and a live App Store product built by '
+    desc = ('Inspect client websites, business systems, public demos and a live App Store product built by '
             'Leon Builds. Every project is labelled with its current, honest status.')
     bc = [("home", "/"), ("work and case studies", None)]
     schema = [
@@ -861,7 +865,7 @@ def work_page():
     {crumbs(bc)}
     <p class="label">Work and case studies</p>
     <h1 class="dsp">Real systems. <em>Honest status.</em></h1>
-    <p class="sub business-copy">Some projects are operational and anonymized, some are public prototypes, and one is a live App Store product. Each case says which it is, what problem it addresses, and what Leon built.</p>
+    <p class="sub business-copy">The archive includes client builds, operational systems, public demos, and a live App Store product. Each case says what is live, what is simulated, what problem it addresses, and what Leon built.</p>
     <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a></div>
   </div>
 </section>
@@ -893,12 +897,12 @@ def work_page():
           <img src="/assets/proof/home-screen-menu.png" alt="A business-specific menu and cart inside The Home Screen" loading="lazy" width="380" height="844">
         </figure>
         <div class="case-copy">
-          <p class="label">Prototype · mock payments</p>
+          <p class="label">Client website project · demo checkout</p>
           <h3>The Home Screen</h3>
-          <p class="business-copy"><b>Problem:</b> Explore how many local-business menus could share one familiar, phone-first interface.</p>
+          <p class="business-copy"><b>Problem:</b> A client needed a phone-first website for browsing local-business pages and menus in one consistent interface.</p>
           <p class="business-copy"><b>Built:</b> A 37-business catalog with search, business-specific menus, a prototype cart, server-side repricing, and vendor-separated demo tickets.</p>
-          <p class="business-copy"><b>Honest boundary:</b> Payment and kitchen progression are simulations. It is not presented as a production ordering client.</p>
-          <p class="case-role">Role: full-stack prototype developer</p>
+          <p class="business-copy"><b>Honest boundary:</b> Payment and kitchen progression are simulations. The client claim is for the website build, not a production ordering rollout.</p>
+          <p class="case-role">Role: website and full-stack developer · client identity withheld</p>
           <a class="case-link" href="https://the-home-screen.onrender.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a>
         </div>
       </article>
@@ -1088,6 +1092,8 @@ def missed_lead_recovery_page():
     <a class="cx-mini" href="{reviews_href}">Read approved client feedback →</a>
   </div>
 </section>'''
+    feedback_jump = ('    <a href="#client-feedback">Client feedback</a>\n'
+                     if review_cards else '')
     page_head = head(title, desc, path, schema).replace(
         '<body>', '<body class="contractor-landing" data-assistant-launcher="hidden">', 1
     )
@@ -1103,6 +1109,15 @@ def missed_lead_recovery_page():
     <p class="hero-local business-copy">Based in California. Working remotely with contractors and home-service businesses across the U.S.</p>
   </div>
 </section>
+
+<div class="landing-jump-wrap" aria-label="Find it fast">
+  <nav class="rail landing-jump">
+    <span>Find it fast</span>
+    <a href="#scope">Scope &amp; pricing</a>
+{feedback_jump}    <a href="#proof">Proof</a>
+    <a href="#faq">Questions</a>
+  </nav>
+</div>
 
 <section class="sec" id="scope">
   <div class="rail">
@@ -1132,7 +1147,9 @@ def missed_lead_recovery_page():
   </div>
 </section>
 
-<section class="sec" aria-labelledby="contractor-proof-title">
+{reviews_section}
+
+<section class="sec" id="proof" aria-labelledby="contractor-proof-title">
   <div class="rail">
     <p class="label">Operational business-system proof</p>
     <h2 class="page-section-title" id="contractor-proof-title">See how Leon turns a business decision into a reviewable workflow.</h2>
@@ -1145,8 +1162,6 @@ def missed_lead_recovery_page():
     </div>
   </div>
 </section>
-
-{reviews_section}
 
 <section class="sec" id="faq">
   <div class="rail">
@@ -1903,6 +1918,40 @@ _home_pre, _home_rest = _home_source.split(_home_start, 1)
 _home_old, _home_post = _home_rest.split(_home_end, 1)
 _home_block = homepage_testimonial_section()
 _home_new = _home_pre + _home_start + '\n' + _home_block + '\n' + _home_end + _home_post
+
+def _replace_home_slot(source, start, end, block, label, indent=''):
+    if start not in source or end not in source:
+        raise RuntimeError(f'homepage {label} release sentinels are missing')
+    before, rest = source.split(start, 1)
+    _old, after = rest.split(end, 1)
+    rendered_block = indent + block if block else ''
+    return before + start + '\n' + rendered_block + '\n' + indent + end + after
+
+
+_home_reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '#testimonials'
+_home_nav_block = (
+    f'<a href="{_home_reviews_href}"><i>[</i><span>Reviews</span><i>]</i></a>'
+    if REVIEWS_PUBLISHED else ''
+)
+_home_footer_block = (
+    f'<a href="{_home_reviews_href}">Client reviews</a>'
+    if REVIEWS_PUBLISHED else ''
+)
+_home_new = _replace_home_slot(
+    _home_new,
+    '<!-- TESTIMONIAL-NAV:START -->',
+    '<!-- TESTIMONIAL-NAV:END -->',
+    _home_nav_block,
+    'testimonial navigation',
+    '    ',
+)
+_home_new = _replace_home_slot(
+    _home_new,
+    '<!-- TESTIMONIAL-FOOTER:START -->',
+    '<!-- TESTIMONIAL-FOOTER:END -->',
+    _home_footer_block,
+    'testimonial footer',
+)
 w('index.html', _home_new)
 
 w('quote.html', quote_page())

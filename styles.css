@@ -583,6 +583,11 @@ a{ color:inherit; text-decoration:none; }
 .contractor-landing .scope-boundary .faq{ margin-top:0; }
 .contractor-landing .scope-boundary .faq details{ border:1px solid var(--line-2); border-radius:12px; padding-inline:1rem; background:#020202; }
 .contractor-landing .scope-boundary .faq summary{ text-transform:none; }
+.landing-jump-wrap{ border-block:1px solid var(--line); background:rgba(8,8,10,.94); }
+.landing-jump{ min-height:58px; display:flex; align-items:center; gap:.55rem; }
+.landing-jump > span{ margin-right:auto; color:var(--faint); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+.landing-jump a{ min-height:40px; display:inline-flex; align-items:center; padding:0 .8rem; border:1px solid var(--line-2); border-radius:999px; color:var(--mid); font-size:12px; text-transform:none; transition:border-color .2s,color .2s,background .2s; }
+.landing-jump a:hover,.landing-jump a:focus-visible{ border-color:var(--ac-line); background:rgba(155,140,255,.07); color:var(--fg); }
 .contractor-call-context .sec{ padding:clamp(3rem,5vw,5rem) 0; }
 .contractor-call-context .page-hero{ padding:7rem 0 clamp(3rem,5vw,4.25rem); }
 
@@ -633,6 +638,7 @@ a{ color:inherit; text-decoration:none; }
 .service-reviews{ background:linear-gradient(180deg,rgba(155,140,255,.045),transparent 75%); }
 .service-review-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1.4rem 0 1rem; }
 .service-review{ display:flex; flex-direction:column; min-width:0; padding:1.35rem; border:1px solid var(--line-2); border-radius:14px; background:var(--panel); }
+.service-review:only-child{ grid-column:1/-1; width:100%; max-width:46rem; }
 .service-review blockquote{ margin:1rem 0 1.3rem; color:var(--fg); font-family:var(--dsp); font-size:16px; line-height:1.58; text-transform:none; }
 .service-review .testimonial-person{ margin-top:auto; }
 .answer-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; margin-top:1.5rem; }
@@ -684,6 +690,7 @@ a{ color:inherit; text-decoration:none; }
 .reviews-head .sub{ margin:0; }
 .testimonial-grid{ display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:1rem; }
 .testimonial-card{ grid-column:span 2; min-width:0; display:flex; flex-direction:column; padding:1.4rem; border:1px solid var(--line-2); border-radius:16px; background:var(--panel); }
+.testimonial-card:only-child{ grid-column:1/-1; width:100%; max-width:46rem; }
 .testimonial-card.testimonial-wide{ grid-column:span 3; }
 .testimonial-stars{ margin:0; color:var(--ac); font-size:13px; line-height:1; letter-spacing:.18em; text-transform:none; }
 .testimonial-project{ margin:.9rem 0 0; color:var(--faint); font-size:12px; letter-spacing:.1em; text-transform:uppercase; }
@@ -836,6 +843,10 @@ a{ color:inherit; text-decoration:none; }
 }
 
 @media (max-width:620px){
+  .landing-jump{ overflow-x:auto; gap:.45rem; padding-block:.55rem; scrollbar-width:none; }
+  .landing-jump::-webkit-scrollbar{ display:none; }
+  .landing-jump > span{ display:none; }
+  .landing-jump a{ flex:0 0 auto; }
   .home-b2b .sec{ padding:3rem 0; }
   .home-b2b .sec-head{ margin-bottom:1.6rem; }
   .home-b2b .cta{ padding:3.25rem 0; }
@@ -986,6 +997,7 @@ a{ color:inherit; text-decoration:none; }
 }
 .offer-foot p{ margin:0; }
 .offer-foot a{ min-height:44px; display:inline-flex; align-items:center; color:var(--ac-hi); }
+.offer-links{ display:flex; flex-wrap:wrap; gap:.15rem 1.35rem; align-items:center; }
 
 .buyer-proof-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
 .buyer-proof-card{

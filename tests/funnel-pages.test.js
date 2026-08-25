@@ -8,6 +8,9 @@ const vm = require('node:vm');
 
 const ROOT = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
+const approvedTestimonials = () => JSON.parse(
+  read('content/client-success/testimonial-publication.json')
+).approved_testimonials;
 
 function inlineScripts(html) {
   const scripts = [];
@@ -178,8 +181,12 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(visible, /Based in California\. Working remotely with contractors and home-service businesses across the U\.S\./i);
   assert.doesNotMatch(html, /id="fit"|id="workflow"|id="automotive"|id="restaurants"|related-services/i, 'removed repetitive sections stay removed');
   assert.match(html, /id="scope"/);
-  assert.match(html, /aria-labelledby="contractor-proof-title"/);
+  assert.match(html, /id="proof" aria-labelledby="contractor-proof-title"/);
   assert.match(html, /id="faq"/);
+  assert.match(html, /class="rail landing-jump"/);
+  for (const href of ['#scope', '#proof', '#faq']) assert.match(html, new RegExp(`href="${href}"`));
+  assert.ok(html.indexOf('class="landing-jump-wrap"') < html.indexOf('id="scope"'), 'find-it-fast links appear before the detailed scope');
+  assert.ok(html.indexOf('id="scope"') < html.indexOf('id="proof"'), 'scope appears before proof');
   assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
   assert.match(visible, /Operational decision support · client details private/i);
   assert.match(visible, /Site intelligence/i);
@@ -198,7 +205,16 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.ok(mainWords.length <= 650, `contractor landing has ${mainWords.length} main words; maximum is 650`);
   assert.doesNotMatch(html, /\$2,500/);
   assert.doesNotMatch(html, /guarantee(?:d|s)? (?:leads|bookings|revenue)/);
-  assert.doesNotMatch(html, /id="client-feedback"|data-testimonial-id|testimonial-stars|5 out of 5 stars/);
+  const hasRelevantFeedback = approvedTestimonials().some(item => ['testimonial-04', 'testimonial-05'].includes(item.id));
+  if (hasRelevantFeedback) {
+    assert.match(html, /id="client-feedback"/);
+    assert.match(html, /href="#client-feedback">Client feedback<\/a>/);
+    assert.ok(html.indexOf('id="scope"') < html.indexOf('id="client-feedback"'));
+    assert.ok(html.indexOf('id="client-feedback"') < html.indexOf('id="proof"'));
+  } else {
+    assert.doesNotMatch(html, /id="client-feedback"|data-testimonial-id|testimonial-stars|5 out of 5 stars/);
+    assert.doesNotMatch(html, /href="#client-feedback"/);
+  }
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/missed-lead-recovery<\/loc>/);
 
   const call = read('call.html');

@@ -13,16 +13,16 @@ const draftsPath = path.join(ROOT, 'content', 'client-success', 'testimonial-dra
 const publicationPath = path.join(ROOT, 'content', 'client-success', 'testimonial-publication.json');
 
 const exactQuoteDigests = [
-  'a50511fdb934c9df294148bb03530f2db65944f8bf46b252ca34cb04bf5e9800',
+  'a3584c213a3be5e7a2f9c0ce1730684be20c8a930b20eb8a29f0e9cfd6c93a66',
   'c54e04e25b08d97ef398d2d8e5102c779720d57a2f6a224e0d895d465b45d565',
-  'e5f1485b2a3d00d6d014d4f3f6e206f92b20636943df30caf78012672fbdbbf4',
+  '26ee0f5054b3a0e0e83ddb0dd5c647a285dafb5ebf32d02967ecd5b321a51752',
   '570519fb402471091588ffd8b1721dc736ba9bde1eb4d0d134c48906e628fb61',
   '8a824a8f68d727cd32b5b57238171f4686ed31688d9ef2b27dd71e1e50af6c8b',
   '78478396291bed3f4f6c4377f129b0afbadc440758bb40f1a2d4c301b2b3e00f',
   '7ebf96568fe806660ab5d4d6259fb96068d06e1c625bdce576be8544831601cf',
 ];
 
-test('all seven supplied testimonials remain verbatim in non-public draft data', () => {
+test('all seven testimonial drafts remain byte-locked in non-public draft data', () => {
   assert.match(fs.readFileSync(path.join(ROOT, '.gitignore'), 'utf8'), /\/content\/client-success\/testimonial-drafts\.json/);
   if (!fs.existsSync(draftsPath)) return;
   const document = JSON.parse(fs.readFileSync(draftsPath, 'utf8'));

@@ -251,9 +251,10 @@ test('at least two proof cards demonstrate business-facing systems and the archi
   assert.equal(articles.length, 3, 'homepage shows exactly three proof cards');
 
   const orderedText = articles.map(article => plainText(article).toLowerCase());
-  assert.ok(orderedText.some(text => /operational system|live product|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
+  assert.ok(orderedText.some(text => /operational system|live product|client website|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
   assert.match(orderedText.join('\n'), /the home screen/);
-  assert.match(orderedText.join('\n'), /prototype.*mock payments/);
+  assert.match(orderedText.join('\n'), /client website build.*demo checkout/);
+  assert.match(orderedText.join('\n'), /payments and kitchen operations are not live/);
   assert.match(orderedText.join('\n'), /curio/);
   assert.match(orderedText.join('\n'), /live product.*app store/);
 
@@ -280,13 +281,14 @@ test('testimonials remain conditional and fail closed at the public surface', ()
   assert.ok(marker, 'homepage keeps the generator-owned testimonial markers');
   const cards = marker[1].match(/<article\b(?=[^>]*\bdata-testimonial-id=)[\s\S]*?<\/article>/gi) || [];
   const header = html.match(/<header\b[^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
-  const navHasReviews = linksIn(header).some(link => link.attrs.href === '/reviews' && /\breviews?\b/i.test(link.text));
+  const reviewsNav = linksIn(header).find(link => /\breviews?\b/i.test(link.text));
   const reviewsFile = fs.existsSync(path.join(ROOT, 'reviews.html'));
   const sitemapHasReviews = /<loc>https:\/\/leonbuilds\.org\/reviews<\/loc>/i.test(read('sitemap.xml'));
+  assert.ok(html.indexOf('<!-- TESTIMONIALS:START -->') < html.indexOf('id="work"'), 'released feedback appears before the work catalog');
 
   if (publication.length === 0) {
     assert.equal(marker[1].trim(), '', 'zero releases render no review section or placeholder');
-    assert.equal(navHasReviews, false, 'zero releases render no Reviews nav link');
+    assert.equal(reviewsNav, undefined, 'zero releases render no Reviews nav link');
     assert.equal(reviewsFile, false, 'zero releases do not create a hollow /reviews route');
     assert.equal(sitemapHasReviews, false, 'zero releases do not advertise /reviews');
     assert.doesNotMatch(html, /id=["'](?:testimonials|reviews)["']|testimonial-(?:card|stars|person|project)|5 out of 5 stars|★★★★★/i);
@@ -296,11 +298,11 @@ test('testimonials remain conditional and fail closed at the public surface', ()
     assert.equal(new Set(renderedIds).size, renderedIds.length, 'released homepage reviews are not duplicated');
     assert.ok(renderedIds.every(id => publication.some(item => item.id === id)), 'every rendered review is allowlisted');
     if (publication.length >= 3) {
-      assert.equal(navHasReviews, true, 'three releases make Reviews discoverable');
+      assert.equal(reviewsNav?.attrs.href, '/reviews', 'three releases make the full Reviews page discoverable');
       assert.equal(reviewsFile, true, 'three releases create /reviews');
       assert.equal(sitemapHasReviews, true, 'three releases advertise /reviews');
     } else {
-      assert.equal(navHasReviews, false, 'one or two releases do not advertise a missing reviews route');
+      assert.equal(reviewsNav?.attrs.href, '#testimonials', 'one or two releases link directly to homepage feedback');
       assert.equal(reviewsFile, false, 'one or two releases stay on the homepage');
       assert.equal(sitemapHasReviews, false);
     }

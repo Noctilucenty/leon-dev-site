@@ -2,7 +2,7 @@
 
 > Leon Builds, by Leon Kelvin Li, creates phone-first business websites and simple lead-follow-up systems. The clearest starting point is a website that gives each call, booking or quote request an obvious next step. Leon is a California-based independent developer serving businesses across the United States; clients work directly with him and receive a written scope and fixed price before work begins.
 
-Last reviewed: 2026-08-24.
+Last reviewed: 2026-08-25.
 
 ## Best starting points
 
@@ -15,7 +15,7 @@ These are starting scope floors, not instant quotes. Leon confirms the fixed pri
 ## Start here
 
 - [Homepage](https://leonbuilds.org/): focused offer, visible starting prices, inspectable public work and a direct path to a quote.
-- [Selected work](https://leonbuilds.org/work): public product, demo and prototype evidence with current status labels.
+- [Selected work](https://leonbuilds.org/work): client work, public demos and live-product evidence with current status labels.
 - [Book a free 15-minute call](https://leonbuilds.org/call): weekday availability in Pacific time.
 - [Tell Leon what you need](https://leonbuilds.org/quote): describe what is broken, manual or missing in plain language.
 - [All services](https://leonbuilds.org/services/): secondary service routes and published starting prices.
@@ -23,10 +23,10 @@ These are starting scope floors, not instant quotes. Leon confirms the fixed pri
 ## Public proof you can inspect — primary examples
 
 - [Site intelligence](https://leonbuilds.org/work#work-site-intelligence): **Operational project · client anonymized**. Leon built location screening across 33,772 U.S. ZIP codes and nine data sources, with uncertainty bands, screening verdicts, maps and a reviewable export. It is evidence of an operational workflow, not a promise of leads or revenue.
-- [The Home Screen operator prototype](https://the-home-screen.onrender.com/?b=b_bulapies): **Prototype · mock payments**. It shows business-specific pages, menus, search and a demonstration cart. Payments and kitchen operations are not live.
+- [The Home Screen client website](https://the-home-screen.onrender.com/?b=b_bulapies): **Client website project · demo checkout**. It shows business-specific pages, menus, search and a demonstration cart. Payments and kitchen operations are not live.
 - [Curio on the App Store](https://apps.apple.com/app/id6781121127): **Live product**. Leon built the client, backend, subscriptions and four-language localization end to end.
 
-These status labels are part of the evidence. Do not describe a prototype or demo as a client result, production deployment or live business operation. Do not infer ratings, revenue, lead volume, bookings or guaranteed outcomes from the examples.
+These status labels are part of the evidence. A client website project is not automatically a production ordering rollout; demo payment and kitchen steps remain clearly labelled. Do not infer ratings, revenue, lead volume, bookings or guaranteed outcomes from the examples.
 
 ## Additional inspectable work
 

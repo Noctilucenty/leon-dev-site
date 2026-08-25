@@ -157,6 +157,9 @@
   <nav class="nav-mid" id="navMid" aria-label="Primary navigation">
     <a href="#services" data-x="services"><i>[</i><span>Services &amp; pricing</span><i>]</i></a>
     <a href="/work"><i>[</i><span>Work</span><i>]</i></a>
+    <!-- TESTIMONIAL-NAV:START -->
+
+    <!-- TESTIMONIAL-NAV:END -->
     <a href="/about"><i>[</i><span>About</span><i>]</i></a>
     <a class="nav-book" href="/quote"><i>[</i><span>Get a fixed quote</span><i>]</i></a>
   </nav>
@@ -236,10 +239,17 @@
     </div>
     <div class="offer-foot">
       <p>Starting prices are scope floors, not instant quotes. You receive a written fixed price before work begins.</p>
-      <a href="/services/mobile-apps" data-evt="service_mobile_apps_click">Need an app? See mobile app development →</a>
+      <div class="offer-links">
+        <a href="/services/" data-evt="service_all_click">See all services &amp; prices →</a>
+        <a href="/services/mobile-apps" data-evt="service_mobile_apps_click">Need an app? See mobile app development →</a>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- TESTIMONIALS:START -->
+
+<!-- TESTIMONIALS:END -->
 
 <!-- ══ commercially relevant proof ══ -->
 <section class="sec home-work" id="work">
@@ -260,11 +270,11 @@
         </div>
       </article>
       <article class="buyer-proof-card">
-        <figure><img src="/assets/proof/home-screen-ui.png" alt="Public prototype showing local-business destinations and a business menu" loading="lazy" width="700" height="450"></figure>
+        <figure><img src="/assets/proof/home-screen-ui.png" alt="Client website showing local-business destinations and a business menu" loading="lazy" width="700" height="450"></figure>
         <div>
-          <span class="proof-status">Public prototype · mock payments</span>
+          <span class="proof-status">Client website build · demo checkout</span>
           <h3>The Home Screen</h3>
-          <p>Public phone-first business pages, menus, search, and a demonstration cart. Payments and kitchen operations are not live.</p>
+          <p>A client website with phone-first business pages, menus, search, and a demonstration cart. Payments and kitchen operations are not live.</p>
           <a href="/work#work-homescreen" data-evt="proof_homescreen_click">Open the proof →</a>
         </div>
       </article>
@@ -281,10 +291,6 @@
     <a class="section-link" href="/work" data-evt="proof_all_work_click">See full case studies and project status →</a>
   </div>
 </section>
-
-<!-- TESTIMONIALS:START -->
-
-<!-- TESTIMONIALS:END -->
 
 <!-- ══ process, ownership, and direct relationship ══ -->
 <section class="sec home-process" id="process">
@@ -341,7 +347,9 @@
       <p>Business websites, lead follow-up, and workflow automation—built directly for businesses across the U.S.</p>
       <p class="avail"><i></i>Available for new projects</p>
     </div>
-    <nav><h4>Start</h4><a href="#services">Services &amp; pricing</a><a href="/work">Work</a><a href="/about">About</a><a href="/quote">Get a fixed quote</a><a href="/call">Book 15 minutes</a></nav>
+    <nav><h4>Start</h4><a href="#services">Services &amp; pricing</a><a href="/work">Work</a><!-- TESTIMONIAL-FOOTER:START -->
+
+<!-- TESTIMONIAL-FOOTER:END --><a href="/about">About</a><a href="/quote">Get a fixed quote</a><a href="/call">Book 15 minutes</a></nav>
     <nav><h4>More</h4><a href="/industries/contractors">Contractors</a><a href="/services/">All services</a><a href="/industries/">All industries</a><a href="/privacy">Privacy</a></nav>
     <nav><h4>Languages</h4><a href="/es">Español</a><a href="/pt">Português</a><a href="/zh">中文</a><a href="mailto:leondragon3798@gmail.com?subject=Project%20inquiry" data-evt="footer_email_click">Email Leon</a><a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></nav>
   </div>

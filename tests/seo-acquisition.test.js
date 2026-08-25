@@ -68,7 +68,8 @@ test('work archive is indexable, canonical, and honest about proof status', () =
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/work">/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
   assert.match(visible, /the home screen/i);
-  assert.match(visible, /prototype.*mock payments/is);
+  assert.match(visible, /client website project.*demo checkout/is);
+  assert.match(visible, /payment and kitchen progression are simulations/is);
   assert.match(visible, /loqol disclosures/i);
   assert.match(visible, /public demo.*incomplete/is);
   assert.match(html, /href="https:\/\/loqol-tds\.onrender\.com\/agent"[^>]*data-evt="case_loqol_click"/i);
@@ -291,7 +292,7 @@ test('GEO index states current proof and avoids stale contradictions', () => {
   assert.match(llms, /## Mobile app development/i);
   assert.match(llms, /founders and small businesses/i);
   assert.match(llms, /store.*approval.*does not guarantee|does not guarantee store approval/is);
-  assert.match(llms, /The Home Screen.*prototype.*(?:mock payments|payments are mocked)/is);
+  assert.match(llms, /The Home Screen.*client website.*(?:demo|payments are mocked|payments are not live)/is);
   assert.match(llms, /Loqol.*public demo.*incomplete/is);
   assert.doesNotMatch(llms, /there are no client names, testimonials, reviews or star ratings|seven direct client reviews|five-star|all 5 stars|#testimonials|22-business operation/i);
 });
