@@ -1,4 +1,4 @@
-# Leon Kelvin Li / Noctilucenty — services site + assistant
+# Leon Builds — services site + assistant
 
 What I build, what it starts at, what is actually running — plus a **nationwide
 lead-generation layer**: problem-first homepage entry, a generated service/industry
@@ -83,7 +83,7 @@ The frontend finds the API through **one constant**: `API_BASE` at the top of
 | `SMTP_HOST/USER/PASS` (+ optional `SMTP_PORT`) + `LEAD_TO_EMAIL` | no | fallback only on hosts that permit outbound SMTP; the current Render service does not |
 | `LEADS_KEY` | no | admin key for lead/traffic views and deep health; all three accept it only via `x-leads-key` |
 | `EXTRA_ORIGIN` | no | one extra allowed browser origin |
-| `LEON_DATA_DIR` | no | directory for leads/events/acquisition JSONL; on Render, set only inside an attached persistent disk |
+| `LEON_DATA_DIR` | no | directory for leads/events/acquisition and lead-email outbox JSONL; on Render, set only inside an attached persistent disk |
 | `CAL_WEBHOOK_SECRET` | no | enables `/api/cal/webhook`; must exactly match the signing secret configured in Cal |
 | `ACQUISITION_SINK_URL` | no | optional verified HTTPS receiver for minimized funnel-stage envelopes |
 | `ACQUISITION_SINK_TOKEN` | no | optional Bearer credential for that receiver |
@@ -107,10 +107,12 @@ or duplicate site files.
 **Leads** (`POST /api/lead`, from chat handoff + quote form): logged to stdout as
 `LEAD {...}` (useful for diagnosis, but subject to Render's log retention), appended
 to `data/leads.jsonl` by default, and emailed when a supported delivery route is
-ready. Setting `LEON_DATA_DIR` moves leads, events and acquisition JSONL together to
-that directory. Resend/HTTPS is the production route on Render; SMTP remains a
-fallback for hosts that allow it. Chat leads include a model-written conversation
-summary. First/last referral touch, all five standard UTM values, and present
+ready. Setting `LEON_DATA_DIR` moves leads, events, acquisition and lead-email
+outbox JSONL together to that directory. Resend/HTTPS is the production route on
+Render; its exact queued payload is stored with the accepted lead, failed sends
+retry with capped backoff, and every retry uses the same provider idempotency key.
+SMTP remains a fallback for hosts that allow it. Chat leads include a model-written
+conversation summary. First/last referral touch, all five standard UTM values, and present
 `gclid`, `gbraid`, `wbraid`, `fbclid` or `msclkid` values ride along via the bounded
 `localStorage.leon_attr` record.
 
@@ -298,9 +300,9 @@ number, make sure it is one you would be happy to substantiate on a call.
 
 ## Deploying
 
-Live at **https://leonbuilds.org** — a Render static site on
-`Noctilucenty/leon-dev-site`, branch `main`, root directory `.`, build command
-`npm run build:static`, publish directory `dist`. Pushing to `main` redeploys it.
+Live at **https://leonbuilds.org** — a Render static site built from this
+repository's `main` branch, root directory `.`, build command
+`npm run build:static`, and publish directory `dist`. Pushing to `main` redeploys it.
 
 The 32-hex `*.txt` file at the root is the IndexNow key — Bing/DuckDuckGo/Yahoo read
 it to trust our URL submissions. Keep it deployed; resubmit URLs after big content

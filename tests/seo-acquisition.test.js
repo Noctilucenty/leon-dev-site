@@ -33,6 +33,21 @@ function publicHtmlFiles() {
   return out.sort();
 }
 
+function metadataText(html, pattern) {
+  const value = html.match(pattern)?.[1] || '';
+  return text(`<span>${value}</span>`);
+}
+
+function schemaNodes(html) {
+  return Array.from(
+    html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi),
+    match => JSON.parse(match[1])
+  ).flatMap(root => {
+    const roots = Array.isArray(root) ? root : [root];
+    return roots.flatMap(node => Array.isArray(node['@graph']) ? node['@graph'] : [node]);
+  });
+}
+
 test('homepage metadata and first screen state the focused acquisition offer', () => {
   const html = read('index.html');
   assert.match(html, /<title>Small Business Websites &amp; Lead Follow-Up \| Leon Builds<\/title>/i);
@@ -56,6 +71,8 @@ test('work archive is indexable, canonical, and honest about proof status', () =
   assert.match(visible, /prototype.*mock payments/is);
   assert.match(visible, /loqol disclosures/i);
   assert.match(visible, /public demo.*incomplete/is);
+  assert.match(html, /href="https:\/\/loqol-tds\.onrender\.com\/agent"[^>]*data-evt="case_loqol_click"/i);
+  assert.doesNotMatch(html, /case_loqol_source_click|Inspect the source/i);
   assert.match(visible, /curio/i);
   assert.match(visible, /live product.*app store/is);
   assert.doesNotMatch(html, /aggregateRating|reviewRating|ratingValue|"@type"\s*:\s*"Review"/i);
@@ -66,8 +83,67 @@ test('public pages route work and pricing links to the new real destinations', (
   for (const file of publicHtmlFiles()) {
     const html = read(file);
     assert.doesNotMatch(html, /href=["']\/#(?:fix|outcomes|pricing|work(?:-[^"']*)?)(?:["'])/i, `${file} has no stale English homepage anchor`);
+    assert.doesNotMatch(
+      html,
+      /https:\/\/(?:github\.com\/Noctilucenty(?:\/|["'])|noctilucenty\.github\.io)/i,
+      `${file} does not publish the retired external identity or portfolio destinations`
+    );
+    assert.doesNotMatch(
+      html,
+      /public source-backed document workflow|source-backed workflow demo|source repository showing/i,
+      `${file} does not promise source access after the retired repository links were removed`
+    );
     const title = html.match(/<title>([^<]+)<\/title>/i)?.[1] || '';
-    if (title) assert.match(title, /Leon Builds/i, `${file} uses the Leon Builds brand in its title`);
+    if (title) {
+      assert.match(title, /Leon Builds/i, `${file} uses the Leon Builds brand in its title`);
+      assert.doesNotMatch(
+        title,
+        /Leon Builds by Leon Kelvin Li|\|\s*Leon Kelvin Li\s*$/i,
+        `${file} does not publish a stale or overlong title suffix`
+      );
+    }
+  }
+});
+
+test('service titles, social metadata, and WebPage schema use one current brand identity', () => {
+  const files = fs.readdirSync(path.join(ROOT, 'services'))
+    .filter(file => file.endsWith('.html') && file !== 'index.html')
+    .map(file => path.join('services', file));
+
+  for (const file of files) {
+    const html = read(file);
+    const title = metadataText(html, /<title>([^<]+)<\/title>/i);
+    const socialTitle = metadataText(
+      html,
+      /<meta\s+property="og:title"\s+content="([^"]+)">/i
+    );
+    const page = schemaNodes(html).find(node => node['@type'] === 'WebPage');
+
+    assert.match(title, /\| Leon Builds$/i, `${file} uses the concise current brand suffix`);
+    assert.equal(socialTitle, title, `${file} Open Graph title matches its document title`);
+    assert.ok(page, `${file} includes a WebPage schema node`);
+    assert.equal(page.name, title, `${file} WebPage schema name matches its document title`);
+  }
+});
+
+test('localized service and booking titles keep native intent with the concise brand suffix', () => {
+  const files = publicHtmlFiles().filter(file => /^(?:es|pt|zh)\/(?!index\.html)[^/]+\.html$/.test(file));
+
+  for (const file of files) {
+    const html = read(file);
+    const title = metadataText(html, /<title>([^<]+)<\/title>/i);
+    const socialTitle = metadataText(
+      html,
+      /<meta\s+property="og:title"\s+content="([^"]+)">/i
+    );
+    const page = schemaNodes(html).find(node => node['@type'] === 'WebPage');
+    const intentTitle = title.replace(/\s*\|\s*Leon Builds$/i, '');
+
+    assert.match(title, /\| Leon Builds$/i, `${file} uses the concise current brand suffix`);
+    assert.doesNotMatch(title, /Leon Builds by/i, `${file} leaves room for the native search intent`);
+    assert.equal(socialTitle, title, `${file} Open Graph title matches its document title`);
+    assert.ok(page, `${file} includes a WebPage schema node`);
+    assert.equal(page.name, intentTitle, `${file} WebPage schema name matches the unbranded intent title`);
   }
 });
 

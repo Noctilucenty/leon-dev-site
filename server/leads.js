@@ -1,8 +1,12 @@
 /* Lead intake: validate, sanitize, persist, notify.
    Copies, in order:
    1. stdout      — always, but only as durable as the host's log retention.
-   2. jsonl file  — best effort. data/leads.jsonl by default, or LEON_DATA_DIR.
-   3. email       — Resend over HTTPS, or SMTP on hosts where SMTP egress works. */
+   2. jsonl file  — required before acknowledgement. data/leads.jsonl by default.
+   3. email       — Resend over HTTPS, or SMTP on hosts where SMTP egress works.
+
+   Resend notifications are a durable outbox: the immutable payload is embedded
+   in the accepted lead record, while append-only delivery state lives beside it.
+   That lets a restart recover a send that failed after the visitor got a 200. */
 
 'use strict';
 
@@ -14,6 +18,14 @@ const { dataFile } = require('./storage');
 
 const LEADS_FILE = dataFile('leads.jsonl', 'LEADS_FILE');
 const DATA_DIR = path.dirname(LEADS_FILE);
+const LEAD_EMAIL_OUTBOX_FILE = dataFile(
+  'lead-email-outbox.jsonl',
+  'LEAD_EMAIL_OUTBOX_FILE'
+);
+const EMAIL_OUTBOX_VERSION = 1;
+const EMAIL_OUTBOX_RETRY_BASE_MS = 60_000;
+const EMAIL_OUTBOX_RETRY_MAX_MS = 60 * 60_000;
+const EMAIL_OUTBOX_SCAN_MS = 60_000;
 
 /* Single-line by default: every control character goes, including the CR/LF that
    would otherwise ride into an SMTP header. Pass multiline for the long free-text
@@ -192,7 +204,8 @@ function validateLead(body) {
 function leadFingerprint(lead) {
   const canonical = {};
   for (const key of Object.keys(lead || {}).sort()) {
-    if (key === 'ts' || key === 'receiptId' || key === 'idempotencyKey') continue;
+    if (key === 'ts' || key === 'receiptId' || key === 'idempotencyKey'
+        || key === '_emailOutbox') continue;
     const value = lead[key];
     if (value === '' || value == null) continue;
     canonical[key] = value;
@@ -200,13 +213,300 @@ function leadFingerprint(lead) {
   return createHash('sha256').update(JSON.stringify(canonical)).digest('hex');
 }
 
+function leadEmailSubject(lead) {
+  return `New website lead [${lead.receiptId}] — ${lead.service || lead.industry || lead.company || 'unknown'} — ${lead.via}`;
+}
+
+function leadEmailText(lead) {
+  return Object.entries(lead)
+    .filter(([key, value]) => key !== '_emailOutbox' && value)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n');
+}
+
+/* Store the exact Resend payload that was accepted with the lead. Rebuilding it
+ * from mutable environment settings on every retry can turn a valid idempotent
+ * retry into Resend's 409 "same key, different request" response. No API key is
+ * stored here. The marker is removed from admin-facing lead reads below. */
+function createResendOutbox(lead, env = process.env) {
+  return {
+    version: EMAIL_OUTBOX_VERSION,
+    provider: 'resend',
+    queuedAt: new Date().toISOString(),
+    idempotencyKey: `lead-email/${lead.receiptId}`,
+    payload: {
+      from: env.LEAD_FROM_EMAIL || 'Leon Builds <onboarding@resend.dev>',
+      to: [String(env.LEAD_TO_EMAIL || '').trim()],
+      reply_to: lead.email,
+      subject: leadEmailSubject(lead),
+      text: leadEmailText(lead)
+    }
+  };
+}
+
+function publicLead(lead) {
+  if (!lead || typeof lead !== 'object') return lead;
+  const { _emailOutbox, ...visible } = lead;
+  return visible;
+}
+
+function readJsonl(file, { strict = false, missingOkay = true } = {}) {
+  let raw = '';
+  try {
+    raw = fs.readFileSync(file, 'utf8');
+  } catch (error) {
+    if (strict && (!error || error.code !== 'ENOENT' || !missingOkay)) {
+      if (error && error.code === 'ENOENT') {
+        throw new Error(`required JSONL ledger is missing: ${path.basename(file)}`);
+      }
+      throw error;
+    }
+    return [];
+  }
+  const out = [];
+  const lines = raw.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (!line.trim()) continue;
+    try {
+      out.push(JSON.parse(line));
+    } catch (error) {
+      if (strict) {
+        throw new Error(
+          `corrupt JSONL ledger: ${path.basename(file)} line ${index + 1}`);
+      }
+      // Admin reads retain their historical best-effort behavior.
+    }
+  }
+  return out;
+}
+
+function readStoredLeads({ strict = false } = {}) {
+  return readJsonl(LEADS_FILE, { strict });
+}
+
+function readLeadEmailOutbox({ required = false } = {}) {
+  // A missing file means nothing has been attempted yet. Any other read error
+  // must stop a drain: treating an unreadable sent ledger as empty would resend
+  // every queued notification and defeat local deduplication.
+  const events = readJsonl(LEAD_EMAIL_OUTBOX_FILE, {
+    strict: true,
+    missingOkay: !required
+  });
+  if (required && events.length === 0) {
+    throw new Error(`required JSONL ledger is empty: ${path.basename(LEAD_EMAIL_OUTBOX_FILE)}`);
+  }
+  for (let index = 0; index < events.length; index += 1) {
+    const event = events[index];
+    if (!event || event.version !== EMAIL_OUTBOX_VERSION
+        || !/^lead_[0-9a-f-]{36}$/i.test(String(event.receiptId || ''))
+        || !['queued', 'failed', 'sent'].includes(event.state)) {
+      throw new Error(
+        `invalid lead email outbox event: ${path.basename(LEAD_EMAIL_OUTBOX_FILE)} record ${index + 1}`);
+    }
+  }
+  return events;
+}
+
+const volatileOutboxStates = new Map();
+
+function appendOutboxState(event) {
+  try {
+    fs.mkdirSync(path.dirname(LEAD_EMAIL_OUTBOX_FILE), { recursive: true });
+    fs.appendFileSync(LEAD_EMAIL_OUTBOX_FILE, JSON.stringify(event) + '\n');
+    return true;
+  } catch (error) {
+    console.error(
+      `lead email outbox write failed: ${event.receiptId}`,
+      String(error && error.message || error).slice(0, 300));
+    return false;
+  }
+}
+
+function recordOutboxState(event) {
+  if (appendOutboxState(event)) volatileOutboxStates.delete(event.receiptId);
+  else volatileOutboxStates.set(event.receiptId, event);
+}
+
+function outboxStateByReceipt({ required = false } = {}) {
+  const states = new Map();
+  for (const event of readLeadEmailOutbox({ required })) states.set(event.receiptId, event);
+  for (const [receiptId, event] of volatileOutboxStates) states.set(receiptId, event);
+  return states;
+}
+
+function retryDelayMs(attempts) {
+  const exponent = Math.max(0, Math.min(Number(attempts || 1) - 1, 10));
+  return Math.min(EMAIL_OUTBOX_RETRY_BASE_MS * (2 ** exponent), EMAIL_OUTBOX_RETRY_MAX_MS);
+}
+
+function validResendOutbox(lead) {
+  const outbox = lead && lead._emailOutbox;
+  const payload = outbox && outbox.payload;
+  if (!outbox || outbox.version !== EMAIL_OUTBOX_VERSION || outbox.provider !== 'resend') return null;
+  if (!/^lead-email\/lead_[0-9a-f-]{36}$/i.test(String(outbox.idempotencyKey || ''))) return null;
+  if (!payload || typeof payload !== 'object'
+      || typeof payload.from !== 'string'
+      || !Array.isArray(payload.to) || !payload.to[0]
+      || typeof payload.subject !== 'string'
+      || typeof payload.text !== 'string') return null;
+  return outbox;
+}
+
+async function drainLeadEmailOutboxPass({ force = false, leads, now = Date.now() } = {}) {
+  const queued = new Map();
+  for (const lead of leads || readStoredLeads({ strict: true })) {
+    if (lead && lead.receiptId && validResendOutbox(lead)) queued.set(lead.receiptId, lead);
+  }
+  /* Every accepted outbox lead first writes a queued ledger event. If that
+   * ledger later disappears, fail closed instead of treating every historical
+   * notification as unsent. */
+  const states = outboxStateByReceipt({ required: queued.size > 0 });
+  for (const receiptId of queued.keys()) {
+    if (!states.has(receiptId)) {
+      throw new Error(`lead email outbox is missing queue state for ${receiptId}`);
+    }
+  }
+
+  /* If a previous provider success could not be recorded, persist that state
+   * only after proving the existing ledger is readable. Recreating a lost file
+   * from one volatile event could hide the loss of every older sent record. */
+  for (const [receiptId, event] of volatileOutboxStates) {
+    if (appendOutboxState(event)) volatileOutboxStates.delete(receiptId);
+  }
+
+  const result = { queued: queued.size, attempted: 0, sent: 0, failed: 0, skipped: 0 };
+  for (const [receiptId, lead] of queued) {
+    const prior = states.get(receiptId);
+    if (prior && prior.state === 'sent') {
+      result.skipped += 1;
+      continue;
+    }
+    if (!force && prior && prior.state === 'failed'
+        && Date.parse(prior.nextAttemptAt || '') > now) {
+      result.skipped += 1;
+      continue;
+    }
+
+    const attempts = Math.max(0, Number(prior && prior.attempts) || 0) + 1;
+    result.attempted += 1;
+    try {
+      const providerResult = await sendViaHttp(lead._emailOutbox);
+      const event = {
+        version: EMAIL_OUTBOX_VERSION,
+        receiptId,
+        state: 'sent',
+        at: new Date(now).toISOString(),
+        attempts,
+        provider: 'resend',
+        providerMessageId: clean(String(providerResult && providerResult.id || ''), 200)
+      };
+      recordOutboxState(event);
+      result.sent += 1;
+      console.log(
+        `LEAD_MAILED receiptId=${receiptId} to ${lead._emailOutbox.payload.to[0]} via https (resend)`);
+    } catch (error) {
+      const message = String(error && error.message || error).slice(0, 500);
+      const nextAttemptAt = new Date(now + retryDelayMs(attempts)).toISOString();
+      recordOutboxState({
+        version: EMAIL_OUTBOX_VERSION,
+        receiptId,
+        state: 'failed',
+        at: new Date(now).toISOString(),
+        attempts,
+        nextAttemptAt,
+        provider: 'resend',
+        error: message
+      });
+      result.failed += 1;
+      console.error(
+        `LEAD_MAIL_FAILED receiptId=${receiptId}`, message,
+        `— durable retry queued for ${nextAttemptAt}`);
+    }
+  }
+  return result;
+}
+
+let outboxDrainPromise = null;
+let outboxDrainRequested = false;
+
+/* Only one pass sends at a time in this process. A concurrent request asks for a
+ * follow-up disk scan, so a lead appended during the active pass is not stranded.
+ * Resend's stable Idempotency-Key also dedupes overlapping processes. */
+function drainLeadEmailOutbox(options = {}) {
+  if (outboxDrainPromise) {
+    outboxDrainRequested = true;
+    return outboxDrainPromise;
+  }
+  outboxDrainPromise = (async () => {
+    let nextOptions = options;
+    let aggregate = { queued: 0, attempted: 0, sent: 0, failed: 0, skipped: 0 };
+    try {
+      do {
+        outboxDrainRequested = false;
+        const pass = await drainLeadEmailOutboxPass(nextOptions);
+        aggregate = Object.fromEntries(Object.keys(aggregate).map(key => [key, aggregate[key] + pass[key]]));
+        // A follow-up pass reads the durable lead file; explicit in-memory leads
+        // are only needed by the request that just appended them.
+        nextOptions = { force: !!options.force, now: options.now };
+      } while (outboxDrainRequested);
+      return aggregate;
+    } finally {
+      outboxDrainPromise = null;
+    }
+  })();
+  return outboxDrainPromise;
+}
+
+let outboxTimer = null;
+
+function scheduleLeadEmailOutbox(lead) {
+  // Do not parse the append-only ledger on the request stack. The accepted lead
+  // and queued event are already durable; the response can leave immediately.
+  setImmediate(() => {
+    drainLeadEmailOutbox({ leads: [lead] }).catch(error => {
+      console.error('lead email outbox trigger failed:', String(error && error.message || error).slice(0, 300));
+    });
+  });
+}
+
+function startLeadEmailOutbox() {
+  if (outboxTimer) return;
+  drainLeadEmailOutbox().catch(error => {
+    console.error('lead email outbox startup failed:', String(error && error.message || error).slice(0, 300));
+  });
+  outboxTimer = setInterval(() => {
+    drainLeadEmailOutbox().catch(error => {
+      console.error('lead email outbox scan failed:', String(error && error.message || error).slice(0, 300));
+    });
+  }, EMAIL_OUTBOX_SCAN_MS);
+  outboxTimer.unref();
+}
+
 function persistLead(lead) {
+  const delivery = leadDeliveryConfig();
+  const storedLead = delivery.ready && delivery.provider === 'resend'
+    ? { ...lead, _emailOutbox: createResendOutbox(lead) }
+    : lead;
   // 1. stdout — the sink that always works
   console.log('LEAD ' + JSON.stringify(lead));
+  // A queued event is written before the lead. An orphan event is harmless if
+  // the subsequent lead write fails, while the inverse ordering could leave an
+  // acknowledged lead whose retry ledger never existed.
+  if (storedLead._emailOutbox && !appendOutboxState({
+    version: EMAIL_OUTBOX_VERSION,
+    receiptId: lead.receiptId,
+    state: 'queued',
+    at: storedLead._emailOutbox.queuedAt,
+    attempts: 0,
+    provider: 'resend'
+  })) {
+    return { stored: false };
+  }
   // 2. jsonl — required before the visitor is told the request was saved
   try {
     fs.mkdirSync(DATA_DIR, { recursive: true });
-    fs.appendFileSync(LEADS_FILE, JSON.stringify(lead) + '\n');
+    fs.appendFileSync(LEADS_FILE, JSON.stringify(storedLead) + '\n');
   } catch (e) {
     console.error('lead file write failed:', lead.receiptId, e.message);
     // Do not start email after a failed write. The route returns 503 so the
@@ -222,7 +522,6 @@ function persistLead(lead) {
   // Either route will do: RESEND_API_KEY (HTTPS) or a full SMTP set. On a host
   // that blocks outbound SMTP the first is the only one that works — see the
   // note above sendViaHttp.
-  const delivery = leadDeliveryConfig();
   if (!delivery.ready) {
     // LOUD, once per lead. This was silent, and silence read as "no leads yet"
     // when it actually meant "leads arrived and nobody was told". stdout is
@@ -242,17 +541,12 @@ function persistLead(lead) {
      * must never hold the request open. openTransport() picks whichever port
      * this host can actually reach — see SMTP_PORTS above for why that is not
      * a fixed value. */
-    const subj = `New website lead [${lead.receiptId}] — ${lead.service || lead.industry || lead.company || 'unknown'} — ${lead.via}`;
-    const rows = Object.entries(lead)
-      .filter(([, v]) => v)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('\n');
+    const subj = leadEmailSubject(lead);
+    const rows = leadEmailText(lead);
     if (delivery.provider === 'resend') {
-      sendViaHttp(lead, subj, rows)
-        .then(() => console.log(`LEAD_MAILED receiptId=${lead.receiptId} to ${process.env.LEAD_TO_EMAIL} via https (resend)`))
-        .catch(err => console.error(
-          `LEAD_MAIL_FAILED receiptId=${lead.receiptId}`, (err && err.message) || err,
-          '— the lead remains in this log and the configured JSONL store'));
+      // The lead row already contains the immutable queue payload. Kick a send,
+      // but do not await it: the visitor's acknowledgement remains immediate.
+      scheduleLeadEmailOutbox(storedLead);
       return { stored: true };
     }
     openTransport()
@@ -278,13 +572,7 @@ function persistLead(lead) {
 /* Everything captured since the last deploy, newest first. Backs GET /api/leads,
    which is the only way to read them without digging through Render's log tail. */
 function readLeads(limit) {
-  let raw = '';
-  try { raw = fs.readFileSync(LEADS_FILE, 'utf8'); } catch (e) { return []; }
-  const out = [];
-  for (const line of raw.split('\n')) {
-    if (!line.trim()) continue;
-    try { out.push(JSON.parse(line)); } catch (e) { /* skip a torn line */ }
-  }
+  const out = readStoredLeads().map(publicLead);
   out.reverse();
   return out.slice(0, limit || 200);
 }
@@ -327,22 +615,18 @@ function findLeadByIdempotencyKey(key) {
  * this file still works unchanged on a host that permits it (a laptop, a VPS),
  * and adding the key is the only step needed here.
  */
-async function sendViaHttp(lead, subject, text) {
+async function sendViaHttp(outbox) {
   const key = String(process.env.RESEND_API_KEY || '').trim();
-  // A verified domain is better than a gmail: it makes the notification look
-  // like it came from the business, and it is what allows a real From address.
-  const from = process.env.LEAD_FROM_EMAIL || 'Leon Builds <onboarding@resend.dev>';
+  if (!key) throw new Error('Resend API key is unavailable; notification remains queued');
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { 'content-type': 'application/json', authorization: `Bearer ${key}` },
+    headers: {
+      'content-type': 'application/json',
+      authorization: `Bearer ${key}`,
+      'idempotency-key': outbox.idempotencyKey
+    },
     signal: AbortSignal.timeout(15_000),
-    body: JSON.stringify({
-      from,
-      to: [String(process.env.LEAD_TO_EMAIL || '').trim()],
-      reply_to: lead.email || undefined,   // reply goes to the visitor, not to us
-      subject,
-      text
-    })
+    body: JSON.stringify(outbox.payload)
   });
   if (!r.ok) {
     const body = await r.text().catch(() => '');
@@ -530,6 +814,9 @@ module.exports = {
   clean,
   verifyMail,
   leadDeliveryConfig,
+  drainLeadEmailOutbox,
+  readLeadEmailOutbox,
+  startLeadEmailOutbox,
   maskEmail,
   isRenderRuntime
 };

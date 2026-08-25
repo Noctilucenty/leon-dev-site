@@ -5,7 +5,15 @@ const { once } = require('node:events');
 const fs = require('node:fs');
 const test = require('node:test');
 
-const { leadDeliveryConfig, maskEmail, validateLead } = require('../server/leads');
+const {
+  drainLeadEmailOutbox,
+  leadDeliveryConfig,
+  maskEmail,
+  persistLead,
+  readLeadEmailOutbox,
+  readLeads,
+  validateLead
+} = require('../server/leads');
 const { app } = require('../server/index');
 
 const DELIVERY_KEYS = [
@@ -233,16 +241,32 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     fetch: global.fetch,
     mkdirSync: fs.mkdirSync,
     appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
     log: console.log,
     error: console.error
   };
   const logs = [];
   const errors = [];
   const appended = [];
+  const files = new Map();
   const mailRequests = [];
 
   fs.mkdirSync = () => {};
-  fs.appendFileSync = (file, data) => appended.push({ file, data });
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    appended.push({ file, data });
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
   console.log = (...args) => logs.push(args.join(' '));
   console.error = (...args) => errors.push(args.join(' '));
   global.fetch = async (url, options) => {
@@ -297,11 +321,25 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     assert.ok(leadLog);
     assert.equal(JSON.parse(leadLog.slice(5)).receiptId, result.receiptId);
 
-    assert.equal(appended.length, 1);
-    assert.equal(JSON.parse(appended[0].data).receiptId, result.receiptId);
+    assert.equal(appended.length, 3);
+    const queuedState = JSON.parse(appended[0].data);
+    const durableLead = JSON.parse(appended[1].data);
+    const deliveryState = JSON.parse(appended[2].data);
+    assert.equal(queuedState.receiptId, result.receiptId);
+    assert.equal(queuedState.state, 'queued');
+    assert.equal(durableLead.receiptId, result.receiptId);
+    assert.equal(durableLead._emailOutbox.provider, 'resend');
+    assert.equal(deliveryState.receiptId, result.receiptId);
+    assert.equal(deliveryState.state, 'sent');
+    assert.notEqual(appended[0].file, appended[1].file);
+    assert.equal(appended[0].file, appended[2].file);
 
     assert.equal(mailRequests.length, 1);
     const mail = JSON.parse(mailRequests[0].options.body);
+    assert.equal(
+      mailRequests[0].options.headers['idempotency-key'],
+      `lead-email/${result.receiptId}`
+    );
     assert.match(mail.subject, new RegExp(result.receiptId));
     assert.match(mail.text, new RegExp(`receiptId: ${result.receiptId}`));
     assert.match(mail.text, /PIPELINE-CHECK-TEST/);
@@ -311,11 +349,270 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     global.fetch = original.fetch;
     fs.mkdirSync = original.mkdirSync;
     fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
     console.log = original.log;
     console.error = original.error;
     restoreEnv();
     await new Promise((resolve, reject) => {
       server.close(err => err ? reject(err) : resolve());
+    });
+  }
+});
+
+test('Resend failure retries from the durable outbox with one stable provider request', async () => {
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com',
+    LEAD_FROM_EMAIL: 'Leads <leads@example.com>'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
+    log: console.log,
+    error: console.error
+  };
+  const files = new Map();
+  const mailRequests = [];
+  const errors = [];
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
+  console.log = () => {};
+  console.error = (...args) => errors.push(args.join(' '));
+  global.fetch = async (url, options) => {
+    if (String(url) !== 'https://api.resend.com/emails') {
+      return original.fetch(url, options);
+    }
+    mailRequests.push({ url: String(url), options });
+    if (mailRequests.length === 1) {
+      return {
+        ok: false,
+        status: 503,
+        text: async () => 'temporary provider outage'
+      };
+    }
+    return { ok: true, json: async () => ({ id: 'resend-retry-id' }) };
+  };
+
+  try {
+    const lead = validateLead({
+      email: 'outbox-retry@example.com',
+      problem: 'Recover this notification after a provider outage.',
+      via: 'quote-form',
+      idempotencyKey: 'leadreq_22222222-3333-4444-8555-666666666666'
+    }).lead;
+    const persistence = persistLead(lead);
+
+    // Join the fire-and-forget pass. Its follow-up scan proves the failed state
+    // was durably visible and respects backoff rather than sending twice at once.
+    await drainLeadEmailOutbox();
+
+    assert.equal(persistence.stored, true);
+    assert.equal(mailRequests.length, 1);
+    const failed = readLeadEmailOutbox();
+    assert.deepEqual(failed.map(state => state.state), ['queued', 'failed']);
+    assert.equal(failed[1].receiptId, lead.receiptId);
+    assert.equal(failed[1].attempts, 1);
+    assert.ok(Date.parse(failed[1].nextAttemptAt) > Date.now());
+    assert.match(errors.join('\n'), /durable retry queued/);
+
+    // Let persistLead's deferred kick run. It sees the durable failure and does
+    // not race the explicit retry while backoff is active.
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(mailRequests.length, 1);
+
+    const visibleLead = readLeads(1)[0];
+    assert.equal(visibleLead.receiptId, lead.receiptId);
+    assert.equal(Object.hasOwn(visibleLead, '_emailOutbox'), false);
+
+    // Force only bypasses the clock for this regression test. With no explicit
+    // in-memory lead, the retry has to be reconstructed from the JSONL record.
+    const virtualAppendFileSync = fs.appendFileSync;
+    let failSentStateOnce = true;
+    fs.appendFileSync = (file, data) => {
+      if (failSentStateOnce && String(data).includes('"state":"sent"')) {
+        failSentStateOnce = false;
+        throw new Error('simulated sent-state write failure');
+      }
+      virtualAppendFileSync(file, data);
+    };
+    const retried = await drainLeadEmailOutbox({ force: true });
+    assert.equal(retried.sent, 1);
+    assert.equal(mailRequests.length, 2);
+    assert.equal(mailRequests[0].options.body, mailRequests[1].options.body);
+    assert.equal(
+      mailRequests[0].options.headers['idempotency-key'],
+      mailRequests[1].options.headers['idempotency-key']
+    );
+    assert.equal(
+      mailRequests[1].options.headers['idempotency-key'],
+      `lead-email/${lead.receiptId}`
+    );
+
+    // Provider success remains terminal in memory even if its first ledger
+    // append fails. The next scan persists that state before considering mail.
+    assert.deepEqual(
+      readLeadEmailOutbox().map(state => state.state),
+      ['queued', 'failed']
+    );
+    fs.appendFileSync = virtualAppendFileSync;
+    const afterSent = await drainLeadEmailOutbox({ force: true });
+    assert.equal(afterSent.attempted, 0);
+    assert.equal(mailRequests.length, 2);
+
+    const states = readLeadEmailOutbox();
+    assert.deepEqual(states.map(state => state.state), ['queued', 'failed', 'sent']);
+    assert.equal(states[2].attempts, 2);
+    assert.equal(states[2].providerMessageId, 'resend-retry-id');
+
+    const outboxPath = [...files].find(([, raw]) => raw.includes('"state":"sent"'))[0];
+    const virtualReadFileSync = fs.readFileSync;
+    fs.readFileSync = file => {
+      if (String(file) === outboxPath) {
+        const error = new Error('simulated unreadable sent ledger');
+        error.code = 'EACCES';
+        throw error;
+      }
+      return virtualReadFileSync(file);
+    };
+    await assert.rejects(
+      drainLeadEmailOutbox({ force: true }),
+      /simulated unreadable sent ledger/
+    );
+    assert.equal(mailRequests.length, 2);
+    fs.readFileSync = virtualReadFileSync;
+
+    const intactLedger = files.get(outboxPath);
+    files.set(outboxPath, intactLedger + '{not-json\n');
+    await assert.rejects(
+      drainLeadEmailOutbox({ force: true }),
+      /corrupt JSONL ledger/
+    );
+    assert.equal(mailRequests.length, 2);
+
+    files.delete(outboxPath);
+    await assert.rejects(
+      drainLeadEmailOutbox({ force: true }),
+      /required JSONL ledger is missing/
+    );
+    assert.equal(mailRequests.length, 2);
+    files.set(outboxPath, intactLedger);
+  } finally {
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+  }
+});
+
+test('lead acknowledgement does not wait for the queued Resend request', async () => {
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
+    log: console.log,
+    error: console.error
+  };
+  const files = new Map();
+  let releaseMail;
+  let timeout;
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
+  console.log = () => {};
+  console.error = () => {};
+  global.fetch = async (url, options) => {
+    if (String(url) === 'https://api.resend.com/emails') {
+      return new Promise(resolve => {
+        releaseMail = () => resolve({ ok: true, json: async () => ({ id: 'delayed-mail-id' }) });
+      });
+    }
+    return original.fetch(url, options);
+  };
+
+  try {
+    const response = await Promise.race([
+      global.fetch(base + '/api/lead', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          email: 'immediate-ack@example.com',
+          problem: 'Acknowledge durable intake while mail is still pending.',
+          idempotencyKey: 'leadreq_77777777-8888-4999-8aaa-bbbbbbbbbbbb'
+        })
+      }),
+      new Promise((resolve, reject) => {
+        timeout = setTimeout(() => reject(new Error('lead response waited for Resend')), 250);
+      })
+    ]);
+    clearTimeout(timeout);
+    const body = await response.json();
+
+    assert.equal(response.status, 200);
+    assert.equal(body.ok, true);
+    assert.deepEqual(readLeadEmailOutbox().map(state => state.state), ['queued']);
+
+    // The provider kick is deferred until after the handler can return.
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(typeof releaseMail, 'function');
+
+    releaseMail();
+    await drainLeadEmailOutbox();
+    assert.equal(readLeadEmailOutbox().at(-1).state, 'sent');
+  } finally {
+    clearTimeout(timeout);
+    if (releaseMail) releaseMail();
+    await drainLeadEmailOutbox().catch(() => {});
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+    await new Promise((resolve, reject) => {
+      server.close(error => error ? reject(error) : resolve());
     });
   }
 });
@@ -367,7 +664,7 @@ test('lead intake returns retryable 503 and does not email when JSONL persistenc
     assert.equal(response.headers.get('retry-after'), '2');
     assert.match(result.error, /could not save/i);
     assert.equal(mailRequests, 0);
-    assert.ok(errors.some(line => line.includes('lead file write failed:')));
+    assert.ok(errors.some(line => line.includes('lead email outbox write failed:')));
   } finally {
     global.fetch = original.fetch;
     fs.mkdirSync = original.mkdirSync;

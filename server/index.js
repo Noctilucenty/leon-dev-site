@@ -49,7 +49,8 @@ const {
   leadFingerprint,
   clean,
   verifyMail,
-  leadDeliveryConfig
+  leadDeliveryConfig,
+  startLeadEmailOutbox
 } = require('./leads');
 const { persistEvent, readEvents, sourceOf, normalizeEvent, funnelStats } = require('./events');
 const {
@@ -777,6 +778,7 @@ app.get('/api/traffic', (req, res) => {
 app.use((req, res) => res.status(404).send('not found'));
 
 if (require.main === module) {
+  startLeadEmailOutbox();
   app.listen(PORT, () => {
     console.log(`leon-assist on :${PORT} — model=${client ? MODEL : 'NOT CONFIGURED'} dailyCap=${DAILY_CAP}`);
   });

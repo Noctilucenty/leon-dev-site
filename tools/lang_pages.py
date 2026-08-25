@@ -367,7 +367,7 @@ def render(lang, key, page, ctx):
 CALL_COPY = {
     'pt': dict(
         slug='agendar',
-        title='agendar uma conversa de 15 minutos | Leon Builds by Leon Kelvin Li',
+        title='agendar uma conversa de 15 minutos | Leon Builds',
         desc='quinze minutos, de graça, em português. você conta o que está lento ou manual no seu negócio e eu falo o que dá pra fazer e a partir de quanto sai.',
         h1_plain='quinze minutos pra saber se',
         h1_em='vale a pena fazer',
@@ -388,7 +388,7 @@ CALL_COPY = {
     ),
     'es': dict(
         slug='agendar',
-        title='agendar una llamada de 15 minutos | Leon Builds by Leon Kelvin Li',
+        title='agendar una llamada de 15 minutos | Leon Builds',
         desc='quince minutos, gratis, en español. me cuentas qué es lento o manual en tu negocio y te digo qué se puede hacer y desde cuánto sale.',
         h1_plain='quince minutos para saber si',
         h1_em='vale la pena hacerlo',
@@ -409,7 +409,7 @@ CALL_COPY = {
     ),
     'zh': dict(
         slug='yuyue',
-        title='预约 15 分钟通话 | Leon Builds by Leon Kelvin Li',
+        title='预约 15 分钟通话 | Leon Builds',
         desc='免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工，我告诉你能怎么做、大概从多少钱起。',
         h1_plain='十五分钟，先弄清楚',
         h1_em='这件事值不值得做',

@@ -263,10 +263,48 @@ def scoped_records(
     return [record for record in within if campaign_match(record, campaign, source)]
 
 
-def merged_booking_attribution(records: Iterable[dict[str, Any]]) -> dict[str, dict[str, dict[str, Any]]]:
-    merged: dict[str, dict[str, dict[str, Any]]] = {}
+def booking_replacements(records: Iterable[dict[str, Any]]) -> dict[str, str]:
+    """Map each superseded Cal booking UID to its replacement.
+
+    Cal assigns a new UID when a booking is rescheduled. The raw JSONL keeps
+    both lifecycle records for auditability, but funnel reporting must treat a
+    reschedule chain as one opportunity. Build the map from the complete input
+    rather than only the report window so a chain that crosses the window edge
+    still resolves consistently.
+    """
+    replacements: dict[str, str] = {}
     for record in records:
+        if record.get("kind") != "funnel_stage":
+            continue
         uid = str(record.get("bookingUid") or "").strip()
+        context = record.get("context")
+        previous_uid = (
+            str(context.get("previousBookingUid") or "").strip()
+            if isinstance(context, dict)
+            else ""
+        )
+        if uid and previous_uid and uid != previous_uid:
+            replacements[previous_uid] = uid
+    return replacements
+
+
+def canonical_booking_uid(uid: Any, replacements: dict[str, str]) -> str:
+    """Follow a reschedule chain without hanging on malformed cyclic data."""
+    current = str(uid or "").strip()
+    seen: set[str] = set()
+    while current in replacements and current not in seen:
+        seen.add(current)
+        current = replacements[current]
+    return current
+
+
+def merged_booking_attribution(
+    records: Iterable[dict[str, Any]], replacements: Optional[dict[str, str]] = None
+) -> dict[str, dict[str, dict[str, Any]]]:
+    merged: dict[str, dict[str, dict[str, Any]]] = {}
+    replacement_map = replacements or {}
+    for record in records:
+        uid = canonical_booking_uid(record.get("bookingUid"), replacement_map)
         if not uid:
             continue
         target = merged.setdefault(
@@ -288,16 +326,20 @@ def acquisition_records(
     campaign: str,
     source: str,
 ) -> list[dict[str, Any]]:
-    touches = merged_booking_attribution(input_data.records)
+    replacements = booking_replacements(input_data.records)
+    touches = merged_booking_attribution(input_data.records, replacements)
     selected: list[dict[str, Any]] = []
     for record in input_data.records:
         if record.get("kind") != "funnel_stage" or not in_window(record, start, end):
             continue
-        if mode == "campaign-only-files":
-            selected.append(record)
+        raw_uid = str(record.get("bookingUid") or "").strip()
+        # Cal can emit a cancellation for the superseded slot while completing
+        # a reschedule. That is transport history, not a cancelled opportunity.
+        if record.get("stage") == "cancelled" and raw_uid in replacements:
             continue
         enriched = dict(record)
-        uid = str(record.get("bookingUid") or "").strip()
+        uid = canonical_booking_uid(raw_uid, replacements)
+        enriched["bookingUid"] = uid
         booking_touches = touches.get(
             uid,
             {"firstAttribution": {}, "lastAttribution": {}, "attribution": {}},
@@ -308,8 +350,8 @@ def acquisition_records(
             **booking_touches["attribution"],
             **(record.get("attribution") if isinstance(record.get("attribution"), dict) else {}),
         }
-        if campaign_match(enriched, campaign, source):
-            selected.append(record)
+        if mode == "campaign-only-files" or campaign_match(enriched, campaign, source):
+            selected.append(enriched)
     return selected
 
 

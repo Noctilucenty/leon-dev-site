@@ -34,8 +34,6 @@ IDENTITY_URLS = [
     "https://www.worldcubeassociation.org/persons/2016LILE01",
     "https://www.f6s.com/leonkelvinli",
     "https://www.linkedin.com/in/leon-kelvin-li",
-    "https://github.com/Noctilucenty",
-    "https://noctilucenty.github.io/",
     "https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129",
     "https://www.instagram.com/lkelvn_/",
 ]
@@ -52,7 +50,7 @@ SERVICES = [
    "i design fast, phone-first business websites around that decision. you work directly with the developer, see a working link during the build, and get a written scope and handover."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
   build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — i speak all four"],
-  proof=("public product and workflow evidence","inspect a live app-store product, a public source-backed document workflow and a clearly labelled operator prototype."),
+  proof=("public product and workflow evidence","inspect a live app-store product, a public document-workflow demo and a clearly labelled operator prototype."),
   faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
    ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and i'll tell you which parts are worth keeping."),
    ("how long does it take?","most focused business sites take one to two weeks after the scope, content and required access are ready. you get a working link to review during the build."),
@@ -80,7 +78,7 @@ SERVICES = [
   related=["custom-software","websites","booking-systems"]),
 
  dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
-  price="$750", title="AI Chatbot for Your Business — from $750 | Leon Kelvin Li",
+  price="$750", title="AI Chatbot for Your Business — from $750 | Leon Builds",
   desc="AI chatbots trained on your business that answer customer questions on your website 24/7 — and say 'I don't know' instead of making things up.",
   intro=["most of what customers ask is the same twenty questions: hours, prices, availability, 'do you do X'. a chatbot trained on your business answers those instantly, at 2am, in multiple languages.",
    "the difference between a good one and a lawsuit is restraint: mine cite your real information and say 'i don't know — here's how to reach a person' instead of inventing a price you'll have to honour. the assistant on this site is one i built."],
@@ -94,7 +92,7 @@ SERVICES = [
   related=["ai-phone-agents","business-automation","websites"]),
 
  dict(slug="ai-phone-agents", name="ai phone agents", h1=("your phone, answered", "at 2am and during the rush"),
-  price="$1,000", title="AI Phone Agent — from $1,000 | Leon Kelvin Li",
+  price="$1,000", title="AI Phone Agent — from $1,000 | Leon Builds",
   desc="An AI that answers your business phone, handles the repetitive calls, books appointments and hands anything unusual to a person. Built with written handoff rules.",
   intro=["missed calls are missed revenue: every call that rings out while your team is busy is a customer calling the next name on the list.",
    "an ai phone agent answers instantly, handles the repetitive calls — hours, booking, status checks — and transfers to a person the moment the call isn't routine. that handoff rule gets written down with you, not guessed."],
@@ -108,7 +106,7 @@ SERVICES = [
   related=["ai-chatbots","booking-systems","business-automation"]),
 
  dict(slug="business-automation", name="business automation", h1=("the follow-ups happen", "whether anyone remembers or not"),
-  price="$500", title="Workflow & Business Automation — from $500 | Leon Kelvin Li",
+  price="$500", title="Workflow & Business Automation — from $500 | Leon Builds",
   desc="Form-to-sheet-to-email workflows, Google Workspace and n8n automation, and integrations that stop your team copying data between systems by hand.",
   intro=["most 'we need software' problems are actually 'two systems don't talk' problems. the fix is rarely a new platform — it's a pipe between the tools you already pay for.",
    "i build those pipes where your team can see them: google workspace automations in apps script, n8n workflows your staff can read and edit, and integrations with quickbooks, stripe, slack, your pos, your ats."],
@@ -122,7 +120,7 @@ SERVICES = [
   related=["business-dashboards","ai-chatbots","custom-software"]),
 
  dict(slug="custom-software", name="custom software", h1=("built around how your", "business actually runs"),
-  price="$1,500", title="Custom Software Development | Leon Kelvin Li",
+  price="$1,500", title="Custom Software Development | Leon Builds",
   desc="Custom business software built end to end by one developer: portals, platforms, operations systems. Fixed written quotes. U.S.-wide, remote.",
   intro=["off-the-shelf software fits the average business. yours isn't average — that's why there's still a spreadsheet holding part of it together.",
    "custom software is for when nothing on the menu is the shape of your problem. the public Home Screen prototype, for example, tests server-side pricing and vendor-separated order logic while clearly keeping payments and kitchen operations mocked."],
@@ -136,7 +134,7 @@ SERVICES = [
   related=["mobile-apps","business-automation","business-dashboards"]),
 
  dict(slug="booking-systems", name="booking & online ordering", h1=("customers book and order themselves —", "the reminder does the rest"),
-  price="$600", title="Booking & Online Ordering — from $600 | Leon Kelvin Li",
+  price="$600", title="Booking & Online Ordering — from $600 | Leon Builds",
   desc="Booking and ordering on your website: appointments, deposits, reminders and a direct-order cart. Leon charges no booking fee; provider terms still apply.",
   intro=["every booking handled by phone uses staff time, and every no-show leaves a slot unused. online booking removes the retyping; reminders, deposits and easy rescheduling give you measurable ways to address missed appointments.",
    "i build booking around your site, calendar and rules instead of defaulting to a generic branded widget. any payment, messaging, hosting or calendar-provider fees stay visible in the written scope.",
@@ -150,7 +148,7 @@ SERVICES = [
   related=["websites","ai-phone-agents","business-automation"]),
 
  dict(slug="business-dashboards", name="dashboards & internal tools", h1=("the four numbers that decide", "your week, on one screen"),
-  price="$750", title="Dashboards & Internal Tools — from $750 | Leon Kelvin Li",
+  price="$750", title="Dashboards & Internal Tools — from $750 | Leon Builds",
   desc="Live dashboards and focused internal tools that replace manual exports, surface the numbers that matter and remove repetitive copy-paste from daily work.",
   intro=["somebody on your team spends part of every week exporting, pasting and reformatting the same report. and by the time it's read, it's old.",
    "a dashboard pulls those numbers live from the systems that already have them — sales, bookings, stock, ad spend — onto one screen you check in ten seconds.",
@@ -222,14 +220,14 @@ INDUSTRIES = [
    ("online booking","customers pick a slot; your calendar stays sane. from $600","booking-systems"),
    ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000","ai-phone-agents"),
    ("shop website","services, trust proof, booking and a clear call path on any phone. from $300","websites")],
-  proof=("public implementation evidence","inspect shipped product screens, a source-backed workflow demo and a clearly labelled operator prototype; none is presented as an automotive outcome claim."),
+  proof=("public implementation evidence","inspect shipped product screens, a public workflow demo and a clearly labelled operator prototype; none is presented as an automotive outcome claim."),
   faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. i verify yours specifically before quoting anything."),
    ("what is a focused first step?","status notifications can reduce manual update calls when the shop system exposes reliable status data. i verify that data and define what will be measured before quoting."),
    ("multiple locations?","yes — shared platform, per-location calendars and numbers is a normal build.")],
   related_services=["ai-phone-agents","booking-systems","business-automation"]),
 
  dict(slug="healthcare", name="medical & dental", h1=("software for", "medical & dental practices"),
-  title="Software for Medical & Dental Offices | Leon Kelvin Li",
+  title="Software for Medical & Dental Offices | Leon Builds",
   desc="Online booking, appointment reminders and after-hours question handling for clinics and dental practices. Careful, human-in-the-loop builds.",
   intro=["a practice front desk answers the same questions all day — insurance, hours, directions, 'can i move my appointment' — while missed appointments leave unused time. reminders and self-service rescheduling address one part of that workflow and can be measured against the current baseline.",
    "health care deserves the careful version of software: reminders and booking that reduce the front desk load, an assistant that answers the routine and hands anything clinical straight to a human. i've built compliance-aware ai that declines to answer rather than overstep — that's the posture your patients get."],
@@ -245,7 +243,7 @@ INDUSTRIES = [
   related_services=["booking-systems","ai-chatbots","business-automation"]),
 
  dict(slug="real-estate", name="real estate & property", h1=("software for", "real estate & property management"),
-  title="Software for Real Estate & Property | Leon Kelvin Li",
+  title="Software for Real Estate & Property | Leon Builds",
   desc="Tenant portals, maintenance-request tracking, listing sites and follow-up automation for property managers and real-estate businesses.",
   intro=["property work is coordination: tenants, owners, vendors, showings, maintenance — most of it still happening over scattered calls and texts nobody can find later.",
    "a portal gives tenants somewhere to submit and track requests. automation gives owners their statements without you assembling them. your phone gets quieter."],
@@ -254,14 +252,14 @@ INDUSTRIES = [
    ("maintenance tracking","requests routed to vendors, updates sent automatically. from $1,000",None),
    ("owner reporting","statements that build themselves from your real data. from $1,000","business-dashboards"),
    ("listing website","fast property pages with inquiry capture that reaches you instantly. from $300","websites")],
-  proof=("Loqol disclosure workflow","a public demo and source repository showing per-user saved answers, an agent review workspace, consistency checks and generated documents. signing and email delivery are incomplete."),
+  proof=("Loqol disclosure workflow","a public demo showing per-user saved answers, an agent review workspace, consistency checks and generated documents. signing and email delivery are incomplete."),
   faqs=[("can tenants see each other's information?","no — per-account visibility is enforced on the server, which is the core of the build."),
    ("we use appfolio / buildium / yardi.","keep it if it works — often the right build is a portal or automation talking to your existing system. i verify the integration before quoting."),
    ("what does a tenant portal cost?","from $1,500 depending on what tenants and owners need to see and do.")],
   related_services=["custom-software","business-automation","websites"]),
 
  dict(slug="logistics", name="logistics & warehousing", h1=("software for", "logistics & warehousing"),
-  title="Software for Logistics & Trucking | Leon Kelvin Li",
+  title="Software for Logistics & Trucking | Leon Builds",
   desc="Dispatch boards, driver apps, document automation and customer tracking for logistics and warehouse operations.",
   intro=["logistics runs on information handoffs — and every handoff that happens by phone, email-forward or retyping is a delay and an error waiting to happen.",
    "dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem."],
@@ -277,7 +275,7 @@ INDUSTRIES = [
   related_services=["custom-software","business-dashboards","websites"]),
 
  dict(slug="gyms", name="gyms & fitness", h1=("software for", "gyms & fitness businesses"),
-  title="Software for Gyms & Fitness | Leon Kelvin Li",
+  title="Software for Gyms & Fitness | Leon Builds",
   desc="Class booking, membership management, reminder automation and websites for gyms, studios and trainers.",
   intro=["a gym's software problem is churn wearing a disguise: missed classes, lapsed cards, members who drift because nobody noticed they stopped coming.",
    "booking, reminders and a membership view fix the mechanics — you see who's fading while there's still time to wave them back."],
@@ -293,7 +291,7 @@ INDUSTRIES = [
   related_services=["booking-systems","websites","business-dashboards"]),
 
  dict(slug="retail", name="retail & e-commerce", h1=("software for", "retail & e-commerce"),
-  title="Software for Retail & E-commerce | Leon Kelvin Li",
+  title="Software for Retail & E-commerce | Leon Builds",
   desc="Inventory that survives a busy Saturday, order automation, dashboards and storefronts for retailers and e-commerce operators.",
   intro=["retail dies by a thousand small syncs: the count that drifted, the online order nobody saw, the bestseller that sold out because reordering lived in someone's head.",
    "the fix is rarely a new platform — it's the connective tissue: inventory that matches reality, orders flowing into one queue, numbers you see daily without exporting anything."],
@@ -309,7 +307,7 @@ INDUSTRIES = [
   related_services=["business-automation","business-dashboards","websites"]),
 
  dict(slug="professional-services", name="professional services", h1=("software for", "professional services"),
-  title="Software for Professional Firms | Leon Kelvin Li",
+  title="Software for Professional Firms | Leon Builds",
   desc="Client portals, intake automation, document workflows and dashboards for law, accounting, consulting and agency work.",
   intro=["service firms sell hours, then spend a shocking share of them on intake, status emails, document wrangling and 'just checking in' calls.",
    "a client portal, automated intake and document workflows give those hours back — and make the firm feel bigger and calmer than the inbox it replaced."],
@@ -318,14 +316,14 @@ INDUSTRIES = [
    ("intake automation","forms that fill in on a phone, file and notify automatically. from $600","business-automation"),
    ("document workflows","created, versioned, approved and filed — automatically. from $500","business-automation"),
    ("firm dashboard","matters, pipeline and billing on one screen. from $1,000","business-dashboards")],
-  proof=("Loqol guided document workflow","a public demo and source repository showing a long questionnaire, saved answers, consistency checks, an agent review view and generated PDF output."),
+  proof=("Loqol guided document workflow","a public demo showing a long questionnaire, saved answers, consistency checks, an agent review view and generated PDF output."),
   faqs=[("is client data safe?","per-client visibility is enforced server-side. the agreed project accounts, included source code and setup notes are handed over, while hosting providers, licensed software and other vendors keep their own terms. your reviewer can audit the included code."),
    ("we bill hourly. does this change that?","it removes the hours you can't bill — admin — and keeps the ones you can."),
    ("what does a portal cost?","from $1,500; intake automation from $600. written fixed quotes.")],
   related_services=["custom-software","business-automation","business-dashboards"]),
 
  dict(slug="startups", name="startups", h1=("software for", "startups & founders"),
-  title="MVP & Product Development for Startups | Leon Kelvin Li",
+  title="MVP & Product Development for Startups | Leon Builds",
   desc="MVPs that actually ship: app + backend + payments from one developer who has taken his own product through App Store review.",
   intro=["a founder with an idea needs the version of the product that can meet users — not a six-month engagement, not a no-code demo that collapses at the first real feature.",
    "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs; the agreed repo, included source and setup notes are part of the written handoff, while third-party and licensed terms remain."],
@@ -438,7 +436,7 @@ def footer():
       <p class="avail"><i></i>available for new projects</p>
     </div>
     <nav><h4>services</h4><a href="/missed-lead-recovery">website + lead follow-up</a><a href="/services/websites">business websites</a><a href="/services/business-automation">workflow automation</a><a href="/services/">all services and prices</a></nav>
-    <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/about">about leon</a><a href="/industries/">browse industries</a><a href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a></nav>
+    <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
     <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
   <div class="rail foot-bar">
@@ -455,9 +453,6 @@ def head(title, desc, path, schema, alts='', head_extra='', social_image='/asset
     stays silent is a cluster Google discards, so the English service pages that
     have translations must name them back. head_extra is reserved for page-only
     identity metadata so it does not leak into the generated page fleet."""
-    legacy_title_suffix = " | Leon Kelvin Li"
-    if title.endswith(legacy_title_suffix):
-        title = title[:-len(legacy_title_suffix)] + " | Leon Builds"
     head_links = "\n".join(link for link in (alts, head_extra) if link)
     social_url = social_image if social_image.startswith('http') else BASE + social_image
     social_dimensions = ('''<meta property="og:image:width" content="1200">
@@ -945,7 +940,6 @@ def work_page():
           <p class="case-role">Role: full-stack product developer</p>
           <div class="case-links">
             <a class="case-link" href="https://loqol-tds.onrender.com/agent" target="_blank" rel="noopener" data-evt="case_loqol_click">Open the public demo →</a>
-            <a class="case-link" href="https://github.com/Noctilucenty/loqol-tds" target="_blank" rel="noopener" data-evt="case_loqol_source_click">Inspect the source →</a>
           </div>
         </div>
       </article>
@@ -991,7 +985,7 @@ def work_page():
         </div>
       </article>
     </div>
-    <p class="more">See the <a href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a> or <a href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">source repositories on GitHub</a>.</p>
+    <p class="more">This is Leon's current public work archive. Each entry states what is live, incomplete, or anonymized.</p>
     <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_final_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="cx-mini" href="/about">More about Leon →</a></div>
   </div>
 </section>
@@ -1236,7 +1230,7 @@ def about_page():
     }
     schema = [{"@context": "https://schema.org", "@graph": [profile, person]}, breadcrumb_schema(bc, path)]
     rel_me = "\n".join(f'<link rel="me" href="{e(url)}">' for url in IDENTITY_URLS)
-    return head("About Leon Kelvin Li — Software Developer | Leon Kelvin Li",
+    return head("About Leon Kelvin Li — Software Developer | Leon Builds",
         "Meet Leon Kelvin Li, a California-based independent developer who builds websites, apps and automation directly for U.S. businesses in four languages.",
         path, schema, head_extra=rel_me) + ICONS + nav() + '''
 <main id="main">
@@ -1279,8 +1273,8 @@ def about_page():
   <div class="rail">
     <p class="label">background</p>
     <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span>, an alumnus of <span class="keepcase">Green River College</span>, and a working developer with a live App Store product plus public demos. all three are true at once, and he would rather say so than hide any of them.</p>
-    <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="cx-mini" href="/services/mobile-apps">mobile app development service</a>. source repositories are available through <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a>, and older work remains in the <a class="cx-mini" href="https://noctilucenty.github.io/" target="_blank" rel="me noopener">portfolio archive</a>.</p>
-    <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://github.com/Noctilucenty" target="_blank" rel="me noopener">github</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
+    <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="cx-mini" href="/services/mobile-apps">mobile app development service</a>. additional public product and workflow evidence is collected in the <a class="cx-mini" href="/work">Leon Builds work archive</a>.</p>
+    <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="/quote" data-evt="about_quote_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_about"><span>whatsapp</span></a>
@@ -1520,7 +1514,7 @@ def call_page():
     call_alts = ''.join(
         f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
         for hl, href in lang_pages.call_alternates())
-    return head("Book a Free 15-Minute Call | Leon Kelvin Li",
+    return head("Book a Free 15-Minute Call | Leon Builds",
         "Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.",
         path, schema, call_alts).replace('<body>', '<body class="call-page" data-assistant-launcher="hidden">', 1) + ICONS + nav() + '''
 <main id="main">
@@ -1843,12 +1837,12 @@ for s in SERVICES: w(f'services/{s["slug"]}.html', service_page(s))
 for i in INDUSTRIES: w(f'industries/{i["slug"]}.html', industry_page(i))
 
 w('services/index.html', listing_page('services', SERVICES,
-  "Services — Websites, Apps, AI & Automation | Leon Kelvin Li",
+  "Services — Websites, Apps, AI & Automation | Leon Builds",
   "Every service Leon builds, with honest starting prices: websites, mobile apps, AI chatbots and phone agents, automation, portals, dashboards and more.",
   "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and i'll quote the shape of it."))
 
 w('industries/index.html', listing_page('industries', INDUSTRIES,
-  "Industries I Build Software For | Leon Kelvin Li",
+  "Industries I Build Software For | Leon Builds",
   "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
   "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
 
