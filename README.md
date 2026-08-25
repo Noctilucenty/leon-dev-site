@@ -320,9 +320,44 @@ Live at **https://leonbuilds.org** — a Render static site built from this
 repository's `main` branch, root directory `.`, build command
 `npm run build:static`, and publish directory `dist`. Pushing to `main` redeploys it.
 
+The static build also generates `dist/site-version.txt`: a deterministic SHA-256
+fingerprint of every allowlisted public source file. It is deployment evidence,
+not a source file. The main-push search workflow builds the same fingerprint,
+waits until Render serves that exact value, checks the live robots file, sitemap,
+`llms.txt`, IndexNow key, HTTP status, content type, canonical and indexing
+directives for every sitemap page, and only then considers an IndexNow request.
+
 The 32-hex `*.txt` file at the root is the IndexNow key — Bing/DuckDuckGo/Yahoo read
-it to trust our URL submissions. Keep it deployed; resubmit URLs after big content
-changes with a POST to api.indexnow.org (see git log for the exact call).
+it to trust our URL submissions. Keep its body identical to its filename. URL
+selection is derived from the two deployed Git revisions, including deleted URLs
+and same-day HTML changes. The default CLI path is a dry run and makes no network
+requests:
+
+```bash
+npm run indexnow:check -- --before-ref HEAD^ --after-ref HEAD
+```
+
+`.github/workflows/search-production.yml` is the only automatic submission path.
+It runs after a `main` push, waits up to 15 minutes for the exact live fingerprint,
+then invokes `tools/indexnow.py --submit` explicitly. A change set with no public
+URLs exits successfully without reading the key or using the network. HTTP 200 or
+202 means IndexNow received the request; it does **not** prove crawling or indexing.
+All other statuses and network failures fail the workflow.
+
+For an operator-only live check without a submission, first run the static build
+and pass its generated fingerprint:
+
+```bash
+npm run build:static
+python3 tools/check_live_search.py \
+  --expected-fingerprint "$(tr -d '\r\n' < dist/site-version.txt)" \
+  --wait-seconds 0
+```
+
+This workflow does not monitor Google Search Console. Automated Search Console
+coverage monitoring remains blocked until the repository has an intentionally
+provisioned Google API identity/property authorization; do not disguise missing
+credentials as a zero-result check.
 
 `canonical`, `og:url` and `og:image` are all absolute against that host. If a custom domain
 is added later, those three need updating — a relative `og:image` is not followed by Facebook

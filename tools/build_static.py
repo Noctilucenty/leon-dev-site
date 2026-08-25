@@ -9,6 +9,7 @@ stop before copying anything.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import shutil
 import sys
@@ -23,6 +24,7 @@ from testimonial_gate import TestimonialGateError, testimonial_release_errors
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "dist"
 SITE_HOSTS = {"leonbuilds.org", "www.leonbuilds.org"}
+SITE_VERSION_FILE = PurePosixPath("site-version.txt")
 
 PUBLIC_FILES = (
     "styles.css",
@@ -311,6 +313,36 @@ def build_manifest() -> dict[PurePosixPath, Path]:
     return dict(sorted(manifest.items(), key=lambda item: item[0].as_posix()))
 
 
+def public_fingerprint(manifest: dict[PurePosixPath, Path]) -> str:
+    """Hash the exact allowlisted source bytes with unambiguous framing.
+
+    The generated marker lets a post-deploy job distinguish "Render accepted the
+    commit" from "the CDN is serving these exact public files". It deliberately
+    excludes itself, so the value is deterministic and has no recursive input.
+    """
+    digest = hashlib.sha256(b"leon-builds-static-v1\0")
+    for relative, source in sorted(manifest.items(), key=lambda item: item[0].as_posix()):
+        name = relative.as_posix().encode("utf-8")
+        content = source.read_bytes()
+        digest.update(len(name).to_bytes(8, "big"))
+        digest.update(name)
+        digest.update(len(content).to_bytes(8, "big"))
+        digest.update(content)
+    return digest.hexdigest()
+
+
+def generated_files(manifest: dict[PurePosixPath, Path]) -> dict[PurePosixPath, bytes]:
+    return {SITE_VERSION_FILE: (public_fingerprint(manifest) + "\n").encode("ascii")}
+
+
+def verify_stable_sources(
+    manifest: dict[PurePosixPath, Path],
+    generated: dict[PurePosixPath, bytes],
+) -> None:
+    if generated_files(manifest) != generated:
+        raise StaticBuildError("public source files changed during the static build; retry")
+
+
 def safe_output(value: str) -> Path:
     requested = Path(value).expanduser()
     if requested.name != "dist":
@@ -332,9 +364,9 @@ def safe_output(value: str) -> Path:
     return output
 
 
-def expected_directories(manifest: dict[PurePosixPath, Path]) -> set[PurePosixPath]:
+def expected_directories(paths) -> set[PurePosixPath]:
     directories: set[PurePosixPath] = set()
-    for relative in manifest:
+    for relative in paths:
         parent = relative.parent
         while parent != PurePosixPath("."):
             directories.add(parent)
@@ -342,11 +374,15 @@ def expected_directories(manifest: dict[PurePosixPath, Path]) -> set[PurePosixPa
     return directories
 
 
-def validate_existing(output: Path, manifest: dict[PurePosixPath, Path]) -> None:
+def validate_existing(
+    output: Path,
+    manifest: dict[PurePosixPath, Path],
+    generated: dict[PurePosixPath, bytes],
+) -> None:
     if not output.exists():
         return
-    allowed_files = set(manifest)
-    allowed_directories = expected_directories(manifest)
+    allowed_files = set(manifest) | set(generated)
+    allowed_directories = expected_directories(allowed_files)
     problems: list[str] = []
     for path in sorted(output.rglob("*")):
         relative = PurePosixPath(path.relative_to(output).as_posix())
@@ -369,8 +405,12 @@ def validate_existing(output: Path, manifest: dict[PurePosixPath, Path]) -> None
         )
 
 
-def check_output(output: Path, manifest: dict[PurePosixPath, Path]) -> None:
-    validate_existing(output, manifest)
+def check_output(
+    output: Path,
+    manifest: dict[PurePosixPath, Path],
+    generated: dict[PurePosixPath, bytes],
+) -> None:
+    validate_existing(output, manifest, generated)
     if not output.exists():
         return
     missing: list[str] = []
@@ -381,6 +421,12 @@ def check_output(output: Path, manifest: dict[PurePosixPath, Path]) -> None:
             missing.append(relative.as_posix())
         elif source.read_bytes() != destination.read_bytes():
             changed.append(relative.as_posix())
+    for relative, content in generated.items():
+        destination = output.joinpath(*relative.parts)
+        if not destination.is_file():
+            missing.append(relative.as_posix())
+        elif destination.read_bytes() != content:
+            changed.append(relative.as_posix())
     if missing or changed:
         details = []
         if missing:
@@ -390,15 +436,22 @@ def check_output(output: Path, manifest: dict[PurePosixPath, Path]) -> None:
         raise StaticBuildError("existing output is not current; run the build (" + "; ".join(details) + ")")
 
 
-def write_output(output: Path, manifest: dict[PurePosixPath, Path]) -> None:
+def write_output(
+    output: Path,
+    manifest: dict[PurePosixPath, Path],
+    generated: dict[PurePosixPath, bytes],
+) -> None:
     # Complete validation happens before the first mkdir/copy. We never remove a
     # path, even when the desired manifest changes.
-    validate_existing(output, manifest)
+    validate_existing(output, manifest, generated)
     output.mkdir(exist_ok=True)
-    for directory in sorted(expected_directories(manifest), key=lambda item: (len(item.parts), item.as_posix())):
+    paths = set(manifest) | set(generated)
+    for directory in sorted(expected_directories(paths), key=lambda item: (len(item.parts), item.as_posix())):
         output.joinpath(*directory.parts).mkdir(exist_ok=True)
     for relative, source in manifest.items():
         shutil.copyfile(source, output.joinpath(*relative.parts))
+    for relative, content in generated.items():
+        output.joinpath(*relative.parts).write_bytes(content)
 
 
 def parse_args() -> argparse.Namespace:
@@ -412,15 +465,24 @@ def main() -> int:
     args = parse_args()
     try:
         manifest = build_manifest()
+        generated = generated_files(manifest)
         output = safe_output(args.output)
         if args.check:
-            check_output(output, manifest)
+            check_output(output, manifest, generated)
+            verify_stable_sources(manifest, generated)
             state = "current" if output.exists() else "not present (manifest validated read-only)"
-            print(f"static build check passed — {len(manifest)} allowlisted files; output {state}")
+            print(
+                f"static build check passed — {len(manifest)} allowlisted + "
+                f"{len(generated)} generated files; output {state}"
+            )
         else:
-            write_output(output, manifest)
-            check_output(output, manifest)
-            print(f"static build complete — {len(manifest)} allowlisted files -> {output}")
+            write_output(output, manifest, generated)
+            check_output(output, manifest, generated)
+            verify_stable_sources(manifest, generated)
+            print(
+                f"static build complete — {len(manifest)} allowlisted + "
+                f"{len(generated)} generated files -> {output}"
+            )
         return 0
     except (OSError, StaticBuildError, UnicodeError) as exc:
         print(f"static build failed: {exc}", file=sys.stderr)

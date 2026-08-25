@@ -67,7 +67,7 @@ test('static build publishes only pages and required referenced assets', () => {
     'services/index.html', 'services/websites.html', 'es/index.html',
     'styles.css', 'assist.css', 'app.js', 'assist.js',
     'assets/favicon.svg', 'assets/og.png', 'favicon.ico', 'apple-touch-icon.png',
-    'sitemap.xml', 'robots.txt', 'llms.txt',
+    'sitemap.xml', 'robots.txt', 'llms.txt', 'site-version.txt',
     'google632f06756dffc4ba.html', 'b20f1e412f2cff8af636fe5676cfdbcd.txt'
   ]) {
     const published = path.join(output, relative);
@@ -95,6 +95,26 @@ test('static build publishes only pages and required referenced assets', () => {
   const files = walkFiles(output);
   assert.equal(files.some(file => /^(content|data|research|server|tests|tools)(\/|$)/.test(file)), false);
   assert.equal(files.some(file => /\.(csv|json|md|py|ya?ml)$/i.test(file)), false);
+
+  const versionPath = path.join(output, 'site-version.txt');
+  const expectedVersion = fs.readFileSync(versionPath, 'utf8');
+  assert.match(expectedVersion, /^[0-9a-f]{64}\n$/);
+
+  // The generated marker is deterministic and --check never repairs it.
+  fs.writeFileSync(versionPath, `${'0'.repeat(64)}\n`);
+  result = run(['--check', '--output', output]);
+  assert.notEqual(result.status, 0, diagnostic(result));
+  assert.equal(fs.readFileSync(versionPath, 'utf8'), `${'0'.repeat(64)}\n`);
+  result = run(['--output', output]);
+  assert.equal(result.status, 0, diagnostic(result));
+  assert.equal(fs.readFileSync(versionPath, 'utf8'), expectedVersion);
+
+  const secondParent = path.join(TEMP, 'public-copy');
+  const secondOutput = path.join(secondParent, 'dist');
+  fs.mkdirSync(secondParent);
+  result = run(['--output', secondOutput]);
+  assert.equal(result.status, 0, diagnostic(result));
+  assert.equal(fs.readFileSync(path.join(secondOutput, 'site-version.txt'), 'utf8'), expectedVersion);
 
   // A stale expected file is reported, never silently repaired by --check.
   const builtIndex = path.join(output, 'index.html');

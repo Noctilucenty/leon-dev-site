@@ -1771,15 +1771,8 @@ def quote_page():
 # EMIT
 # ══════════════════════════════════════════════════════════════════
 
-CHANGED = []
-
 def w(rel, content):
-    """Writes only on a real diff, and records it.
-
-    It used to write unconditionally, which mattered once IndexNow existed:
-    every rebuild would otherwise announce all forty URLs as fresh, including
-    the thirty-nine that are byte-identical, and a submitter that cries wolf is
-    a submitter that gets throttled."""
+    """Write generated content only when its bytes actually changed."""
     p = os.path.join(ROOT, rel)
     os.makedirs(os.path.dirname(p) or '.', exist_ok=True)
     old = None
@@ -1790,7 +1783,6 @@ def w(rel, content):
         return
     with open(p, 'w', encoding='utf-8') as f:
         f.write(content)
-    CHANGED.append(rel)
     print('wrote', rel)
 
 # ── language service pages ────────────────────────────────────────
@@ -1968,53 +1960,3 @@ w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
 print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, work, '
       f'{"reviews, " if REVIEWS_ROUTE_ENABLED else ""}contractor product, quote, '
       f'sitemap ({len(urls)} urls), robots.')
-
-# ── IndexNow ──────────────────────────────────────────────────────
-# There was no IndexNow code anywhere in this repo. README said "see git log for
-# the exact call", which means it fired approximately once, by hand, ever, while
-# the pages were regenerated many times a day. A step that lives in a person's
-# memory is a step that does not happen; a step in the build is one that cannot
-# be forgotten.
-#
-# Gated behind INDEXNOW=1 so local iteration does not POST the whole sitemap in
-# a loop and get the key throttled. Prints the HTTP status, because a silent 4xx
-# is exactly how this fails.
-INDEXNOW_KEY = 'b20f1e412f2cff8af636fe5676cfdbcd'
-
-def indexnow(paths):
-    import json as _json, urllib.request, urllib.error
-    if not paths:
-        print('indexnow: nothing changed, nothing submitted')
-        return
-    host = BASE.replace('https://', '')
-    payload = {
-        'host': host,
-        'key': INDEXNOW_KEY,
-        'keyLocation': f'{BASE}/{INDEXNOW_KEY}.txt',
-        'urlList': [BASE + u for u in paths],
-    }
-    req = urllib.request.Request(
-        'https://api.indexnow.org/indexnow',
-        data=_json.dumps(payload).encode(),
-        headers={'Content-Type': 'application/json; charset=utf-8'})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            print(f'indexnow: HTTP {r.status} for {len(paths)} url(s)')
-    except urllib.error.HTTPError as ex:
-        print(f'indexnow: HTTP {ex.code} — {ex.read()[:200].decode(errors="replace")}')
-    except Exception as ex:
-        print(f'indexnow: failed — {ex}')
-
-if os.environ.get('INDEXNOW') == '1':
-    # A changed file maps back to the URL that serves it.
-    def _url_of(rel):
-        if rel == 'index.html':
-            return '/'
-        if rel.endswith('/index.html'):
-            return '/' + rel[:-len('/index.html')]
-        if rel.endswith('.html'):
-            return '/' + rel[:-5]
-        return None
-    indexnow(sorted({u for u in (_url_of(r) for r in CHANGED) if u}))
-else:
-    print(f'{len(CHANGED)} file(s) changed — run with INDEXNOW=1 to submit them')
