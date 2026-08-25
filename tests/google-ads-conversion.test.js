@@ -180,6 +180,10 @@ test('Google makes no request before consent, then flushes one receipt-deduplica
   assert.equal(events[0][2].currency, undefined);
 
   const commands = h.commands();
+  const consentUpdate = commands.find(command => command[0] === 'consent' && command[1] === 'update');
+  assert.equal(consentUpdate[2].ad_storage, 'granted');
+  assert.equal(consentUpdate[2].ad_user_data, 'granted');
+  assert.equal(consentUpdate[2].ad_personalization, 'denied');
   const userDataSet = commands.findIndex(command => command[0] === 'set' && command[1] === 'user_data');
   const config = commands.findIndex(command => command[0] === 'config');
   assert.ok(userDataSet > -1 && userDataSet < config, 'empty tag-level user_data is queued before config');

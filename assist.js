@@ -58,6 +58,9 @@
   function adsConsentUpdate(value) {
     adsGtag()('consent', 'update', {
       ad_storage: value,
+      // This consent signal is required for tag-based conversion measurement.
+      // It does not add contact data: user_data remains empty and Enhanced
+      // Conversions stay intentionally off.
       ad_user_data: value,
       ad_personalization: 'denied',
       analytics_storage: 'denied'
@@ -75,9 +78,9 @@
     // user-provided-data detection from reading contact fields in the DOM.
     adsGtag()('set', 'user_data', {});
     adsGtag()('js', new Date());
-    // Google Ads makes page-view detection read-only in the account UI. Keep
-    // the base configuration from emitting one so only approved conversions
-    // are reported after consent.
+    // Request suppression of the base page view. Google Ads may still emit a
+    // standard consented configuration/page-view hit; the privacy disclosure
+    // covers that platform behavior and the account's automatic extras are off.
     adsGtag()('config', ADS_ACCOUNT_ID, { send_page_view: false });
     var script = document.createElement('script');
     script.async = true;

@@ -159,9 +159,10 @@ not load Google Analytics, Meta Pixel or another ad-network script, and it does 
 create audiences or make ad-account changes. The Google tag is blocked under basic
 consent mode until the visitor selects **Allow measurement**; a first-time decline
 does not load the tag or send Google a consent ping. When allowed, the standard
-Google tag may process the page URL (including campaign or click identifiers), IP
-and device/browser signals, and advertising-cookie identifiers. The site sends four
-explicit conversion events: API-accepted quote submissions, successful embedded
+Google tag sends a configuration/page-view hit that may process the page URL
+(including campaign or click identifiers), IP and device/browser signals, and
+advertising-cookie identifiers. The site also sends four explicit conversion
+events: API-accepted quote submissions, successful embedded
 Cal bookings, phone-link clicks and WhatsApp-link clicks. A quote receipt or opaque
 booking UID is required and used as the transaction identifier; contact-link events
 are limited to one per action per tab and do not prove a call or message occurred.
