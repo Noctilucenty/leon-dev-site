@@ -1100,7 +1100,7 @@ def missed_lead_recovery_page():
     <h1 class="dsp business-copy">A contractor website that captures estimate requests <em>and follows up automatically.</em></h1>
     <p class="sub business-copy">Leon builds the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
     <div class="ctarow">{review_cta}{call_cta}</div>
-    <p class="hero-local business-copy">Based in California, working with Bay Area contractors and businesses across the U.S.</p>
+    <p class="hero-local business-copy">Based in California. Working remotely with contractors and home-service businesses across the U.S.</p>
   </div>
 </section>
 
@@ -1285,7 +1285,7 @@ def about_page():
 </main>
 ''' + footer()
 
-CAL_SLUG = "noctilucente-wzvdey/15min"
+CAL_SLUG = "leonbuilds/15min"
 
 ZH_CALL_DESCRIPTION = "免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工、哪里最费时间，我会告诉你适合怎么做、大概从多少钱起，也会直说暂时不需要做系统。"
 

@@ -94,7 +94,7 @@ test('all booking pages expose a resilient, privacy-bounded calendar funnel', ()
   for (const file of pages) {
     const html = read(file);
     assert.match(html, /id="leon-booker"[^>]*aria-busy="true"[^>]*min-height:680px/);
-    assert.match(html, /https:\/\/cal\.com\/noctilucente-wzvdey\/15min\?redirect=false/);
+    assert.match(html, /https:\/\/cal\.com\/leonbuilds\/15min\?redirect=false/);
     assert.match(html, /action:'bookerReady'/);
     assert.match(html, /action:'linkFailed'/);
     assert.match(html, /action:'bookingSuccessfulV2'/);
@@ -175,7 +175,7 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(visible, /Leon builds the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff/i);
   assert.match(visible, /fixed scope from \$1,500 and typically delivered in 10 business days/i);
   assert.match(html, /structured (?:estimate )?intake/i);
-  assert.match(visible, /Based in California, working with Bay Area contractors and businesses across the U\.S\./i);
+  assert.match(visible, /Based in California\. Working remotely with contractors and home-service businesses across the U\.S\./i);
   assert.doesNotMatch(html, /id="fit"|id="workflow"|id="automotive"|id="restaurants"|related-services/i, 'removed repetitive sections stay removed');
   assert.match(html, /id="scope"/);
   assert.match(html, /aria-labelledby="contractor-proof-title"/);
@@ -211,7 +211,7 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.doesNotMatch(mainOnly(read('industries/restaurants.html')), /href="\/missed-lead-recovery/);
 
   const copyGate = read('tools/check_copy.py');
-  assert.match(copyGate, /'missed-lead-recovery\.html': \{'bay area'\}/);
+  assert.match(copyGate, /TARGETED_PLACE_OK = \{\}/);
 });
 
 test('metadata, handoff copy, and generated footer stay honest and synchronized', () => {

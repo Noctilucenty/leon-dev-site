@@ -62,7 +62,7 @@
     </div>
     <div><div class="calendar-direct-row">
   <span>没有看到日历？</span>
-  <a class="btn calendar-direct" id="leon-cal-direct" href="https://cal.com/noctilucente-wzvdey/15min?redirect=false" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">直接打开预约页面</a>
+  <a class="btn calendar-direct" id="leon-cal-direct" href="https://cal.com/leonbuilds/15min?redirect=false" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">直接打开预约页面</a>
 </div>
 <div class="calwrap" id="leon-booker" aria-busy="true" style="min-height:680px;position:relative">
   <div id="leon-cal-status" role="status" style="position:absolute;inset:0;z-index:2;min-height:680px;padding:2rem;background:#050505;pointer-events:none">
@@ -175,7 +175,7 @@
   Cal.ns.leon15('on',{action:'bookerReady',callback:ready});
   Cal.ns.leon15('on',{action:'linkFailed',callback:failed});
   Cal.ns.leon15('on',{action:'bookingSuccessfulV2',callback:booked});
-  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:calConfig,calLink:'noctilucente-wzvdey/15min'});
+  Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:calConfig,calLink:'leonbuilds/15min'});
   Cal.ns.leon15('ui',{theme:'dark',hideEventTypeDetails:false,layout:'month_view'});
   var embedScript=document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
   if(embedScript) embedScript.addEventListener('error',failed,{once:true});

@@ -71,12 +71,9 @@ CITY = re.compile(
 # His actual school, and the automotive page's "repair bay", are both legitimate.
 CITY_OK = re.compile(r'cal state east bay|repair bay|service bay|bay door', re.I)
 
-# The paid-search contractor page is the one reviewed local exception. It still
-# states that delivery is remote and U.S.-wide; the Bay Area cue only preserves
-# continuity with the campaign's actual location targeting.
-TARGETED_PLACE_OK = {
-    'missed-lead-recovery.html': {'bay area'},
-}
+# Paid traffic can target selected markets without implying a local office or
+# narrowing the nationwide remote offer on the landing page.
+TARGETED_PLACE_OK = {}
 
 
 def visible_text(html_src):
