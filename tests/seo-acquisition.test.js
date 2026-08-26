@@ -68,6 +68,11 @@ test('work archive is indexable, canonical, and honest about proof status', () =
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/work">/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
   assert.match(visible, /the home screen/i);
+  assert.match(visible, /ALLCPR Site Intelligence/i);
+  assert.match(visible, /Operational client system.*ALLCPR/is);
+  assert.match(visible, /all 33,772 U\.S\. ZIP codes/i);
+  assert.match(visible, /field validation before opening/i);
+  assert.doesNotMatch(visible, /guaranteed best location|automatic opening decision/i);
   assert.match(visible, /client website project.*demo checkout/is);
   assert.match(visible, /payment and kitchen progression are simulations/is);
   assert.match(visible, /loqol disclosures/i);
@@ -265,7 +270,7 @@ test('high-intent industry pages form a focused web-design and lead-recovery clu
   }
 });
 
-test('unreleased client feedback and ratings stay off every related service page', () => {
+test('only released client feedback appears on related service pages and ratings stay off', () => {
   const pages = [
     'services/ai-chatbots.html',
     'services/ai-phone-agents.html',
@@ -273,10 +278,19 @@ test('unreleased client feedback and ratings stay off every related service page
     'services/business-dashboards.html',
     'services/custom-software.html',
   ];
+  const publication = JSON.parse(read('content/client-success/testimonial-publication.json'));
+  const releasedIds = new Set(publication.approved_testimonials.map(record => record.id));
 
   for (const file of pages) {
     const html = read(file);
-    assert.doesNotMatch(html, /data-testimonial-id|testimonial-stars|5 out of 5 stars|★★★★★/i);
+    const publishedOnPage = Array.from(
+      html.matchAll(/data-testimonial-id=["']([^"']+)["']/gi),
+      match => match[1]
+    );
+    for (const testimonialId of publishedOnPage) {
+      assert.ok(releasedIds.has(testimonialId), `${file} only renders testimonials in the release manifest`);
+    }
+    assert.doesNotMatch(html, /testimonial-stars|5 out of 5 stars|★★★★★/i);
     const schemas = Array.from(html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi), match => match[1]);
     assert.doesNotMatch(schemas.join('\n'), /AggregateRating|Review|reviewRating|ratingValue/i);
   }

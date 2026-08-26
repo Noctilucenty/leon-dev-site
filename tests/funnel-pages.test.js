@@ -188,9 +188,9 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.ok(html.indexOf('class="landing-jump-wrap"') < html.indexOf('id="scope"'), 'find-it-fast links appear before the detailed scope');
   assert.ok(html.indexOf('id="scope"') < html.indexOf('id="proof"'), 'scope appears before proof');
   assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
-  assert.match(visible, /Operational decision support · client details private/i);
-  assert.match(visible, /Site intelligence/i);
-  assert.match(visible, /operational logic and handoff—not a promise of lead or revenue results/i);
+  assert.match(visible, /Operational client system · ALLCPR/i);
+  assert.match(visible, /ALLCPR Site Intelligence/i);
+  assert.match(visible, /prioritizes markets for field validation.*not evidence of leads, revenue, or an opening decision/is);
   assert.match(html, /href="\/work#work-site-intelligence"/i);
   assert.match(html, /30 days of fixes (?:for defects )?against the (?:agreed )?written scope/);
   assert.match(visible, /Provider fees remain with the provider/i);

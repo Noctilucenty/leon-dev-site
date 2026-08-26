@@ -56,10 +56,12 @@ The current configuration is clearer than the original Bay Area build. The
 published homepage now identifies The Home Screen honestly as a client website
 build with a demo checkout, and the contractor landing page makes scope,
 pricing, proof, and next actions easy to scan. Seven testimonial drafts exist
-locally. Heather's Flores Boxing Gloves feedback and Glenn's Home Screen website
-feedback are now released from the tracked public allowlist after approval of
-the exact quote, attribution, and placement. No star rating is published.
-Glenn's website feedback is also placed directly on the contractor landing page.
+locally. Heather's Flores Boxing Gloves feedback, Glenn's Home Screen website
+feedback, and ALLCPR's Site Intelligence feedback are now released from the
+tracked public allowlist after approval of the exact quote, attribution, and
+placement. No star rating is published. Glenn's website feedback is placed
+directly on the contractor landing page, and all three are available from the
+public Reviews route.
 
 The remaining high-impact work is:
 

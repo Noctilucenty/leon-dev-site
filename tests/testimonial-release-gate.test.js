@@ -33,10 +33,10 @@ test('all seven testimonial drafts remain byte-locked in non-public draft data',
   assert.ok(document.testimonials.every(item => item.supplied_rating === 5));
 });
 
-test('the tracked public allowlist contains only the two explicitly approved client quotes', () => {
+test('the tracked public allowlist contains only the three explicitly approved client quotes', () => {
   const publication = JSON.parse(fs.readFileSync(publicationPath, 'utf8'));
   assert.equal(publication.schema_version, 1);
-  assert.deepEqual(publication.approved_testimonials.map(item => item.id), ['testimonial-01', 'testimonial-03']);
+  assert.deepEqual(publication.approved_testimonials.map(item => item.id), ['testimonial-01', 'testimonial-02', 'testimonial-03']);
   assert.ok(publication.approved_testimonials.every(item => item.rating_approval === null));
   if (fs.existsSync(draftsPath)) {
     const drafts = JSON.parse(fs.readFileSync(draftsPath, 'utf8')).testimonials;
@@ -66,7 +66,7 @@ test('the public static manifest passes the standalone testimonial release asser
     encoding: 'utf8',
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /(?:0|7) drafts preserved; 2 quotes and 0 ratings released/i);
+  assert.match(result.stdout, /(?:0|7) drafts preserved; 3 quotes and 0 ratings released/i);
 });
 
 test('approved public payloads remain buildable without the private draft queue', t => {
@@ -81,7 +81,7 @@ test('approved public payloads remain buildable without the private draft queue'
     `sys.path.insert(0, ${JSON.stringify(path.join(ROOT, 'tools'))})`,
     'from testimonial_gate import load_testimonial_release',
     'drafts, released = load_testimonial_release(Path(sys.argv[1]))',
-    "assert not drafts and set(released) == {'testimonial-01', 'testimonial-03'}",
+    "assert not drafts and set(released) == {'testimonial-01', 'testimonial-02', 'testimonial-03'}",
   ].join('; ');
   const result = childProcess.spawnSync('python3', ['-c', python, tempRoot], {
     cwd: ROOT,

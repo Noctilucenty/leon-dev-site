@@ -23,11 +23,16 @@ TESTIMONIAL_DISPLAY_ORDER = [
     "testimonial-04",  # contractor website
     "testimonial-03",  # business homepage
     "testimonial-05",  # dealership phone workflow
+    "testimonial-01",  # custom product design
     "testimonial-02",  # location-planning platform
     "testimonial-07",  # renovation proposal
     "testimonial-06",  # evidence-aware assistant
-    "testimonial-01",  # custom product design
 ]
+HOMEPAGE_TESTIMONIAL_LIMIT = 2
+TESTIMONIAL_PROJECT_LINKS = {
+    "testimonial-02": "/work#work-site-intelligence",
+    "testimonial-03": "/work#work-homescreen",
+}
 REVIEWS_ROUTE_ENABLED = len(RELEASED_TESTIMONIALS) >= 3
 REVIEWS_PUBLISHED = bool(RELEASED_TESTIMONIALS)
 IDENTITY_URLS = [
@@ -127,7 +132,7 @@ SERVICES = [
    "custom software is for when nothing on the menu is the shape of your problem. the client-funded Home Screen website, for example, pairs public business pages with server-side pricing and vendor-separated demo order logic while clearly keeping payments and kitchen operations mocked."],
   pains=["you've outgrown the spreadsheet that runs part of the business","off-the-shelf tools each do 70% of what you need","your industry has a workflow no product understands","you're paying for five subscriptions to approximate one system"],
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
-  proof=("the Home Screen client website","a client website with public business pages, menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
+  proof=("ALLCPR Site Intelligence","an operational location-planning platform that helps a CPR training network screen expansion markets across all 33,772 U.S. ZIP codes while keeping uncertainty and field validation visible."),
  faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — i'll tell you so in the free call. custom wins when the missing 30% is the part your business actually runs on."),
    ("what does custom software cost?","full builds start at $1,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
    ("what happens if you get hit by a bus?","the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make me irreplaceable.")],
@@ -156,7 +161,7 @@ SERVICES = [
    "the same goes for a job somebody repeats forty times a day in six clicks. a focused internal tool can shorten that path, and the scope can define exactly which clicks or minutes to measure before and after."],
   pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","a repetitive task eats hours across the team","the answer to 'how do we know this number' is 'ask the one person who knows'"],
   build=["live dashboards fed straight from your real systems","the handful of numbers that matter, not eighty charts","alerts when a number crosses a line you set","scheduled email summaries for people who won't open a dashboard","clean history so trends are visible, not remembered","chrome extensions and small tools built for the exact job, nothing else"],
-  proof=("site intelligence","decision support scoring all 33,772 us zip codes across nine data sources — with every score carrying an uncertainty band instead of false precision. dashboards are the small sibling of that discipline."),
+  proof=("ALLCPR Site Intelligence","decision support covering all 33,772 U.S. ZIP codes, with Maps context, public data, company history, uncertainty ranges, screening verdicts and team exports."),
  faqs=[("what does a dashboard cost?","both a small internal tool and a dashboard start at $750, and scale with how many systems have to feed them. fixed quote before work starts."),
    ("our data is a mess. does that matter?","that's normal — cleaning and joining it is part of the build, not a surcharge surprise."),
    ("can it pull from our pos / quickbooks / sheets?","usually yes. i verify your specific systems before quoting.")],
@@ -269,7 +274,7 @@ INDUSTRIES = [
    ("driver app","photos, signatures and status from the cab — no retyping. from $3,500","mobile-apps"),
    ("document automation","pods, bols and invoices extracted and filed automatically. from $500","business-automation"),
    ("customer tracking portal","they look it up instead of calling you. from $1,500","custom-software")],
-  proof=("site intelligence","a decision system across 33,772 zip codes and nine data sources — the data discipline logistics operations run on, applied end to end."),
+  proof=("ALLCPR Site Intelligence","a nationwide location-planning platform that turns Maps context, public data and operating history into reviewable market screens instead of a black-box answer."),
   faqs=[("our process is unusual. can software fit it?","unusual processes are the reason custom exists — the build is shaped around your real workflow, not a template's guess."),
    ("what's the first thing to fix?","usually the dispatch copy-paste loop — highest error rate, easiest automation."),
    ("do drivers need new hardware?","no — driver tools run on the phones they already carry.")],
@@ -357,9 +362,16 @@ def testimonial_card(testimonial_id, classes="testimonial-card"):
     stars = ''
     if item["show_rating"]:
         stars = '<p class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</p>'
+    project = e(item["project"])
+    project_href = TESTIMONIAL_PROJECT_LINKS.get(testimonial_id)
+    if project_href:
+        project = (
+            f'<a href="{e(project_href)}" data-evt="testimonial_project_click">'
+            f'{project}</a>'
+        )
     return (
         f'<article class="{e(classes)}" data-testimonial-id="{e(testimonial_id)}">'
-        f'{stars}<p class="testimonial-project">{e(item["project"])}</p>'
+        f'{stars}<p class="testimonial-project">{project}</p>'
         f'<blockquote>“{e(item["quote"])}”</blockquote>'
         f'<p class="testimonial-person"><strong>{e(item["attribution"])}</strong>'
         f'<span>{e(item["attribution_context"])}</span></p></article>'
@@ -387,8 +399,8 @@ def homepage_testimonial_section():
     released_ids = released_testimonial_ids()
     if not released_ids:
         return ''
-    first = testimonial_cards(released_ids[:3])
-    more = ('<a class="cx-mini" href="/reviews">Read all approved client feedback →</a>'
+    first = testimonial_cards(released_ids[:HOMEPAGE_TESTIMONIAL_LIMIT])
+    more = ('<a class="cx-mini" href="/reviews">All reviews →</a>'
             if REVIEWS_ROUTE_ENABLED else '')
     count = len(released_ids)
     noun = "review" if count == 1 else "reviews"
@@ -397,7 +409,7 @@ def homepage_testimonial_section():
     <header class="sec-head reviews-head">
       <div><p class="label">{count} direct client {noun}</p>
         <h2 class="dsp">Feedback on real <em>business projects.</em></h2></div>
-      <p class="sub business-copy">Project-specific feedback published with client approval.</p>
+      <p class="sub business-copy">Client-approved project feedback.</p>
     </header>
     <div class="testimonial-grid">{first}</div>
 {more}
@@ -536,6 +548,7 @@ ICONS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true">
 # Proof links must land on visible, current public evidence. Unreleased client
 # feedback is never a proof destination.
 WORK_ANCHORS = [
+    ('allcpr site intelligence', '#work-site-intelligence'),
     ('site intelligence', '#work-site-intelligence'),
     ('location', '#work-site-intelligence'),
     ('home screen', '#work-homescreen'),
@@ -594,6 +607,7 @@ def service_page(s):
     reviews = ''
     cards = testimonial_cards(s.get("review_ids", []), "service-review")
     if cards:
+        reviews_href = "/reviews" if REVIEWS_ROUTE_ENABLED else "/#testimonials"
         review_heading = ("What website clients said after the build"
                           if s["slug"] == "websites"
                           else "What clients said about related work")
@@ -602,7 +616,7 @@ def service_page(s):
     <p class="label">direct client feedback</p>
     <h2 class="page-section-title">{e(review_heading)}</h2>
     <div class="service-review-grid">{cards}</div>
-    <a class="cx-mini" href="/#testimonials">read approved client feedback →</a>
+    <a class="cx-mini" href="{reviews_href}">read approved client feedback →</a>
   </div>
 </section>
 '''
@@ -879,14 +893,16 @@ def work_page():
     <div class="case-grid">
       <article class="case-card case-featured" id="work-site-intelligence">
         <span id="work-zips" aria-hidden="true"></span>
-        <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="An anonymized nationwide site-intelligence map comparing expansion areas" loading="lazy" width="1200" height="480"></figure>
+        <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure>
         <div class="case-copy">
-          <p class="label">Operational project · client anonymized</p>
-          <h3>Site intelligence</h3>
-          <p class="business-copy"><b>Problem:</b> A training business needed a disciplined way to compare where to open, staff, and grow instead of trusting one headline score.</p>
-          <p class="business-copy"><b>Built:</b> Decision support across 33,772 U.S. ZIP codes and nine data sources, with uncertainty bands, screening verdicts, maps, and an export for review.</p>
-          <p class="business-copy"><b>Measured finding:</b> Leak-free validation reduced the old model's apparent correlation from 0.81 to 0.21. The useful outcome was catching false confidence before expansion decisions used it.</p>
-          <p class="case-role">Role: data product and full-stack developer · client identity withheld</p>
+          <p class="label">Operational client system · ALLCPR</p>
+          <h3>ALLCPR Site Intelligence</h3>
+          <p class="business-copy"><b>Problem:</b> ALLCPR needed a consistent way to compare where to open, staff, and grow instead of manually searching maps or trusting one headline score.</p>
+          <p class="business-copy"><b>Built:</b> Leon built a location-planning system covering all 33,772 U.S. ZIP codes. It brings together targeted local-business map data, public business and facility data, ALLCPR's history, uncertainty ranges, reasons for and against each area, maps, and Excel exports for the team.</p>
+          <p class="business-copy"><b>Reliability check:</b> Leon found and removed a misleading validation loop, so the platform shows uncertainty instead of presenting false confidence as fact.</p>
+          <p class="business-copy"><b>Decision boundary:</b> The platform prioritizes markets to investigate. Rent, parking, classroom fit, instructor coverage, and current local conditions still require human field validation before opening.</p>
+          <p class="case-role">Role: data product and full-stack developer · ALLCPR client project</p>
+          {testimonial_card("testimonial-02", "service-review case-review")}
         </div>
       </article>
 
@@ -1156,10 +1172,10 @@ def missed_lead_recovery_page():
     <p class="label">Operational business-system proof</p>
     <h2 class="page-section-title" id="contractor-proof-title">See how Leon turns a business decision into a reviewable workflow.</h2>
     <div class="proofcard">
-      <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="An anonymized nationwide site-intelligence map with reviewable expansion areas" loading="lazy" width="1200" height="480"></figure>
-      <p class="label">Operational decision support · client details private</p>
-      <h3>Site intelligence</h3>
-      <p class="sub business-copy">Leon built a nationwide site-planning workflow that combines nine data sources, uncertainty bands, screening verdicts, maps, and an export for human review. It demonstrates operational logic and handoff—not a promise of lead or revenue results.</p>
+      <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure>
+      <p class="label">Operational client system · ALLCPR</p>
+      <h3>ALLCPR Site Intelligence</h3>
+      <p class="sub business-copy">Leon built a nationwide location-planning workflow across all 33,772 U.S. ZIP codes, combining selected Google Places context, public data, company history, uncertainty ranges, screening verdicts, maps, and a reviewable team export. It prioritizes markets for field validation; it is not evidence of leads, revenue, or an opening decision.</p>
       <a class="cx-mini" href="/work#work-site-intelligence" data-evt="contractor_proof_demo_click">View the project details →</a>
     </div>
   </div>
@@ -1269,7 +1285,7 @@ def about_page():
         <li><svg class="ic"><use href="#ic-check"/></svg>an iphone app that is on the app store today — built solo end to end, including subscriptions and app store review</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>an online ordering system where one kitchen runs several brands and a single cart splits itself per brand, with each brand's accounting kept separate</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a market scoring system covering all 33,772 us zip codes across nine data sources, every score carrying an uncertainty band instead of false precision</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform covering all 33,772 U.S. ZIP codes with Maps context, public data, company history, and uncertainty ranges</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a compliance-aware assistant in chinese where deterministic safety rules run before any model does, and it declines to answer rather than break advertising law</li>
       </ul>
     </div>

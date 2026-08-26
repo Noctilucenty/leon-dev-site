@@ -18,6 +18,22 @@
       "rating_approval": null
     },
     {
+      "id": "testimonial-02",
+      "approved_payload": {
+        "id": "testimonial-02",
+        "project": "ALLCPR Site Intelligence",
+        "attribution": "ALLCPR",
+        "attribution_context": "CPR training network",
+        "quote": "Leon built a system that helped us evaluate and plan new locations as ALLCPR expanded. It became a useful part of how we approached opening branches and supported our growth to more than 300 locations. He understood the business problem and built something practical that we could actually use.",
+        "placement": "leonbuilds.org and related project marketing"
+      },
+      "payload_sha256": "6f4168193557ac4578a25a044d892a22862c24d95ed9363a30693e9e5864d9ce",
+      "approved_at": "2026-08-25",
+      "approval_evidence_sha256": "3722a023ce2400316eb09a8aa56534e4f829d493a7c2c0180cce019f1e85eef5",
+      "placement": "leonbuilds.org and related project marketing",
+      "rating_approval": null
+    },
+    {
       "id": "testimonial-03",
       "approved_payload": {
         "id": "testimonial-03",

@@ -202,7 +202,8 @@ test('hero pairs the offer with three immediately verifiable trust paths', () =>
   const links = linksIn(panel);
 
   assert.match(visible, /public proof/i);
-  assert.match(visible, /operational business system/i);
+  assert.match(visible, /ALLCPR Site Intelligence/i);
+  assert.match(visible, /location-planning system/i);
   assert.match(visible, /live app store product/i);
   assert.match(visible, /Leon Kelvin Li/i);
   assert.equal(links.length, 3, 'proof panel has exactly three verification paths');
@@ -251,14 +252,16 @@ test('at least two proof cards demonstrate business-facing systems and the archi
   assert.equal(articles.length, 3, 'homepage shows exactly three proof cards');
 
   const orderedText = articles.map(article => plainText(article).toLowerCase());
-  assert.ok(orderedText.some(text => /operational system|live product|client website|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
+  assert.ok(orderedText.some(text => /operational (?:client )?system|live product|client website|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
+  assert.match(orderedText.join('\n'), /ALLCPR Site Intelligence/i);
+  assert.match(orderedText.join('\n'), /33,772 U\.S\. ZIP codes/i);
   assert.match(orderedText.join('\n'), /the home screen/);
   assert.match(orderedText.join('\n'), /client website build.*demo checkout/);
   assert.match(orderedText.join('\n'), /payments and kitchen operations are not live/);
   assert.match(orderedText.join('\n'), /curio/);
   assert.match(orderedText.join('\n'), /live product.*app store/);
 
-  const businessFacing = orderedText.filter(text => /website|business|operator|order|menu|quote|estimate|lead|follow-up|workflow|disclosure|document|handoff|time-saving/.test(text));
+  const businessFacing = orderedText.filter(text => /website|business|operator|order|menu|quote|estimate|lead|follow-up|workflow|expansion|location|decision|disclosure|document|handoff|time-saving/.test(text));
   assert.ok(businessFacing.length >= 2, `${businessFacing.length}/3 proof cards demonstrate business-facing work; at least 2 are required`);
 
   for (const [index, card] of articles.entries()) {
@@ -271,7 +274,7 @@ test('at least two proof cards demonstrate business-facing systems and the archi
   const work = read('work.html');
   assert.match(work, /<link rel=["']canonical["'] href=["']https:\/\/leonbuilds\.org\/work["']>/i);
   assert.match(work, /<h1\b/i);
-  for (const name of ['The Home Screen', 'Loqol disclosures', 'Curio']) assert.match(plainText(work), new RegExp(name, 'i'));
+  for (const name of ['ALLCPR Site Intelligence', 'The Home Screen', 'Loqol disclosures', 'Curio']) assert.match(plainText(work), new RegExp(name, 'i'));
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/work<\/loc>/i);
 });
 
@@ -293,7 +296,7 @@ test('testimonials remain conditional and fail closed at the public surface', ()
     assert.equal(sitemapHasReviews, false, 'zero releases do not advertise /reviews');
     assert.doesNotMatch(html, /id=["'](?:testimonials|reviews)["']|testimonial-(?:card|stars|person|project)|5 out of 5 stars|★★★★★/i);
   } else {
-    assert.equal(cards.length, Math.min(3, publication.length), 'homepage renders only the released feedback count, capped at three');
+    assert.equal(cards.length, Math.min(2, publication.length), 'homepage renders only the released feedback count, capped at two');
     const renderedIds = cards.map(card => attributes(card.slice(0, card.indexOf('>') + 1))['data-testimonial-id']);
     assert.equal(new Set(renderedIds).size, renderedIds.length, 'released homepage reviews are not duplicated');
     assert.ok(renderedIds.every(id => publication.some(item => item.id === id)), 'every rendered review is allowlisted');

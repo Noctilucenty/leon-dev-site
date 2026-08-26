@@ -16,13 +16,14 @@ These are starting scope floors, not instant quotes. Leon confirms the fixed pri
 
 - [Homepage](https://leonbuilds.org/): focused offer, visible starting prices, inspectable public work and a direct path to a quote.
 - [Selected work](https://leonbuilds.org/work): client work, public demos and live-product evidence with current status labels.
+- [Approved client reviews](https://leonbuilds.org/reviews): exact project-specific feedback from ALLCPR, Glenn and Heather; no star ratings are published.
 - [Book a free 15-minute call](https://leonbuilds.org/call): weekday availability in Pacific time.
 - [Tell Leon what you need](https://leonbuilds.org/quote): describe what is broken, manual or missing in plain language.
 - [All services](https://leonbuilds.org/services/): secondary service routes and published starting prices.
 
 ## Public proof you can inspect — primary examples
 
-- [Site intelligence](https://leonbuilds.org/work#work-site-intelligence): **Operational project · client anonymized**. Leon built location screening across 33,772 U.S. ZIP codes and nine data sources, with uncertainty bands, screening verdicts, maps and a reviewable export. It is evidence of an operational workflow, not a promise of leads or revenue.
+- [ALLCPR Site Intelligence](https://leonbuilds.org/work#work-site-intelligence): **Operational client system · ALLCPR**. Leon built an internal location-planning platform across all 33,772 U.S. ZIP codes, combining selected Google Places context, public business and facility data, company history, uncertainty ranges, screening verdicts, maps and a reviewable team export. It prioritizes markets for human field validation; it does not guarantee leads, revenue or an opening decision.
 - [The Home Screen client website](https://the-home-screen.onrender.com/?b=b_bulapies): **Client website project · demo checkout**. It shows business-specific pages, menus, search and a demonstration cart. Payments and kitchen operations are not live.
 - [Curio on the App Store](https://apps.apple.com/app/id6781121127): **Live product**. Leon built the client, backend, subscriptions and four-language localization end to end.
 
