@@ -56,18 +56,17 @@ The current configuration is clearer than the original Bay Area build. The
 published homepage now identifies The Home Screen honestly as a client website
 build with a demo checkout, and the contractor landing page makes scope,
 pricing, proof, and next actions easy to scan. Seven testimonial drafts exist
-locally, but the tracked public-release allowlist remains empty. They must not
-be treated as published client proof until the clients approve the exact quote,
-attribution, and placement.
+locally. Heather's Flores Boxing Gloves feedback and Glenn's Home Screen website
+feedback are now released from the tracked public allowlist after approval of
+the exact quote, attribution, and placement. No star rating is published.
+Glenn's website feedback is also placed directly on the contractor landing page.
 
 The remaining high-impact work is:
 
 1. pause the earlier metro RSA so only the clean-tracking replacement can serve;
-2. verify one real Ads-attributed quote or booking receipt before changing to a
-   conversion-based bidding strategy; and
-3. release the supplied testimonials only after their publication evidence is
-   recorded, then place the most relevant website/home-service proof directly on
-   the contractor landing page.
+2. verify Resend inbox delivery end to end; and
+3. verify one real Ads-attributed quote or booking receipt before changing to a
+   conversion-based bidding strategy.
 
 The owner confirmed the final spend action after the website deployment and
 Google identity verification. Campaign `24176728247` was enabled on August 25,

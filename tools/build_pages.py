@@ -397,10 +397,10 @@ def homepage_testimonial_section():
     <header class="sec-head reviews-head">
       <div><p class="label">{count} direct client {noun}</p>
         <h2 class="dsp">Feedback on real <em>business projects.</em></h2></div>
-      <p class="sub business-copy">Exact project-specific feedback published with client approval.</p>
+      <p class="sub business-copy">Project-specific feedback published with client approval.</p>
     </header>
     <div class="testimonial-grid">{first}</div>
-    {more}
+{more}
   </div>
 </section>'''
 
@@ -1080,7 +1080,9 @@ def missed_lead_recovery_page():
     review_cta = '''<a class="btn btn-solid magnet" href="/quote?service=contractor-lead-recovery" data-evt="contractor_review_click"><span class="business-copy">Get a free 3-point website review</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
     call_cta = '''<a class="btn magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Book a free 15-minute review</span></a>'''
     check = '<svg class="ic"><use href="#ic-check"/></svg>'
-    review_cards = testimonial_cards(["testimonial-04", "testimonial-05"], "service-review")
+    review_cards = testimonial_cards(
+        ["testimonial-03", "testimonial-04", "testimonial-05"], "service-review"
+    )
     reviews_section = ''
     if review_cards:
         reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '/#testimonials'

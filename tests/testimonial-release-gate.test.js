@@ -33,9 +33,31 @@ test('all seven testimonial drafts remain byte-locked in non-public draft data',
   assert.ok(document.testimonials.every(item => item.supplied_rating === 5));
 });
 
-test('the tracked public allowlist defaults to empty', () => {
+test('the tracked public allowlist contains only the two explicitly approved client quotes', () => {
   const publication = JSON.parse(fs.readFileSync(publicationPath, 'utf8'));
-  assert.deepEqual(publication, { schema_version: 1, approved_testimonials: [] });
+  assert.equal(publication.schema_version, 1);
+  assert.deepEqual(publication.approved_testimonials.map(item => item.id), ['testimonial-01', 'testimonial-03']);
+  assert.ok(publication.approved_testimonials.every(item => item.rating_approval === null));
+  if (fs.existsSync(draftsPath)) {
+    const drafts = JSON.parse(fs.readFileSync(draftsPath, 'utf8')).testimonials;
+    for (const release of publication.approved_testimonials) {
+      const draft = drafts.find(item => item.id === release.id);
+      assert.ok(draft, `${release.id} has a locked source draft`);
+      const payload = {
+        id: draft.id,
+        project: draft.project,
+        attribution: draft.attribution,
+        attribution_context: draft.attribution_context,
+        quote: draft.quote,
+        placement: draft.placement,
+      };
+      assert.deepEqual(release.approved_payload, payload);
+      const digest = crypto.createHash('sha256').update(
+        JSON.stringify(payload, Object.keys(payload).sort())
+      ).digest('hex');
+      assert.equal(release.payload_sha256, digest);
+    }
+  }
 });
 
 test('the public static manifest passes the standalone testimonial release assertion', () => {
@@ -44,7 +66,28 @@ test('the public static manifest passes the standalone testimonial release asser
     encoding: 'utf8',
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
-  assert.match(result.stdout, /(?:0|7) drafts preserved; 0 quotes and 0 ratings released/i);
+  assert.match(result.stdout, /(?:0|7) drafts preserved; 2 quotes and 0 ratings released/i);
+});
+
+test('approved public payloads remain buildable without the private draft queue', t => {
+  const tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'leon-testimonial-public-'));
+  t.after(() => fs.rmSync(tempRoot, { recursive: true, force: true }));
+  const target = path.join(tempRoot, 'content', 'client-success');
+  fs.mkdirSync(target, { recursive: true });
+  fs.copyFileSync(publicationPath, path.join(target, 'testimonial-publication.json'));
+  const python = [
+    'import sys',
+    'from pathlib import Path',
+    `sys.path.insert(0, ${JSON.stringify(path.join(ROOT, 'tools'))})`,
+    'from testimonial_gate import load_testimonial_release',
+    'drafts, released = load_testimonial_release(Path(sys.argv[1]))',
+    "assert not drafts and set(released) == {'testimonial-01', 'testimonial-03'}",
+  ].join('; ');
+  const result = childProcess.spawnSync('python3', ['-c', python, tempRoot], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
 test('missing publication state fails closed', t => {

@@ -182,7 +182,9 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   assert.match(visible, /what your website must answer in five seconds/i);
   assert.match(visible, /website cost depends on what the site must do/i);
   assert.match(visible, /public product and workflow evidence/i);
-  assert.doesNotMatch(html, /data-testimonial-id|testimonial-stars|5 out of 5 stars|★★★★★/i);
+  assert.match(html, /data-testimonial-id="testimonial-03"/i);
+  assert.match(visible, /I hired Leon to build The Home Screen website/i);
+  assert.doesNotMatch(html, /testimonial-stars|5 out of 5 stars|★★★★★/i);
   assert.match(html, /href="\/industries\/contractors"/i);
   assert.match(html, /href="\/industries\/automotive"/i);
   assert.match(html, /href="\/industries\/restaurants"/i);

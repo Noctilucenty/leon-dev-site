@@ -205,7 +205,7 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.ok(mainWords.length <= 650, `contractor landing has ${mainWords.length} main words; maximum is 650`);
   assert.doesNotMatch(html, /\$2,500/);
   assert.doesNotMatch(html, /guarantee(?:d|s)? (?:leads|bookings|revenue)/);
-  const hasRelevantFeedback = approvedTestimonials().some(item => ['testimonial-04', 'testimonial-05'].includes(item.id));
+  const hasRelevantFeedback = approvedTestimonials().some(item => ['testimonial-03', 'testimonial-04', 'testimonial-05'].includes(item.id));
   if (hasRelevantFeedback) {
     assert.match(html, /id="client-feedback"/);
     assert.match(html, /href="#client-feedback">Client feedback<\/a>/);

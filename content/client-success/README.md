@@ -44,10 +44,11 @@ The seven supplied quotes and supplied five-star values are preserved verbatim i
 the gitignored local `testimonial-drafts.json`. This repository is public, so
 unapproved client wording must not be committed merely because the static site
 would omit it. That file is source material, not publication permission.
-`testimonial-publication.json` is the tracked public release allowlist and
-defaults to an empty list. A clean deployment with an empty allowlist does not
-need the private draft file; any non-empty release fails closed unless the exact
-private source is supplied during the release build.
+`testimonial-publication.json` is the tracked public release allowlist. Each
+released entry carries only its exact approved public payload, so a clean
+deployment can render approved feedback without receiving the remaining private
+drafts. When the local draft queue is present, the gate also requires every
+released payload to match its locked private source exactly.
 
 A release record must match the SHA-256 digest of the exact quote, attribution,
 project label, context, placement, and ID. It also needs an approval date and a
@@ -70,6 +71,14 @@ entry is shaped like this only after the private approval evidence exists:
 ```json
 {
   "id": "approved-testimonial-id",
+  "approved_payload": {
+    "id": "approved-testimonial-id",
+    "project": "Approved project label",
+    "attribution": "Approved attribution",
+    "attribution_context": "Approved context",
+    "quote": "Exact approved quote",
+    "placement": "leonbuilds.org and related project marketing"
+  },
   "payload_sha256": "64-lowercase-hex-characters",
   "approved_at": "YYYY-MM-DD",
   "approval_evidence_sha256": "64-lowercase-hex-characters",

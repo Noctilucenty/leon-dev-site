@@ -25,6 +25,14 @@ PUBLICATION_RELATIVE = Path("content/client-success/testimonial-publication.json
 PLACEMENT = "leonbuilds.org and related project marketing"
 SHA256_RE = re.compile(r"[0-9a-f]{64}")
 ID_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+PUBLIC_PAYLOAD_FIELDS = {
+    "id",
+    "project",
+    "attribution",
+    "attribution_context",
+    "quote",
+    "placement",
+}
 CARD_RE = re.compile(
     r'<article\b(?=[^>]*\bdata-testimonial-id=["\']([^"\']+)["\'])[^>]*>[\s\S]*?</article>',
     re.I,
@@ -131,6 +139,20 @@ def _validate_drafts(document: dict) -> list[dict]:
     return drafts
 
 
+def _validate_approved_payload(value: object, label: str) -> dict:
+    if not isinstance(value, dict) or set(value) != PUBLIC_PAYLOAD_FIELDS:
+        raise TestimonialGateError(f"{label}: fields do not match the public payload schema")
+    testimonial_id = value.get("id")
+    if not isinstance(testimonial_id, str) or not ID_RE.fullmatch(testimonial_id):
+        raise TestimonialGateError(f"{label}.id: invalid")
+    for field in ("project", "attribution", "attribution_context", "quote"):
+        if not isinstance(value.get(field), str) or not value[field].strip():
+            raise TestimonialGateError(f"{label}.{field}: required")
+    if value.get("placement") != PLACEMENT:
+        raise TestimonialGateError(f"{label}.placement: unexpected placement")
+    return value
+
+
 def load_testimonial_release(root: Path = ROOT) -> tuple[list[dict], dict[str, dict]]:
     """Return all locked drafts and only individually publishable records."""
     publication = _read_json(root / PUBLICATION_RELATIVE)
@@ -141,21 +163,13 @@ def load_testimonial_release(root: Path = ROOT) -> tuple[list[dict], dict[str, d
         raise TestimonialGateError("testimonial publication: approved_testimonials must be a list")
 
     draft_path = root / DRAFTS_RELATIVE
-    if not draft_path.is_file():
-        if entries:
-            raise TestimonialGateError(
-                "testimonial drafts: private draft source is required before any release"
-            )
-        # The exact unapproved quotes stay local and gitignored because this
-        # repository is public. A clean deployment may still prove that zero
-        # testimonials are released without receiving those private drafts.
-        return [], {}
-    drafts = _validate_drafts(_read_json(draft_path))
+    drafts = _validate_drafts(_read_json(draft_path)) if draft_path.is_file() else []
 
     by_id = {draft["id"]: draft for draft in drafts}
     released: dict[str, dict] = {}
     required = {
         "id",
+        "approved_payload",
         "payload_sha256",
         "approved_at",
         "approval_evidence_sha256",
@@ -167,20 +181,29 @@ def load_testimonial_release(root: Path = ROOT) -> tuple[list[dict], dict[str, d
         if not isinstance(entry, dict) or set(entry) != required:
             raise TestimonialGateError(f"{label}: fields do not match the locked schema")
         testimonial_id = entry.get("id")
-        if testimonial_id not in by_id:
+        if not isinstance(testimonial_id, str) or not ID_RE.fullmatch(testimonial_id):
+            raise TestimonialGateError(f"{label}.id: invalid")
+        if drafts and testimonial_id not in by_id:
             raise TestimonialGateError(f"{label}.id: unknown testimonial")
         if testimonial_id in released:
             raise TestimonialGateError(f"{label}.id: duplicate release")
-        draft = by_id[testimonial_id]
-        if entry.get("payload_sha256") != testimonial_payload_sha256(draft):
+        approved_payload = _validate_approved_payload(
+            entry.get("approved_payload"), f"{label}.approved_payload"
+        )
+        if approved_payload["id"] != testimonial_id:
+            raise TestimonialGateError(f"{label}.approved_payload.id: must match release id")
+        if entry.get("payload_sha256") != testimonial_payload_sha256(approved_payload):
             raise TestimonialGateError(f"{label}: exact quote and attribution payload digest does not match")
+        draft = by_id.get(testimonial_id)
+        if draft is not None and testimonial_payload(draft) != approved_payload:
+            raise TestimonialGateError(f"{label}: public payload does not match the locked private draft")
         if not _valid_date(entry.get("approved_at")):
             raise TestimonialGateError(f"{label}.approved_at: valid ISO date required")
         if not isinstance(entry.get("approval_evidence_sha256"), str) or not SHA256_RE.fullmatch(
             entry["approval_evidence_sha256"]
         ):
             raise TestimonialGateError(f"{label}.approval_evidence_sha256: SHA-256 receipt required")
-        if entry.get("placement") != draft["placement"]:
+        if entry.get("placement") != approved_payload["placement"]:
             raise TestimonialGateError(f"{label}.placement: must exactly match the client-reviewed placement")
 
         show_rating = False
@@ -188,7 +211,8 @@ def load_testimonial_release(root: Path = ROOT) -> tuple[list[dict], dict[str, d
         if rating is not None:
             if not isinstance(rating, dict) or set(rating) != {"value", "approved_at", "evidence_sha256"}:
                 raise TestimonialGateError(f"{label}.rating_approval: fields do not match the locked schema")
-            if rating.get("value") != draft["supplied_rating"]:
+            expected_rating = draft["supplied_rating"] if draft is not None else 5
+            if rating.get("value") != expected_rating:
                 raise TestimonialGateError(f"{label}.rating_approval.value: does not match the supplied rating")
             if not _valid_date(rating.get("approved_at")):
                 raise TestimonialGateError(f"{label}.rating_approval.approved_at: valid ISO date required")
@@ -197,7 +221,11 @@ def load_testimonial_release(root: Path = ROOT) -> tuple[list[dict], dict[str, d
             ):
                 raise TestimonialGateError(f"{label}.rating_approval.evidence_sha256: SHA-256 receipt required")
             show_rating = True
-        released[testimonial_id] = {**draft, "show_rating": show_rating}
+        released[testimonial_id] = {
+            **approved_payload,
+            "supplied_rating": rating["value"] if rating is not None else None,
+            "show_rating": show_rating,
+        }
     return drafts, released
 
 

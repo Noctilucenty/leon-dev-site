@@ -1,4 +1,37 @@
 {
   "schema_version": 1,
-  "approved_testimonials": []
+  "approved_testimonials": [
+    {
+      "id": "testimonial-01",
+      "approved_payload": {
+        "id": "testimonial-01",
+        "project": "Flores Boxing Gloves",
+        "attribution": "Heather",
+        "attribution_context": "Hired Leon for Flores Boxing Gloves",
+        "quote": "Super fast and professional. He was very interested in what I wanted and made sure to work with me 1-on-1 throughout the whole process. Communication was great, and everything was handled quickly. Definitely recommend Flores Boxing Gloves!",
+        "placement": "leonbuilds.org and related project marketing"
+      },
+      "payload_sha256": "c9da20bbde1cb1938aa7128bf7954315ce2ec6da633f6cf7dfc0803ec7a6f6c2",
+      "approved_at": "2026-08-25",
+      "approval_evidence_sha256": "06a83cd0141ea00f20b78ed0dbf30befeb9c88d280496a80ec822e2bdac9ec9d",
+      "placement": "leonbuilds.org and related project marketing",
+      "rating_approval": null
+    },
+    {
+      "id": "testimonial-03",
+      "approved_payload": {
+        "id": "testimonial-03",
+        "project": "The Home Screen Website",
+        "attribution": "Glenn",
+        "attribution_context": "Website client",
+        "quote": "I hired Leon to build The Home Screen website. He iterated quickly as we worked through the project, and I was happy with the final website.",
+        "placement": "leonbuilds.org and related project marketing"
+      },
+      "payload_sha256": "f0d9589dd406b6d4616a7d7cb32b47fb64314dfa10c0654dfb40a2a784b7ef3d",
+      "approved_at": "2026-08-25",
+      "approval_evidence_sha256": "06a83cd0141ea00f20b78ed0dbf30befeb9c88d280496a80ec822e2bdac9ec9d",
+      "placement": "leonbuilds.org and related project marketing",
+      "rating_approval": null
+    }
+  ]
 }
