@@ -255,7 +255,7 @@ test('at least two proof cards demonstrate business-facing systems and the archi
   assert.ok(orderedText.some(text => /operational (?:client )?system|live product|client website|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
   assert.match(orderedText.join('\n'), /ALLCPR Site Intelligence/i);
   assert.match(orderedText.join('\n'), /33,772 U\.S\. ZIP codes/i);
-  assert.match(orderedText.join('\n'), /the home screen/);
+  assert.match(orderedText.join('\n'), /beastypages\.com/);
   assert.match(orderedText.join('\n'), /client website build.*demo checkout/);
   assert.match(orderedText.join('\n'), /payments and kitchen operations are not live/);
   assert.match(orderedText.join('\n'), /curio/);
@@ -274,7 +274,7 @@ test('at least two proof cards demonstrate business-facing systems and the archi
   const work = read('work.html');
   assert.match(work, /<link rel=["']canonical["'] href=["']https:\/\/leonbuilds\.org\/work["']>/i);
   assert.match(work, /<h1\b/i);
-  for (const name of ['ALLCPR Site Intelligence', 'The Home Screen', 'Loqol disclosures', 'Curio']) assert.match(plainText(work), new RegExp(name, 'i'));
+  for (const name of ['ALLCPR Site Intelligence', 'beastypages.com', 'Loqol disclosures', 'Curio']) assert.match(plainText(work), new RegExp(name.replace('.', '\\.'), 'i'));
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/work<\/loc>/i);
 });
 

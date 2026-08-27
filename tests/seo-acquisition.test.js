@@ -67,13 +67,15 @@ test('work archive is indexable, canonical, and honest about proof status', () =
   assert.match(html, /<title>[^<]*(?:Work|Websites|Software)[^<]*\| Leon Builds<\/title>/i);
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/work">/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
-  assert.match(visible, /the home screen/i);
+  assert.match(visible, /beastypages\.com/i);
   assert.match(visible, /ALLCPR Site Intelligence/i);
   assert.match(visible, /Operational client system.*ALLCPR/is);
   assert.match(visible, /all 33,772 U\.S\. ZIP codes/i);
   assert.match(visible, /field validation before opening/i);
   assert.doesNotMatch(visible, /guaranteed best location|automatic opening decision/i);
   assert.match(visible, /client website project.*demo checkout/is);
+  assert.match(html, /href="https:\/\/beastypages\.com\/\?b=b_bulapies"/i);
+  assert.doesNotMatch(html, /the-home-screen\.onrender\.com/i);
   assert.match(visible, /payment and kitchen progression are simulations/is);
   assert.match(visible, /loqol disclosures/i);
   assert.match(visible, /public demo.*incomplete/is);
@@ -189,6 +191,7 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   assert.match(visible, /public product and workflow evidence/i);
   assert.match(html, /data-testimonial-id="testimonial-03"/i);
   assert.match(visible, /I hired Leon to build The Home Screen website/i);
+  assert.match(visible, /Current name: beastypages\.com/i);
   assert.doesNotMatch(html, /testimonial-stars|5 out of 5 stars|★★★★★/i);
   assert.match(html, /href="\/industries\/contractors"/i);
   assert.match(html, /href="\/industries\/automotive"/i);
@@ -266,6 +269,7 @@ test('high-intent industry pages form a focused web-design and lead-recovery clu
       assert.match(main, /href="\/missed-lead-recovery"/i, `${file} links to the contractor product`);
       assert.match(main, /data-testimonial-id="testimonial-03"/i, `${file} puts an approved website-client review beside the web-design guidance`);
       assert.match(text(main), /I hired Leon to build The Home Screen website/i, `${file} uses the exact released website testimonial`);
+      assert.match(text(main), /Current name: beastypages\.com/i, `${file} clarifies the current project name without rewriting the client's quote`);
     } else {
       assert.doesNotMatch(main, /href="\/missed-lead-recovery/i, `${file} main content does not point to a mismatched contractor product`);
     }
@@ -310,7 +314,9 @@ test('GEO index states current proof and avoids stale contradictions', () => {
   assert.match(llms, /## Mobile app development/i);
   assert.match(llms, /founders and small businesses/i);
   assert.match(llms, /store.*approval.*does not guarantee|does not guarantee store approval/is);
-  assert.match(llms, /The Home Screen.*client website.*(?:demo|payments are mocked|payments are not live)/is);
+  assert.match(llms, /beastypages\.com.*client website.*(?:demo|payments are mocked|payments are not live)/is);
+  assert.match(llms, /https:\/\/beastypages\.com\/\?b=b_bulapies/i);
+  assert.doesNotMatch(llms, /the-home-screen\.onrender\.com/i);
   assert.match(llms, /Loqol.*public demo.*incomplete/is);
   assert.doesNotMatch(llms, /there are no client names, testimonials, reviews or star ratings|seven direct client reviews|five-star|all 5 stars|#testimonials|22-business operation/i);
 });

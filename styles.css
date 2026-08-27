@@ -640,6 +640,7 @@ a{ color:inherit; text-decoration:none; }
 .service-review{ display:flex; flex-direction:column; min-width:0; padding:1.35rem; border:1px solid var(--line-2); border-radius:14px; background:var(--panel); }
 .service-review:only-child{ grid-column:1/-1; width:100%; max-width:46rem; }
 .service-review blockquote{ margin:1rem 0 1.3rem; color:var(--fg); font-family:var(--dsp); font-size:16px; line-height:1.58; text-transform:none; }
+.testimonial-project-note{ margin:.45rem 0 0; color:var(--muted); font-size:12px; line-height:1.55; text-transform:none; }
 .service-review .testimonial-person{ margin-top:auto; }
 .answer-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.8rem; margin-top:1.5rem; }
 .answer-grid article{ padding:1.2rem; border:1px solid var(--line-2); border-radius:13px; background:var(--panel); }

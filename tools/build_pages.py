@@ -31,7 +31,13 @@ TESTIMONIAL_DISPLAY_ORDER = [
 HOMEPAGE_TESTIMONIAL_LIMIT = 2
 TESTIMONIAL_PROJECT_LINKS = {
     "testimonial-02": "/work#work-site-intelligence",
-    "testimonial-03": "/work#work-homescreen",
+    "testimonial-03": "/work#work-beastypages",
+}
+TESTIMONIAL_PROJECT_LABELS = {
+    "testimonial-03": "beastypages.com",
+}
+TESTIMONIAL_PROJECT_NOTES = {
+    "testimonial-03": "Current name: beastypages.com.",
 }
 REVIEWS_ROUTE_ENABLED = len(RELEASED_TESTIMONIALS) >= 3
 REVIEWS_PUBLISHED = bool(RELEASED_TESTIMONIALS)
@@ -129,7 +135,7 @@ SERVICES = [
   price="$1,500", title="Custom Software Development | Leon Builds",
   desc="Custom business software built end to end by one developer: portals, platforms, operations systems. Fixed written quotes. U.S.-wide, remote.",
   intro=["off-the-shelf software fits the average business. yours isn't average — that's why there's still a spreadsheet holding part of it together.",
-   "custom software is for when nothing on the menu is the shape of your problem. the client-funded Home Screen website, for example, pairs public business pages with server-side pricing and vendor-separated demo order logic while clearly keeping payments and kitchen operations mocked."],
+   "custom software is for when nothing on the menu is the shape of your problem. the client-funded beastypages.com website, for example, pairs public business pages with server-side pricing and vendor-separated demo order logic while clearly keeping payments and kitchen operations mocked."],
   pains=["you've outgrown the spreadsheet that runs part of the business","off-the-shelf tools each do 70% of what you need","your industry has a workflow no product understands","you're paying for five subscriptions to approximate one system"],
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
   proof=("ALLCPR Site Intelligence","an operational location-planning platform that helps a CPR training network screen expansion markets across all 33,772 U.S. ZIP codes while keeping uncertainty and field validation visible."),
@@ -188,13 +194,13 @@ INDUSTRIES = [
   title="Restaurant Website Design & Online Ordering | Leon Builds",
   desc="Phone-first restaurant website design, direct online ordering, menu updates and call automation from one California-based developer serving U.S. businesses.",
   intro=["restaurants run on thin margins while marketplace terms vary and the phone pulls staff away during a rush. a direct website can add a channel you control alongside the platforms that bring discovery.",
-   "the client Home Screen website shows the underlying interaction: business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations remain mocked."],
+   "beastypages.com, a client website, shows the underlying interaction: business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations remain mocked."],
   pains=["delivery apps take a commission on orders that were already yours","the phone rings out during every rush","your menu is a pdf nobody can read on a phone","'are you open' and 'do you have parking' — forty times a day","multiple locations or brands, zero shared systems"],
   fixes=[("online ordering you own","direct ordering with no per-order commission added by Leon — cart, payment, kitchen ticket. from $600","booking-systems"),
    ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000","ai-phone-agents"),
    ("a menu-first website","fast, phone-first, editable by you when prices change. from $300","websites"),
    ("review desk","every review read and a reply drafted for you — a human presses send. from $750",None)],
-  proof=("the Home Screen client website","open the public website to inspect business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
+  proof=("the beastypages.com client website","open the public website to inspect business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
   faqs=[("can i stop paying delivery-app commissions?","you can give regular customers a direct pickup or own-delivery option without Leon adding a per-order cut. marketplaces can still be useful for discovery, while payment, hosting, messaging and delivery providers keep their own terms."),
    ("what does online ordering cost?","from $600 one-time for ordering on your own site; leon charges no per-order cut. payment, hosting and other provider fees still apply. compare that to a month of commissions."),
    ("i have two locations with different menus.","that can be handled with a shared site and separate location menus, hours and order routing. the exact payment and kitchen integrations are verified before quoting.")],
@@ -306,7 +312,7 @@ INDUSTRIES = [
    ("order automation","every channel's orders into one queue with alerts. from $600","business-automation"),
    ("sales dashboard","today's numbers without opening five systems. from $1,000","business-dashboards"),
    ("storefront","fast product pages, clean checkout, no template bloat. from $300","websites")],
-  proof=("the Home Screen client website","a public client website showing business-specific catalogs, menus, server-side pricing and vendor-scoped demo tickets. payments and fulfillment are not live."),
+  proof=("the beastypages.com client website","a public client website showing business-specific catalogs, menus, server-side pricing and vendor-scoped demo tickets. payments and fulfillment are not live."),
   faqs=[("we're on shopify / square. is that a problem?","no — keep them. most retail builds connect and automate around the platform you're on."),
    ("can inventory sync between online and the register?","usually yes, depending on your pos. i verify the specific integration before quoting."),
    ("what should we fix first?","whatever loses money silently — usually inventory drift or unwatched online orders.")],
@@ -362,16 +368,19 @@ def testimonial_card(testimonial_id, classes="testimonial-card"):
     stars = ''
     if item["show_rating"]:
         stars = '<p class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</p>'
-    project = e(item["project"])
+    project = e(TESTIMONIAL_PROJECT_LABELS.get(testimonial_id, item["project"]))
     project_href = TESTIMONIAL_PROJECT_LINKS.get(testimonial_id)
     if project_href:
         project = (
             f'<a href="{e(project_href)}" data-evt="testimonial_project_click">'
             f'{project}</a>'
         )
+    project_note = TESTIMONIAL_PROJECT_NOTES.get(testimonial_id)
+    note = f'<p class="testimonial-project-note">{e(project_note)}</p>' if project_note else ''
     return (
         f'<article class="{e(classes)}" data-testimonial-id="{e(testimonial_id)}">'
         f'{stars}<p class="testimonial-project">{project}</p>'
+        f'{note}'
         f'<blockquote>“{e(item["quote"])}”</blockquote>'
         f'<p class="testimonial-person"><strong>{e(item["attribution"])}</strong>'
         f'<span>{e(item["attribution_context"])}</span></p></article>'
@@ -551,6 +560,7 @@ WORK_ANCHORS = [
     ('allcpr site intelligence', '#work-site-intelligence'),
     ('site intelligence', '#work-site-intelligence'),
     ('location', '#work-site-intelligence'),
+    ('beastypages.com', '#work-beastypages'),
     ('home screen', '#work-homescreen'),
     ('ordering', '#work-homescreen'),
     ('operator prototype', '#work-homescreen'),
@@ -907,20 +917,21 @@ def work_page():
         </div>
       </article>
 
-      <article class="case-card" id="work-homescreen">
+      <article class="case-card" id="work-beastypages">
+        <span id="work-homescreen" aria-hidden="true"></span>
         <span id="work-ordering" aria-hidden="true"></span>
         <figure class="case-media proof-phone-pair">
-          <img src="/assets/proof/home-screen-catalog.png" alt="The Home Screen catalog of local-business destinations" loading="lazy" width="380" height="844">
-          <img src="/assets/proof/home-screen-menu.png" alt="A business-specific menu and cart inside The Home Screen" loading="lazy" width="380" height="844">
+          <img src="/assets/proof/home-screen-catalog.png" alt="beastypages.com catalog of local-business destinations" loading="lazy" width="380" height="844">
+          <img src="/assets/proof/home-screen-menu.png" alt="A business-specific menu and cart inside beastypages.com" loading="lazy" width="380" height="844">
         </figure>
         <div class="case-copy">
           <p class="label">Client website project · demo checkout</p>
-          <h3>The Home Screen</h3>
+          <h3>beastypages.com</h3>
           <p class="business-copy"><b>Problem:</b> A client needed a phone-first website for browsing local-business pages and menus in one consistent interface.</p>
           <p class="business-copy"><b>Built:</b> A 37-business catalog with search, business-specific menus, a prototype cart, server-side repricing, and vendor-separated demo tickets.</p>
           <p class="business-copy"><b>Honest boundary:</b> Payment and kitchen progression are simulations. The client claim is for the website build, not a production ordering rollout.</p>
           <p class="case-role">Role: website and full-stack developer · client identity withheld</p>
-          <a class="case-link" href="https://the-home-screen.onrender.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a>
+          <a class="case-link" href="https://beastypages.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a>
         </div>
       </article>
 
