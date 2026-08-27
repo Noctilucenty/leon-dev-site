@@ -19,6 +19,12 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > for the enabled Orlando/Phoenix campaign, paused legacy Bay RSA, clean
 > replacement RSA, campaign-total spend controls, zero-spend activation receipt,
 > and the remaining earlier-metro-RSA cleanup.
+>
+> **Current live-state reconciliation — 2026-08-26 PT:** see
+> [`live-campaign-checkpoint-2026-08-26.md`](live-campaign-checkpoint-2026-08-26.md)
+> for the saved Bay Area and Seattle-Tacoma expansion, the eight added
+> phrase-match keywords, unchanged $100 total/$5 CPC controls, and the first
+> 10-impression zero-click snapshot.
 
 ## Safety contract
 

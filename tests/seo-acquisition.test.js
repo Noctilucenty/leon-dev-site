@@ -264,6 +264,8 @@ test('high-intent industry pages form a focused web-design and lead-recovery clu
     assert.match(html, /href="\/services\/websites"/i, `${file} links to the web-design pillar`);
     if (file === 'industries/contractors.html') {
       assert.match(main, /href="\/missed-lead-recovery"/i, `${file} links to the contractor product`);
+      assert.match(main, /data-testimonial-id="testimonial-03"/i, `${file} puts an approved website-client review beside the web-design guidance`);
+      assert.match(text(main), /I hired Leon to build The Home Screen website/i, `${file} uses the exact released website testimonial`);
     } else {
       assert.doesNotMatch(main, /href="\/missed-lead-recovery/i, `${file} main content does not point to a mismatched contractor product`);
     }
