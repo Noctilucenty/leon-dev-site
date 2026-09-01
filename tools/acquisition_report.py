@@ -12,6 +12,7 @@ import argparse
 import csv
 import json
 import math
+import re
 import sys
 from dataclasses import dataclass
 from datetime import date, datetime, timezone
@@ -22,6 +23,11 @@ from typing import Any, Iterable, Optional
 HARD_MEDIA_CAP_USD = 100.0
 HARD_DURATION_CAP_DAYS = 10
 VERDICTS = ("PAUSE", "ITERATE", "ELIGIBLE_TO_REVIEW")
+RECEIPT_ID_RE = re.compile(
+    r"^lead_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    re.IGNORECASE,
+)
+BOOKING_UID_RE = re.compile(r"^[A-Za-z0-9._~:@+\-]{8,160}$")
 
 PLANNING_INPUTS = (
     "average_contract_revenue",
@@ -298,6 +304,95 @@ def canonical_booking_uid(uid: Any, replacements: dict[str, str]) -> str:
     return current
 
 
+def qa_exclusion_ids(
+    records: Iterable[dict[str, Any]],
+) -> tuple[set[str], set[str], list[str]]:
+    """Read exact append-only QA exclusions from the acquisition ledger.
+
+    The exclusion record itself remains part of the audit trail. Invalid rows
+    are reported instead of being applied silently.
+    """
+    receipt_ids: set[str] = set()
+    booking_uids: set[str] = set()
+    errors: list[str] = []
+    for index, record in enumerate(records, start=1):
+        if record.get("kind") != "qa_exclusion":
+            continue
+        has_receipt = "receiptId" in record
+        has_booking = "bookingUid" in record
+        receipt = record.get("receiptId") if has_receipt else ""
+        booking = record.get("bookingUid") if has_booking else ""
+        valid_receipt = (
+            receipt
+            if isinstance(receipt, str) and RECEIPT_ID_RE.fullmatch(receipt)
+            else ""
+        )
+        valid_booking = (
+            booking
+            if isinstance(booking, str) and BOOKING_UID_RE.fullmatch(booking)
+            else ""
+        )
+        if has_receipt == has_booking or (has_receipt and not valid_receipt) or (
+            has_booking and not valid_booking
+        ):
+            errors.append(
+                f"QA exclusion record {index} must contain exactly one valid receiptId or bookingUid."
+            )
+            continue
+        expected_type = "receipt" if valid_receipt else "booking"
+        expected_id = valid_receipt or valid_booking
+        if record.get("targetType") not in (None, expected_type) or record.get(
+            "targetId"
+        ) not in (None, expected_id):
+            errors.append(f"QA exclusion record {index} has inconsistent target metadata.")
+            continue
+        if record.get("dedupeKey") != f"qa-exclusion:{expected_type}:{expected_id}":
+            errors.append(f"QA exclusion record {index} has an invalid dedupe key.")
+            continue
+        if valid_receipt:
+            receipt_ids.add(valid_receipt)
+        else:
+            booking_uids.add(valid_booking)
+    return receipt_ids, booking_uids, errors
+
+
+def qa_session_ids(
+    event_records: Iterable[dict[str, Any]],
+    lead_records: Iterable[dict[str, Any]],
+    acquisition_records_input: Iterable[dict[str, Any]],
+    excluded_receipt_ids: set[str],
+    excluded_booking_uids: set[str],
+) -> set[str]:
+    """Resolve only sessions explicitly tied to an excluded QA target."""
+    sessions: set[str] = set()
+    for lead in lead_records:
+        if lead.get("receiptId") not in excluded_receipt_ids:
+            continue
+        session = str(lead.get("analyticsSessionId") or "").strip()
+        if session:
+            sessions.add(session)
+
+    acquisition_rows = list(acquisition_records_input)
+    replacements = booking_replacements(acquisition_rows)
+    canonical_exclusions = {
+        canonical_booking_uid(uid, replacements) for uid in excluded_booking_uids
+    }
+    for event in event_records:
+        receipt = event.get("receipt")
+        raw_booking_uid = str(event.get("bookingUid") or "").strip()
+        booking_excluded = bool(raw_booking_uid) and (
+            raw_booking_uid in excluded_booking_uids
+            or canonical_booking_uid(raw_booking_uid, replacements)
+            in canonical_exclusions
+        )
+        if receipt not in excluded_receipt_ids and not booking_excluded:
+            continue
+        session = str(event.get("sessionId") or "").strip()
+        if session:
+            sessions.add(session)
+    return sessions
+
+
 def merged_booking_attribution(
     records: Iterable[dict[str, Any]], replacements: Optional[dict[str, str]] = None
 ) -> dict[str, dict[str, dict[str, Any]]]:
@@ -325,20 +420,27 @@ def acquisition_records(
     mode: str,
     campaign: str,
     source: str,
+    excluded_booking_uids: Optional[set[str]] = None,
 ) -> list[dict[str, Any]]:
     replacements = booking_replacements(input_data.records)
     touches = merged_booking_attribution(input_data.records, replacements)
+    raw_exclusions = excluded_booking_uids or set()
+    canonical_exclusions = {
+        canonical_booking_uid(uid, replacements) for uid in raw_exclusions
+    }
     selected: list[dict[str, Any]] = []
     for record in input_data.records:
         if record.get("kind") != "funnel_stage" or not in_window(record, start, end):
             continue
         raw_uid = str(record.get("bookingUid") or "").strip()
+        uid = canonical_booking_uid(raw_uid, replacements)
+        if raw_uid in raw_exclusions or uid in canonical_exclusions:
+            continue
         # Cal can emit a cancellation for the superseded slot while completing
         # a reschedule. That is transport history, not a cancelled opportunity.
         if record.get("stage") == "cancelled" and raw_uid in replacements:
             continue
         enriched = dict(record)
-        uid = canonical_booking_uid(raw_uid, replacements)
         enriched["bookingUid"] = uid
         booking_touches = touches.get(
             uid,
@@ -412,14 +514,78 @@ def build_report(
     acquisition: JsonlInput,
 ) -> dict[str, Any]:
     findings = Findings()
-    reportable_lead_records = [
+    qa_receipt_ids, qa_booking_uids, qa_exclusion_errors = qa_exclusion_ids(
+        acquisition.records
+    )
+    qa_exclusion_records_read = sum(
+        1 for record in acquisition.records if record.get("kind") == "qa_exclusion"
+    )
+    if qa_exclusion_errors:
+        findings.add_pause(" ".join(qa_exclusion_errors))
+
+    excluded_qa_sessions = qa_session_ids(
+        events.records,
+        leads.records,
+        acquisition.records,
+        qa_receipt_ids,
+        qa_booking_uids,
+    )
+    qa_booking_replacements = booking_replacements(acquisition.records)
+    canonical_qa_booking_uids = {
+        canonical_booking_uid(uid, qa_booking_replacements)
+        for uid in qa_booking_uids
+    }
+
+    def event_is_qa_excluded(record: dict[str, Any]) -> bool:
+        session_id = str(record.get("sessionId") or "").strip()
+        if session_id and session_id in excluded_qa_sessions:
+            return True
+        if record.get("receipt") in qa_receipt_ids:
+            return True
+        raw_booking_uid = str(record.get("bookingUid") or "").strip()
+        return bool(raw_booking_uid) and (
+            raw_booking_uid in qa_booking_uids
+            or canonical_booking_uid(raw_booking_uid, qa_booking_replacements)
+            in canonical_qa_booking_uids
+        )
+
+    reportable_event_records = [
+        record
+        for record in events.records
+        if not event_is_qa_excluded(record)
+    ]
+    qa_event_records_excluded = len(events.records) - len(reportable_event_records)
+    if qa_event_records_excluded:
+        findings.add_note(
+            f"Excluded {qa_event_records_excluded} event record(s) across "
+            f"{len(excluded_qa_sessions)} exact QA session(s); source records remain append-only."
+        )
+
+    non_synthetic_lead_records = [
         record for record in leads.records if record.get("synthetic") is not True
     ]
-    synthetic_leads_excluded = len(leads.records) - len(reportable_lead_records)
+    synthetic_leads_excluded = len(leads.records) - len(non_synthetic_lead_records)
+    reportable_lead_records = [
+        record
+        for record in non_synthetic_lead_records
+        if str(record.get("receiptId") or "").strip() not in qa_receipt_ids
+    ]
+    qa_lead_records_excluded = len(non_synthetic_lead_records) - len(
+        reportable_lead_records
+    )
     if synthetic_leads_excluded:
         findings.add_note(
             f"Excluded {synthetic_leads_excluded} synthetic lead-delivery probe "
             "record(s) from inquiry reporting."
+        )
+    if qa_lead_records_excluded:
+        findings.add_note(
+            f"Excluded {qa_lead_records_excluded} exact QA quote receipt record(s) "
+            "from inquiry reporting; source records remain append-only."
+        )
+    if qa_booking_uids:
+        findings.add_note(
+            f"Configured {len(qa_booking_uids)} append-only QA booking UID exclusion(s)."
         )
 
     if config.get("schemaVersion") != 1:
@@ -469,8 +635,8 @@ def build_report(
             )
         if not truthy(nested(config, "dataReadiness", name + "Complete")):
             findings.add_iterate(f"dataReadiness.{name}Complete is not confirmed.")
-        integrity_records = (
-            reportable_lead_records if name == "leads" else input_data.records
+        integrity_records = reportable_lead_records if name == "leads" else (
+            reportable_event_records if name == "events" else input_data.records
         )
         missing_timestamps = sum(
             1 for record in integrity_records if record_day(record) is None
@@ -487,12 +653,20 @@ def build_report(
     valid_scope = mode in {"utm-campaign", "campaign-only-files"}
     if valid_window and valid_scope:
         assert start is not None and end is not None
-        scoped_events = scoped_records(events.records, start, end, mode, campaign, source)
+        scoped_events = scoped_records(
+            reportable_event_records, start, end, mode, campaign, source
+        )
         scoped_leads = scoped_records(
             reportable_lead_records, start, end, mode, campaign, source
         )
         scoped_acquisition = acquisition_records(
-            acquisition, start, end, mode, campaign, source
+            acquisition,
+            start,
+            end,
+            mode,
+            campaign,
+            source,
+            qa_booking_uids,
         )
 
     page_events = [record for record in scoped_events if record.get("name") == "page_view"]
@@ -950,18 +1124,26 @@ def build_report(
                 "recordsRead": len(events.records),
                 "scopedRecords": len(scoped_events),
                 "sessionlessPageViews": sessionless_page_views,
+                "qaRecordsExcluded": qa_event_records_excluded,
+                "qaSessionsExcluded": len(excluded_qa_sessions),
             },
             "leads": {
                 "available": leads.available,
                 "recordsRead": len(leads.records),
                 "scopedRecords": len(scoped_leads),
                 "syntheticRecordsExcluded": synthetic_leads_excluded,
+                "qaRecordsExcluded": qa_lead_records_excluded,
+                "qaReceiptIdsConfigured": len(qa_receipt_ids),
             },
             "acquisition": {
                 "available": acquisition.available,
                 "recordsRead": len(acquisition.records),
                 "scopedStageRecords": len(scoped_acquisition),
                 "attended": stage_counts["attended"],
+                "qaExclusionRecordsRead": qa_exclusion_records_read,
+                "qaExclusionTargetsConfigured": len(qa_receipt_ids)
+                + len(qa_booking_uids),
+                "qaBookingUidsConfigured": len(qa_booking_uids),
             },
         },
         "findings": {

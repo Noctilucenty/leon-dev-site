@@ -112,6 +112,25 @@ def acquisition():
     return rows
 
 
+def qa_exclusion(*, receipt_id="", booking_uid=""):
+    target_type = "receipt" if receipt_id else "booking"
+    target_id = receipt_id or booking_uid
+    row = {
+        "schemaVersion": 1,
+        "kind": "qa_exclusion",
+        "ts": DAY,
+        "occurredAt": DAY,
+        "targetType": target_type,
+        "targetId": target_id,
+        "dedupeKey": f"qa-exclusion:{target_type}:{target_id}",
+    }
+    if receipt_id:
+        row["receiptId"] = receipt_id
+    if booking_uid:
+        row["bookingUid"] = booking_uid
+    return row
+
+
 def input_data(path, records):
     return reporter.JsonlInput(path, True, records, [])
 
@@ -175,6 +194,83 @@ class AcquisitionReportTests(unittest.TestCase):
         self.assertIn(
             "Excluded 1 synthetic lead-delivery probe record(s)",
             " ".join(report["findings"]["notes"]),
+        )
+
+    def test_append_only_qa_exclusions_remove_exact_quote_and_booking_from_counts(self):
+        receipt_id = "lead_00000000-0000-4000-8000-000000000000"
+        lead_rows = [dict(record) for record in leads()]
+        lead_rows[0]["receiptId"] = receipt_id
+        lead_rows[0]["analyticsSessionId"] = "session-00"
+        event_rows = events() + [
+            {
+                "ts": DAY,
+                "name": "calendar_booking_success",
+                "sessionId": "session-01",
+                "bookingUid": "booking_002",
+                "firstCampaign": "contractor-test",
+                "firstUtm": "google",
+            },
+            {
+                "ts": DAY,
+                "name": "lead_submit_success",
+                "receipt": receipt_id,
+                "firstCampaign": "contractor-test",
+                "firstUtm": "google",
+            },
+            {
+                "ts": DAY,
+                "name": "calendar_booking_success",
+                "bookingUid": "booking_002",
+                "firstCampaign": "contractor-test",
+                "firstUtm": "google",
+            },
+        ]
+        acquisition_rows = acquisition() + [
+            qa_exclusion(receipt_id=receipt_id),
+            qa_exclusion(booking_uid="booking_002"),
+            # A duplicate ledger row cannot exclude or decrement twice.
+            qa_exclusion(booking_uid="booking_002"),
+        ]
+
+        report = self.build(
+            event_rows=event_rows,
+            lead_rows=lead_rows,
+            acquisition_rows=acquisition_rows,
+        )
+
+        self.assertEqual(report["funnel"]["sessions"], 8)
+        self.assertEqual(report["funnel"]["inquiries"], 3)
+        self.assertEqual(report["funnel"]["booked"], 1)
+        self.assertEqual(report["funnel"]["qualified"], 1)
+        self.assertEqual(report["funnel"]["won"], 1)
+        self.assertEqual(report["data"]["leads"]["recordsRead"], 4)
+        self.assertEqual(report["data"]["leads"]["qaRecordsExcluded"], 1)
+        self.assertEqual(report["data"]["leads"]["qaReceiptIdsConfigured"], 1)
+        self.assertEqual(report["data"]["events"]["recordsRead"], 13)
+        self.assertEqual(report["data"]["events"]["scopedRecords"], 8)
+        self.assertEqual(report["data"]["events"]["qaRecordsExcluded"], 5)
+        self.assertEqual(report["data"]["events"]["qaSessionsExcluded"], 2)
+        self.assertEqual(report["data"]["acquisition"]["recordsRead"], 10)
+        self.assertEqual(report["data"]["acquisition"]["scopedStageRecords"], 4)
+        self.assertEqual(report["data"]["acquisition"]["qaExclusionRecordsRead"], 3)
+        self.assertEqual(report["data"]["acquisition"]["qaExclusionTargetsConfigured"], 2)
+        self.assertEqual(report["data"]["acquisition"]["qaBookingUidsConfigured"], 1)
+        notes = " ".join(report["findings"]["notes"])
+        self.assertIn("Excluded 1 exact QA quote receipt", notes)
+        self.assertIn("Configured 1 append-only QA booking UID", notes)
+        self.assertIn("across 2 exact QA session(s)", notes)
+
+    def test_malformed_qa_exclusion_fails_closed(self):
+        malformed = {
+            "kind": "qa_exclusion",
+            "ts": DAY,
+            "receiptId": "not-a-valid-receipt",
+        }
+        report = self.build(acquisition_rows=acquisition() + [malformed])
+        self.assertEqual(report["verdict"], "PAUSE")
+        self.assertIn(
+            "must contain exactly one valid receiptId or bookingUid",
+            " ".join(report["findings"]["pause"]),
         )
 
     def test_budget_duration_and_meta_allocation_fail_closed(self):

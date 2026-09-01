@@ -208,6 +208,19 @@ from `MEETING_ENDED`; Leon records attended and the downstream sales stages thro
 the admin route. One JSONL stage row is allowed per booking UID plus stage, so Cal
 retries cannot double-count it.
 
+Authorized end-to-end QA may still create a real-looking quote receipt or Cal
+booking UID. Do not delete those source rows. Append the exact opaque identifier
+to the same acquisition ledger through the admin-only exclusion route instead.
+The operation is idempotent, requires `confirmSynthetic:true`, accepts exactly
+one unmodified `receiptId` or `bookingUid` per request, requires that exact
+source record to exist, and has no delete/unexclude counterpart. Funnel summaries
+and `tools/acquisition_report.py` ignore matching QA records and any anonymous
+analytics session explicitly correlated to those targets, while authenticated
+raw JSON continues to expose the append-only evidence and exclusion record.
+The normal `/api/leads` and `/api/traffic` views also omit excluded quote or
+booking sessions; an authenticated auditor can add `?includeQaExcluded=1` to
+inspect the preserved source records.
+
 Configure a Cal webhook to POST JSON to
 `https://leon-assist.onrender.com/api/cal/webhook`, subscribe to booking created,
 rescheduled, cancelled and no-show-updated events, and set the same high-entropy
@@ -230,6 +243,18 @@ curl -sS https://leon-assist.onrender.com/api/acquisition/stage \
 # Minimized records, current-stage materialization and counts as JSON.
 curl -sS 'https://leon-assist.onrender.com/api/acquisition?format=json' \
   -H 'x-leads-key: YOUR_LEADS_KEY'
+
+# Exclude one synthetic quote receipt from inquiry reporting.
+curl -sS https://leon-assist.onrender.com/api/acquisition/exclusions \
+  -H 'content-type: application/json' \
+  -H 'x-leads-key: YOUR_LEADS_KEY' \
+  --data '{"receiptId":"<EXACT_LEAD_RECEIPT_ID>","confirmSynthetic":true}'
+
+# Or exclude one synthetic booking UID from authoritative booking counts.
+curl -sS https://leon-assist.onrender.com/api/acquisition/exclusions \
+  -H 'content-type: application/json' \
+  -H 'x-leads-key: YOUR_LEADS_KEY' \
+  --data '{"bookingUid":"<EXACT_CAL_BOOKING_UID>","confirmSynthetic":true}'
 ```
 
 Opening `/api/acquisition` with the same header-only authentication shows a small

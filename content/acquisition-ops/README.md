@@ -31,6 +31,13 @@ missing upstream stage. The weakest transition is selected only from adjacent
 transitions whose two counts are both available and whose populations are
 numerically coherent.
 
+Admin-authenticated `qa_exclusion` rows in `acquisition.jsonl` remove only their
+exact synthetic quote `receiptId` or Cal `bookingUid` from these counts. The
+original lead, booking stages, and exclusion rows remain append-only and visible
+in the private inputs. Anonymous event sessions explicitly correlated to those
+targets are excluded from session metrics as well. Malformed exclusion rows make
+the report fail closed.
+
 ## Prepare a review
 
 Keep completed inputs private. The `data/` directory is ignored by Git for this

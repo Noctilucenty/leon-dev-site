@@ -13,6 +13,7 @@ const ACQUISITION_FILE = path.join(TEMP_DIR, 'acquisition.jsonl');
 process.env.NODE_ENV = 'test';
 process.env.ACQUISITION_FILE = ACQUISITION_FILE;
 process.env.EVENTS_FILE = path.join(TEMP_DIR, 'events.jsonl');
+process.env.LEADS_FILE = path.join(TEMP_DIR, 'leads.jsonl');
 process.env.CAL_WEBHOOK_SECRET = 'cal-webhook-test-secret';
 process.env.LEADS_KEY = 'acquisition-admin-test-key';
 process.env.OPENAI_API_KEY = '';
@@ -23,6 +24,7 @@ const {
   acquisitionStats,
   acquisitionStorageConfig,
   deliverToSink,
+  normalizeQaExclusion,
   verifyCalSignature
 } = require('../server/acquisition');
 
@@ -62,6 +64,14 @@ function postWebhook(payload, signature) {
 
 function postAdmin(body, key = 'acquisition-admin-test-key') {
   return fetch(base + '/api/acquisition/stage', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'x-leads-key': key },
+    body: JSON.stringify(body)
+  });
+}
+
+function postExclusion(body, key = 'acquisition-admin-test-key') {
+  return fetch(base + '/api/acquisition/exclusions', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-leads-key': key },
     body: JSON.stringify(body)
@@ -224,6 +234,181 @@ test('browser booking signal enriches attribution without creating a stage', asy
   assert.equal(enrichment[0].firstAttribution.gclid, 'gclid.browser-first');
   assert.equal(enrichment[0].lastAttribution.fbclid, 'fbclid.browser-last');
   assert.equal(enrichment.some(row => row.stage), false);
+});
+
+test('admin QA exclusions are append-only, authenticated and idempotent', async () => {
+  const bookingUid = 'cal_booking_qa_excluded';
+  const receiptId = 'lead_11111111-1111-4111-8111-111111111111';
+  let response = await postWebhook({
+    triggerEvent: 'BOOKING_CREATED',
+    payload: { uid: bookingUid }
+  });
+  assert.equal(response.status, 204);
+
+  const queryOnly = await fetch(base + '/api/acquisition/exclusions?key=acquisition-admin-test-key', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ bookingUid, confirmSynthetic: true })
+  });
+  assert.equal(queryOnly.status, 401);
+  response = await postExclusion({ bookingUid });
+  assert.equal(response.status, 400, 'synthetic intent must be confirmed explicitly');
+  response = await postExclusion({ bookingUid, receiptId, confirmSynthetic: true });
+  assert.equal(response.status, 400, 'one append may target only one exact identifier');
+  response = await postExclusion({ bookingUid: bookingUid + 'x'.repeat(160), confirmSynthetic: true });
+  assert.equal(response.status, 400, 'overlong exact identifiers must never be truncated');
+  response = await postExclusion({ bookingUid: 'EXACT_CAL_BOOKING_UID', confirmSynthetic: true });
+  assert.equal(response.status, 409, 'a valid-looking typo cannot create a permanent exclusion');
+
+  response = await postExclusion({ bookingUid, confirmSynthetic: true });
+  assert.equal(response.status, 201);
+  let result = await response.json();
+  const bookingExclusionRecordId = result.recordId;
+  assert.equal(result.duplicate, false);
+  assert.equal(result.targetType, 'booking');
+  assert.equal(result.targetId, bookingUid);
+  assert.equal(result.dedupeKey, `qa-exclusion:booking:${bookingUid}`);
+  response = await postExclusion({ bookingUid, confirmSynthetic: true });
+  assert.equal(response.status, 200);
+  result = await response.json();
+  assert.equal(result.duplicate, true);
+  assert.equal(result.recordId, bookingExclusionRecordId,
+    'an idempotent replay returns the persisted exclusion record');
+
+  fs.appendFileSync(process.env.LEADS_FILE, JSON.stringify({
+    ts: '2026-09-01T11:59:00.000Z',
+    receiptId: 'lead_22222222-2222-4222-8222-222222222222',
+    name: 'Real Lead',
+    email: 'real@example.com',
+    via: 'quote-form'
+  }) + '\n');
+  fs.appendFileSync(process.env.LEADS_FILE, JSON.stringify({
+    ts: '2026-09-01T12:00:00.000Z',
+    receiptId,
+    name: 'QA Verification',
+    email: 'qa@example.com',
+    analyticsSessionId: 'session-qa-quote',
+    via: 'quote-form'
+  }) + '\n');
+  for (const event of [
+    { ts: '2026-09-01T12:00:00.000Z', name: 'page_view', sessionId: 'session-qa-quote' },
+    { ts: '2026-09-01T12:01:00.000Z', name: 'calendar_booking_success', sessionId: 'session-qa-booking', bookingUid },
+    { ts: '2026-09-01T12:02:00.000Z', name: 'lead_submit_success', receipt: receiptId },
+    { ts: '2026-09-01T12:03:00.000Z', name: 'calendar_booking_success', bookingUid },
+    { ts: '2026-09-01T12:04:00.000Z', name: 'page_view', sessionId: 'session-real-traffic' }
+  ]) {
+    fs.appendFileSync(process.env.EVENTS_FILE, JSON.stringify(event) + '\n');
+  }
+  response = await postExclusion({ receiptId, confirmSynthetic: true });
+  assert.equal(response.status, 201);
+  const receiptExclusionRecordId = (await response.json()).recordId;
+  response = await postExclusion({ receiptId, confirmSynthetic: true });
+  assert.equal(response.status, 200);
+  result = await response.json();
+  assert.equal(result.duplicate, true);
+  assert.equal(result.recordId, receiptExclusionRecordId);
+
+  let leadDashboard = await fetch(base + '/api/leads?format=json&limit=1', {
+    headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+  });
+  let leadBody = await leadDashboard.json();
+  assert.equal(leadBody.count, 1, 'filtering happens before the requested limit');
+  assert.equal(leadBody.qaExcludedCount, 1);
+  assert.equal(leadBody.leads[0].email, 'real@example.com');
+  leadDashboard = await fetch(base + '/api/leads?format=json&includeQaExcluded=1&limit=1', {
+    headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+  });
+  leadBody = await leadDashboard.json();
+  assert.equal(leadBody.count, 1);
+  assert.equal(leadBody.leads[0].receiptId, receiptId);
+
+  let trafficDashboard = await fetch(base + '/api/traffic?format=json', {
+    headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+  });
+  let trafficBody = await trafficDashboard.json();
+  assert.equal(trafficBody.qaExcludedEventCount, 4);
+  assert.equal(trafficBody.qaExcludedSessionCount, 2);
+  assert.equal(trafficBody.events.some(event => event.sessionId === 'session-qa-quote'), false);
+  assert.equal(trafficBody.events.some(event => event.sessionId === 'session-qa-booking'), false);
+  assert.equal(trafficBody.events.some(event => event.receipt === receiptId), false);
+  assert.equal(trafficBody.events.some(event => event.bookingUid === bookingUid), false);
+  assert.equal(trafficBody.events.some(event => event.sessionId === 'session-real-traffic'), true);
+  trafficDashboard = await fetch(base + '/api/traffic?format=json&includeQaExcluded=1', {
+    headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+  });
+  trafficBody = await trafficDashboard.json();
+  assert.equal(trafficBody.events.some(event => event.receipt === receiptId), true);
+  assert.equal(trafficBody.events.some(event => event.bookingUid === bookingUid), true);
+
+  const exclusionRows = rows().filter(row => row.kind === 'qa_exclusion');
+  assert.equal(exclusionRows.length, 2);
+  assert.deepEqual(
+    new Set(exclusionRows.map(row => row.dedupeKey)),
+    new Set([
+      `qa-exclusion:booking:${bookingUid}`,
+      `qa-exclusion:receipt:${receiptId}`
+    ])
+  );
+
+  const dashboard = await fetch(base + '/api/acquisition?format=json', {
+    headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+  });
+  assert.equal(dashboard.status, 200);
+  const body = await dashboard.json();
+  assert.equal(body.exclusions.count, 2);
+  assert.equal(body.exclusions.targetsApplied, 2);
+  assert.deepEqual(body.exclusions.bookingUids, [bookingUid]);
+  assert.deepEqual(body.exclusions.receiptIds, [receiptId]);
+  assert.equal(body.funnel.qaExclusions.bookingUidsConfigured, 1);
+  assert.equal(body.funnel.qaExclusions.recordsExcluded, 1);
+  assert.equal(body.funnel.latestByBooking.some(row => row.bookingUid === bookingUid), false);
+  assert.equal(body.records.some(row => row.kind === 'funnel_stage' && row.bookingUid === bookingUid), true,
+    'the source booking remains in the append-only ledger');
+});
+
+test('booking QA exclusion follows a reschedule chain', () => {
+  const rows = [
+    {
+      kind: 'funnel_stage', stage: 'booked', bookingUid: 'qa_chain_original',
+      occurredAt: '2026-08-23T17:30:00.000Z', attribution: {}, context: {}
+    },
+    {
+      kind: 'funnel_stage', stage: 'booked', bookingUid: 'qa_chain_replacement',
+      occurredAt: '2026-08-23T18:30:00.000Z', attribution: {},
+      context: { previousBookingUid: 'qa_chain_original' }
+    }
+  ];
+  const exclusions = [{
+    kind: 'qa_exclusion',
+    targetType: 'booking',
+    targetId: 'qa_chain_original',
+    bookingUid: 'qa_chain_original',
+    dedupeKey: 'qa-exclusion:booking:qa_chain_original'
+  }];
+  const funnel = acquisitionStats(rows, exclusions);
+  assert.equal(funnel.bookingCount, 0);
+  assert.equal(funnel.stageCounts.booked, 0);
+  assert.equal(funnel.qaExclusions.bookingUidsConfigured, 1);
+  assert.equal(funnel.qaExclusions.recordsExcluded, 2);
+});
+
+test('QA exclusion normalization rejects ambiguous or altered identifiers', () => {
+  const receiptId = 'lead_33333333-3333-4333-8333-333333333333';
+  assert.match(normalizeQaExclusion({ receiptId, confirmSynthetic: true }).record.dedupeKey,
+    /qa-exclusion:receipt:/);
+  assert.equal(normalizeQaExclusion({
+    receiptId,
+    bookingUid: 'booking_valid',
+    confirmSynthetic: true
+  }).error, 'provide exactly one receiptId or bookingUid');
+  assert.equal(normalizeQaExclusion({
+    bookingUid: 'b'.repeat(161),
+    confirmSynthetic: true
+  }).error, 'bookingUid must be an exact 8-160 character Cal identifier');
+  assert.equal(normalizeQaExclusion({
+    receiptId: receiptId + 'x',
+    confirmSynthetic: true
+  }).error, 'receiptId must be an exact lead UUID');
 });
 
 test('manual admin route defines the complete opportunity funnel and dedupes updates', async () => {

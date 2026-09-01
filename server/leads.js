@@ -633,9 +633,11 @@ function persistLead(lead) {
 /* Genuine leads captured since the last deploy, newest first. Admin-created
    delivery probes stay durable for outbox recovery and audit, but normal views
    exclude them so a pipeline check never becomes a reported inquiry. */
-function readLeads(limit, { includeSynthetic = false } = {}) {
+function readLeads(limit, { includeSynthetic = false, excludeReceiptIds = null } = {}) {
   const out = readStoredLeads()
     .filter(lead => includeSynthetic === true || lead.synthetic !== true)
+    .filter(lead => !excludeReceiptIds
+      || !excludeReceiptIds.has(String(lead && lead.receiptId || '')))
     .map(publicLead);
   out.reverse();
   return out.slice(0, limit || 200);

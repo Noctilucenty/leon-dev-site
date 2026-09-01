@@ -20,6 +20,8 @@ const FUNNEL_STAGES = Object.freeze([
   'no-show'
 ]);
 const FUNNEL_STAGE_SET = new Set(FUNNEL_STAGES);
+const RECEIPT_ID_RE = /^lead_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const BOOKING_UID_RE = /^[A-Za-z0-9._~:@+-]{8,160}$/;
 
 const STAGE_DEFINITIONS = Object.freeze({
   booked: 'A booking was created. A browser success event alone is not authoritative.',
@@ -34,7 +36,19 @@ const STAGE_DEFINITIONS = Object.freeze({
 
 function bookingUid(value) {
   const text = boundedText(value, 160);
-  return /^[A-Za-z0-9._~:@+-]{8,160}$/.test(text) ? text : '';
+  return BOOKING_UID_RE.test(text) ? text : '';
+}
+
+function receiptId(value) {
+  return typeof value === 'string' && value === value.trim() && RECEIPT_ID_RE.test(value)
+    ? value
+    : '';
+}
+
+function exactBookingUid(value) {
+  return typeof value === 'string' && value === value.trim() && BOOKING_UID_RE.test(value)
+    ? value
+    : '';
 }
 
 function safeIso(value, fallback) {
@@ -86,23 +100,72 @@ function normalizeStageRecord(input, now) {
   return { record };
 }
 
-let dedupeLoaded = false;
-const dedupeKeys = new Set();
+/* QA verification records are never deleted from the operational ledgers. An
+   authenticated exclusion appends one opaque identifier here instead, so the
+   original lead or booking remains auditable while reports stop treating it as
+   a real inquiry or opportunity. Exactly one target is allowed per record. */
+function normalizeQaExclusion(input, now) {
+  if (!input || typeof input !== 'object') return { error: 'exclusion is required' };
+  if (input.confirmSynthetic !== true) {
+    return { error: 'confirmSynthetic must be true' };
+  }
+  const hasReceipt = Object.prototype.hasOwnProperty.call(input, 'receiptId');
+  const hasBooking = Object.prototype.hasOwnProperty.call(input, 'bookingUid');
+  if (hasReceipt === hasBooking) return { error: 'provide exactly one receiptId or bookingUid' };
+  const receipt = hasReceipt ? receiptId(input.receiptId) : '';
+  const uid = hasBooking ? exactBookingUid(input.bookingUid) : '';
+  if (hasReceipt && !receipt) return { error: 'receiptId must be an exact lead UUID' };
+  if (hasBooking && !uid) return { error: 'bookingUid must be an exact 8-160 character Cal identifier' };
+  const timestamp = safeIso(now);
+  const targetType = receipt ? 'receipt' : 'booking';
+  const targetId = receipt || uid;
+  const record = {
+    schemaVersion: 1,
+    recordId: 'acq_' + crypto.randomUUID(),
+    ts: timestamp,
+    occurredAt: timestamp,
+    kind: 'qa_exclusion',
+    source: 'admin',
+    purpose: 'synthetic-verification',
+    targetType,
+    targetId,
+    ...(receipt ? { receiptId: receipt } : { bookingUid: uid }),
+    dedupeKey: `qa-exclusion:${targetType}:${targetId}`
+  };
+  return { record };
+}
 
-function readLines() {
+let dedupeLoaded = false;
+const dedupeRecords = new Map();
+
+function readLines({ strict = false } = {}) {
   let raw = '';
-  try { raw = fs.readFileSync(ACQUISITION_FILE, 'utf8'); } catch (e) { return []; }
+  try { raw = fs.readFileSync(ACQUISITION_FILE, 'utf8'); }
+  catch (error) {
+    if (strict && (!error || error.code !== 'ENOENT')) throw error;
+    return [];
+  }
   const out = [];
-  for (const line of raw.split('\n')) {
+  const lines = raw.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
     if (!line.trim()) continue;
-    try { out.push(JSON.parse(line)); } catch (e) { /* skip a torn final line */ }
+    try { out.push(JSON.parse(line)); }
+    catch (error) {
+      if (strict) throw new Error(`corrupt acquisition ledger at line ${index + 1}`);
+      /* Best-effort ingestion paths skip a torn line; admin reporting is strict. */
+    }
   }
   return out;
 }
 
-function loadDedupeKeys() {
+function loadDedupeRecords() {
   if (dedupeLoaded) return;
-  for (const record of readLines()) if (record && record.dedupeKey) dedupeKeys.add(record.dedupeKey);
+  for (const record of readLines()) {
+    if (!record || !record.dedupeKey || dedupeRecords.has(record.dedupeKey)) continue;
+    if (record.kind === 'qa_exclusion' && qaExclusionSets([record]).errors.length) continue;
+    dedupeRecords.set(record.dedupeKey, record);
+  }
   dedupeLoaded = true;
 }
 
@@ -195,27 +258,32 @@ async function deliverToSink(record, env = process.env) {
 }
 
 async function persistRecord(record, env = process.env) {
-  loadDedupeKeys();
-  const duplicate = dedupeKeys.has(record.dedupeKey);
+  loadDedupeRecords();
+  const existing = dedupeRecords.get(record.dedupeKey);
+  const duplicate = !!existing;
+  const canonicalRecord = existing || record;
   let local = { ok: true, duplicate };
   if (!duplicate) {
     local = appendLocal(record);
     if (local.ok) {
-      dedupeKeys.add(record.dedupeKey);
+      dedupeRecords.set(record.dedupeKey, record);
       console.log('ACQ ' + JSON.stringify(record));
     }
   }
 
   // A retry resends the same dedupe key so a failed remote delivery can recover;
   // the receiver must make that key unique. The local JSONL row remains single.
-  const sink = await deliverToSink(record, env);
+  const sink = await deliverToSink(canonicalRecord, env);
   if (sink.attempted && !sink.ok) {
-    console.error('ACQUISITION_SINK_FAILED dedupeKey=' + record.dedupeKey, sink.error || 'unknown error');
+    console.error('ACQUISITION_SINK_FAILED dedupeKey=' + canonicalRecord.dedupeKey, sink.error || 'unknown error');
+  }
+  if (!duplicate && !dedupeRecords.has(record.dedupeKey) && sink.ok) {
+    dedupeRecords.set(record.dedupeKey, record);
   }
   const config = acquisitionStorageConfig(env);
   const durableStored = (local.ok && config.localDurableConfigured) || sink.ok;
   return {
-    record,
+    record: canonicalRecord,
     duplicate,
     localStored: local.ok,
     durableStored,
@@ -225,6 +293,12 @@ async function persistRecord(record, env = process.env) {
 
 async function recordStage(input, env = process.env) {
   const normalized = normalizeStageRecord(input);
+  if (normalized.error) return normalized;
+  return persistRecord(normalized.record, env);
+}
+
+async function recordQaExclusion(input, env = process.env) {
+  const normalized = normalizeQaExclusion(input);
   if (normalized.error) return normalized;
   return persistRecord(normalized.record, env);
 }
@@ -279,12 +353,91 @@ async function recordBookingAttribution(input, env = process.env) {
 }
 
 function readAcquisition(limit) {
-  const records = readLines();
+  const records = readAllAcquisition();
   const asked = Number(limit);
   return records.slice(-(Number.isFinite(asked) && asked > 0 ? asked : 1000));
 }
 
-function acquisitionStats(records) {
+function readAllAcquisition(options) {
+  return readLines(options);
+}
+
+function qaExclusionSets(records) {
+  const receiptIds = new Set();
+  const bookingUids = new Set();
+  const errors = [];
+  for (let index = 0; index < (records || []).length; index += 1) {
+    const record = records[index];
+    if (!record || record.kind !== 'qa_exclusion') continue;
+    const hasReceipt = Object.prototype.hasOwnProperty.call(record, 'receiptId');
+    const hasBooking = Object.prototype.hasOwnProperty.call(record, 'bookingUid');
+    const receipt = hasReceipt ? receiptId(record.receiptId) : '';
+    const uid = hasBooking ? exactBookingUid(record.bookingUid) : '';
+    const expectedType = hasReceipt && !hasBooking && receipt
+      ? 'receipt'
+      : hasBooking && !hasReceipt && uid ? 'booking' : '';
+    const expectedId = receipt || uid;
+    if (!expectedType
+        || (record.targetType != null && record.targetType !== expectedType)
+        || (record.targetId != null && record.targetId !== expectedId)
+        || record.dedupeKey !== `qa-exclusion:${expectedType}:${expectedId}`) {
+      errors.push(`invalid QA exclusion record at ledger index ${index + 1}`);
+      continue;
+    }
+    if (receipt) receiptIds.add(receipt);
+    else bookingUids.add(uid);
+  }
+  return { receiptIds, bookingUids, errors };
+}
+
+function qaEventExclusion(events, leads, records, exclusionRecords = records) {
+  const exclusions = qaExclusionSets(exclusionRecords);
+  const replacementByUid = new Map();
+  for (const record of records || []) {
+    if (!record || record.kind !== 'funnel_stage' || !record.bookingUid) continue;
+    const previousUid = bookingUid(record.context && record.context.previousBookingUid);
+    if (previousUid && previousUid !== record.bookingUid) {
+      replacementByUid.set(previousUid, record.bookingUid);
+    }
+  }
+  const canonicalUid = uid => {
+    let current = uid;
+    const seen = new Set();
+    while (replacementByUid.has(current) && !seen.has(current)) {
+      seen.add(current);
+      current = replacementByUid.get(current);
+    }
+    return current;
+  };
+  const excludedCanonicalUids = new Set(
+    [...exclusions.bookingUids].map(uid => canonicalUid(uid))
+  );
+  const bookingIsExcluded = uid => {
+    const raw = exactBookingUid(uid);
+    return !!raw && (exclusions.bookingUids.has(raw)
+      || excludedCanonicalUids.has(canonicalUid(raw)));
+  };
+  const sessionIds = new Set();
+  for (const lead of leads || []) {
+    if (!lead || !exclusions.receiptIds.has(receiptId(lead.receiptId))) continue;
+    const sessionId = boundedText(lead.analyticsSessionId, 96);
+    if (sessionId) sessionIds.add(sessionId);
+  }
+  const directEventIndexes = new Set();
+  for (let index = 0; index < (events || []).length; index += 1) {
+    const event = events[index];
+    if (!event) continue;
+    const excludedReceipt = exclusions.receiptIds.has(receiptId(event.receipt));
+    if (!excludedReceipt && !bookingIsExcluded(event.bookingUid)) continue;
+    directEventIndexes.add(index);
+    const sessionId = boundedText(event.sessionId, 96);
+    if (sessionId) sessionIds.add(sessionId);
+  }
+  return { sessionIds, directEventIndexes };
+}
+
+function acquisitionStats(records, exclusionRecords = records) {
+  const exclusions = qaExclusionSets(exclusionRecords);
   const stageCounts = Object.fromEntries(FUNNEL_STAGES.map(stage => [stage, 0]));
   const replacementByUid = new Map();
   for (const record of records || []) {
@@ -301,11 +454,23 @@ function acquisitionStats(records) {
     }
     return current;
   };
+  const excludedCanonicalUids = new Set(
+    [...exclusions.bookingUids].map(uid => canonicalUid(uid))
+  );
+  const bookingIsExcluded = uid => {
+    const raw = bookingUid(uid);
+    return !!raw && (exclusions.bookingUids.has(raw) || excludedCanonicalUids.has(canonicalUid(raw)));
+  };
   const latestByBooking = new Map();
   const touchesByBooking = new Map();
   const countedStages = new Set();
+  let excludedRecordCount = 0;
   for (const record of records || []) {
     if (!record || record.kind !== 'booking_attribution' || !record.bookingUid) continue;
+    if (bookingIsExcluded(record.bookingUid)) {
+      excludedRecordCount += 1;
+      continue;
+    }
     const uid = canonicalUid(record.bookingUid);
     const touches = touchesByBooking.get(uid) || { first: {}, last: {} };
     touches.first = { ...touches.first, ...(record.firstAttribution || {}) };
@@ -316,6 +481,10 @@ function acquisitionStats(records) {
     if (!record) continue;
     if (record.kind === 'booking_attribution') continue;
     if (record.kind !== 'funnel_stage' || !FUNNEL_STAGE_SET.has(record.stage)) continue;
+    if (bookingIsExcluded(record.bookingUid)) {
+      excludedRecordCount += 1;
+      continue;
+    }
     // Cal may emit a cancellation for the old slot as part of a reschedule.
     // Once that UID is explicitly superseded, the old-slot cancellation is
     // transport history, not a cancelled sales opportunity.
@@ -344,7 +513,15 @@ function acquisitionStats(records) {
         || !!Object.keys(touches.last).length
     });
   }
-  return { stageCounts, bookingCount: latestByBooking.size, latestByBooking: [...latestByBooking.values()] };
+  return {
+    stageCounts,
+    bookingCount: latestByBooking.size,
+    latestByBooking: [...latestByBooking.values()],
+    qaExclusions: {
+      bookingUidsConfigured: exclusions.bookingUids.size,
+      recordsExcluded: excludedRecordCount
+    }
+  };
 }
 
 function verifyCalSignature(rawBody, header, secret) {
@@ -428,8 +605,13 @@ module.exports = {
   calWebhookRecord,
   deliverToSink,
   normalizeStageRecord,
+  normalizeQaExclusion,
+  qaEventExclusion,
+  qaExclusionSets,
   readAcquisition,
+  readAllAcquisition,
   recordBookingAttribution,
+  recordQaExclusion,
   recordStage,
   verifyCalSignature
 };

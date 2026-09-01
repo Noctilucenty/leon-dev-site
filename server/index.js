@@ -12,6 +12,7 @@
      POST /api/lead-delivery-confirm/:receiptId — admin-only inbox observation
      POST /api/event    — tiny first-party analytics beacon -> stdout ("EVT ...")
      POST /api/cal/webhook — signed Cal lifecycle events -> acquisition stages
+     POST /api/acquisition/exclusions — admin-only append-only QA exclusions
      GET  /api/acquisition — admin-only booking/opportunity stage records
    This process is API-only; repository files are never served from this host. */
 
@@ -65,8 +66,12 @@ const {
   acquisitionStorageConfig,
   acquisitionStats,
   calWebhookRecord,
-  readAcquisition,
+  normalizeQaExclusion,
+  qaEventExclusion,
+  qaExclusionSets,
+  readAllAcquisition,
   recordBookingAttribution,
+  recordQaExclusion,
   recordStage,
   verifyCalSignature
 } = require('./acquisition');
@@ -685,11 +690,26 @@ app.get('/api/leads', (req, res) => {
   const asked = Math.floor(Number(req.query.limit));
   const includeSynthetic = req.query.includeSynthetic === '1'
     || req.query.includeSynthetic === 'true';
-  const leads = readLeads(
-    Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200,
-    { includeSynthetic }
-  );
-  if (req.query.format === 'json') return res.json({ count: leads.length, leads });
+  const includeQaExcluded = req.query.includeQaExcluded === '1'
+    || req.query.includeQaExcluded === 'true';
+  const limit = Number.isFinite(asked) && asked > 0 ? Math.min(asked, 1000) : 200;
+  let acquisitionRecords;
+  try { acquisitionRecords = readAllAcquisition({ strict: true }); }
+  catch (error) { return res.status(503).json({ error: 'acquisition ledger failed integrity checks' }); }
+  const exclusionSets = qaExclusionSets(acquisitionRecords);
+  if (exclusionSets.errors.length) {
+    return res.status(503).json({ error: 'acquisition exclusion ledger failed integrity checks' });
+  }
+  const allCandidateLeads = readLeads(Number.MAX_SAFE_INTEGER, { includeSynthetic });
+  const qaExcludedCount = allCandidateLeads.filter(lead =>
+    exclusionSets.receiptIds.has(String(lead.receiptId || ''))).length;
+  const leads = readLeads(limit, {
+    includeSynthetic,
+    excludeReceiptIds: includeQaExcluded ? null : exclusionSets.receiptIds
+  });
+  if (req.query.format === 'json') {
+    return res.json({ count: leads.length, qaExcludedCount, leads });
+  }
 
   const card = l => '<article><h2>' + escapeHtml(l.name || l.email) + ' <small>' + escapeHtml(l.via) + ' · ' + escapeHtml(l.ts) + ' · ' + escapeHtml(l.receiptId || 'legacy-no-receipt') + '</small></h2>'
     + '<p><a href="mailto:' + escapeHtml(l.email) + '">' + escapeHtml(l.email) + '</a>'
@@ -711,6 +731,7 @@ app.get('/api/leads', (req, res) => {
     + 'pre{white-space:pre-wrap;background:#141416;padding:12px;border-radius:8px;margin:8px 0}'
     + 'a{color:#a78bfa}.src{color:#6b6b73;font-size:12px}p{margin:6px 0}</style>'
     + '<h1>' + leads.length + ' leads in the current store</h1>'
+    + (qaExcludedCount ? '<p>' + qaExcludedCount + ' exact QA quote receipt(s) excluded. Use <code>?includeQaExcluded=1</code> for audit.</p>' : '')
     + (leads.length ? leads.map(card).join('') : '<p>nothing in the configured lead store yet.</p>'));
 });
 
@@ -768,19 +789,83 @@ app.post('/api/acquisition/stage', async (req, res) => {
   });
 });
 
+/* Append-only QA exclusions preserve the original lead/booking evidence while
+   keeping an exact synthetic receipt or booking UID out of funnel reporting.
+   There is intentionally no delete or unexclude route. */
+app.post('/api/acquisition/exclusions', async (req, res) => {
+  const auth = adminKeyState(req);
+  if (auth === 'disabled') return res.status(404).json({ error: 'not enabled' });
+  if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
+  if (limited('x:' + (req.ip || 'x'), 120, 10 * 60_000)) return res.status(429).json({ error: 'rate limited' });
+  const request = req.body || {};
+  const normalized = normalizeQaExclusion(request);
+  if (normalized.error) return res.status(400).json({ error: normalized.error });
+  let records;
+  try { records = readAllAcquisition({ strict: true }); }
+  catch (error) { return res.status(503).json({ error: 'acquisition ledger failed integrity checks' }); }
+  const existingExclusions = qaExclusionSets(records);
+  if (existingExclusions.errors.length) {
+    return res.status(503).json({ error: 'acquisition exclusion ledger failed integrity checks' });
+  }
+  const target = normalized.record;
+  const targetExists = target.receiptId
+    ? readLeads(Number.MAX_SAFE_INTEGER, { includeSynthetic: true })
+      .some(lead => lead && lead.receiptId === target.receiptId)
+    : records.some(record => record && record.kind === 'funnel_stage'
+      && record.bookingUid === target.bookingUid);
+  if (!targetExists) {
+    return res.status(409).json({ error: 'exact synthetic source record was not found' });
+  }
+  const result = await recordQaExclusion(request);
+  if (result.error) return res.status(400).json({ error: result.error });
+  const storage = acquisitionStorageConfig();
+  if ((!result.localStored && !result.sink.ok)
+      || (storage.durableConfigured && !result.durableStored)
+      || (storage.sinkConfigured && !storage.sinkReady)) {
+    return res.status(503).json({ error: 'acquisition storage unavailable' });
+  }
+  res.status(result.duplicate ? 200 : 201).json({
+    ok: true,
+    duplicate: result.duplicate,
+    recordId: result.record.recordId,
+    dedupeKey: result.record.dedupeKey,
+    targetType: result.record.targetType,
+    targetId: result.record.targetId,
+    durableStored: result.durableStored
+  });
+});
+
 app.get('/api/acquisition', (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const auth = adminKeyState(req);
   if (auth === 'disabled') return res.status(404).json({ error: 'not enabled' });
   if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
   const asked = Math.floor(Number(req.query.limit));
-  const records = readAcquisition(Number.isFinite(asked) && asked > 0 ? Math.min(asked, 5000) : 1000);
+  const recordLimit = Number.isFinite(asked) && asked > 0 ? Math.min(asked, 5000) : 1000;
+  let allRecords;
+  try { allRecords = readAllAcquisition({ strict: true }); }
+  catch (error) { return res.status(503).json({ error: 'acquisition ledger failed integrity checks' }); }
+  const records = allRecords.slice(-recordLimit);
+  const exclusionRecords = allRecords.filter(record => record && record.kind === 'qa_exclusion');
+  const exclusionSets = qaExclusionSets(exclusionRecords);
+  if (exclusionSets.errors.length) {
+    return res.status(503).json({ error: 'acquisition exclusion ledger failed integrity checks' });
+  }
+  const exclusionTargetCount = exclusionSets.receiptIds.size + exclusionSets.bookingUids.size;
   const storage = acquisitionStorageConfig();
-  const funnel = acquisitionStats(records);
+  const funnel = acquisitionStats(allRecords, exclusionRecords);
   const body = {
     count: records.length,
+    ledgerCount: allRecords.length,
     stages: STAGE_DEFINITIONS,
     storage,
+    exclusions: {
+      count: exclusionRecords.length,
+      targetsApplied: exclusionTargetCount,
+      receiptIds: [...exclusionSets.receiptIds],
+      bookingUids: [...exclusionSets.bookingUids],
+      records: exclusionRecords
+    },
     funnel,
     records
   };
@@ -801,6 +886,12 @@ app.get('/api/acquisition', (req, res) => {
         + `<td>${escapeHtml(String(booking.occurredAt || '').replace('T', ' ').replace('.000Z', 'Z'))}</td>`
         + `<td>${escapeHtml(source)}${clickIds ? '<small> · ' + escapeHtml(clickIds) + '</small>' : ''}</td></tr>`;
     }).join('') || '<tr><td colspan="4">No authoritative booking stages yet.</td></tr>';
+  const exclusionRows = exclusionRecords.map(record => {
+    const type = record.receiptId ? 'quote receipt' : 'booking UID';
+    const target = record.receiptId || record.bookingUid || '';
+    return `<tr><td>${escapeHtml(type)}</td><td><code>${escapeHtml(target)}</code></td>`
+      + `<td>${escapeHtml(String(record.occurredAt || record.ts || '').replace('T', ' ').replace('.000Z', 'Z'))}</td></tr>`;
+  }).join('') || '<tr><td colspan="3">No QA exclusions recorded.</td></tr>';
 
   res.type('html').send('<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<meta name="robots" content="noindex"><title>acquisition</title>'
@@ -808,10 +899,11 @@ app.get('/api/acquisition', (req, res) => {
     + 'h1,h2{font-weight:550}h2{margin-top:2rem;color:#a78bfa}p,small{color:#92929c}table{width:100%;border-collapse:collapse}'
     + 'th,td{text-align:left;vertical-align:top;border-bottom:1px solid #242428;padding:.55rem}th{color:#777;font-size:11px;text-transform:uppercase}'
     + 'td:nth-child(2){white-space:nowrap}code{color:#ddd}</style>'
-    + `<h1>acquisition — ${funnel.bookingCount} bookings · ${records.length} minimized records</h1>`
-    + `<p>storage: ${escapeHtml(storage.state)}. Raw JSON is available with <code>?format=json</code> through the same header-only authentication.</p>`
+    + `<h1>acquisition — ${funnel.bookingCount} bookings · ${allRecords.length} ledger records</h1>`
+    + `<p>storage: ${escapeHtml(storage.state)}. ${exclusionTargetCount} exact QA target(s) configured in ${exclusionRecords.length} append-only exclusion record(s). Raw JSON is available with <code>?format=json</code> through the same header-only authentication.</p>`
     + `<h2>stage counts</h2><table><thead><tr><th>stage</th><th>count</th><th>definition</th></tr></thead><tbody>${stageRows}</tbody></table>`
-    + `<h2>current booking stage</h2><table><thead><tr><th>booking UID</th><th>stage</th><th>occurred</th><th>attribution</th></tr></thead><tbody>${latestRows}</tbody></table>`);
+    + `<h2>current booking stage</h2><table><thead><tr><th>booking UID</th><th>stage</th><th>occurred</th><th>attribution</th></tr></thead><tbody>${latestRows}</tbody></table>`
+    + `<h2>QA exclusions</h2><table><thead><tr><th>type</th><th>exact ID</th><th>recorded</th></tr></thead><tbody>${exclusionRows}</tbody></table>`);
 });
 
 /* ── event beacon ── */
@@ -838,8 +930,38 @@ app.get('/api/traffic', (req, res) => {
   if (auth === 'disabled') return res.status(404).send('set LEADS_KEY in the environment to enable this view');
   if (auth !== 'authorized') return res.status(401).send('unauthorized');
 
-  const events = readEvents(5000);
-  if (req.query.format === 'json') return res.json({ count: events.length, events });
+  const includeQaExcluded = req.query.includeQaExcluded === '1'
+    || req.query.includeQaExcluded === 'true';
+  const rawEvents = readEvents(5000);
+  let acquisitionRecords;
+  try { acquisitionRecords = readAllAcquisition({ strict: true }); }
+  catch (error) { return res.status(503).json({ error: 'acquisition ledger failed integrity checks' }); }
+  const exclusionRecords = acquisitionRecords.filter(record => record && record.kind === 'qa_exclusion');
+  const exclusionSets = qaExclusionSets(exclusionRecords);
+  if (exclusionSets.errors.length) {
+    return res.status(503).json({ error: 'acquisition exclusion ledger failed integrity checks' });
+  }
+  const qaEventState = qaEventExclusion(
+    rawEvents,
+    readLeads(Number.MAX_SAFE_INTEGER, { includeSynthetic: true }),
+    acquisitionRecords,
+    exclusionRecords
+  );
+  const excludedQaSessionIds = qaEventState.sessionIds;
+  const eventIsQaExcluded = (event, index) => qaEventState.directEventIndexes.has(index)
+    || excludedQaSessionIds.has(String(event && event.sessionId || ''));
+  const qaExcludedEventCount = rawEvents.filter(eventIsQaExcluded).length;
+  const events = includeQaExcluded
+    ? rawEvents
+    : rawEvents.filter((event, index) => !eventIsQaExcluded(event, index));
+  if (req.query.format === 'json') {
+    return res.json({
+      count: events.length,
+      qaExcludedEventCount,
+      qaExcludedSessionCount: excludedQaSessionIds.size,
+      events
+    });
+  }
 
   const count = (map, k) => { if (k) map.set(k, (map.get(k) || 0) + 1); };
   const bySource = new Map(), byLastSource = new Map(), byName = new Map(), byPath = new Map(), byDay = new Map(), byLang = new Map();
@@ -893,6 +1015,9 @@ app.get('/api/traffic', (req, res) => {
     + 'th,td{border-bottom:1px solid #1a1a1a;padding:.35rem .5rem} th{text-align:left;color:#777;font-size:11px;font-weight:500}'
     + 'td:last-child{text-align:right;color:#aaa}.recent td{text-align:left;color:#aaa;font-size:12px}.note,p{color:#777}.note{font-size:12px}</style>'
     + `<h1>traffic — ${events.length} events · ${sessionsSeen.size} anonymous sessions in the current store</h1>`
+    + (qaExcludedEventCount
+      ? `<p>${qaExcludedEventCount} event record(s) across ${excludedQaSessionIds.size} exact QA session(s) excluded. Use <code>?includeQaExcluded=1</code> for audit.</p>`
+      : '')
     + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. use LEON_DATA_DIR for mounted-disk JSONL; "EVT " lines remain in render logs.</p>'
     + '<h2>unique-session funnel</h2>'
     + `<table class="funnel"><thead><tr><th>stage</th><th>event records</th><th>unique sessions*</th><th>step rate†</th></tr></thead><tbody>${funnelRows}</tbody></table>`
