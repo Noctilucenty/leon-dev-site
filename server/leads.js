@@ -983,6 +983,7 @@ module.exports = {
   validateLead,
   persistLead,
   readLeads,
+  findStoredLeadByReceipt,
   findLeadByIdempotencyKey,
   leadFingerprint,
   clean,

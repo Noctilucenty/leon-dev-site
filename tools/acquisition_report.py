@@ -549,16 +549,22 @@ def build_report(
             in canonical_qa_booking_uids
         )
 
-    reportable_event_records = [
-        record
-        for record in events.records
-        if not event_is_qa_excluded(record)
+    excluded_qa_event_records = [
+        record for record in events.records if event_is_qa_excluded(record)
     ]
-    qa_event_records_excluded = len(events.records) - len(reportable_event_records)
+    reportable_event_records = [
+        record for record in events.records if not event_is_qa_excluded(record)
+    ]
+    removed_qa_sessions = {
+        str(record.get("sessionId") or "").strip()
+        for record in excluded_qa_event_records
+        if str(record.get("sessionId") or "").strip()
+    }
+    qa_event_records_excluded = len(excluded_qa_event_records)
     if qa_event_records_excluded:
         findings.add_note(
             f"Excluded {qa_event_records_excluded} event record(s) across "
-            f"{len(excluded_qa_sessions)} exact QA session(s); source records remain append-only."
+            f"{len(removed_qa_sessions)} exact QA session(s); source records remain append-only."
         )
 
     non_synthetic_lead_records = [
@@ -1125,7 +1131,7 @@ def build_report(
                 "scopedRecords": len(scoped_events),
                 "sessionlessPageViews": sessionless_page_views,
                 "qaRecordsExcluded": qa_event_records_excluded,
-                "qaSessionsExcluded": len(excluded_qa_sessions),
+                "qaSessionsExcluded": len(removed_qa_sessions),
             },
             "leads": {
                 "available": leads.available,

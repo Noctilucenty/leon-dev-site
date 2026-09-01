@@ -49,6 +49,7 @@ const {
   validateLead,
   persistLead,
   readLeads,
+  findStoredLeadByReceipt,
   findLeadByIdempotencyKey,
   leadFingerprint,
   clean,
@@ -808,11 +809,15 @@ app.post('/api/acquisition/exclusions', async (req, res) => {
     return res.status(503).json({ error: 'acquisition exclusion ledger failed integrity checks' });
   }
   const target = normalized.record;
-  const targetExists = target.receiptId
-    ? readLeads(Number.MAX_SAFE_INTEGER, { includeSynthetic: true })
-      .some(lead => lead && lead.receiptId === target.receiptId)
-    : records.some(record => record && record.kind === 'funnel_stage'
-      && record.bookingUid === target.bookingUid);
+  let targetExists;
+  try {
+    targetExists = target.receiptId
+      ? !!findStoredLeadByReceipt(target.receiptId)
+      : records.some(record => record && record.kind === 'funnel_stage'
+        && record.bookingUid === target.bookingUid);
+  } catch (error) {
+    return res.status(503).json({ error: 'lead ledger failed integrity checks' });
+  }
   if (!targetExists) {
     return res.status(409).json({ error: 'exact synthetic source record was not found' });
   }
@@ -932,7 +937,9 @@ app.get('/api/traffic', (req, res) => {
 
   const includeQaExcluded = req.query.includeQaExcluded === '1'
     || req.query.includeQaExcluded === 'true';
-  const rawEvents = readEvents(5000);
+  let rawEvents;
+  try { rawEvents = readEvents(5000, { strict: true }); }
+  catch (error) { return res.status(503).json({ error: 'events ledger failed integrity checks' }); }
   let acquisitionRecords;
   try { acquisitionRecords = readAllAcquisition({ strict: true }); }
   catch (error) { return res.status(503).json({ error: 'acquisition ledger failed integrity checks' }); }
@@ -950,7 +957,11 @@ app.get('/api/traffic', (req, res) => {
   const excludedQaSessionIds = qaEventState.sessionIds;
   const eventIsQaExcluded = (event, index) => qaEventState.directEventIndexes.has(index)
     || excludedQaSessionIds.has(String(event && event.sessionId || ''));
-  const qaExcludedEventCount = rawEvents.filter(eventIsQaExcluded).length;
+  const excludedQaEvents = rawEvents.filter(eventIsQaExcluded);
+  const qaExcludedEventCount = excludedQaEvents.length;
+  const removedQaSessionIds = new Set(excludedQaEvents
+    .map(event => String(event && event.sessionId || ''))
+    .filter(Boolean));
   const events = includeQaExcluded
     ? rawEvents
     : rawEvents.filter((event, index) => !eventIsQaExcluded(event, index));
@@ -958,7 +969,7 @@ app.get('/api/traffic', (req, res) => {
     return res.json({
       count: events.length,
       qaExcludedEventCount,
-      qaExcludedSessionCount: excludedQaSessionIds.size,
+      qaExcludedSessionCount: removedQaSessionIds.size,
       events
     });
   }
@@ -1016,7 +1027,7 @@ app.get('/api/traffic', (req, res) => {
     + 'td:last-child{text-align:right;color:#aaa}.recent td{text-align:left;color:#aaa;font-size:12px}.note,p{color:#777}.note{font-size:12px}</style>'
     + `<h1>traffic — ${events.length} events · ${sessionsSeen.size} anonymous sessions in the current store</h1>`
     + (qaExcludedEventCount
-      ? `<p>${qaExcludedEventCount} event record(s) across ${excludedQaSessionIds.size} exact QA session(s) excluded. Use <code>?includeQaExcluded=1</code> for audit.</p>`
+      ? `<p>${qaExcludedEventCount} event record(s) across ${removedQaSessionIds.size} exact QA session(s) excluded. Use <code>?includeQaExcluded=1</code> for audit.</p>`
       : '')
     + '<p>tag every link you post as ?s=name (e.g. /pt?s=fbgroup-br) and it shows up under sources. use LEON_DATA_DIR for mounted-disk JSONL; "EVT " lines remain in render logs.</p>'
     + '<h2>unique-session funnel</h2>'

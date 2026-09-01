@@ -364,6 +364,29 @@ test('admin QA exclusions are append-only, authenticated and idempotent', async 
   assert.equal(body.funnel.latestByBooking.some(row => row.bookingUid === bookingUid), false);
   assert.equal(body.records.some(row => row.kind === 'funnel_stage' && row.bookingUid === bookingUid), true,
     'the source booking remains in the append-only ledger');
+
+  const leadLedgerSnapshot = fs.readFileSync(process.env.LEADS_FILE);
+  try {
+    fs.appendFileSync(process.env.LEADS_FILE, '{corrupt lead row\n');
+    response = await postExclusion({
+      receiptId: 'lead_44444444-4444-4444-8444-444444444444',
+      confirmSynthetic: true
+    });
+    assert.equal(response.status, 503, 'a corrupt lead ledger fails closed');
+  } finally {
+    fs.writeFileSync(process.env.LEADS_FILE, leadLedgerSnapshot);
+  }
+
+  const eventLedgerSnapshot = fs.readFileSync(process.env.EVENTS_FILE);
+  try {
+    fs.appendFileSync(process.env.EVENTS_FILE, '{corrupt event row\n');
+    response = await fetch(base + '/api/traffic?format=json', {
+      headers: { 'x-leads-key': 'acquisition-admin-test-key' }
+    });
+    assert.equal(response.status, 503, 'a corrupt event ledger fails closed');
+  } finally {
+    fs.writeFileSync(process.env.EVENTS_FILE, eventLedgerSnapshot);
+  }
 });
 
 test('booking QA exclusion follows a reschedule chain', () => {

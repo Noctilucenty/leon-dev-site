@@ -147,13 +147,23 @@ function persistEvent(ev) {
   } catch (e) { /* file is best-effort; stdout already has it */ }
 }
 
-function readEvents(limit) {
+function readEvents(limit, { strict = false } = {}) {
   let raw = '';
-  try { raw = fs.readFileSync(EVENTS_FILE, 'utf8'); } catch (e) { return []; }
+  try { raw = fs.readFileSync(EVENTS_FILE, 'utf8'); }
+  catch (error) {
+    if (strict && (!error || error.code !== 'ENOENT')) throw error;
+    return [];
+  }
   const out = [];
-  for (const line of raw.split('\n')) {
+  const lines = raw.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
     if (!line.trim()) continue;
-    try { out.push(JSON.parse(line)); } catch (e) { /* skip a torn line */ }
+    try { out.push(JSON.parse(line)); }
+    catch (error) {
+      if (strict) throw new Error(`corrupt events ledger at line ${index + 1}`);
+      /* Best-effort ingestion paths skip a torn line; admin reporting is strict. */
+    }
   }
   return out.slice(-(limit || 5000));
 }
