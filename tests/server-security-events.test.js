@@ -135,8 +135,11 @@ test('event beacon stores bounded anonymous session plus first/last attribution'
     lastFbclid: 'fbclid.last_123',
     firstMsclkid: 'abcdef0123456789abcdef0123456789',
     lastMsclkid: 'fedcba9876543210fedcba9876543210',
-    receipt: 'lead_example',
-    bookingUid: 'booking_example'
+    receipt: 'lead_12345678-1234-1234-1234-123456789abc',
+    bookingUid: 'booking_example',
+    status: 'accepted',
+    service: 'technical-build-partner',
+    package: 'systems-plan'
   });
   assert.equal(response.status, 204);
 
@@ -168,8 +171,25 @@ test('event beacon stores bounded anonymous session plus first/last attribution'
   assert.equal(event.lastFbclid, 'fbclid.last_123');
   assert.equal(event.firstMsclkid, 'abcdef0123456789abcdef0123456789');
   assert.equal(event.lastMsclkid, 'fedcba9876543210fedcba9876543210');
-  assert.equal(event.receipt, 'lead_example');
+  assert.equal(event.receipt, 'lead_12345678-1234-1234-1234-123456789abc');
   assert.equal(event.bookingUid, 'booking_example');
+  assert.equal(event.status, 'accepted');
+  assert.equal(event.service, 'technical-build-partner');
+  assert.equal(event.package, 'systems-plan');
+});
+
+test('event correlation fields reject contact-looking, malformed, and oversized values', () => {
+  const event = normalizeEvent({
+    name: 'quote_lead_accepted',
+    receipt: 'lead_1234567890abcdef/poison',
+    bookingUid: 'visitor@example.com',
+    status: 'accepted<script>',
+    service: 'technical partner',
+    package: 'x'.repeat(65)
+  }, '2026-08-22T12:00:00.000Z');
+  for (const field of ['receipt', 'bookingUid', 'status', 'service', 'package']) {
+    assert.equal(Object.hasOwn(event, field), false, field);
+  }
 });
 
 test('every redesigned quote and direct-contact CTA remains a high-intent funnel action', () => {
@@ -184,6 +204,11 @@ test('every redesigned quote and direct-contact CTA remains a high-intent funnel
     'chat_handoff_offer_click',
     'footer_email_click',
     'footer_phone_click',
+    'technical_partner_call_click',
+    'technical_partner_quote_click',
+    'technical_partner_systems_plan_click',
+    'technical_partner_sprint_click',
+    'technical_partner_ongoing_click',
   ];
   const events = names.flatMap((name, index) => {
     const sessionId = `redesign-intent-${index}`;
@@ -240,7 +265,7 @@ test('traffic dashboard shows an honest session funnel and correlation IDs', asy
   assert.match(html, /data-stage="page"><td>page view<\/td><td>3<\/td><td>3<\/td><td>baseline<\/td>/);
   assert.match(html, /data-stage="intent"><td>high-intent action<\/td><td>3<\/td><td>2<\/td><td>2\/3 · 66\.7%<\/td>/);
   assert.match(html, /data-stage="lead"><td>lead accepted by API<\/td><td>1<\/td><td>1<\/td><td>1\/2 · 50%<\/td>/);
-  assert.match(html, /data-stage="booking"><td>calendar booking confirmed<\/td><td>2<\/td><td>2<\/td><td>1\/1 · 100%<\/td>/);
+  assert.match(html, /data-stage="booking"><td>embedded calendar success signal<\/td><td>2<\/td><td>2<\/td><td>1\/1 · 100%<\/td>/);
   assert.match(html, /exclude 1 of 9 funnel records with no session ID/);
   assert.match(html, /receipt lead_funnel_a/);
   assert.match(html, /booking booking_funnel_a/);

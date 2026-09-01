@@ -25,12 +25,12 @@ function storage(seed = {}) {
   };
 }
 
-function harness(seed = {}) {
+function harness(seed = {}, sharedSession) {
   const listeners = new Map();
   const scripts = [];
   const firstPartyBeacons = [];
   const local = storage(seed);
-  const session = storage();
+  const session = sharedSession || storage();
   let banner = null;
   const bodyClasses = new Set();
 
@@ -195,6 +195,30 @@ test('Google makes no request before consent, then flushes one receipt-deduplica
   assert.equal(h.commands('event').length, 1, 'same receipt is not emitted twice');
 });
 
+test('assistant lead success uses the Quote action and dedupes against the same receipt', () => {
+  const h = harness({ leon_ads_consent_v1: 'granted' });
+  h.window.leonEvt('lead_submit_success', { receipt: 'lead_1234567890abcdef' });
+  h.window.leonEvt('quote_lead_accepted', { receipt: 'lead_1234567890abcdef' });
+  const events = h.commands('event');
+  assert.equal(events.length, 1);
+  assert.equal(events[0][2].send_to, LABELS.quote);
+  assert.equal(events[0][2].transaction_id, 'lead_1234567890abcdef');
+});
+
+test('a consent-pending primary conversion survives a same-tab reload', () => {
+  const sharedSession = storage();
+  const first = harness({}, sharedSession);
+  first.window.leonEvt('quote_lead_accepted', { receipt: 'lead_1234567890abcdef' });
+  assert.equal(first.commands('event').length, 0);
+
+  const reloaded = harness({}, sharedSession);
+  reloaded.click(selectorTarget(selector => selector === '[data-ads-consent-allow]'));
+  const events = reloaded.commands('event');
+  assert.equal(events.length, 1);
+  assert.equal(events[0][2].send_to, LABELS.quote);
+  assert.equal(events[0][2].transaction_id, 'lead_1234567890abcdef');
+});
+
 test('booking, phone and WhatsApp actions use their own labels and dedupe repeated contact clicks per tab', () => {
   const h = harness({ leon_ads_consent_v1: 'granted' });
   assert.equal(h.scripts.length, 1);
@@ -222,8 +246,12 @@ test('quote and booking Ads conversions require valid opaque transaction identif
   const h = harness({ leon_ads_consent_v1: 'granted' });
   h.window.leonEvt('quote_lead_accepted', {});
   h.window.leonEvt('quote_lead_accepted', { receipt: 'visitor@example.com' });
+  h.window.leonEvt('quote_lead_accepted', { receipt: 'lead_1234567890abcdef/poison' });
+  h.window.leonEvt('quote_lead_accepted', { receipt: 'lead_' + 'a'.repeat(60) });
   h.window.leonEvt('calendar_booking_success', {});
   h.window.leonEvt('calendar_booking_success', { bookingUid: 'short' });
+  h.window.leonEvt('calendar_booking_success', { bookingUid: 'booking@example.com' });
+  h.window.leonEvt('calendar_booking_success', { bookingUid: 'b'.repeat(65) });
   assert.equal(h.commands('event').length, 0);
 
   h.window.leonEvt('quote_lead_accepted', { receipt: 'lead_valid-opaque-123456' });
@@ -262,7 +290,8 @@ test('privacy copy discloses the optional Google path and exposes a preference c
   const privacy = fs.readFileSync(path.join(ROOT, 'privacy.html'), 'utf8');
   assert.match(privacy, /Until you select “Allow measurement,” the Google tag is not requested and no data is sent to Google/);
   assert.match(privacy, /page URL—including campaign or advertising-click identifiers/);
-  assert.match(privacy, /explicitly override Google's user-provided-data field with an empty value/);
+  assert.match(privacy, /sets Google's user-provided-data field to an empty value/);
+  assert.match(privacy, /automatic customer-data collection setting, which must remain disabled/);
   assert.match(privacy, /no monetary value is assigned/);
   assert.match(privacy, /data-ads-consent-manage/);
 });

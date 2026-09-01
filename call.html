@@ -116,6 +116,10 @@
   function safeParam(value,max){
     return String(value||'').trim().replace(/[^A-Za-z0-9._~-]/g,'-').slice(0,max);
   }
+  function safeSlug(value){
+    var text=String(value||'').trim();
+    return /^[a-z0-9][a-z0-9-]{0,63}$/.test(text)?text:'';
+  }
   function sourceConfig(){
     var attr={};
     try{ attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')||{}; }catch(e){}
@@ -150,8 +154,19 @@
     confirmation.hidden=false;
     var data=payload&&payload.detail&&payload.detail.data;
     var rawUid=data&&(data.uid||(data.booking&&data.booking.uid));
-    var bookingUid=safeParam(rawUid,128);
-    if(!bookedTracked){ bookedTracked=true; track('calendar_booking_success',bookingUid?{bookingUid:bookingUid}:undefined); }
+    var bookingUid=String(rawUid||'').trim();
+    if(!/^[A-Za-z0-9._~-]{8,64}$/.test(bookingUid)){
+      track('calendar_booking_uid_missing');
+    }else if(!bookedTracked){
+      var extra={bookingUid:bookingUid};
+      var query=new URLSearchParams(location.search);
+      var service=safeSlug(query.get('service'));
+      var packageName=safeSlug(query.get('package'));
+      if(service) extra.service=service;
+      if(packageName) extra.package=packageName;
+      bookedTracked=true;
+      track('calendar_booking_success',extra);
+    }
     try{ confirmation.focus({preventScroll:true}); }catch(e){ confirmation.focus(); }
     confirmation.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
   }
@@ -203,20 +218,44 @@
 <script>
 (function(){
   var params=new URLSearchParams(location.search);
-  if(params.get('service')!=='contractor-lead-recovery') return;
-  document.body.classList.add('contractor-call-context');
-  document.title='Book a Contractor Website Review | Leon Builds';
+  var service=params.get('service')||'';
+  var packageName=params.get('package')||'';
   var label=document.getElementById('call-context-label');
   var title=document.getElementById('call-context-title');
   var intro=document.getElementById('call-context-intro');
   var price=document.getElementById('call-context-price');
   var agenda=document.getElementById('call-context-agenda');
-  if(label) label.textContent='Contractor website + follow-up review';
-  if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
-  if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
-  if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
-  if(agenda) agenda.textContent='What happens in the contractor review';
-  if(window.leonEvt) window.leonEvt('call_context_contractor');
+  function trackContext(name,extra){
+    if(window.leonEvt){ window.leonEvt(name,extra); return; }
+    document.addEventListener('DOMContentLoaded',function(){
+      if(window.leonEvt) window.leonEvt(name,extra);
+    },{once:true});
+  }
+  if(service==='contractor-lead-recovery'){
+    document.body.classList.add('contractor-call-context');
+    document.title='Book a Contractor Website Review | Leon Builds';
+    if(label) label.textContent='Contractor website + follow-up review';
+    if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
+    if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
+    if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
+    if(agenda) agenda.textContent='What happens in the contractor review';
+    trackContext('call_context_contractor',{service:'contractor-lead-recovery'});
+  }else if(service==='technical-build-partner'){
+    document.body.classList.add('technical-partner-call-context');
+    document.title='Book a Technical Build Partner Fit Call | Leon Builds';
+    if(label) label.textContent='Technical Build Partner fit call';
+    if(title) title.innerHTML='Book a free <em>15-minute fit call</em>';
+    if(intro) intro.textContent='Bring the bottleneck, even if you do not know whether the answer is a website, automation, internal tool, app, or no custom build at all.';
+    if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
+    if(agenda) agenda.textContent='What happens in the fit call';
+    if(packageName==='systems-plan'){
+      if(label) label.textContent='Systems Plan fit call';
+      if(intro) intro.textContent='Bring the bottleneck and the result you need. Leon will confirm whether the 45-minute written Systems Plan is the right next step before you pay for it.';
+    }
+    var context={service:'technical-build-partner'};
+    if(/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) context.package=packageName;
+    trackContext('call_context_technical_partner',context);
+  }
 })();
 </script>
 <footer class="foot">

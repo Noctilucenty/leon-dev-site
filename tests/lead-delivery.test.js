@@ -151,6 +151,20 @@ test('validated leads and honeypot successes receive opaque receipt IDs', () => 
   });
   assert.equal(keyed.lead.idempotencyKey, 'leadreq_12345678-1234-1234-1234-123456789abc');
   assert.equal(keyed.lead.service, 'contractor-lead-recovery');
+  const planned = validateLead({
+    email: 'plan@example.com',
+    problem: 'Map the next technical milestone.',
+    service: 'technical-build-partner',
+    package: 'systems-plan'
+  });
+  assert.equal(planned.lead.service, 'technical-build-partner');
+  assert.equal(planned.lead.package, 'systems-plan');
+  assert.equal(validateLead({
+    email: 'bad-package@example.com',
+    problem: 'Try an unrelated package.',
+    service: 'websites',
+    package: 'systems-plan'
+  }).error, 'invalid package');
   assert.equal(validateLead({
     email: 'bad-key@example.com',
     problem: 'This key contains unsafe punctuation.',

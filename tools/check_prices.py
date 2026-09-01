@@ -40,6 +40,14 @@ FLOORS = {
     'ongoing': 400,
 }
 
+# Prices on offers outside the generated /services/* fleet. Keeping these
+# separate preserves the historical service-floor fingerprint used by the
+# off-site publication ledger while still making every public amount auditable.
+PUBLIC_OFFERS = {
+    'technical-build-partner-plan': 199,
+    'technical-build-partner-ongoing': 2000,
+}
+
 # Figures a given service page may legitimately mention besides its own floor,
 # because the copy deliberately points at a neighbouring service.
 CROSS = {
@@ -60,7 +68,7 @@ CROSS = {
 FEE_CONSTANTS = {0.30}
 
 
-ALL = set(FLOORS.values()) | FEE_CONSTANTS
+ALL = set(FLOORS.values()) | set(PUBLIC_OFFERS.values()) | FEE_CONSTANTS
 # budget brackets on the quote form are ranges, not prices
 IGNORE_FILES = {'quote.html'}
 
@@ -111,7 +119,8 @@ def main():
 
     # 2. no surface anywhere may show a figure that is not a published floor
     others = ([p for p in glob.glob('industries/*.html')]
-              + ['index.html', 'about.html', 'call.html', 'missed-lead-recovery.html', 'llms.txt']
+              + ['index.html', 'about.html', 'call.html', 'missed-lead-recovery.html',
+                 'technical-build-partner.html', 'llms.txt']
               + glob.glob('es/*.html') + glob.glob('pt/*.html')
               + glob.glob('zh/*.html'))
     for path in others:

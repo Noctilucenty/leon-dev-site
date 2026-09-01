@@ -46,6 +46,10 @@ const clean = (v, max, multiline) => {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const IDEMPOTENCY_KEY_RE = /^leadreq_[A-Za-z0-9-]{16,80}$/;
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const TECHNICAL_PARTNER_PACKAGES = new Set([
+  'systems-plan', 'focused-build-sprint', 'ongoing-technical-partner'
+]);
 const newReceiptId = () => 'lead_' + randomUUID();
 
 const present = v => typeof v === 'string' ? !!v.trim() : !!v;
@@ -142,6 +146,13 @@ function validateLead(body) {
   const currentAttribution = normalizeAttribution(body);
   const firstAttribution = normalizeAttribution(body, 'first');
   const lastAttribution = normalizeAttribution(body, 'last');
+  const service = clean(body.service, 64);
+  const packageName = clean(body.package, 64);
+  if (service && !SLUG_RE.test(service)) return { error: 'invalid service' };
+  if (packageName && (
+      service !== 'technical-build-partner'
+      || !TECHNICAL_PARTNER_PACKAGES.has(packageName)
+  )) return { error: 'invalid package' };
   const lead = {
     ts: new Date().toISOString(),
     receiptId: newReceiptId(),
@@ -150,7 +161,8 @@ function validateLead(body) {
     phone: clean(body.phone, 40),
     company: clean(body.company, 160),
     industry: clean(body.industry, 120),
-    service: clean(body.service, 120),
+    service,
+    package: packageName,
     problem: clean(body.problem, 4000, true),
     currentTools: clean(body.currentTools, 500),
     desiredOutcome: clean(body.desiredOutcome, 1000, true),

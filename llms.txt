@@ -2,15 +2,25 @@
 
 > Leon Builds, by Leon Kelvin Li, creates phone-first business websites and simple lead-follow-up systems. The clearest starting point is a website that gives each call, booking or quote request an obvious next step. Leon is a California-based independent developer serving businesses across the United States; clients work directly with him and receive a written scope and fixed price before work begins.
 
-Last reviewed: 2026-08-25.
+Last reviewed: 2026-08-31.
 
 ## Best starting points
 
+- [Technical Build Partner](https://leonbuilds.org/technical-build-partner): work directly with Leon to decide whether the smallest useful next step is a website, automation, internal tool, app, or no custom build. A written Systems Plan is $199 and is credited toward an agreed build.
 - [Website + lead follow-up](https://leonbuilds.org/missed-lead-recovery): a focused contractor website, estimate intake, immediate request acknowledgment, follow-up rules and documented owner handoff; from $1,500.
 - [Small-business web design](https://leonbuilds.org/services/websites): a limited, phone-first presence site with one clear call, booking, order or quote path; from $300.
 - [Workflow automation](https://leonbuilds.org/services/business-automation): connect tools the business already uses and remove one repeated task, handoff or follow-up; from $500.
 
 These are starting scope floors, not instant quotes. Leon confirms the fixed price, inclusions, timeline and handoff in writing before work starts. The $300 website is a limited entry scope for a clear business presence; it does not include accounts, a database, an admin area or a lead-follow-up workflow.
+
+## Technical Build Partner
+
+- [Technical Build Partner for small businesses](https://leonbuilds.org/technical-build-partner) is for owners who know the bottleneck but do not yet know whether the right fix is a website, automation, internal tool, app, or an existing product.
+- Systems Plan: $199 for a written problem map, the smallest recommended solution, and a proposed scope, budget and timeline. The $199 is credited toward the agreed build if the client continues with Leon.
+- Focused Build Sprint: from $1,500 for one priority build with written scope, review checkpoints, testing and the agreed handoff.
+- Ongoing Technical Partner: from $2,000 per month for reserved build capacity, a written priority backlog and an agreed monthly scope.
+- For a ready, well-scoped project, only the first working milestone can be targeted within 1–3 business days. This is not a promise that the full project ships in 1–3 days.
+- Provider fees, paid advertising, bulk data cleanup, ongoing content and work outside the written monthly scope are separate.
 
 ## Start here
 

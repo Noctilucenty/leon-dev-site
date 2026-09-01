@@ -175,14 +175,16 @@ does not load the tag or send Google a consent ping. When allowed, the standard
 Google tag sends a configuration/page-view hit that may process the page URL
 (including campaign or click identifiers), IP and device/browser signals, and
 advertising-cookie identifiers. The site also sends four explicit conversion
-events: API-accepted quote submissions, successful embedded
+events: API-accepted project inquiries, successful embedded
 Cal bookings, phone-link clicks and WhatsApp-link clicks. A quote receipt or opaque
 booking UID is required and used as the transaction identifier; contact-link events
 are limited to one per action per tab and do not prove a call or message occurred.
-No monetary value is assigned to these actions. The tag and each conversion event
-set `user_data` to an empty object, and ad personalization stays denied; the site
-does not provide form fields, contact details or chat text to Google's
-user-provided-data interface. Revoking a prior grant sends the required denied
+No monetary value is assigned to these actions. Each explicit conversion event
+sets `user_data` to an empty object, and ad personalization stays denied; site
+code does not intentionally provide form fields, contact details or chat text to
+Google's user-provided-data interface. That code does not control the separate
+account-level automatic customer-data collection setting, which must remain
+disabled in Google Ads. Revoking a prior grant sends the required denied
 consent update, stops further conversion events on that page, and keeps the tag
 blocked on later page loads.
 

@@ -84,6 +84,7 @@
         </div>
       </details>
       <input name="service" type="hidden" value="">
+      <input name="package" type="hidden" value="">
       <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
       <p class="qerr" id="qerr" role="alert" aria-live="polite"></p>
       <div id="qfail" hidden role="alert">
@@ -97,7 +98,7 @@
       <p class="sub">We received your request and saved it for Leon. He usually replies to the email you provided the same business day.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
-        <a class="btn btn-solid magnet" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
         <a class="btn magnet" href="/work"><span>See Leon's work</span></a>
       </div>
     </div>
@@ -110,11 +111,14 @@
   if(!f)return;
   var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\.0\.0\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
   var button=f.querySelector('button[type="submit"]'),buttonText=button.querySelector('span');
-  var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt');
+  var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt'),bookCall=document.getElementById('quote-book-call');
   var started=false,submitting=false,submissionKey='',attemptStorage='leon_quote_attempt_v1';
   var service=(new URLSearchParams(location.search)).get('service')||'';
+  var packageName=(new URLSearchParams(location.search)).get('package')||'';
   var contractorReview=service==='contractor-lead-recovery';
-  var idleButtonText=contractorReview?'Request the 3-point review':'Send it to Leon';
+  var technicalPartner=service==='technical-build-partner';
+  if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
+  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send the bottleneck to Leon':'Send it to Leon');
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
@@ -123,10 +127,50 @@
     document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
     f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
+  }else if(technicalPartner){
+    f.elements.service.value=service;
+    f.elements.package.value=packageName;
+    document.getElementById('quote-context-label').textContent='Technical build partner inquiry';
+    document.getElementById('quote-context-title').innerHTML='Tell Leon what is <em>slowing the business down.</em>';
+    document.getElementById('quote-context-intro').textContent='Describe the bottleneck in plain words. Leon will recommend the smallest sensible next step before asking you to commit to a larger build.';
+    document.getElementById('quote-problem-label').textContent='What is slowing the business down, and what would a useful result look like?';
+    f.elements.problem.placeholder='Leads get lost after the form, staff copy the same data twice, or the product is stuck before release…';
+    if(packageName==='systems-plan'){
+      document.getElementById('quote-context-label').textContent='$199 Systems Plan';
+      document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the bottleneck and the result you need. Leon will confirm fit before you pay for the 45-minute working session and written plan.';
+      document.getElementById('quote-problem-label').textContent='What bottleneck should the Systems Plan solve?';
+      f.elements.problem.placeholder='Staff repeat the same task, tools do not connect, leads get lost, or another specific bottleneck…';
+      buttonText.textContent='Ask to start the Systems Plan';
+      idleButtonText='Ask to start the Systems Plan';
+    }else if(packageName==='focused-build-sprint'){
+      document.getElementById('quote-context-label').textContent='Focused Build Sprint · from $1,500';
+      document.getElementById('quote-context-title').innerHTML='Define one <em>working milestone.</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the single result that should be working at the end. Leon will reply with the acceptance checks, scope, price, and timeline before work begins.';
+      document.getElementById('quote-problem-label').textContent='What one working result should this sprint deliver?';
+      f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
+      idleButtonText='Discuss a focused build';
+    }else if(packageName==='ongoing-technical-partner'){
+      document.getElementById('quote-context-label').textContent='Ongoing Technical Partner · from $2,000/month';
+      document.getElementById('quote-context-title').innerHTML='Set one <em>technical priority lane.</em>';
+      document.getElementById('quote-context-intro').textContent='Share the first milestone and the maintenance or fixes competing for attention. Leon will propose a bounded monthly scope; this is not unlimited development.';
+      document.getElementById('quote-problem-label').textContent='What is the first priority, and what keeps interrupting it?';
+      f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
+      idleButtonText='Discuss ongoing support';
+    }
+    buttonText.textContent=idleButtonText;
   }
-  function track(name,extra){ if(window.leonEvt) window.leonEvt(name,extra); }
+  if(bookCall&&service){
+    bookCall.href='/call?service='+encodeURIComponent(service)+(packageName?'&package='+encodeURIComponent(packageName):'');
+  }
+  function track(name,extra){
+    var details=extra||{};
+    if(service) details.service=service;
+    if(packageName) details.package=packageName;
+    if(window.leonEvt) window.leonEvt(name,details);
+  }
   function fingerprint(d){
-    var raw=['service','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
+    var raw=['service','package','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
       .map(function(k){return String(d[k]||'');}).join('\u001f');
     var hash=2166136261;
     for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
@@ -225,6 +269,7 @@
       + line('email',d.email)
       + line('phone',d.phone)
       + line('business',d.company)
+      + line('package',d.package)
       + line('currently using',d.currentTools)
       + line('timeline',d.timeline)
       + line('budget',d.budget)
@@ -232,7 +277,7 @@
       + (d.desiredOutcome ? '\nwhat would make it worth paying for:\n'+String(d.desiredOutcome).trim()+'\n' : '')
       + '\n— sent from leonbuilds.org'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
     if(body.length>1600) body=body.slice(0,1600)+'\n…';
-    var subject=(d.service==='contractor-lead-recovery'?'contractor website review':'project inquiry')+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
+    var subject=(d.service==='contractor-lead-recovery'?'contractor website review':(d.package==='systems-plan'?'Systems Plan inquiry':(d.service==='technical-build-partner'?'technical build partner inquiry':'project inquiry')))+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
     return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   }
 })();

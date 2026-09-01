@@ -695,6 +695,8 @@ app.get('/api/leads', (req, res) => {
     + '<p><a href="mailto:' + escapeHtml(l.email) + '">' + escapeHtml(l.email) + '</a>'
     + (l.phone ? ' · <a href="tel:' + escapeHtml(l.phone) + '">' + escapeHtml(l.phone) + '</a>' : '') + '</p>'
     + (l.company ? '<p><b>business:</b> ' + escapeHtml(l.company) + '</p>' : '')
+    + (l.service || l.package ? '<p><b>offer:</b> ' + escapeHtml(l.service || '—')
+      + (l.package ? ' · ' + escapeHtml(l.package) : '') + '</p>' : '')
     + (l.problem ? '<pre>' + escapeHtml(l.problem) + '</pre>' : '')
     + (l.conversationSummary ? '<pre>' + escapeHtml(l.conversationSummary) + '</pre>' : '')
     + (l.budget || l.timeline ? '<p><b>budget:</b> ' + escapeHtml(l.budget || '—') + ' · <b>timeline:</b> ' + escapeHtml(l.timeline || '—') + '</p>' : '')

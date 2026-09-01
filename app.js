@@ -320,7 +320,7 @@
        they can read the offer or choose a time. These two pages optimize for
        clarity and speed, while the rest of the site keeps the subtle motion. */
     els = els.filter(function (el) {
-      return !el.closest('.contractor-landing,.contractor-call-context');
+      return !el.closest('.contractor-landing,.contractor-call-context,.technical-partner-page,.technical-partner-call-context');
     });
     if (!els.length) return;
 

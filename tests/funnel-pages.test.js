@@ -60,6 +60,7 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
   assert.match(html, /submissionKey=submissionKeyFor\(d\)/);
   assert.match(html, /service==='contractor-lead-recovery'/);
   assert.match(html, /Request the 3-point review/);
+  assert.match(html, /name="package" type="hidden"/);
 
   for (const event of [
     'quote_submit_attempt',
@@ -106,7 +107,12 @@ test('all booking pages expose a resilient, privacy-bounded calendar funnel', ()
     assert.match(html, /track\('calendar_booking_success'/);
     assert.match(html, /function booked\(payload\)/);
     assert.match(html, /data\.uid\|\|\(data\.booking&&data\.booking\.uid\)/);
-    assert.match(html, /\{bookingUid:bookingUid\}/);
+    assert.match(html, /var extra=\{bookingUid:bookingUid\}/);
+    assert.match(html, /\^\[A-Za-z0-9\._~-\]\{8,64\}\$/);
+    assert.match(html, /track\('calendar_booking_uid_missing'\)/);
+    assert.match(html, /extra\.service=service/);
+    assert.match(html, /extra\.package=packageName/);
+    assert.ok(html.indexOf("track('calendar_booking_uid_missing')") < html.indexOf('bookedTracked=true'), 'a missing UID cannot latch the conversion');
     assert.doesNotMatch(html, /track\('calendar_booking_success',payload\)/);
     assert.match(html, /query\.get\('s'\)/);
     assert.match(html, /out\.utm_source=source/);
@@ -218,9 +224,9 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/missed-lead-recovery<\/loc>/);
 
   const call = read('call.html');
-  assert.match(call, /service'\)!=='contractor-lead-recovery'/);
+  assert.match(call, /service==='contractor-lead-recovery'/);
   assert.match(call, /Book a free <em>15-minute website review<\/em>/);
-  assert.match(read('app.js'), /closest\('\.contractor-landing,\.contractor-call-context'\)/);
+  assert.match(read('app.js'), /closest\('\.contractor-landing,\.contractor-call-context,\.technical-partner-page,\.technical-partner-call-context'\)/);
 
   assert.match(mainOnly(read('industries/contractors.html')), /href="\/missed-lead-recovery"/);
   assert.doesNotMatch(mainOnly(read('industries/automotive.html')), /href="\/missed-lead-recovery/);
@@ -228,6 +234,88 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
 
   const copyGate = read('tools/check_copy.py');
   assert.match(copyGate, /TARGETED_PLACE_OK = \{\}/);
+});
+
+test('technical build partner is a concrete, attributable offer with honest timing', () => {
+  const html = read('technical-build-partner.html');
+  const visible = html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  assert.match(html, /<title>Technical Build Partner for Small Businesses \| Leon Builds<\/title>/);
+  assert.match(html, /<meta name="description" content="Work directly with Leon to plan and build the smallest useful website, automation, internal tool, or app for your business\. Fixed scope or ongoing support\.">/);
+  assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/technical-build-partner">/);
+  assert.match(html, /<body class="technical-partner-page" data-assistant-launcher="hidden">/);
+  assert.match(visible, /One technical partner for the next bottleneck in your business\./i);
+  assert.match(visible, /For a ready, well-scoped project, the first working milestone can be targeted within 1–3 business days\./i);
+  assert.match(visible, /Systems Plan \$199/i);
+  assert.match(visible, /Focused Build Sprint From \$1,500/i);
+  assert.match(visible, /Ongoing Technical Partner From \$2,000\/month/i);
+  assert.match(visible, /one primary milestone plus agreed maintenance or fixes—not unlimited development/i);
+  assert.match(visible, /Reserved capacity, exclusions, and rollover are written before the month starts/i);
+  assert.match(visible, /45-minute working session/i);
+  assert.match(visible, /weekly progress note/i);
+  assert.match(html, /class="fixrow partner-proof-grid"/);
+  assert.match(html, /class="service-proof-media service-proof-media--center"><img src="\/assets\/proof\/home-screen-ui\.png" alt="beastypages\.com phone-first business website interface"/);
+  assert.match(html, /package=systems-plan" data-evt="technical_partner_systems_plan_click"/);
+  assert.match(html, /package=focused-build-sprint" data-evt="technical_partner_sprint_click"/);
+  assert.match(html, /package=ongoing-technical-partner" data-evt="technical_partner_ongoing_click"/);
+  assert.match(html, /href="\/call\?service=technical-build-partner"/);
+  assert.match(html, /href="\/quote\?service=technical-build-partner"/);
+  assert.equal((html.match(/href="\/call\?service=technical-build-partner"/g) || []).length, 2);
+  assert.equal((html.match(/href="\/quote\?service=technical-build-partner"/g) || []).length, 2);
+  assert.match(html, /"@type": "WebPage"/);
+  assert.match(html, /"@type": "Service"/);
+  assert.match(html, /"@type": "BusinessAudience"/);
+  assert.match(html, /"price": "199"/);
+  assert.match(html, /"minPrice": "1500"/);
+  assert.match(html, /"minPrice": "2000"/);
+  assert.doesNotMatch(html, /"price": "(?:1500|2000)"/);
+  assert.match(html, /"unitText": "MONTH"/);
+  assert.equal((html.match(/<details\b/g) || []).length, 3);
+
+  for (const file of [
+    'index.html', 'services/index.html', 'about.html', 'work.html',
+    'services/websites.html', 'services/business-automation.html',
+    'services/business-dashboards.html', 'services/custom-software.html',
+    'services/mobile-apps.html'
+  ]) assert.match(read(file), /href="\/technical-build-partner"/, `${file} links to the offer`);
+
+  assert.equal((read('index.html').match(/class="offer-card/g) || []).length, 3, 'homepage still has exactly three offer cards');
+  assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/technical-build-partner<\/loc>/);
+
+  const call = read('call.html');
+  assert.match(call, /service==='technical-build-partner'/);
+  assert.match(call, /Technical Build Partner fit call/);
+  assert.match(call, /Book a free <em>15-minute fit call<\/em>/);
+  assert.match(call, /call_context_technical_partner/);
+  assert.match(call, /trackContext\('call_context_technical_partner',context\)/);
+  assert.match(call, /packageName==='systems-plan'/);
+
+  const quote = read('quote.html');
+  assert.match(quote, /technicalPartner=service==='technical-build-partner'/);
+  assert.match(quote, /Technical build partner inquiry/);
+  assert.match(quote, /Send the bottleneck to Leon/);
+  assert.match(quote, /technical build partner inquiry/);
+  assert.match(quote, /Focused Build Sprint · from \$1,500/);
+  assert.match(quote, /What one working result should this sprint deliver\?/);
+  assert.match(quote, /Describe the single result that should be working at the end/);
+  assert.match(quote, /Ongoing Technical Partner · from \$2,000\/month/);
+  assert.match(quote, /What is the first priority, and what keeps interrupting it\?/);
+  assert.match(quote, /Leon will propose a bounded monthly scope; this is not unlimited development/);
+  assert.match(quote, /packageName=.*get\('package'\)/);
+  assert.match(quote, /bookCall\.href='\/call\?service='/);
+  assert.match(quote, /details\.service=service/);
+  assert.match(quote, /details\.package=packageName/);
+
+  assert.match(read('assist.js'), /\['receipt', 'bookingUid', 'status', 'service', 'package'\]/);
+  assert.match(read('server/events.js'), /\['receipt', 'bookingUid', 'status', 'service', 'package'\]/);
+  assert.match(read('llms.txt'), /Technical Build Partner[\s\S]*Systems Plan: \$199/);
+  assert.match(read('server/prompt.js'), /Systems Plan \$199, credited toward the agreed build/);
 });
 
 test('metadata, handoff copy, and generated footer stay honest and synchronized', () => {
@@ -271,7 +359,7 @@ test('metadata, handoff copy, and generated footer stay honest and synchronized'
   }
 
   const generated = [
-    'about.html', 'call.html', 'quote.html', 'missed-lead-recovery.html', 'services/index.html', 'industries/index.html',
+    'about.html', 'call.html', 'quote.html', 'missed-lead-recovery.html', 'technical-build-partner.html', 'services/index.html', 'industries/index.html',
     ...fs.readdirSync(path.join(ROOT, 'services')).filter(f => f.endsWith('.html')).map(f => `services/${f}`),
     ...fs.readdirSync(path.join(ROOT, 'industries')).filter(f => f.endsWith('.html')).map(f => `industries/${f}`)
   ];

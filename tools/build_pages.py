@@ -601,7 +601,12 @@ def service_page(s):
     pains = ''.join(f'<li>{e(p)}</li>' for p in s["pains"])
     build = ''.join(f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(b)}</li>' for b in s["build"])
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
-    related = ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
+    partner_related = (
+        '<a class="rel" href="/technical-build-partner">technical build partner →</a>'
+        if s["slug"] in {"websites", "business-automation", "business-dashboards", "custom-software", "mobile-apps"}
+        else ''
+    )
+    related = partner_related + ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
     starter = f'i\'m looking at {s["name"]} — here\'s my situation: '
     quote_first = s["slug"] == "mobile-apps"
     service_label = "Custom iOS and Android app development" if quote_first else f'leon --services {s["slug"]}'
@@ -1018,7 +1023,7 @@ def work_page():
       </article>
     </div>
     <p class="more">This is Leon's current public work archive. Each entry states what is live, incomplete, or anonymized.</p>
-    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_final_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="cx-mini" href="/about">More about Leon →</a></div>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="work_final_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="cx-mini" href="/technical-build-partner">Need help choosing what to build? Start here →</a><a class="cx-mini" href="/about">More about Leon →</a></div>
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -1203,6 +1208,164 @@ def missed_lead_recovery_page():
 </section>
 </main>''' + footer() + '</body></html>'
 
+
+def technical_partner_page():
+    """One-on-one technical planning and build support for owner-led businesses."""
+    path = '/technical-build-partner'
+    title = 'Technical Build Partner for Small Businesses | Leon Builds'
+    desc = ('Work directly with Leon to plan and build the smallest useful website, automation, '
+            'internal tool, or app for your business. Fixed scope or ongoing support.')
+    faqs = [
+        ("Do I need to know what should be built?",
+         "No. Bring the bottleneck and what a useful result would look like. The Systems Plan exists to turn that into a concrete recommendation before a larger build."),
+        ("Is the $199 Systems Plan just a sales call?",
+         "No. You receive the written problem map, recommendation, and proposed scope, budget, and timeline whether or not you continue."),
+        ("Can the whole project be delivered in 1–3 days?",
+         "That timing applies only to the first working milestone for a ready, well-scoped project. The full schedule is confirmed in writing after scope and access are checked."),
+    ]
+    bc = [("home", "/"), ("technical build partner", None)]
+    service_id = f'{BASE}{path}#service'
+    offers = [
+        {
+            "@type": "Offer", "name": "Systems Plan", "url": f"{BASE}{path}#offers",
+            "price": "199", "priceCurrency": "USD",
+            "description": "Written problem map, smallest recommended solution, and proposed scope, budget, and timeline. Credited toward the agreed build if the client continues with Leon.",
+        },
+        {
+            "@type": "Offer", "name": "Focused Build Sprint", "url": f"{BASE}{path}#offers",
+            "priceSpecification": {
+                "@type": "UnitPriceSpecification", "minPrice": "1500",
+                "priceCurrency": "USD",
+            },
+            "description": "Starting price for one priority website, automation, internal-tool, or app milestone with written scope, review checkpoints, testing, and agreed handoff.",
+        },
+        {
+            "@type": "Offer", "name": "Ongoing Technical Partner", "url": f"{BASE}{path}#offers",
+            "priceSpecification": {
+                "@type": "UnitPriceSpecification", "minPrice": "2000",
+                "priceCurrency": "USD", "unitText": "MONTH",
+            },
+            "description": "Starting monthly price for reserved build capacity, a written priority backlog, and an agreed monthly scope.",
+        },
+    ]
+    schema = [
+        {
+            "@context": "https://schema.org", "@type": "WebPage",
+            "@id": f"{BASE}{path}#webpage", "url": f"{BASE}{path}",
+            "name": title, "description": desc,
+            "isPartOf": {"@id": f"{BASE}/#website"},
+            "mainEntity": {"@id": service_id},
+        },
+        {
+            "@context": "https://schema.org", "@type": "Service", "@id": service_id,
+            "name": "Technical Build Partner for Small Businesses", "url": f"{BASE}{path}",
+            "provider": {"@id": f"{BASE}/#leon"},
+            "areaServed": {"@type": "Country", "name": "United States"},
+            "audience": {"@type": "BusinessAudience", "audienceType": "Owner-led small businesses"},
+            "description": desc,
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog", "name": "Technical build partner offers",
+                "itemListElement": offers,
+            },
+        },
+        faq_schema(faqs),
+        breadcrumb_schema(bc, path),
+    ]
+    check = '<svg class="ic"><use href="#ic-check"/></svg>'
+    call_cta = '''<a class="btn btn-solid magnet" href="/call?service=technical-build-partner" data-evt="technical_partner_call_click"><span class="business-copy">Book a free 15-minute fit call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
+    quote_cta = '''<a class="btn magnet" href="/quote?service=technical-build-partner" data-evt="technical_partner_quote_click"><span class="business-copy">Tell Leon what is slowing you down</span></a>'''
+    systems_plan_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=systems-plan" data-evt="technical_partner_systems_plan_click">Start with the $199 Systems Plan →</a>'''
+    sprint_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=focused-build-sprint" data-evt="technical_partner_sprint_click">Discuss one focused build →</a>'''
+    ongoing_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=ongoing-technical-partner" data-evt="technical_partner_ongoing_click">Discuss ongoing support →</a>'''
+    page_head = head(title, desc, path, schema).replace(
+        '<body>', '<body class="technical-partner-page" data-assistant-launcher="hidden">', 1
+    )
+    return page_head + ICONS + nav() + f'''
+<main id="main">
+<section class="sec page-hero">
+  <div class="rail">
+    {crumbs(bc)}
+    <p class="label">One-on-one build support for owner-led businesses</p>
+    <h1 class="dsp business-copy">One technical partner for the next bottleneck in your business.</h1>
+    <p class="sub business-copy">Not sure whether the next fix is a website, an automation, an internal tool, or an app? Work directly with Leon to choose the smallest useful build, see it working in checkpoints, and keep the scope and ownership clear.</p>
+    <p class="pricetag business-copy">For a ready, well-scoped project, the first working milestone can be targeted within 1–3 business days.</p>
+    <div class="ctarow">{call_cta}{quote_cta}</div>
+  </div>
+</section>
+
+<div class="landing-jump-wrap" aria-label="Find it fast">
+  <nav class="rail landing-jump">
+    <span>Find it fast</span>
+    <a href="#fit">Is this a fit?</a>
+    <a href="#offers">Ways to start</a>
+    <a href="#proof">Proof</a>
+    <a href="#faq">Questions</a>
+  </nav>
+</div>
+
+<section class="sec" id="fit">
+  <div class="rail">
+    <p class="label">Start with the business problem, not the software</p>
+    <h2 class="page-section-title business-copy">One person accountable from the first question through handoff.</h2>
+    <div class="two-col">
+      <div>
+        <p class="label">This fits when</p>
+        <ul class="blist">
+          <li>{check}the bottleneck changes as the business grows</li>
+          <li>{check}you do not have an in-house technical lead</li>
+          <li>{check}you do not want to coordinate several specialists</li>
+          <li>{check}you want one person responsible for scope, build, testing, and handoff</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">How Leon works</p>
+        <ul class="blist">
+          <li>{check}maps the current workflow before recommending a tool</li>
+          <li>{check}says when an off-the-shelf product is enough</li>
+          <li>{check}writes the scope, exclusions, price, and timeline before building</li>
+          <li>{check}shows a reviewable working milestone and hands over the agreed source, accounts, and setup notes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="offers">
+  <div class="rail">
+    <p class="label">Three ways to start</p>
+    <h2 class="page-section-title business-copy">Choose the smallest commitment that creates a useful result.</h2>
+    <div class="scope-grid">
+      <article><span>01</span><h3>Systems Plan</h3><p class="pricetag"><b>$199</b></p><p>A 45-minute working session, written problem map, recommended first milestone, budget range, timeline, and access checklist. Keep the plan either way; the $199 is credited if Leon builds the agreed milestone.</p>{systems_plan_cta}</article>
+      <article><span>02</span><h3>Focused Build Sprint</h3><p class="pricetag"><b>From $1,500</b></p><p>One production milestone defined by written acceptance checks, with a scheduled review checkpoint, testing, and source or setup handoff. Larger scope is quoted before work starts.</p>{sprint_cta}</article>
+      <article><span>03</span><h3>Ongoing Technical Partner</h3><p class="pricetag"><b>From $2,000/month</b></p><p>One priority lane, a written backlog, a weekly progress note, and a monthly planning and review call. A starting month is scoped around one primary milestone plus agreed maintenance or fixes—not unlimited development. Reserved capacity, exclusions, and rollover are written before the month starts.</p>{ongoing_cta}</article>
+    </div>
+    <div class="scope-boundary business-copy"><p><b>Boundaries:</b> Provider fees, paid advertising, bulk data cleanup, ongoing content, and work outside the written monthly scope are separate.</p></div>
+    <p class="sub business-copy">These partner offers are for uncertain or changing work that needs direct planning and ownership. Already know you need one limited deliverable? A business presence <a class="cx-mini" href="/services/websites">website starts at $300</a>, and a defined <a class="cx-mini" href="/services/business-automation">automation starts at $500</a>.</p>
+  </div>
+</section>
+
+<section class="sec" id="proof" aria-labelledby="partner-proof-title">
+  <div class="rail">
+    <p class="label">Different problems, the same direct ownership</p>
+    <h2 class="page-section-title" id="partner-proof-title">Inspect what is operational, live, or clearly labelled as a demo.</h2>
+    <div class="fixrow partner-proof-grid">
+      <a class="fixcard link" href="/work#work-site-intelligence"><figure class="service-proof-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><h3>ALLCPR Site Intelligence</h3><p>Leon designed and built this operational client system for screening U.S. expansion markets while keeping uncertainty and human field checks visible.</p><span class="go">Operational client system →</span></a>
+      <a class="fixcard link" href="/work#work-curio-public"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><h3>Curio</h3><p>Leon designed and built this consumer reading and discovery product end to end; its current public status is a live App Store product.</p><span class="go">Live App Store product →</span></a>
+      <a class="fixcard link" href="/work#work-beastypages"><figure class="service-proof-media service-proof-media--center"><img src="/assets/proof/home-screen-ui.png" alt="beastypages.com phone-first business website interface" loading="lazy" width="700" height="450"></figure><h3>beastypages.com</h3><p>Leon designed and built this phone-first client website with business pages, menus, and a clearly labelled demo checkout.</p><span class="go">Client website · demo checkout →</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="rail">
+    <p class="label">Questions before starting</p>
+    {faq_html(faqs)}
+    <div class="ctarow">{call_cta}{quote_cta}</div>
+    <p class="sub business-copy">Bring the bottleneck. Leon will help decide whether the right first move is a website, automation, internal tool, app, or no custom build at all.</p>
+  </div>
+</section>
+</main>''' + footer() + '</body></html>'
+
 def listing_page(kind, items, title, desc, blurb):
     path = f'/{kind}/'
     bc = [("home","/"),(kind, None)]
@@ -1216,6 +1379,12 @@ def listing_page(kind, items, title, desc, blurb):
         f'<a class="fixcard link" href="/{kind}/{x["slug"]}"><h3>{e(x["name"])}</h3><p>{e(card_summary(x["desc"]))}</p><span class="go">'
         f'{e("from " + x["price"] + " · details →") if kind == "services" else "open →"}</span></a>'
         for x in items)
+    featured = ('''<div class="proofcard">
+      <p class="label">Not sure which service fits?</p>
+      <h2>Start with the bottleneck, then choose the smallest useful build.</h2>
+      <p class="sub">Work directly with Leon on a website, automation, internal tool, app, or a written Systems Plan before committing to a larger build.</p>
+      <a class="cx-mini" href="/technical-build-partner">See the Technical Build Partner offer →</a>
+    </div>''' if kind == 'services' else '<!-- featured offer is service-specific -->')
     return head(title, desc, path, schema) + ICONS + nav() + f'''
 <main id="main">
 <section class="sec page-hero">
@@ -1228,6 +1397,7 @@ def listing_page(kind, items, title, desc, blurb):
 </section>
 <section class="sec">
   <div class="rail">
+    {featured}
     <div class="fixrow">{cards}</div>
     {cta_block("i'm not sure which of these i need — here's my situation: ")}
   </div>
@@ -1318,6 +1488,7 @@ def about_page():
   <div class="rail">
     <p class="label">background</p>
     <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span>, an alumnus of <span class="keepcase">Green River College</span>, and a working developer with a live App Store product plus public demos. all three are true at once, and he would rather say so than hide any of them.</p>
+    <p class="sub">owners who know the bottleneck but not the right software can start with Leon's <a class="cx-mini" href="/technical-build-partner">Technical Build Partner offer</a>: one person maps the problem, recommends the smallest useful build, and stays responsible through testing and handoff.</p>
     <p class="sub">his current product is <a class="cx-mini" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="cx-mini" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="cx-mini" href="/services/mobile-apps">mobile app development service</a>. additional public product and workflow evidence is collected in the <a class="cx-mini" href="/work">Leon Builds work archive</a>.</p>
     <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="cx-mini" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="cx-mini" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="cx-mini" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="cx-mini" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="cx-mini" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
     <div class="ctarow">
@@ -1456,6 +1627,10 @@ def booker(lang="en"):
   function safeParam(value,max){
     return String(value||'').trim().replace(/[^A-Za-z0-9._~-]/g,'-').slice(0,max);
   }
+  function safeSlug(value){
+    var text=String(value||'').trim();
+    return /^[a-z0-9][a-z0-9-]{0,63}$/.test(text)?text:'';
+  }
   function sourceConfig(){
     var attr={};
     try{ attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')||{}; }catch(e){}
@@ -1490,8 +1665,19 @@ def booker(lang="en"):
     confirmation.hidden=false;
     var data=payload&&payload.detail&&payload.detail.data;
     var rawUid=data&&(data.uid||(data.booking&&data.booking.uid));
-    var bookingUid=safeParam(rawUid,128);
-    if(!bookedTracked){ bookedTracked=true; track('calendar_booking_success',bookingUid?{bookingUid:bookingUid}:undefined); }
+    var bookingUid=String(rawUid||'').trim();
+    if(!/^[A-Za-z0-9._~-]{8,64}$/.test(bookingUid)){
+      track('calendar_booking_uid_missing');
+    }else if(!bookedTracked){
+      var extra={bookingUid:bookingUid};
+      var query=new URLSearchParams(location.search);
+      var service=safeSlug(query.get('service'));
+      var packageName=safeSlug(query.get('package'));
+      if(service) extra.service=service;
+      if(packageName) extra.package=packageName;
+      bookedTracked=true;
+      track('calendar_booking_success',extra);
+    }
     try{ confirmation.focus({preventScroll:true}); }catch(e){ confirmation.focus(); }
     confirmation.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
   }
@@ -1596,20 +1782,44 @@ def call_page():
 <script>
 (function(){
   var params=new URLSearchParams(location.search);
-  if(params.get('service')!=='contractor-lead-recovery') return;
-  document.body.classList.add('contractor-call-context');
-  document.title='Book a Contractor Website Review | Leon Builds';
+  var service=params.get('service')||'';
+  var packageName=params.get('package')||'';
   var label=document.getElementById('call-context-label');
   var title=document.getElementById('call-context-title');
   var intro=document.getElementById('call-context-intro');
   var price=document.getElementById('call-context-price');
   var agenda=document.getElementById('call-context-agenda');
-  if(label) label.textContent='Contractor website + follow-up review';
-  if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
-  if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
-  if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
-  if(agenda) agenda.textContent='What happens in the contractor review';
-  if(window.leonEvt) window.leonEvt('call_context_contractor');
+  function trackContext(name,extra){
+    if(window.leonEvt){ window.leonEvt(name,extra); return; }
+    document.addEventListener('DOMContentLoaded',function(){
+      if(window.leonEvt) window.leonEvt(name,extra);
+    },{once:true});
+  }
+  if(service==='contractor-lead-recovery'){
+    document.body.classList.add('contractor-call-context');
+    document.title='Book a Contractor Website Review | Leon Builds';
+    if(label) label.textContent='Contractor website + follow-up review';
+    if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
+    if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
+    if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
+    if(agenda) agenda.textContent='What happens in the contractor review';
+    trackContext('call_context_contractor',{service:'contractor-lead-recovery'});
+  }else if(service==='technical-build-partner'){
+    document.body.classList.add('technical-partner-call-context');
+    document.title='Book a Technical Build Partner Fit Call | Leon Builds';
+    if(label) label.textContent='Technical Build Partner fit call';
+    if(title) title.innerHTML='Book a free <em>15-minute fit call</em>';
+    if(intro) intro.textContent='Bring the bottleneck, even if you do not know whether the answer is a website, automation, internal tool, app, or no custom build at all.';
+    if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
+    if(agenda) agenda.textContent='What happens in the fit call';
+    if(packageName==='systems-plan'){
+      if(label) label.textContent='Systems Plan fit call';
+      if(intro) intro.textContent='Bring the bottleneck and the result you need. Leon will confirm whether the 45-minute written Systems Plan is the right next step before you pay for it.';
+    }
+    var context={service:'technical-build-partner'};
+    if(/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) context.package=packageName;
+    trackContext('call_context_technical_partner',context);
+  }
 })();
 </script>
 ''' + footer()
@@ -1658,6 +1868,7 @@ def quote_page():
         </div>
       </details>
       <input name="service" type="hidden" value="">
+      <input name="package" type="hidden" value="">
       <input name="website" type="text" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" aria-hidden="true">
       <p class="qerr" id="qerr" role="alert" aria-live="polite"></p>
       <div id="qfail" hidden role="alert">
@@ -1671,7 +1882,7 @@ def quote_page():
       <p class="sub">We received your request and saved it for Leon. He usually replies to the email you provided the same business day.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
-        <a class="btn btn-solid magnet" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+        <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
         <a class="btn magnet" href="/work"><span>See Leon's work</span></a>
       </div>
     </div>
@@ -1684,11 +1895,14 @@ def quote_page():
   if(!f)return;
   var API=(window.LEON_ASSIST&&window.LEON_ASSIST.api)||(/^(localhost|127\\.0\\.0\\.1)$/.test(location.hostname)?'http://localhost:8787':'https://leon-assist.onrender.com');
   var button=f.querySelector('button[type="submit"]'),buttonText=button.querySelector('span');
-  var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt');
+  var manual=document.getElementById('qmail'),receipt=document.getElementById('qreceipt'),bookCall=document.getElementById('quote-book-call');
   var started=false,submitting=false,submissionKey='',attemptStorage='leon_quote_attempt_v1';
   var service=(new URLSearchParams(location.search)).get('service')||'';
+  var packageName=(new URLSearchParams(location.search)).get('package')||'';
   var contractorReview=service==='contractor-lead-recovery';
-  var idleButtonText=contractorReview?'Request the 3-point review':'Send it to Leon';
+  var technicalPartner=service==='technical-build-partner';
+  if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
+  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send the bottleneck to Leon':'Send it to Leon');
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
@@ -1697,10 +1911,50 @@ def quote_page():
     document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
     f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
+  }else if(technicalPartner){
+    f.elements.service.value=service;
+    f.elements.package.value=packageName;
+    document.getElementById('quote-context-label').textContent='Technical build partner inquiry';
+    document.getElementById('quote-context-title').innerHTML='Tell Leon what is <em>slowing the business down.</em>';
+    document.getElementById('quote-context-intro').textContent='Describe the bottleneck in plain words. Leon will recommend the smallest sensible next step before asking you to commit to a larger build.';
+    document.getElementById('quote-problem-label').textContent='What is slowing the business down, and what would a useful result look like?';
+    f.elements.problem.placeholder='Leads get lost after the form, staff copy the same data twice, or the product is stuck before release…';
+    if(packageName==='systems-plan'){
+      document.getElementById('quote-context-label').textContent='$199 Systems Plan';
+      document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the bottleneck and the result you need. Leon will confirm fit before you pay for the 45-minute working session and written plan.';
+      document.getElementById('quote-problem-label').textContent='What bottleneck should the Systems Plan solve?';
+      f.elements.problem.placeholder='Staff repeat the same task, tools do not connect, leads get lost, or another specific bottleneck…';
+      buttonText.textContent='Ask to start the Systems Plan';
+      idleButtonText='Ask to start the Systems Plan';
+    }else if(packageName==='focused-build-sprint'){
+      document.getElementById('quote-context-label').textContent='Focused Build Sprint · from $1,500';
+      document.getElementById('quote-context-title').innerHTML='Define one <em>working milestone.</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the single result that should be working at the end. Leon will reply with the acceptance checks, scope, price, and timeline before work begins.';
+      document.getElementById('quote-problem-label').textContent='What one working result should this sprint deliver?';
+      f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
+      idleButtonText='Discuss a focused build';
+    }else if(packageName==='ongoing-technical-partner'){
+      document.getElementById('quote-context-label').textContent='Ongoing Technical Partner · from $2,000/month';
+      document.getElementById('quote-context-title').innerHTML='Set one <em>technical priority lane.</em>';
+      document.getElementById('quote-context-intro').textContent='Share the first milestone and the maintenance or fixes competing for attention. Leon will propose a bounded monthly scope; this is not unlimited development.';
+      document.getElementById('quote-problem-label').textContent='What is the first priority, and what keeps interrupting it?';
+      f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
+      idleButtonText='Discuss ongoing support';
+    }
+    buttonText.textContent=idleButtonText;
   }
-  function track(name,extra){ if(window.leonEvt) window.leonEvt(name,extra); }
+  if(bookCall&&service){
+    bookCall.href='/call?service='+encodeURIComponent(service)+(packageName?'&package='+encodeURIComponent(packageName):'');
+  }
+  function track(name,extra){
+    var details=extra||{};
+    if(service) details.service=service;
+    if(packageName) details.package=packageName;
+    if(window.leonEvt) window.leonEvt(name,details);
+  }
   function fingerprint(d){
-    var raw=['service','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
+    var raw=['service','package','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
       .map(function(k){return String(d[k]||'');}).join('\\u001f');
     var hash=2166136261;
     for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
@@ -1799,6 +2053,7 @@ def quote_page():
       + line('email',d.email)
       + line('phone',d.phone)
       + line('business',d.company)
+      + line('package',d.package)
       + line('currently using',d.currentTools)
       + line('timeline',d.timeline)
       + line('budget',d.budget)
@@ -1806,7 +2061,7 @@ def quote_page():
       + (d.desiredOutcome ? '\\nwhat would make it worth paying for:\\n'+String(d.desiredOutcome).trim()+'\\n' : '')
       + '\\n— sent from leonbuilds.org'+(d.sourcePage&&d.sourcePage!=='/quote'?' ('+d.sourcePage+')':'');
     if(body.length>1600) body=body.slice(0,1600)+'\\n…';
-    var subject=(d.service==='contractor-lead-recovery'?'contractor website review':'project inquiry')+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
+    var subject=(d.service==='contractor-lead-recovery'?'contractor website review':(d.package==='systems-plan'?'Systems Plan inquiry':(d.service==='technical-build-partner'?'technical build partner inquiry':'project inquiry')))+(d.company?' — '+String(d.company).trim():(d.name?' — '+String(d.name).trim():''));
     return 'mailto:leondragon3798@gmail.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   }
 })();
@@ -1991,9 +2246,10 @@ w('work.html', work_page())
 if REVIEWS_ROUTE_ENABLED:
     w('reviews.html', reviews_page())
 w('missed-lead-recovery.html', missed_lead_recovery_page())
+w('technical-build-partner.html', technical_partner_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/call', '/work', '/missed-lead-recovery', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/work', '/missed-lead-recovery', '/technical-build-partner', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
 if REVIEWS_ROUTE_ENABLED:

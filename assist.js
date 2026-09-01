@@ -21,10 +21,12 @@
   /* ══ optional Google Ads conversion measurement ══════════
      Basic consent mode: the Google tag is not requested and no data is sent
      to Google until the visitor explicitly allows conversion measurement.
-     No contact field is ever passed to gtag; user-provided data and ad
-     personalization stay off for this measurement. */
+     Site code never intentionally passes contact fields to gtag, and ad
+     personalization stays off. Automatic customer-data collection is a
+     separate Google Ads account setting that must remain disabled there. */
   var ADS_ACCOUNT_ID = 'AW-18407115426';
   var ADS_CONSENT_KEY = 'leon_ads_consent_v1';
+  var ADS_PENDING_KEY = 'leon_ads_pending_v1';
   var ADS_ACTIONS = {
     quote: 'AW-18407115426/ldkYCNKtreccEKKVmclE',
     booking: 'AW-18407115426/owGxCNWtreccEKKVmclE',
@@ -59,8 +61,8 @@
     adsGtag()('consent', 'update', {
       ad_storage: value,
       // This consent signal is required for tag-based conversion measurement.
-      // It does not add contact data: user_data remains empty and Enhanced
-      // Conversions stay intentionally off.
+      // It does not add contact data: user_data remains empty. Enhanced and
+      // automatic customer-data collection must remain off in the Ads account.
       ad_user_data: value,
       ad_personalization: 'denied',
       analytics_storage: 'denied'
@@ -74,8 +76,9 @@
     adsConsentUpdate('granted');
     adsGtag()('set', 'allow_ad_personalization_signals', false);
     adsGtag()('set', 'ads_data_redaction', true);
-    // An explicit empty override prevents account-level automatic
-    // user-provided-data detection from reading contact fields in the DOM.
+    // The site does not intentionally provide contact data to these events.
+    // Account-level automatic customer-data collection is a separate Google
+    // Ads setting and must remain disabled there.
     adsGtag()('set', 'user_data', {});
     adsGtag()('js', new Date());
     // Request suppression of the base page view. Google Ads may still emit a
@@ -104,23 +107,52 @@
     try { sessionStorage.setItem('leon_ads_sent:' + key, '1'); } catch (e) {}
   }
 
+  function adsTransactionId(action, value) {
+    if (action === 'phone' || action === 'whatsapp') return '';
+    if (typeof value !== 'string') return null;
+    var id = value.trim();
+    if (action === 'quote' && !/^lead_[A-Za-z0-9-]{16,59}$/.test(id)) return null;
+    if (action === 'booking' && !/^[A-Za-z0-9._~-]{8,64}$/.test(id)) return null;
+    return id;
+  }
+
+  function saveAdsPending() {
+    try { sessionStorage.setItem(ADS_PENDING_KEY, JSON.stringify(adsPending)); } catch (e) {}
+  }
+
+  function loadAdsPending() {
+    var saved = [];
+    try { saved = JSON.parse(sessionStorage.getItem(ADS_PENDING_KEY) || '[]'); } catch (e) {}
+    if (!Array.isArray(saved)) return;
+    saved.forEach(function (item) {
+      if (!item || !ADS_ACTIONS[item.action]) return;
+      var id = adsTransactionId(item.action, item.transactionId);
+      if (id === null) return;
+      var key = adsKey(item.action, id);
+      if (!adsAlreadySent(key) && !adsPending.some(function (pending) { return pending.key === key; })) {
+        adsPending.push({ action: item.action, transactionId: id, key: key });
+      }
+    });
+    saveAdsPending();
+  }
+
   function sendAdsConversion(action, transactionId) {
     var sendTo = ADS_ACTIONS[action];
     if (!sendTo) return false;
-    var id = String(transactionId || '').replace(/[^A-Za-z0-9._~-]/g, '').slice(0, 120);
-    if (action === 'quote' && !/^lead_[A-Za-z0-9-]{16,115}$/.test(id)) return false;
-    if (action === 'booking' && !/^[A-Za-z0-9._~-]{8,120}$/.test(id)) return false;
+    var id = adsTransactionId(action, transactionId);
+    if (id === null) return false;
     var key = adsKey(action, id);
     if (adsAlreadySent(key) || adsConsent === 'denied') return false;
     if (adsConsent !== 'granted') {
       if (!adsPending.some(function (item) { return item.key === key; })) {
         adsPending.push({ action: action, transactionId: id, key: key });
+        saveAdsPending();
       }
       return false;
     }
     startGoogleAdsTag();
-    // Keep this empty even if user-provided-data collection is later enabled in
-    // the Ads UI. These actions measure counts, not contact data or lead value.
+    // Keep this empty. These actions measure counts, not contact data or lead
+    // value. The separate automatic collection setting must remain disabled.
     var fields = { send_to: sendTo, user_data: {} };
     if (id) fields.transaction_id = id;
     adsGtag()('event', 'conversion', fields);
@@ -131,6 +163,7 @@
   function flushAdsConversions() {
     var pending = adsPending.slice();
     adsPending = [];
+    saveAdsPending();
     pending.forEach(function (item) {
       sendAdsConversion(item.action, item.transactionId);
     });
@@ -141,22 +174,22 @@
     var copy = {
       en: {
         title: 'Allow conversion measurement?',
-        body: 'If you allow, Google Ads may use cookies to connect an ad click with a quote request, booked call, phone click or WhatsApp click. Form details and other user-provided data are blocked, and the data is not used for ad personalization.',
+        body: 'If you allow, Google Ads may use cookies to connect an ad click with a quote request, booked call, phone click or WhatsApp click. Leon Builds does not intentionally send form entries or contact details with these events, and ad personalization stays off. Automatic customer-data collection must also remain disabled in Google Ads.',
         allow: 'Allow measurement', deny: 'No thanks', privacy: 'Privacy details'
       },
       es: {
         title: '\u00bfPermitir la medici\u00f3n de conversiones?',
-        body: 'Si aceptas, Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Se bloquean los datos del formulario y otros datos proporcionados por el usuario, y no se usan para personalizar anuncios.',
+        body: 'Si aceptas, Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Leon Builds no env\u00eda intencionalmente datos del formulario ni datos de contacto con estos eventos, y la personalizaci\u00f3n de anuncios sigue desactivada. La recopilaci\u00f3n autom\u00e1tica de datos de clientes tambi\u00e9n debe seguir desactivada en Google Ads.',
         allow: 'Permitir medici\u00f3n', deny: 'No, gracias', privacy: 'Detalles de privacidad'
       },
       pt: {
         title: 'Permitir medi\u00e7\u00e3o de convers\u00f5es?',
-        body: 'Se voc\u00ea permitir, o Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. Os dados do formul\u00e1rio e outros dados fornecidos pelo usu\u00e1rio ficam bloqueados e n\u00e3o s\u00e3o usados para personalizar an\u00fancios.',
+        body: 'Se voc\u00ea permitir, o Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. A Leon Builds n\u00e3o envia intencionalmente dados do formul\u00e1rio nem dados de contato nesses eventos, e a personaliza\u00e7\u00e3o de an\u00fancios continua desativada. A coleta autom\u00e1tica de dados de clientes tamb\u00e9m deve permanecer desativada no Google Ads.',
         allow: 'Permitir medi\u00e7\u00e3o', deny: 'N\u00e3o, obrigado', privacy: 'Detalhes de privacidade'
       },
       zh: {
         title: '\u5141\u8bb8\u8f6c\u5316\u8861\u91cf\uff1f',
-        body: '\u5982\u679c\u5141\u8bb8\uff0cGoogle Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002\u8868\u5355\u5185\u5bb9\u548c\u5176\u4ed6\u7528\u6237\u63d0\u4f9b\u7684\u6570\u636e\u4f1a\u88ab\u963b\u6b62\uff0c\u4e14\u4e0d\u7528\u4e8e\u4e2a\u6027\u5316\u5e7f\u544a\u3002',
+        body: '\u5982\u679c\u5141\u8bb8\uff0cGoogle Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002Leon Builds \u4e0d\u4f1a\u6545\u610f\u5728\u8fd9\u4e9b\u4e8b\u4ef6\u4e2d\u53d1\u9001\u8868\u5355\u5185\u5bb9\u6216\u8054\u7cfb\u65b9\u5f0f\uff0c\u5e7f\u544a\u4e2a\u6027\u5316\u4ecd\u4fdd\u6301\u5173\u95ed\u3002Google Ads \u4e2d\u7684\u81ea\u52a8\u5ba2\u6237\u6570\u636e\u6536\u96c6\u4e5f\u5fc5\u987b\u4fdd\u6301\u5173\u95ed\u3002',
         allow: '\u5141\u8bb8\u8861\u91cf', deny: '\u4e0d\u7528\u4e86', privacy: '\u9690\u79c1\u8be6\u60c5'
       }
     };
@@ -216,6 +249,7 @@
       flushAdsConversions();
     } else {
       adsPending = [];
+      saveAdsPending();
       if (adsTagStarted) {
         adsGtag()('set', 'ads_data_redaction', true);
         adsConsentUpdate('denied');
@@ -225,6 +259,7 @@
 
   run(function () {
     queueAdsConsentDefault();
+    loadAdsPending();
     try { adsConsent = localStorage.getItem(ADS_CONSENT_KEY) || ''; } catch (e) {}
     if (adsConsent === 'granted') startGoogleAdsTag();
     else if (adsConsent !== 'denied') { adsConsent = ''; showConsentBanner(true); }
@@ -367,6 +402,18 @@
   });
 
   /* ══ event beacon (first-party, log-only) ════════════════ */
+  function eventExtraValue(name, value) {
+    if (typeof value !== 'string') return '';
+    var text = value.trim();
+    if (name === 'receipt') return /^lead_[A-Za-z0-9-]{16,59}$/.test(text) ? text : '';
+    if (name === 'bookingUid') return /^[A-Za-z0-9._~-]{8,64}$/.test(text) ? text : '';
+    if (name === 'status') return /^(accepted|failed)$/.test(text) ? text : '';
+    if (name === 'service' || name === 'package') {
+      return /^[a-z0-9][a-z0-9-]{0,63}$/.test(text) ? text : '';
+    }
+    return '';
+  }
+
   function evt(name, extra) {
     extra = extra || {};
     try {
@@ -390,8 +437,9 @@
       };
       applyAttribution(payload);
       // Correlation identifiers are safe; contact details never belong here.
-      ['receipt', 'bookingUid', 'status'].forEach(function (k) {
-        if (extra[k]) payload[k] = String(extra[k]).slice(0, 120);
+      ['receipt', 'bookingUid', 'status', 'service', 'package'].forEach(function (k) {
+        var value = eventExtraValue(k, extra[k]);
+        if (value) payload[k] = value;
       });
       var body = JSON.stringify(payload);
       if (navigator.sendBeacon) {
@@ -401,7 +449,9 @@
       }
     } catch (e) {}
     try {
-      if (name === 'quote_lead_accepted') sendAdsConversion('quote', extra.receipt);
+      if (name === 'quote_lead_accepted' || name === 'lead_submit_success') {
+        sendAdsConversion('quote', extra.receipt);
+      }
       else if (name === 'calendar_booking_success') sendAdsConversion('booking', extra.bookingUid);
     } catch (e) {}
   }

@@ -19,6 +19,10 @@ const DATA_DIR = path.dirname(EVENTS_FILE);
 // and machine-readable; values such as `fixcard_ai-chatbots` are intentionally
 // allowed, while markup, whitespace and control characters are not.
 const EVENT_NAME_RE = /^[a-z][a-z0-9_-]{0,47}$/;
+const RECEIPT_ID_RE = /^lead_[A-Za-z0-9-]{16,59}$/;
+const BOOKING_UID_RE = /^[A-Za-z0-9._~-]{8,64}$/;
+const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const EVENT_STATUSES = new Set(['accepted', 'failed']);
 
 function validEventName(value) {
   return typeof value === 'string' && EVENT_NAME_RE.test(value);
@@ -30,6 +34,17 @@ function eventText(value, max) {
     .replace(/[\u0000-\u001f\u007f]/g, ' ')
     .trim()
     .slice(0, max);
+}
+
+function eventExtraValue(field, value) {
+  if (typeof value !== 'string') return '';
+  const text = value.trim();
+  if (!text || text.length > 64 || /[\u0000-\u001f\u007f]/.test(text)) return '';
+  if (field === 'receipt') return RECEIPT_ID_RE.test(text) ? text : '';
+  if (field === 'bookingUid') return BOOKING_UID_RE.test(text) ? text : '';
+  if (field === 'status') return EVENT_STATUSES.has(text) ? text : '';
+  if (field === 'service' || field === 'package') return SLUG_RE.test(text) ? text : '';
+  return '';
 }
 
 function firstPresent(raw, names, max) {
@@ -117,8 +132,8 @@ function normalizeEvent(raw, now) {
   }
 
   // These are opaque correlation values, never contact details.
-  for (const field of ['receipt', 'bookingUid', 'status']) {
-    const value = eventText(raw[field], 120);
+  for (const field of ['receipt', 'bookingUid', 'status', 'service', 'package']) {
+    const value = eventExtraValue(field, raw[field]);
     if (value) out[field] = value;
   }
   return out;
@@ -189,7 +204,10 @@ const HIGH_INTENT_NAMES = new Set([
   'chat_first_message', 'chat_handoff_offer_click', 'lead_submit', 'lead_submit_attempt',
   'quote_to_calendar', 'lead_booking_click',
   'calendar_direct_fallback', 'calendar_email_fallback', 'calendar_phone_fallback',
-  'quote_manual_email', 'lead_email_fallback', 'email_click', 'phone_click'
+  'quote_manual_email', 'lead_email_fallback', 'email_click', 'phone_click',
+  'technical_partner_call_click', 'technical_partner_quote_click',
+  'technical_partner_systems_plan_click', 'technical_partner_sprint_click',
+  'technical_partner_ongoing_click'
 ]);
 
 function isHighIntent(name) {
@@ -213,7 +231,7 @@ function funnelStats(events) {
     },
     {
       id: 'booking',
-      label: 'calendar booking confirmed',
+      label: 'embedded calendar success signal',
       match: name => name === 'calendar_booking_success'
     }
   ];

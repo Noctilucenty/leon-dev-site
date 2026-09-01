@@ -117,6 +117,15 @@ def input_data(path, records):
 
 
 class AcquisitionReportTests(unittest.TestCase):
+    def test_live_run_manifest_matches_the_verified_campaign_suffix(self):
+        checkpoint = (ROOT / "content" / "ads" / "live-campaign-checkpoint-2026-08-25.md").read_text(encoding="utf-8")
+        expected = "metro-missed-lead-recovery-v1"
+        self.assertIn(f"utm_campaign={expected}", checkpoint)
+        private_run = ROOT / "data" / "acquisition-ops-run.json"
+        if private_run.exists():
+            config = json.loads(private_run.read_text(encoding="utf-8"))
+            self.assertEqual(config["scope"]["utmCampaign"], expected)
+
     def build(self, config=None, economics=None, event_rows=None, lead_rows=None, acquisition_rows=None):
         return reporter.build_report(
             config if config is not None else complete_config(),
