@@ -164,3 +164,36 @@ unwilling to keep serving.
 shared-cache window, and nearly recorded a cache artifact as a hosting property.
 The 08-21 rule applies here too: one reading is not a verdict. Wait out the TTL
 and read again before writing anything down.
+
+---
+
+## 2026-09-02 · A class name is a promise about size, and a heading is a promise about count
+
+**Believed:** the Technical Build Partner page was finished. It passed every
+gate and the generator source read fine.
+
+**True:** three formatting defects were visible only in a rendered screenshot,
+and no gate could have caught them. **[measured]** (1) Two `.cx-mini` links
+inside an 18px paragraph rendered at 12px, dim and letter-spaced: the sentence
+broke into three type sizes and the links did not read as links (zoomed crop of
+the live page). (2) The offers heading said "Four clear starting points" above
+cards numbered 01–03; the fourth was the free call in the strip above, which a
+reader does not count. (3) The trust strip and the offer chooser centred each
+cell independently, so a one-line cell's label sat 9px below its two-line
+neighbours'. Also **[measured]**: the map proof, cropped to 16:9 on centre,
+showed the Pacific and Canada; the ZIP heat map it exists to show was off-frame.
+
+**Fix (769cd0c):** `.tlink` for links inside prose (inherits the paragraph's
+size; `.cx-mini` is a standalone mini-CTA only), `text-wrap:balance` on display
+headings, `justify-content:flex-start` on comparison cells, `object-position`
+on the map, heading rewritten to "One free call, then three defined ways to
+start." Verified on the deployed URL: the HTML markers and the served
+stylesheet both carry the change. **[measured]**
+
+**Rule:** a gate that reads source cannot see a rendered defect. Before calling
+a page done, screenshot it at desktop and at 390px. For the phone width, serve
+the repo locally and iframe it: the live site refuses framing, so a headless
+iframe of the live URL renders blank, and blank is not a pass. **[measured]**
+And copy that hedges reads as doubt to a client: keep the constraint, state it
+as a promise ("Anything larger is quoted in writing before work starts"), not
+as a caveat ("Larger scope is quoted first"). **[reasoned]**
