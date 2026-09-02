@@ -4,10 +4,10 @@
 /* Google Ads stays completely blocked until one of these equal-weight choices
    is made. This is a non-modal dialog so the underlying site remains usable. */
 .ads-consent{
-  position:fixed; left:50%; bottom:18px; z-index:160;
+  position:fixed; left:50%; bottom:8px; z-index:160;
   width:min(1120px,calc(100vw - 36px)); transform:translateX(-50%);
   display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.25rem 1rem;
-  align-items:center; padding:.8rem 1rem; box-sizing:border-box;
+  align-items:center; padding:.55rem 1rem; box-sizing:border-box;
   background:#050505; color:var(--fg,#fafafa);
   border:1px solid var(--line-2,#262626); border-radius:12px;
   box-shadow:0 22px 70px rgba(0,0,0,.72);
