@@ -626,6 +626,8 @@ def build_report(
     if mode == "utm-campaign" and not campaign:
         findings.add_pause("scope.utmCampaign is required for attributed-file mode.")
 
+    source_complete: dict[str, bool] = {}
+    source_valid: dict[str, bool] = {}
     for name, input_data in (
         ("events", events),
         ("leads", leads),
@@ -639,7 +641,10 @@ def build_report(
             findings.add_iterate(
                 f"{name} JSONL is unavailable; its funnel stage remains unknown."
             )
-        if not truthy(nested(config, "dataReadiness", name + "Complete")):
+        source_complete[name] = truthy(
+            nested(config, "dataReadiness", name + "Complete")
+        )
+        if not source_complete[name]:
             findings.add_iterate(f"dataReadiness.{name}Complete is not confirmed.")
         integrity_records = reportable_lead_records if name == "leads" else (
             reportable_event_records if name == "events" else input_data.records
@@ -651,12 +656,25 @@ def build_report(
             findings.add_pause(
                 f"{name} JSONL has {missing_timestamps} record(s) without a valid timestamp."
             )
+        source_valid[name] = (
+            input_data.available and not input_data.errors and not missing_timestamps
+        )
 
     scoped_events: list[dict[str, Any]] = []
     scoped_leads: list[dict[str, Any]] = []
     scoped_acquisition: list[dict[str, Any]] = []
-    valid_window = start is not None and end is not None and end >= start
-    valid_scope = mode in {"utm-campaign", "campaign-only-files"}
+    valid_window = (
+        actual_days is not None
+        and limit_days is not None
+        and 1 <= actual_days <= limit_days <= HARD_DURATION_CAP_DAYS
+    )
+    valid_scope = mode == "campaign-only-files" or (
+        mode == "utm-campaign" and bool(campaign)
+    )
+    source_reportable = {
+        name: source_complete[name] and source_valid[name] and valid_window and valid_scope
+        for name in source_complete
+    }
     if valid_window and valid_scope:
         assert start is not None and end is not None
         scoped_events = scoped_records(
@@ -683,9 +701,10 @@ def build_report(
     sessionless_page_views = sum(
         1 for record in page_events if not str(record.get("sessionId") or "").strip()
     )
+    source_reportable["events"] = source_reportable["events"] and not sessionless_page_views
     sessions: Optional[int] = (
         len(session_ids)
-        if events.available and not events.errors and valid_window
+        if source_reportable["events"]
         else None
     )
     if sessionless_page_views:
@@ -702,9 +721,10 @@ def build_report(
             receipt_ids.add(receipt)
         else:
             missing_receipts += 1
+    source_reportable["leads"] = source_reportable["leads"] and not missing_receipts
     inquiries: Optional[int] = (
         len(receipt_ids)
-        if leads.available and not leads.errors and valid_window
+        if source_reportable["leads"]
         else None
     )
     if missing_receipts:
@@ -729,9 +749,7 @@ def build_report(
         findings.add_pause(
             f"{invalid_stage_records} authoritative stage record(s) lack bookingUid."
         )
-    stage_available = (
-        acquisition.available and not acquisition.errors and valid_window
-    )
+    stage_available = source_reportable["acquisition"] and not invalid_stage_records
     stage_counts: dict[str, Optional[int]] = {
         stage: len(values) if stage_available else None
         for stage, values in stage_sets.items()
@@ -1127,24 +1145,40 @@ def build_report(
         "data": {
             "events": {
                 "available": events.available,
+                "complete": source_complete["events"],
+                "reportable": source_reportable["events"],
                 "recordsRead": len(events.records),
                 "scopedRecords": len(scoped_events),
+                "observedScopedSessions": (
+                    len(session_ids) if events.available and valid_window and valid_scope else None
+                ),
                 "sessionlessPageViews": sessionless_page_views,
                 "qaRecordsExcluded": qa_event_records_excluded,
                 "qaSessionsExcluded": len(removed_qa_sessions),
             },
             "leads": {
                 "available": leads.available,
+                "complete": source_complete["leads"],
+                "reportable": source_reportable["leads"],
                 "recordsRead": len(leads.records),
                 "scopedRecords": len(scoped_leads),
+                "observedScopedInquiries": (
+                    len(receipt_ids) if leads.available and valid_window and valid_scope else None
+                ),
                 "syntheticRecordsExcluded": synthetic_leads_excluded,
                 "qaRecordsExcluded": qa_lead_records_excluded,
                 "qaReceiptIdsConfigured": len(qa_receipt_ids),
             },
             "acquisition": {
                 "available": acquisition.available,
+                "complete": source_complete["acquisition"],
+                "reportable": stage_available,
                 "recordsRead": len(acquisition.records),
                 "scopedStageRecords": len(scoped_acquisition),
+                "observedScopedStages": (
+                    {stage: len(values) for stage, values in stage_sets.items()}
+                    if acquisition.available and valid_window and valid_scope else None
+                ),
                 "attended": stage_counts["attended"],
                 "qaExclusionRecordsRead": qa_exclusion_records_read,
                 "qaExclusionTargetsConfigured": len(qa_receipt_ids)

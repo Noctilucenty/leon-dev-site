@@ -9,8 +9,6 @@ const { spawnSync } = require('node:child_process');
 const ROOT = path.resolve(__dirname, '..');
 const TOOL = path.join(ROOT, 'tools', 'client_success_ops.py');
 const SLOTS = path.join(ROOT, 'content', 'client-success', 'case-study-slots.json');
-const STATE = path.join(ROOT, 'data', 'client-success.json');
-const QUEUE = path.join(ROOT, 'data', 'client-success-queue.json');
 const TESTIMONIAL_DRAFTS = path.join(ROOT, 'content', 'testimonial-request-pack.md');
 
 const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -47,8 +45,8 @@ function fixture() {
     queue: path.join(directory, 'client-success-queue.json'),
   };
   fs.copyFileSync(SLOTS, paths.slots);
-  fs.copyFileSync(STATE, paths.state);
-  fs.copyFileSync(QUEUE, paths.queue);
+  const result = run(paths, ['init']);
+  assert.equal(result.status, 0, result.stderr || result.stdout);
   return paths;
 }
 
@@ -73,8 +71,8 @@ test('three empty case-study slots expose evidence, screenshot, and exact approv
   }
 });
 
-test('default files validate and the implementation has no delivery client', () => {
-  const result = run({ slots: SLOTS, state: STATE, queue: QUEUE }, ['check']);
+test('initialized fixture files validate without private runtime data or a delivery client', () => {
+  const result = run(fixture(), ['check']);
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.match(result.stdout, /queue is draft-only/i);
 

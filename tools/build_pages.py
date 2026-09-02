@@ -1122,7 +1122,7 @@ def missed_lead_recovery_page():
         reviews_section = f'''<section class="sec service-reviews" id="client-feedback">
   <div class="rail">
     <p class="label">Approved client feedback</p>
-    <h2 class="page-section-title">Related website and follow-up work</h2>
+    <h2 class="page-section-title">Website client feedback</h2>
     <div class="service-review-grid">{review_cards}</div>
     <a class="cx-mini" href="{reviews_href}">Read approved client feedback →</a>
   </div>
@@ -1149,7 +1149,7 @@ def missed_lead_recovery_page():
   <nav class="rail landing-jump">
     <span>Find it fast</span>
     <a href="#scope">Scope &amp; pricing</a>
-{feedback_jump}    <a href="#proof">Proof</a>
+{feedback_jump}    <a href="#proof">How it works</a>
     <a href="#faq">Questions</a>
   </nav>
 </div>
@@ -1186,13 +1186,18 @@ def missed_lead_recovery_page():
 
 <section class="sec" id="proof" aria-labelledby="contractor-proof-title">
   <div class="rail">
-    <p class="label">Operational business-system proof</p>
-    <h2 class="page-section-title" id="contractor-proof-title">See how we turn a business decision into a reviewable workflow.</h2>
+    <p class="label">Illustrative workflow · not a live client result</p>
+    <h2 class="page-section-title business-copy" id="contractor-proof-title">See the estimate-to-follow-up path.</h2>
+    <ol class="contractor-example business-copy" aria-label="Example estimate follow-up workflow">
+      <li><span>01</span><h3>Estimate request</h3><p>A visitor sends the job type, service area, and best way to reach them.</p></li>
+      <li><span>02</span><h3>Clear acknowledgment</h3><p>They get your approved confirmation and a clear next step.</p></li>
+      <li><span>03</span><h3>Owner handoff</h3><p>Your chosen inbox, sheet, or CRM receives the request and its status.</p></li>
+      <li><span>04</span><h3>Follow-up with limits</h3><p>Up to two reminders. A reply or opt-out stops the sequence.</p></li>
+    </ol>
     <div class="proofcard">
-      <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure>
       <p class="label">Operational client system · ALLCPR</p>
       <h3>ALLCPR Site Intelligence</h3>
-      <p class="sub business-copy">Leon built a nationwide location-planning workflow across all 33,772 U.S. ZIP codes, combining selected Google Places context, public data, company history, uncertainty ranges, screening verdicts, maps, and a reviewable team export. It prioritizes markets for field validation; it is not evidence of leads, revenue, or an opening decision.</p>
+      <p class="sub business-copy">Related technical work: Leon built a location-planning system that prioritizes markets for field validation. This is not a contractor follow-up case study or evidence of leads, revenue, or an opening decision.</p>
       <a class="cx-mini" href="/work#work-site-intelligence" data-evt="contractor_proof_demo_click">View the project details →</a>
     </div>
   </div>

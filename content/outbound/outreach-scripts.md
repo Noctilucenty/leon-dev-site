@@ -212,10 +212,10 @@ Subject: question about [BUSINESS]'s service-request flow
 Subject: question about [BUSINESS]'s ordering path
 
 > Hi [FIRST NAME] — I found [BUSINESS] while reviewing independent food businesses
-> in [CITY]. On mobile, [CURRENT PUBLIC OBSERVATION]. I have built an ordering
-> system where one cart and checkout split the correct tickets and accounting
-> across 22 businesses. I do not know whether custom work makes sense for your
-> setup. Want me to send a two-minute map of the smallest change I would test?
+> in [CITY]. On mobile, [CURRENT PUBLIC OBSERVATION]. I built beastypages.com,
+> a client website with business menus and a demonstration cart; payments and
+> kitchen operations are not live. I do not know whether custom work makes sense
+> for your setup. Want me to send a two-minute map of the smallest change I would test?
 
 `[APPEND THE COMPLIANCE FOOTER BEFORE ANY SEPARATELY AUTHORIZED SEND.]`
 

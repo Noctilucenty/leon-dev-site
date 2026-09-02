@@ -583,6 +583,13 @@ a{ color:inherit; text-decoration:none; }
 .contractor-landing .scope-boundary .faq{ margin-top:0; }
 .contractor-landing .scope-boundary .faq details{ border:1px solid var(--line-2); border-radius:12px; padding-inline:1rem; background:#020202; }
 .contractor-landing .scope-boundary .faq summary{ text-transform:none; }
+.contractor-example{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.75rem; padding:0; margin:1.5rem 0; list-style:none; }
+.contractor-example li{ min-width:0; border:1px solid var(--line-2); border-radius:12px; padding:1rem; background:var(--panel); }
+.contractor-example li > span{ color:var(--ac); font-size:12px; }
+.contractor-example h3{ margin:.75rem 0 .5rem; font-size:15px; line-height:1.35; font-weight:500; }
+.contractor-example p{ margin:0; font-size:13px; line-height:1.6; color:var(--mid); }
+@media(max-width:900px){ .contractor-example{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:560px){ .contractor-example{ grid-template-columns:1fr; } }
 .landing-jump-wrap{ border-block:1px solid var(--line); background:rgba(8,8,10,.94); }
 .landing-jump{ min-height:58px; display:flex; align-items:center; gap:.55rem; }
 .landing-jump > span{ margin-right:auto; color:var(--faint); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }

@@ -196,7 +196,14 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
   assert.match(visible, /Operational client system · ALLCPR/i);
   assert.match(visible, /ALLCPR Site Intelligence/i);
-  assert.match(visible, /prioritizes markets for field validation.*not evidence of leads, revenue, or an opening decision/is);
+  assert.match(visible, /Illustrative workflow · not a live client result/i);
+  assert.match(visible, /See the estimate-to-follow-up path/i);
+  assert.match(html, /<ol class="contractor-example business-copy" aria-label="Example estimate follow-up workflow">/);
+  for (const step of ['Estimate request', 'Clear acknowledgment', 'Owner handoff', 'Follow-up with limits']) assert.match(visible, new RegExp(step));
+  assert.match(visible, /A reply or opt-out stops the sequence/i);
+  assert.match(visible, /not a contractor follow-up case study/i);
+  assert.doesNotMatch(visible, /Related website and follow-up work/i);
+  assert.match(visible, /prioritizes markets for field validation.*not a contractor follow-up case study or evidence of leads, revenue, or an opening decision/is);
   assert.match(html, /href="\/work#work-site-intelligence"/i);
   assert.match(html, /30 days of fixes (?:for defects )?against the (?:agreed )?written scope/);
   assert.match(visible, /Provider fees remain with the provider/i);
