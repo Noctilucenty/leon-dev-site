@@ -214,7 +214,7 @@
       'written scope -- before the build',
       'working demo -- every week',
       'plain words welcome',
-      'smaller tool better? -- i will say so'
+      'smaller tool better? -- we will say so'
     ];
     if (reduced) { out.textContent = lines[0]; return; }
 

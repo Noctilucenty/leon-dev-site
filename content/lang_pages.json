@@ -5,12 +5,12 @@
       "service": "websites",
       "page": {
         "title": "criar site para empresa e acompanhar leads | Leon Builds",
-        "metaDescription": "site rápido para empresa a partir de $300. site com formulário de orçamento e rotina de acompanhamento a partir de $1,500. preço fixo por escrito. falo português.",
+        "metaDescription": "site rápido a partir de $300. site com formulário de orçamento e acompanhamento a partir de $1,500. preço fixo por escrito. Leon fala português.",
         "h1_plain": "cada pedido de orçamento",
         "h1_em": "com um próximo passo claro",
         "intro": [
           "um cliente encontra a empresa no celular, pede um orçamento e a mensagem cai no meio dos outros e-mails. quando ninguém sabe quem responde, a oportunidade fica parada sem que o dono perceba.",
-          "eu construo o site e, quando faz sentido, o caminho de acompanhamento: formulário, confirmação imediata, regra de quem assume o pedido e instruções de entrega. você fala direto comigo, em português, e recebe o escopo e o preço fixo antes de eu começar."
+          "nós construímos o site e, quando faz sentido, o caminho de acompanhamento: formulário, confirmação imediata, regra de quem assume o pedido e instruções de entrega. você fala direto com Leon, em português, e recebe o escopo e o preço fixo antes de começarmos."
         ],
         "pricetag": "site institucional enxuto a partir de $300 · site + acompanhamento de leads a partir de $1,500 · preço fixo por escrito antes de começar",
         "pains_label": "reconhece alguma dessas?",
@@ -21,7 +21,7 @@
           "o site existe, mas horário, serviços e fotos continuam desatualizados",
           "o domínio ou as contas ficaram com quem fez o site antigo"
         ],
-        "build_label": "o que eu entrego",
+        "build_label": "o que entregamos",
         "build": [
           "no escopo de $300: uma presença institucional enxuta, rápida no celular, com serviços, fotos, horário e um caminho principal de contato",
           "no produto de $1,500: site focado, formulário de orçamento, confirmação imediata, regras de acompanhamento e entrega documentada ao responsável",
@@ -45,16 +45,16 @@
           },
           {
             "q": "eu já tenho um site. preciso jogar fora e começar do zero?",
-            "a": "na maioria das vezes não. primeiro eu verifico se o problema está na velocidade, no celular, no texto ou no caminho do formulário. um conserto pequeno começa em $75; refazer entra como site novo, a partir de $300. se o site atual puder receber o acompanhamento sem ser refeito, isso fica claro no escopo."
+            "a": "na maioria das vezes não. primeiro verificamos se o problema está na velocidade, no celular, no texto ou no caminho do formulário. um conserto pequeno começa em $75; refazer entra como site novo, a partir de $300. se o site atual puder receber o acompanhamento sem ser refeito, isso fica claro no escopo."
           },
           {
             "q": "como funciona o trabalho, do começo até o site no ar?",
-            "a": "a gente conversa, eu te mando o preço fechado por escrito e só depois disso eu começo. a maioria dos sites de empresa fica pronta em uma ou duas semanas, e toda semana você recebe um link que abre no seu celular com o que já está funcionando, então você não fica esperando no escuro até o final. quando entra no ar, o domínio, a hospedagem e as contas definidos no escopo ficam no seu nome; você recebe o código incluído e as instruções. licenças e serviços de terceiros continuam seguindo os próprios termos."
+            "a": "nós conversamos, mandamos o preço fechado por escrito e só depois disso começamos. a maioria dos sites de empresa fica pronta em uma ou duas semanas, e toda semana você recebe um link que abre no seu celular com o que já está funcionando, então você não fica esperando no escuro até o final. quando entra no ar, o domínio, a hospedagem e as contas definidos no escopo ficam no seu nome; você recebe o código incluído e as instruções. licenças e serviços de terceiros continuam seguindo os próprios termos."
           }
         ],
-        "cta_primary": "me chama no whatsapp",
-        "cta_secondary": "me conta aqui mesmo",
-        "close": "se você já tem site, me mande o link e diga o que acontece depois que alguém pede orçamento. eu verifico se vale ajustar o que existe, refazer ou apenas organizar o acompanhamento."
+        "cta_primary": "fale com a gente no whatsapp",
+        "cta_secondary": "conte pra gente aqui mesmo",
+        "close": "se você já tem site, mande o link pra gente e diga o que acontece depois que alguém pede orçamento. nós verificamos se vale ajustar o que existe, refazer ou apenas organizar o acompanhamento."
       },
       "corrections": 11
     },
@@ -63,12 +63,12 @@
       "service": "ordering",
       "page": {
         "title": "sistema de pedido online e agendamento | Leon Builds",
-        "metaDescription": "Pedido online e agendamento no seu próprio site, a partir de $600. O cliente escolhe, paga no cartão e o pedido cai no seu celular. Falo português.",
+        "metaDescription": "Pedido online e agendamento no seu próprio site, a partir de $600. O cliente escolhe, paga no cartão e o pedido cai no seu celular. Leon fala português.",
         "h1_plain": "pedido online e agendamento no seu próprio site,",
         "h1_em": "sem a comissão do aplicativo",
         "intro": [
           "todo mês uma parte do que você vendeu fica com o aplicativo. o cliente é seu, a comida saiu da sua cozinha, e mesmo assim o dinheiro passa pela mão de outra pessoa antes de chegar na sua. e, no fim, você não fica nem com o telefone de quem pediu.",
-          "dá pra ter isso dentro do seu próprio site. o cliente escolhe, paga no cartão e o pedido cai no seu celular ou sai na impressora da cozinha. quem só quer marcar horário marca sozinho, de madrugada, sem te ligar no meio do atendimento. você me explica em português como o seu negócio funciona hoje, e eu construo em cima disso."
+          "dá pra ter isso dentro do seu próprio site. o cliente escolhe, paga no cartão e o pedido cai no seu celular ou sai na impressora da cozinha. quem só quer marcar horário marca sozinho, de madrugada, sem te ligar no meio do atendimento. você explica direto para Leon, em português, como o seu negócio funciona hoje, e nós construímos em cima disso."
         ],
         "pricetag": "pedido online e agendamento a partir de $600 · preço fechado por escrito antes de começar, e ele não muda no final",
         "pains_label": "reconhece alguma dessas?",
@@ -79,7 +79,7 @@
           "o cliente quer marcar horário às onze da noite e não tem onde marcar, e no dia seguinte já marcou em outro lugar",
           "quem comprou de você está na lista do aplicativo, não na sua"
         ],
-        "build_label": "o que eu construo pra isso",
+        "build_label": "o que construímos pra isso",
         "build": [
           "cardápio ou lista de serviços no seu site, com você mesmo mudando preço e foto e marcando o que acabou",
           "carrinho e pagamento no cartão pelo Stripe, com recibo automático pro cliente",
@@ -90,12 +90,12 @@
         ],
         "proof_label": "protótipo público, com limites claros",
         "proof_title": "várias marcas, um carrinho de demonstração",
-        "proof_body": "eu construí um protótipo público de pedidos para uma operação com várias marcas. você pode abrir as páginas dos negócios, pesquisar os cardápios e testar o carrinho de demonstração. pagamentos e a operação da cozinha ainda não estão ao vivo; eu deixo essa diferença visível para você avaliar exatamente o que existe hoje.",
+        "proof_body": "Leon construiu um protótipo público de pedidos para uma operação com várias marcas. você pode abrir as páginas dos negócios, pesquisar os cardápios e testar o carrinho de demonstração. pagamentos e a operação da cozinha ainda não estão ao vivo; essa diferença fica visível para você avaliar exatamente o que existe hoje.",
         "faq_label": "o que perguntam primeiro",
         "faqs": [
           {
             "q": "quanto custa um sistema de pedido online ou de agendamento?",
-            "a": "pedido online e agendamento começam em $600. esse é o piso: o preço final depende do tamanho do cardápio, das formas de entrega e de quantos profissionais entram na agenda. eu fecho esse número por escrito antes de começar qualquer coisa, e ele não muda depois. eu não acrescento uma porcentagem minha por pedido. processamento de cartão, hospedagem, mensagens, integrações e outros serviços de terceiros variam por provedor e plano e ficam fora do preço do desenvolvimento quando o escopo disser."
+            "a": "pedido online e agendamento começam em $600. esse é o piso: o preço final depende do tamanho do cardápio, das formas de entrega e de quantos profissionais entram na agenda. nós fechamos esse número por escrito antes de começar qualquer coisa, e ele não muda depois. não cobramos comissão por pedido. processamento de cartão, hospedagem, mensagens, integrações e outros serviços de terceiros variam por provedor e plano e ficam fora do preço do desenvolvimento quando o escopo disser."
           },
           {
             "q": "então vale a pena sair dos aplicativos de entrega?",
@@ -107,12 +107,12 @@
           },
           {
             "q": "quanto tempo demora e o que fica sendo meu no final?",
-            "a": "um sistema de pedido ou de agendamento normalmente leva de duas a quatro semanas, e você não espera até o fim pra ver: toda semana eu te mando um link que você abre no navegador e testa. no final, o domínio, a hospedagem, a conta de pagamento e as contas do projeto definidas no escopo ficam no seu nome; você recebe o código incluído, os dados do projeto e as instruções. outra pessoa pode continuar o trabalho sem depender de mim, respeitando os termos dos serviços de terceiros."
+            "a": "um sistema de pedido ou de agendamento normalmente leva de duas a quatro semanas, e você não espera até o fim pra ver: toda semana nós mandamos um link que você abre no navegador e testa. no final, o domínio, a hospedagem, a conta de pagamento e as contas do projeto definidas no escopo ficam no seu nome; você recebe o código incluído, os dados do projeto e as instruções. outra pessoa pode continuar o trabalho sem depender de nós, respeitando os termos dos serviços de terceiros."
           }
         ],
-        "cta_primary": "me conta o seu caso",
+        "cta_primary": "conte pra gente o seu caso",
         "cta_secondary": "pergunta aqui na página",
-        "close": "se você já tem site, cardápio online ou página de agendamento, me manda o link, eu olho de graça e falo se vale mexer ou se o que você tem já dá conta."
+        "close": "se você já tem site, cardápio online ou página de agendamento, mande o link pra gente. nós olhamos de graça e dizemos se vale mexer ou se o que você tem já dá conta."
       },
       "corrections": 22
     },
@@ -121,14 +121,14 @@
       "service": "automation",
       "page": {
         "title": "automação e chatbot para negócios | Leon Builds",
-        "metaDescription": "Automação do trabalho repetitivo, chatbot e atendente de telefone com IA no seu negócio. A partir de $500, preço fechado antes de começar. Falo português.",
+        "metaDescription": "Automação do trabalho repetitivo, chatbot e atendente de telefone com IA no seu negócio. A partir de $500, preço fechado antes de começar. Leon fala português.",
         "h1_plain": "o trabalho que se repete toda semana",
         "h1_em": "não precisa passar por você",
         "intro": [
           "o telefone toca e é a mesma pergunta de sempre: que horas abre, quanto custa, onde fica. no whatsapp chega a mesma coisa, só que a qualquer hora do dia e da noite. e no fim do expediente ainda tem alguém sentado passando pra planilha o que já foi anotado no papel.",
-          "quase nada disso precisa de um sistema novo. é só conectar o que você já usa e deixar a parte repetida rodando sozinha. e quando um script simples resolve, eu falo — script custa menos que IA, e quebra menos, porque faz sempre a mesma coisa."
+          "quase nada disso precisa de um sistema novo. é só conectar o que você já usa e deixar a parte repetida rodando sozinha. e quando um script simples resolve, nós falamos — script custa menos que IA, e quebra menos, porque faz sempre a mesma coisa."
         ],
-        "pricetag": "a partir de $500 na automação, $750 no chatbot e $1,000 no atendente de telefone · preço fechado por escrito antes de começar, e ele não muda no final · atendo o país inteiro, online",
+        "pricetag": "a partir de $500 na automação, $750 no chatbot e $1,000 no atendente de telefone · preço fechado por escrito antes de começar, e ele não muda no final · atendemos o país inteiro, online",
         "pains_label": "algum desses é o seu caso?",
         "pains": [
           "o cliente liga o dia inteiro pra perguntar horário, preço e endereço",
@@ -137,13 +137,13 @@
           "você mandou o orçamento, o cliente não respondeu, e ninguém foi atrás",
           "só uma pessoa sabe fazer aquilo, e no dia que ela falta o negócio trava"
         ],
-        "build_label": "o que eu construo pra isso",
+        "build_label": "o que construímos pra isso",
         "build": [
           "a conexão entre as coisas que você já usa: o pedido vira linha na planilha, vira nota, vira email, sem ninguém redigitar",
           "o retorno automático pro cliente: orçamento enviado, lembrete do horário, cobrança que sai sem depender de alguém lembrar",
           "formulário que vira planilha e documento sozinho, já arquivado no lugar certo",
-          "chatbot no site ou no whatsapp que responde só com a informação que você me confirmou: preço, horário, o que você faz e o que você não faz",
-          "atendente de telefone com IA que resolve a pergunta de sempre e passa pra uma pessoa assim que o assunto sai do combinado",
+          "chatbot no site ou no whatsapp com respostas baseadas nas informações que você aprova: preço, horário, serviços e limites",
+          "atendente de telefone com IA para perguntas comuns, com regras de transferência e recado combinadas com você",
           "o que for definido no escopo é montado nas contas do projeto combinadas com você; sua equipe recebe acesso, o código incluído e instruções de configuração, e serviços ou licenças de terceiros continuam seguindo os próprios termos"
         ],
         "proof_label": "demonstração pública · etapas incompletas bem marcadas",
@@ -153,24 +153,24 @@
         "faqs": [
           {
             "q": "quanto custa?",
-            "a": "automação de processo começa em $500, chatbot com IA começa em $750 e atendente de telefone com IA começa em $1,000. esses são os valores de partida: conectar dois sistemas fica na faixa mais baixa, e uma automação que passa por vários sistemas sobe a partir daí. eu olho o seu caso e passo um preço fechado por escrito antes de começar qualquer coisa, e esse preço não muda no final."
+            "a": "automação de processo começa em $500, chatbot com IA começa em $750 e atendente de telefone com IA começa em $1,000. esses são os valores de partida: conectar dois sistemas fica na faixa mais baixa, e uma automação que passa por vários sistemas sobe a partir daí. nós olhamos o seu caso e passamos um preço fechado por escrito antes de começar qualquer coisa, e esse preço não muda no final."
           },
           {
             "q": "eu preciso mesmo de IA pra isso?",
-            "a": "na maioria das vezes, não precisa de IA. quando a tarefa segue sempre a mesma regra, como copiar um pedido pra planilha, mandar um lembrete ou gerar uma cobrança, um script simples faz melhor: custa menos, quebra menos e faz sempre igual. IA só entra quando alguém precisa ler um texto solto e escrever uma resposta. se o seu caso for do primeiro tipo eu falo na hora e cobro o preço de automação, não o de IA."
+            "a": "na maioria das vezes, não precisa de IA. quando a tarefa segue sempre a mesma regra, como copiar um pedido pra planilha, mandar um lembrete ou gerar uma cobrança, um script simples faz melhor: custa menos, quebra menos e faz sempre igual. IA só entra quando alguém precisa ler um texto solto e escrever uma resposta. se o seu caso for do primeiro tipo nós falamos na hora e cobramos o preço de automação, não o de IA."
           },
           {
             "q": "e se o robô falar besteira com o meu cliente?",
-            "a": "o chatbot que eu monto só responde com a informação que você me passou e que ficou registrada: preço, horário, o que você atende e o que você não atende. quando a pergunta sai dessa lista ele não chuta, ele avisa que vai passar pra uma pessoa e manda a conversa pra você. no atendente de telefone é a mesma regra: assunto fora do combinado vai pra um humano."
+            "a": "IA pode errar, mesmo usando informações aprovadas. reduzimos esse risco com testes de respostas e regras claras para preços, políticas e encaminhamento a uma pessoa. antes de lançar, combinamos quais perguntas o assistente pode tratar, quando deve parar e como você recebe o pedido. decisões sensíveis continuam com sua equipe."
           },
           {
             "q": "funciona no whatsapp?",
-            "a": "funciona no whatsapp, sim — é o caso mais comum aqui. dá pra colocar o chatbot no whatsapp business, no site, ou nos dois, e a mensagem continua chegando no mesmo número que os seus clientes já conhecem. a conta comercial do whatsapp precisa de uma aprovação da Meta, e essa parte eu faço junto com você. o que muda é que a pergunta repetida já sai respondida na hora e o que é assunto de gente cai no seu celular como sempre caiu."
+            "a": "pode funcionar no whatsapp business, no site, ou nos dois. antes de passar o preço, verificamos a conta, o número, o provedor e as regras que se aplicam ao seu caso. custos de mensagens e serviços de terceiros ficam separados no escopo. também combinamos como sua equipe recebe e responde ao que precisa de uma pessoa."
           }
         ],
-        "cta_primary": "me conta o seu caso",
+        "cta_primary": "conte pra gente o seu caso",
         "cta_secondary": "perguntar aqui na página",
-        "close": "me manda o que você já usa hoje que eu olho de graça e falo se dá pra automatizar, se resolve com um ajuste simples, ou se é melhor deixar do jeito que está."
+        "close": "mande pra gente o que você já usa hoje. nós olhamos de graça e dizemos se dá pra automatizar, se resolve com um ajuste simples, ou se é melhor deixar do jeito que está."
       },
       "corrections": 12
     },
@@ -184,7 +184,7 @@
         "h1_em": "con un siguiente paso claro",
         "intro": [
           "un cliente encuentra el negocio en el celular, pide una cotización y el mensaje queda enterrado entre otros correos. si nadie sabe quién debe responder, la solicitud se queda quieta sin que el dueño lo note.",
-          "yo construyo la página y, cuando hace falta, el camino de seguimiento: formulario, confirmación inmediata, una regla clara de responsable y entrega documentada. hablas directo conmigo en español y recibes el alcance y el precio fijo antes de que empiece."
+          "nosotros construimos la página y, cuando hace falta, el camino de seguimiento: formulario, confirmación inmediata, una regla clara de responsable y entrega documentada. hablas directo con Leon en español y recibes el alcance y el precio fijo antes de que empecemos."
         ],
         "pricetag": "página informativa de alcance limitado desde $300 · página + seguimiento desde $1,500 · precio fijo por escrito antes de empezar",
         "pains_label": "¿te suena esto?",
@@ -195,7 +195,7 @@
           "los horarios, servicios o fotos siguen desactualizados",
           "el dominio o las cuentas quedaron con quien hizo la página anterior"
         ],
-        "build_label": "esto es lo que te construyo",
+        "build_label": "esto es lo que construimos para ti",
         "build": [
           "en el alcance de $300: una presencia informativa y limitada, rápida en el celular, con servicios, fotos, horario y un camino principal de contacto",
           "en el producto de $1,500: página enfocada, formulario de cotización, confirmación inmediata, reglas de seguimiento y entrega documentada al responsable",
@@ -219,16 +219,16 @@
           },
           {
             "q": "ya tengo página. ¿tengo que empezar de cero?",
-            "a": "casi nunca. primero reviso si el problema es velocidad, vista en celular, contenido o el camino del formulario. un arreglo pequeño empieza en $75; rehacerla entra como página nueva, desde $300. si la página actual puede recibir el seguimiento sin rehacerse, eso queda claro en el alcance."
+            "a": "casi nunca. primero revisamos si el problema es velocidad, vista en celular, contenido o el camino del formulario. un arreglo pequeño empieza en $75; rehacerla entra como página nueva, desde $300. si la página actual puede recibir el seguimiento sin rehacerse, eso queda claro en el alcance."
           },
           {
             "q": "¿cuánto se tarda y qué recibo al final?",
             "a": "la mayoría de las páginas de negocio toman una o dos semanas. el producto enfocado de $1,500 suele tomar 10 días hábiles después de que estén listos el alcance, los accesos y el contenido aprobado. el dominio, las cuentas, el código y las instrucciones que figuren en el alcance se entregan según lo escrito; los servicios externos conservan sus propias condiciones."
           }
         ],
-        "cta_primary": "cuéntame qué necesitas",
-        "cta_secondary": "pregúntame aquí mismo",
-        "close": "si ya tienes página, mándame el enlace y dime qué pasa después de que alguien pide una cotización. reviso si conviene ajustar lo que existe, rehacerlo o solo ordenar el seguimiento."
+        "cta_primary": "cuéntanos qué necesitas",
+        "cta_secondary": "pregúntanos aquí mismo",
+        "close": "si ya tienes página, mándanos el enlace y dinos qué pasa después de que alguien pide una cotización. revisamos si conviene ajustar lo que existe, rehacerlo o solo ordenar el seguimiento."
       },
       "corrections": 16
     },
@@ -237,14 +237,14 @@
       "service": "ordering",
       "page": {
         "title": "pedidos en línea y citas — desde $600 | Leon Builds",
-        "metaDescription": "pedidos y citas desde tu propia página: el cliente paga con tarjeta y el pedido cae en tu celular. Leon no agrega comisión por pedido; atiendo en español.",
+        "metaDescription": "pedidos y citas desde tu propia página: el cliente paga con tarjeta y el pedido cae en tu celular. no agregamos comisión por pedido; Leon atiende en español.",
         "h1_plain": "pedidos y citas en tu propia página,",
-        "h1_em": "sin comisión de Leon por cada pedido",
+        "h1_em": "sin que cobremos comisión por cada pedido",
         "intro": [
           "el teléfono suena y tienes las manos ocupadas. cuando por fin lo agarras, el cliente ya colgó y ya pidió en otro lado. y el pedido que sí entró por la aplicación te llega con la comisión ya descontada.",
-          "antes de decidir nada, revisa el estado de cuenta y el contrato real de la plataforma. sus comisiones y los costos de tarjeta, entrega, hosting, mensajes e integraciones cambian según el proveedor y el plan. yo no agrego una comisión por cada pedido, pero los servicios de terceros siguen teniendo sus propios costos."
+          "antes de decidir nada, revisa el estado de cuenta y el contrato real de la plataforma. sus comisiones y los costos de tarjeta, entrega, hosting, mensajes e integraciones cambian según el proveedor y el plan. nosotros no agregamos una comisión por cada pedido, pero los servicios de terceros siguen teniendo sus propios costos."
         ],
-        "pricetag": "desde $600 · precio cerrado por escrito antes de empezar · atiendo negocios en todo estados unidos, en línea",
+        "pricetag": "desde $600 · precio cerrado por escrito antes de empezar · atendemos negocios en todo estados unidos, en línea",
         "pains_label": "¿te suena esto?",
         "pains": [
           "los pedidos entran por teléfono en plena hora pico y alguien los apunta mal",
@@ -253,7 +253,7 @@
           "el cliente entra a tu página a las once de la noche, no puede pedir ni reservar, y no vuelve",
           "alguien aparta la hora, no llega, y ese hueco ya no lo vendes"
         ],
-        "build_label": "lo que hago para esto",
+        "build_label": "lo que hacemos para esto",
         "build": [
           "tu menú o tu lista de servicios en la página, con fotos y precios que tú mismo cambias",
           "carrito y pago con tarjeta por stripe, con el recibo para el cliente",
@@ -264,12 +264,12 @@
         ],
         "proof_label": "prototipo público, con límites claros",
         "proof_title": "varias marcas, un carrito de demostración",
-        "proof_body": "construí un prototipo público de pedidos para una operación con varias marcas. puedes abrir las páginas de los negocios, buscar menús y probar el carrito de demostración. los pagos y la operación de cocina todavía no están en vivo; dejo esa diferencia clara para que evalúes exactamente lo que existe hoy.",
+        "proof_body": "Leon construyó un prototipo público de pedidos para una operación con varias marcas. puedes abrir las páginas de los negocios, buscar menús y probar el carrito de demostración. los pagos y la operación de cocina todavía no están en vivo; esa diferencia queda clara para que evalúes exactamente lo que existe hoy.",
         "faq_label": "lo que preguntan primero",
         "faqs": [
           {
             "q": "¿cuánto cuesta un sistema de pedidos o de citas?",
-            "a": "los pedidos en línea y el sistema de citas empiezan en $600, y ese es un precio de partida, no el final. el número sube o baja según qué tan grande sea el menú o la lista de servicios y con qué otros sistemas tenga que conectarse. antes de empezar te doy el precio cerrado por escrito y ese número no cambia al final. yo no te cobro comisión por pedido ni por cita; al terminar recibes el sistema, el código y las instrucciones incluidos en el alcance, mientras las cuentas, licencias y servicios de terceros conservan sus propias condiciones y costos."
+            "a": "los pedidos en línea y el sistema de citas empiezan en $600, y ese es un precio de partida, no el final. el número sube o baja según qué tan grande sea el menú o la lista de servicios y con qué otros sistemas tenga que conectarse. antes de empezar te damos el precio cerrado por escrito y ese número no cambia al final. no te cobramos comisión por pedido ni por cita; al terminar recibes el sistema, el código y las instrucciones incluidos en el alcance, mientras las cuentas, licencias y servicios de terceros conservan sus propias condiciones y costos."
           },
           {
             "q": "¿entonces me salgo de las aplicaciones de entrega?",
@@ -277,16 +277,16 @@
           },
           {
             "q": "¿cómo sé si de verdad me conviene?",
-            "a": "usa las cifras reales del último mes: revisa el estado de cuenta y el contrato de la plataforma, y compara ese total con el desarrollo más tarjeta, hosting, mensajes, integraciones y entrega. todos esos costos cambian según proveedor y plan. si tus números no justifican un sistema propio, te lo digo antes de construirlo."
+            "a": "usa las cifras reales del último mes: revisa el estado de cuenta y el contrato de la plataforma, y compara ese total con el desarrollo más tarjeta, hosting, mensajes, integraciones y entrega. todos esos costos cambian según proveedor y plan. si tus números no justifican un sistema propio, te lo decimos antes de construirlo."
           },
           {
             "q": "¿de quién es el sistema cuando terminas?",
-            "a": "el dominio, el hosting, la cuenta de pago y las cuentas del proyecto definidas en el alcance quedan a tu nombre. recibes el código y los datos incluidos, junto con instrucciones para que otra persona pueda continuar sin depender de mí. las licencias y servicios externos conservan sus propias condiciones, y no te obligo a pagarme una mensualidad para que el sistema siga encendido."
+            "a": "el dominio, el hosting, la cuenta de pago y las cuentas del proyecto definidas en el alcance quedan a tu nombre. recibes el código y los datos incluidos, junto con instrucciones para que otra persona pueda continuar sin depender de nosotros. las licencias y servicios externos conservan sus propias condiciones, y no te obligamos a pagarnos una mensualidad para que el sistema siga encendido."
           }
         ],
-        "cta_primary": "cuéntame qué necesitas",
+        "cta_primary": "cuéntanos qué necesitas",
         "cta_secondary": "pregunta aquí en la página",
-        "close": "si ya tienes pedidos en línea o un sistema de citas, mándamelo y lo reviso gratis: te digo qué te está costando y si vale la pena cambiarlo o no, y me lo puedes explicar en español."
+        "close": "si ya tienes pedidos en línea o un sistema de citas, mándanoslo y lo revisamos gratis: te decimos qué te está costando y si vale la pena cambiarlo o no, y nos lo puedes explicar en español."
       },
       "corrections": 13
     },
@@ -295,12 +295,12 @@
       "service": "automation",
       "page": {
         "title": "automatización y chatbots — desde $500 | Leon Builds",
-        "metaDescription": "automatizo lo repetitivo de tu negocio y armo bots que contestan las preguntas de siempre. desde $500, precio cerrado por escrito. hablo español.",
+        "metaDescription": "automatizamos lo repetitivo de tu negocio y armamos bots que contestan las preguntas de siempre. desde $500, precio cerrado por escrito. Leon habla español.",
         "h1_plain": "lo que repites todas las semanas",
         "h1_em": "puede hacerse solo",
         "intro": [
           "pasas el día contestando lo mismo: cuánto cuesta, a qué hora abren, si hay lugar para hoy. y entre llamada y llamada alguien vuelve a capturar datos que ya estaban escritos en otro lado.",
-          "casi siempre eso se puede quitar. a veces con un programa aburrido que corre solo a la hora que le digas, a veces con un bot que contesta las preguntas fáciles y le pasa a una persona las difíciles. me cuentas el problema en español, como se lo contarías a un empleado nuevo, y yo te digo cuál de los dos te sirve. si te sirve el barato, te digo el barato."
+          "casi siempre eso se puede quitar. a veces con un programa aburrido que corre solo a la hora que le digas, a veces con un bot que contesta las preguntas fáciles y le pasa a una persona las difíciles. nos cuentas el problema en español, como se lo contarías a un empleado nuevo, y te decimos cuál de los dos te sirve. si te sirve el barato, te decimos el barato."
         ],
         "pricetag": "automatización desde $500 · bot con la información de tu negocio desde $750 · agente que contesta el teléfono desde $1,000 · precio cerrado por escrito antes de empezar",
         "pains_label": "¿te suena esto?",
@@ -311,13 +311,13 @@
           "la hoja de control del negocio la actualiza alguien de noche, cuando ya cerraron",
           "una sola persona sabe cómo se hace todo ese proceso, y el día que falta, el trabajo se queda parado"
         ],
-        "build_label": "lo que hago para esto",
+        "build_label": "lo que hacemos para esto",
         "build": [
-          "conecto lo que ya usas: el formulario, la hoja de cálculo, el correo y el celular, para que el dato se escriba una sola vez",
+          "conectamos lo que ya usas: el formulario, la hoja de cálculo, el correo y el celular, para que el dato se escriba una sola vez",
           "recordatorios y seguimientos que salen solos: la cita de mañana, el presupuesto sin respuesta, el pago que falta",
           "facturas y recibos que se arman y se mandan sin que nadie los escriba a mano",
-          "un bot que contesta con la información real de tu negocio: tus precios, tus horarios, lo que sí haces y lo que no",
-          "un agente que contesta el teléfono cuando nadie puede, toma el recado y te pasa a ti las llamadas raras",
+          "un bot con respuestas basadas en la información que apruebas: precios, horarios, servicios y límites",
+          "un agente para llamadas comunes, con reglas acordadas para transferir la llamada o tomar un recado",
           "lo acordado en el alcance se monta en las cuentas del proyecto definidas contigo; tu equipo recibe acceso, el código incluido y pasos de configuración en español, mientras las licencias y servicios de terceros conservan sus propias condiciones"
         ],
         "proof_label": "demostración pública · pasos incompletos bien marcados",
@@ -327,24 +327,24 @@
         "faqs": [
           {
             "q": "¿cuánto cuesta?",
-            "a": "automatizar un proceso empieza en $500, un bot con la información de tu negocio empieza en $750 y un agente que contesta el teléfono empieza en $1,000. son precios de partida: el número real depende de cuántos sistemas hay que conectar y de qué tan enredado está el proceso hoy. antes de empezar te doy el precio cerrado por escrito y ese número no cambia al final."
+            "a": "automatizar un proceso empieza en $500, un bot con la información de tu negocio empieza en $750 y un agente que contesta el teléfono empieza en $1,000. son precios de partida: el número real depende de cuántos sistemas hay que conectar y de qué tan enredado está el proceso hoy. antes de empezar te damos el precio cerrado por escrito y ese número no cambia al final."
           },
           {
             "q": "¿de verdad necesito inteligencia artificial?",
-            "a": "muchas veces no necesitas inteligencia artificial, y te lo voy a decir aunque me convenga lo contrario. cuando la tarea siempre se hace igual, como mover un dato, mandar un recordatorio o armar una factura, un programa normal la hace más barato, se equivoca menos y es más fácil de arreglar. la inteligencia artificial sirve cuando hay que entender algo escrito por una persona o redactar una respuesta. si tu caso es el primero, no tiene sentido que pagues por lo segundo."
+            "a": "muchas veces no necesitas inteligencia artificial, y te lo vamos a decir aunque nos convenga lo contrario. cuando la tarea siempre se hace igual, como mover un dato, mandar un recordatorio o armar una factura, un programa normal la hace más barato, se equivoca menos y es más fácil de arreglar. la inteligencia artificial sirve cuando hay que entender algo escrito por una persona o redactar una respuesta. si tu caso es el primero, no tiene sentido que pagues por lo segundo."
           },
           {
             "q": "¿el bot le va a inventar un precio a mi cliente?",
-            "a": "no, porque el bot solo puede usar la información que tú me des y que revisemos juntos: tus precios, tus horarios, tus servicios y tus reglas. cuando le preguntan algo que no está ahí, no adivina; dice que no lo sabe y pasa la conversación a una persona. antes de ponerlo a atender clientes lo probamos con las preguntas raras que ya te hacen todos los días."
+            "a": "puede pasar: la IA puede equivocarse incluso con información aprobada. reducimos ese riesgo con pruebas y reglas claras para precios, políticas y atención por una persona. antes de lanzar, acordamos qué puede responder, cuándo debe parar y cómo te llega la consulta. las decisiones sensibles quedan con tu equipo."
           },
           {
             "q": "¿tengo que cambiar los programas que ya uso?",
-            "a": "casi nunca. lo normal es dejar donde están el punto de venta, el excel, el whatsapp y el correo, y construir el puente entre ellos para que nadie tenga que copiar datos a mano. cambiar de sistema cuesta dinero y obliga a todo tu equipo a aprender de nuevo, así que solo lo propongo cuando el sistema de hoy es la causa real del problema."
+            "a": "casi nunca. lo normal es dejar donde están el punto de venta, el excel, el whatsapp y el correo, y construir el puente entre ellos para que nadie tenga que copiar datos a mano. cambiar de sistema cuesta dinero y obliga a todo tu equipo a aprender de nuevo, así que solo lo proponemos cuando el sistema de hoy es la causa real del problema."
           }
         ],
-        "cta_primary": "dime qué quieres automatizar",
-        "cta_secondary": "cuéntame aquí en la página",
-        "close": "si nada más quieres una opinión, escríbeme cómo lo haces hoy y te digo gratis qué se puede automatizar y qué no vale la pena tocar."
+        "cta_primary": "dinos qué quieres automatizar",
+        "cta_secondary": "cuéntanos aquí en la página",
+        "close": "si nada más quieres una opinión, escríbenos cómo lo haces hoy y te decimos gratis qué se puede automatizar y qué no vale la pena tocar."
       },
       "corrections": 5
     },
@@ -358,7 +358,7 @@
         "h1_em": "都有明确的下一步",
         "intro": [
           "客人在手机上找到你，填完询价表，邮件却混在收件箱里。要是没有人明确负责，老板往往到很晚才发现这条消息一直没人处理。",
-          "我可以只做一个干净的商家网站，也可以把询价后的流程一起做好：表单提交、即时确认、谁来跟进、什么时候检查，最后都有交接说明。全程直接跟我用中文沟通，开工前把范围和固定价写清楚。"
+          "我们可以只做一个干净的商家网站，也可以把询价后的流程一起做好：表单提交、即时确认、谁来跟进、什么时候检查，最后都有交接说明。全程都可以直接跟 Leon 用中文沟通，开工前把范围和固定价写清楚。"
         ],
         "pricetag": "精简展示网站 $300 起 · 网站加询价跟进 $1,500 起 · 开工前书面确认固定价",
         "pains_label": "这些是不是很眼熟",
@@ -369,7 +369,7 @@
           "营业时间、服务和照片长期没人更新",
           "域名和项目账号还在原来做网站的人手里"
         ],
-        "build_label": "我会给你做什么",
+        "build_label": "我们会给你做什么",
         "build": [
           "$300 的范围是一个精简展示网站：手机上打开快，服务、照片、营业时间和一个主要联系方式写清楚",
           "$1,500 的范围是网站加询价表单、提交后的即时确认、书面跟进规则和负责人交接说明",
@@ -385,7 +385,7 @@
         "faqs": [
           {
             "q": "做一个商家网站要多少钱？",
-            "a": "精简展示网站 $300 起，重点是把业务信息和一个主要联系方式讲清楚。需要登录、数据库、后台或 API 的网站从 $625 起。网站加询价表单、即时确认、跟进规则和负责人交接从 $1,500 起。这些都是范围起步价；看完要求后，我会在开工前把固定价写清楚。"
+            "a": "精简展示网站 $300 起，重点是把业务信息和一个主要联系方式讲清楚。需要登录、数据库、后台或 API 的网站从 $625 起。网站加询价表单、即时确认、跟进规则和负责人交接从 $1,500 起。这些都是范围起步价；看完要求后，我们会在开工前把固定价写清楚。"
           },
           {
             "q": "$1,500 的网站加跟进具体包括什么？",
@@ -393,7 +393,7 @@
           },
           {
             "q": "已经有网站，还要全部重做吗？",
-            "a": "通常不用。先看问题是在手机速度、内容，还是表单后的流程。小修改 $75 起；重做按新网站范围，从 $300 起。如果现有网站可以直接接上跟进流程，我会在书面范围里说明，不会为了卖新网站把能用的部分丢掉。"
+            "a": "通常不用。先看问题是在手机速度、内容，还是表单后的流程。小修改 $75 起；重做按新网站范围，从 $300 起。如果现有网站可以直接接上跟进流程，我们会在书面范围里说明，不会为了卖新网站把能用的部分丢掉。"
           },
           {
             "q": "要多久，最后会交给我什么？",
@@ -401,8 +401,8 @@
           }
         ],
         "cta_primary": "说说你的情况",
-        "cta_secondary": "用中文问我",
-        "close": "如果你已经有网站，把网址发给我，再告诉我客人提交询价以后现在怎么处理。我会判断应该改现有网站、重做，还是只整理跟进流程。"
+        "cta_secondary": "用中文问我们",
+        "close": "如果你已经有网站，把网址发给我们，再告诉我们客人提交询价以后现在怎么处理。我们会判断应该改现有网站、重做，还是只整理跟进流程。"
       },
       "corrections": 7
     },
@@ -411,12 +411,12 @@
       "service": "ordering",
       "page": {
         "title": "网上点单和预约系统 $600 起 | Leon Builds",
-        "metaDescription": "客人在你自己的网站上点单、刷卡付钱，单子直接进手机或后厨；预约也可自助完成。$600 起，开工前写清范围和价格。我不按订单抽成；刷卡、托管、短信和其他第三方费用按所选服务商与套餐另算。会说中文，全美国线上合作。",
+        "metaDescription": "客人在你自己的网站上点单、刷卡付钱，单子直接进手机或后厨；预约也可自助完成。$600 起，开工前写清范围和价格。我们不按订单抽成；刷卡、托管、短信和其他第三方费用按所选服务商与套餐另算。Leon 会说中文，全美国线上合作。",
         "h1_plain": "客人自己下单、自己约时间，",
         "h1_em": "单子直接进你的手机",
         "intro": [
           "一天到晚接电话。客人问几点关门、问今天还有没有位子，你把菜名报一遍、价钱再报一遍。最忙的时候单子记在纸上，记岔一单就是赔一单。微信群里也有人下单，等你忙完再翻回去，那条早被后面的消息刷下去了。",
-          "我在你自己的网站上做一套：客人自己选、自己刷卡，单子直接进你手机或者后厨打印机。要预约的店，客人自己在你的时间表上挑一个时段，你不用再回电话。我会说中文，你把店里的规矩用中文讲给我听就行：几点停单、周几休息、哪几样要提前一天订、哪几样过了饭点就不做，这些我都得问清楚才能动手。"
+          "我们在你自己的网站上做一套：客人自己选、自己刷卡，单子直接进你手机或者后厨打印机。要预约的店，客人自己在你的时间表上挑一个时段，你不用再回电话。Leon 会说中文，你把店里的规矩直接用中文讲给他听就行：几点停单、周几休息、哪几样要提前一天订、哪几样过了饭点就不做，这些我们都得问清楚才能动手。"
         ],
         "pricetag": "$600 起 · 开工前把价钱白纸黑字写下来，做完不变 · 全美国都接，线上做",
         "pains_label": "这些像不像你的店",
@@ -427,40 +427,40 @@
           "预约都记在柜台那个本子上，本子就一本，今天谁不在，谁就不知道下午有几个人要来",
           "老客人每个星期都来，还是从平台上点，等于每个星期给平台交一次抽成"
         ],
-        "build_label": "这一块我具体做什么",
+        "build_label": "这一块我们具体做什么",
         "build": [
           "你自己网站上的点单页：菜单、加料、备注、自取还是送，客人在手机上一路点到付款",
           "中英文两套界面和菜单，客人看英文，你和店里的人看中文，改一次两边一起改",
-          "刷卡走 Stripe，钱直接进你自己的银行账户，不经过我的手",
+          "刷卡走 Stripe，钱直接进你自己的银行账户，不经过我们的手",
           "新单子进来手机响一声，也可以直接出单到后厨的打印机，不用有人守着电脑",
           "预约按你店里的规矩排：一个时段接几个人、每个项目做多久、中间留多少空档、周几不接；到点自动发短信提醒，客人自己改时间",
-          "停单时间、节假日、卖完下架、改价钱，你自己在后台点几下就行，不用来找我"
+          "停单时间、节假日、卖完下架、改价钱，你自己在后台点几下就行，不用来找我们"
         ],
         "proof_label": "公开原型，限制写清楚",
         "proof_title": "多个品牌，一个演示购物车",
-        "proof_body": "我做了一个面向多品牌经营场景的公开点单原型。你可以打开商家页面、搜索菜单并试用演示购物车。目前付款和后厨运营还没有正式上线；这条限制会明确写出来，让你按现在真正存在的功能判断。",
+        "proof_body": "Leon 做了一个面向多品牌经营场景的公开点单原型。你可以打开商家页面、搜索菜单并试用演示购物车。目前付款和后厨运营还没有正式上线；这条限制会明确写出来，让你按现在真正存在的功能判断。",
         "faq_label": "大家最先问的几个问题",
         "faqs": [
           {
             "q": "做一套网上点单或者预约要多少钱？",
-            "a": "网上点单和预约 $600 起。实际多少要看菜单有多大、是不是好几个牌子共用一个厨房、要不要送货、预约要不要排班这些。开工前我把范围和价钱写下来给你确认，做完不变。做的过程中每个星期给你一个能在手机上打开的版本。上线以后我不按订单抽成；刷卡处理、服务器、短信和第三方集成等费用按服务商和套餐另算，书面范围会说明。"
+            "a": "网上点单和预约 $600 起。实际多少要看菜单有多大、是不是好几个牌子共用一个厨房、要不要送货、预约要不要排班这些。开工前我们把范围和价钱写下来给你确认，做完不变。做的过程中每个星期我们给你一个能在手机上打开的版本。上线以后我们不按订单抽成；刷卡处理、服务器、短信和第三方集成等费用按服务商和套餐另算，书面范围会说明。"
           },
           {
             "q": "有了自己的点单系统，是不是就可以不上平台了？",
-            "a": "多数店的答案是两个都留着。平台抽的那笔钱里，有一部分买的是新客人，就是那些本来根本不知道你家的人。这件事自己的网站做不到，我不会跟你讲它能替代平台。比较实际的做法是分工：新客人从平台来，来过一次之后想办法把他引到你自己的网站上，老客人回头的那些单子就不用再交抽成了。你可以拿上个月的网上营业额乘一下抽成的百分比，那个数字就是你现在每个月交出去的钱。"
+            "a": "多数店的答案是两个都留着。平台抽的那笔钱里，有一部分买的是新客人，就是那些本来根本不知道你家的人。这件事自己的网站做不到，我们不会跟你讲它能替代平台。比较实际的做法是分工：新客人从平台来，来过一次之后想办法把他引到你自己的网站上，老客人回头的那些单子就不用再交抽成了。你可以拿上个月的网上营业额乘一下抽成的百分比，那个数字就是你现在每个月交出去的钱。"
           },
           {
             "q": "平台到底抽多少？自己做一套之后省下来的是哪一部分？",
-            "a": "平台费用会随平台、套餐、配送方式、地区和合同变化。用上个月的真实账单和合同来比较最准确：一边是平台的全部费用，另一边是开发、刷卡、托管、短信、第三方集成、配送和包装等成本。我不按订单抽成，但这些外部费用仍然存在；先用你自己的数字算清楚再决定。"
+            "a": "平台费用会随平台、套餐、配送方式、地区和合同变化。用上个月的真实账单和合同来比较最准确：一边是平台的全部费用，另一边是开发、刷卡、托管、短信、第三方集成、配送和包装等成本。我们不按订单抽成，但这些外部费用仍然存在；先用你自己的数字算清楚再决定。"
           },
           {
             "q": "店里的人不太会用电脑，管得住吗？",
-            "a": "管得住，前提是常用的东西我都做成手机上点几下就能改。日常真正要动的就那几件事：某样东西卖完了先下架、今天提前停单、明天休息、改个价钱，全部放在同一个中文页面上。上线之后我会陪你和店里的人走一遍真实下单流程。上线后 30 天内，书面范围内的修改不另外收钱。范围里约定的域名、服务器、收款账号和项目账号放在你名下；包含的代码、数据和设置说明交给你，第三方服务仍按各自条款使用。"
+            "a": "管得住，前提是常用的东西我们都做成手机上点几下就能改。日常真正要动的就那几件事：某样东西卖完了先下架、今天提前停单、明天休息、改个价钱，全部放在同一个中文页面上。上线之后我们会陪你和店里的人走一遍真实下单流程。上线后 30 天内，书面范围内的修改不另外收钱。范围里约定的域名、服务器、收款账号和项目账号放在你名下；包含的代码、数据和设置说明交给你，第三方服务仍按各自条款使用。"
           }
         ],
-        "cta_primary": "跟我说说你要什么",
-        "cta_secondary": "发给我看一眼，不收钱",
-        "close": "你现在用的平台后台，或者已经有的网站，发给我看一眼，我告诉你哪一部分值得自己做、哪一部分留着平台就行，这一步不收钱。"
+        "cta_primary": "跟我们说说你要什么",
+        "cta_secondary": "发给我们看一眼，不收钱",
+        "close": "你现在用的平台后台，或者已经有的网站，发给我们看一眼，我们告诉你哪一部分值得自己做、哪一部分留着平台就行，这一步不收钱。"
       },
       "corrections": 18
     },
@@ -469,12 +469,12 @@
       "service": "automation",
       "page": {
         "title": "AI 接电话、AI 客服和流程自动化 | Leon Builds",
-        "metaDescription": "整天接的都是那几个电话，同一张单子在两个系统里各打一遍，发票和跟进全靠人记着？这些重复的活可以交给系统做。流程自动化 $500 起，AI 客服 $750 起，AI 接电话 $1,000 起。很多活其实用不上 AI，一个普通脚本更便宜也更稳，这种我会直接讲。我会说中文，写代码的就是我本人。全美国都接，线上做。",
+        "metaDescription": "整天接的都是那几个电话，同一张单子在两个系统里各打一遍，发票和跟进全靠人记着？这些重复的活可以交给系统做。流程自动化 $500 起，AI 客服 $750 起，AI 接电话 $1,000 起。很多活其实用不上 AI，一个普通脚本更便宜也更稳，这种我们会直接讲。Leon 会说中文，写代码的就是 Leon 本人。全美国都接，线上做。",
         "h1_plain": "同样几句话一天讲二十遍，",
         "h1_em": "这部分可以不用人做",
         "intro": [
           "电话一天到晚响，问的还是那三样：几点关门、在哪里、多少钱。你放下手上的活去接，接完回来又得从头再来一遍。晚上打烊，白天的单子还得再往表格里抄一遍。",
-          "这些活有个共同点：不用你动脑子拿主意，只要有个人在就行。能交给系统的就交给系统。不过话说在前面：很多这种活根本用不上 AI，一个普通脚本又便宜又稳，出了问题也一眼看得出在哪——遇到这种情况我会直接跟你讲。我会说中文，你用中文把店里平时怎么运作讲一遍就行，写代码的就是我本人。"
+          "这些活有个共同点：不用你动脑子拿主意，只要有个人在就行。能交给系统的就交给系统。不过话说在前面：很多这种活根本用不上 AI，一个普通脚本又便宜又稳，出了问题也一眼看得出在哪——遇到这种情况我们会直接跟你讲。Leon 会说中文，你用中文把店里平时怎么运作讲一遍就行，写代码的就是 Leon 本人。"
         ],
         "pricetag": "流程自动化 $500 起 · AI 客服 $750 起 · AI 接电话 $1,000 起 · 这些是起步价，开工前先把价钱白纸黑字定下来，做完不会变 · 全美国都接，线上做",
         "pains_label": "像不像你店里的情况？",
@@ -485,12 +485,12 @@
           "发票和收款单要一张一张手开，开完还得自己记着谁没付、什么时候催",
           "有件事只有一个员工会做，他一请假，这一段就卡在那里"
         ],
-        "build_label": "这一块我具体做什么",
+        "build_label": "这一块我们具体做什么",
         "build": [
           "把两头接起来：表单一交，表格自动填好、单子自动开、通知自动发，中间不用人再打一遍字",
           "自动跟进：报价发出去没回音、单子还没付款、预约前一天要提醒——时间一到系统自己发，不靠人记",
-          "AI 客服：放在网站和手机上，只用你核实过的资料回答价格、营业时间、哪些活能做哪些不能做",
-          "AI 接电话：常见的电话它接，报营业时间、问下姓名和电话、记下客人要办的事；碰到拿不准的，直接转给店里的人",
+          "AI 客服：根据你确认的资料回答常见问题，并为价格、营业时间、服务范围和人工接手写清规则",
+          "AI 接电话：处理常见问题和留言，按事先约定的规则转给员工；没人能接时也有明确的处理方式",
           "把散在微信群、本子和 Excel 表里的东西收进一个地方，谁都查得到，不用等那一个人回来",
           "每天的数字系统自己算好：今天多少单、收了多少、哪几笔还没收，早上打开就能看"
         ],
@@ -501,24 +501,24 @@
         "faqs": [
           {
             "q": "做一套自动化要多少钱？",
-            "a": "流程自动化 $500 起，AI 客服 $750 起，AI 接电话 $1,000 起。这些都是起步价，实际价钱看你要接几个系统、流程有多少步。开工前我会把价钱白纸黑字写下来，做完不会变，中间不会再加钱。如果只是小修小改，从 $75 起。"
+            "a": "流程自动化 $500 起，AI 客服 $750 起，AI 接电话 $1,000 起。这些都是起步价，实际价钱看你要接几个系统、流程有多少步。开工前我们会把价钱白纸黑字写下来，做完不会变，中间不会再加钱。如果只是小修小改，从 $75 起。"
           },
           {
             "q": "我这个活是不是一定要用 AI？",
-            "a": "多数情况下用不上 AI，遇到这种情况我也会直接跟你讲。一件事如果每次的做法都一样，一个普通脚本就能做，又便宜又稳，出了问题还能一眼看出在哪里。AI 只适合放在要读、要写、要听懂客人意思的地方。有些活甚至根本不用专门做，现成的工具就能解决，遇到这种我也会说。"
+            "a": "多数情况下用不上 AI，遇到这种情况我们也会直接跟你讲。一件事如果每次的做法都一样，一个普通脚本就能做，又便宜又稳，出了问题还能一眼看出在哪里。AI 只适合放在要读、要写、要听懂客人意思的地方。有些活甚至根本不用专门做，现成的工具就能解决，遇到这种我们也会说。"
           },
           {
             "q": "AI 会不会乱说话，把客人得罪了？",
-            "a": "AI 会不会乱说，取决于它能读到什么。我做的 AI 客服只读你给的那一份资料——价格、营业时间、能做和不能做的项目。资料里没有的，它会说不知道，然后把电话或对话转给店里的人，不会自己编一个答案出来。上线之前你可以先自己问一遍，哪句不对我改到你满意为止。"
+            "a": "即使用了你确认的资料，AI 仍然可能答错。我们通过回答测试，以及价格、政策和人工接手规则来降低风险。上线前一起确认哪些问题能回答、什么时候应该停下来、需要人工的询问怎么交给你。重要决定仍由你的员工处理，不能把 AI 当成不会出错的人。"
           },
           {
             "q": "我们店的东西都在微信和本子上，也能做吗？",
             "a": "可以，东西都在微信和本子上也能做，多数店一开始都是这样的。第一步不是让你把微信和本子换掉，而是先看清楚哪一段最花时间、最容易出错，先把那一段接起来。微信群和本子可以继续用，只是原来要人手抄的那一步交给系统。书面范围里约定的域名、服务器和项目账号放在你名下，包含的代码和设置说明交给你；第三方服务和许可仍按各自条款使用。"
           }
         ],
-        "cta_primary": "跟我说说你的情况",
+        "cta_primary": "跟我们说说你的情况",
         "cta_secondary": "在这里用中文问",
-        "close": "你现在每星期都在重复做的那几件事，跟我讲一遍，我告诉你哪一段值得自动化、哪一段不值得——这一步不收钱，用中文讲就行。"
+        "close": "你现在每星期都在重复做的那几件事，跟我们讲一遍，我们告诉你哪一段值得自动化、哪一段不值得——这一步不收钱，用中文讲就行。"
       },
       "corrections": 19
     }

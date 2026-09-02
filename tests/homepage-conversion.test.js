@@ -176,14 +176,15 @@ test('hero passes the five-second offer test with one filled CTA and one seconda
 
   assert.match(visible, /websites\s*\+\s*lead follow-up for small businesses/i);
   assert.match(visible, /turn website visitors into calls, bookings, and quote requests\./i);
-  assert.match(visible, /I build fast business websites and simple follow-up systems so new inquiries are easier to capture, see, and respond to\./i);
+  assert.match(visible, /We build fast business websites and simple follow-up systems so new inquiries are easier to capture, see, and respond to\./i);
   assert.match(visible, /websites from \$300/i);
   assert.match(visible, /website \+ follow-up from \$1,500/i);
   assert.match(visible, /fixed price before work begins/i);
-  assert.match(visible, /direct with Leon Kelvin Li/i);
+  assert.match(visible, /founder-led delivery/i);
   assert.match(visible, /written scope and fixed price/i);
   assert.match(visible, /agreed source and account handoff/i);
-  assert.ok(linksIn(hero).some(link => link.attrs.href === '/about' && /direct with Leon Kelvin Li/i.test(link.text)));
+  assert.ok(linksIn(hero).some(link => link.attrs.href === '/about' && /founder-led delivery/i.test(link.text)));
+  assert.match(visible, /Founder & developer · your direct contact/i);
 
   assert.equal(filled.length, 1, 'hero has exactly one filled CTA');
   assert.equal(filled[0].attrs.href, '/quote');
@@ -337,11 +338,19 @@ test('process, personal trust, FAQ, and final CTA each do one job', () => {
   ]);
 
   const contact = elementWithId(html, 'section', 'contact');
-  assert.match(plainText(contact), /tell me what is slowing the business down/i);
-  assert.ok(linksIn(contact).some(link => link.attrs.href === '/quote' && /tell me what you need|get a fixed quote/i.test(link.text)));
+  assert.match(plainText(contact), /tell us what is slowing the business down/i);
+  assert.ok(linksIn(contact).some(link => link.attrs.href === '/quote' && /tell us what you need|get a fixed quote/i.test(link.text)));
   assert.ok(linksIn(contact).some(link => /^\/call(?:\?|$)/.test(link.attrs.href || '') && /book 15 minutes/i.test(link.text)));
   const filled = linksIn(contact).filter(link => /(?:^|\s)(?:btn-solid|btn-primary|primary-cta)(?:\s|$)/.test(link.attrs.class || ''));
   assert.equal(filled.length, 1, 'final CTA section has exactly one filled action');
+
+  for (const staleSellerVoice of [
+    'I build fast business websites',
+    'Choose the closest problem. I will say',
+    'Tell me the problem',
+    'I first check whether your current tools',
+    'Tell me what is slowing the business down',
+  ]) assert.doesNotMatch(plainText(html), new RegExp(staleSellerVoice, 'i'));
 });
 
 test('homepage structured data stays factual and matches the focused offer', () => {

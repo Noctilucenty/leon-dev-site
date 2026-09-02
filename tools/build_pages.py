@@ -57,16 +57,16 @@ IDENTITY_URLS = [
 SERVICES = [
  dict(slug="websites", name="small-business web design", h1=("small-business web design that turns visits into", "calls and bookings"),
   price="$300", title="Small Business Web Design | Fixed-Price Websites | Leon Builds",
-  desc="Phone-first small-business web design from a California-based independent developer. Clear calls to action, fixed scope, direct communication and clean handover.",
+  desc="Phone-first small-business web design from a California-based, founder-led studio. Clear calls to action, fixed scope, direct communication and clean handover.",
   intro=["your website has seconds to answer four questions: what you do, who it is for, why the visitor should trust you, and what they should do next.",
-   "i design fast, phone-first business websites around that decision. you work directly with the developer, see a working link during the build, and get a written scope and handover."],
+   "we design fast, phone-first business websites around that decision. you work directly with the founder who builds the project, see a working link during the build, and get a written scope and handover."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
-  build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — i speak all four"],
+  build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — Leon works in all four"],
   proof=("public product and workflow evidence","inspect a live app-store product, a public document-workflow demo and a clearly labelled client website with demo ordering."),
   faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
-   ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and i'll tell you which parts are worth keeping."),
+   ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and we'll tell you which parts are worth keeping."),
    ("how long does it take?","most focused business sites take one to two weeks after the scope, content and required access are ready. you get a working link to review during the build."),
-   ("do you only design websites in california?","no. i am based in california and work remotely with businesses across the united states."),
+   ("do you only design websites in california?","no. we're based in california and work remotely with businesses across the united states."),
    ("is seo included?","every build includes clean technical foundations: descriptive titles, crawlable links, a sitemap, mobile performance and structured content. ongoing search work is a separate scope when needed."),
    ("will i be able to update the site?","yes when editing is part of the scope. the proposal states what you can change, which accounts are yours and what is included in handover.")],
   review_ids=["testimonial-04", "testimonial-03"],
@@ -76,44 +76,44 @@ SERVICES = [
  dict(slug="mobile-apps", name="mobile apps", h1=("Turn your app idea into", "a working iPhone and Android product."),
   price="$3,500", title="iOS & Android App Development — from $3,500 | Leon Builds",
   desc="Custom iOS and Android app development for founders and small businesses—from first usable release through backend, testing and store submission. From $3,500.",
-  intro=["I design and build focused mobile apps for founders and businesses—from the first usable version through backend, testing, and store submission.",
-   "You work directly with me. I have shipped a live App Store product end to end, including subscriptions and review."],
+  intro=["We design and build focused mobile apps for founders and businesses—from the first usable version through backend, testing, and store submission.",
+   "You work directly with Leon, who shipped a live App Store product end to end, including subscriptions and review."],
   pains=["You have an app idea and no technical team","Customers keep asking whether your business has an app","You need a first usable product before investing in a larger build","Your existing prototype still cannot be shipped","You need the backend, accounts, notifications, or payments—not just screens"],
   build=["iPhone and Android from one codebase when that is the right technical choice","the backend, accounts, notifications, and payments behind the app","App Store and Google Play submission support, including review responses","subscriptions and in-app purchases wired to the agreed scope","agreed project accounts are set up in your name and included source code is handed over; app stores, libraries, and vendors keep their own terms"],
   proof=("Curio — live App Store product","A consumer iOS app designed and shipped end to end, with a backend, subscriptions, App Store review, and content in four languages."),
   faqs=[("What happens before you build, and what does an app cost?","We first define the smallest useful release, its users, required screens, accounts, integrations, and store plan. Focused app builds start at $3,500, and you receive a fixed written quote before work begins."),
-   ("Do I need an app or would a mobile website be enough?","A mobile website is usually the smaller first step when people only need to find, contact, book, or buy from you occasionally. An app becomes useful when customers return often or need accounts, notifications, offline access, or phone features. I will recommend the smaller option when it fits."),
-   ("Can you take over an existing prototype or codebase?","Often, but I inspect the code, accounts, backend, and store setup before quoting. If repairing it would cost more than rebuilding the focused first version, I will explain that before work starts."),
-   ("Should we start with iPhone, Android, or both?","That depends on your users and the fastest useful first release. When one shared codebase is a sound choice, I can build for both; otherwise I will explain why starting with one platform reduces risk."),
+   ("Do I need an app or would a mobile website be enough?","A mobile website is usually the smaller first step when people only need to find, contact, book, or buy from you occasionally. An app becomes useful when customers return often or need accounts, notifications, offline access, or phone features. We'll recommend the smaller option when it fits."),
+   ("Can you take over an existing prototype or codebase?","Often, but we inspect the code, accounts, backend, and store setup before quoting. If repairing it would cost more than rebuilding the focused first version, we'll explain that before work starts."),
+   ("Should we start with iPhone, Android, or both?","That depends on your users and the fastest useful first release. When one shared codebase is a sound choice, we can build for both; otherwise we'll explain why starting with one platform reduces risk."),
    ("How long does launch take, and can you guarantee store approval?","The build timeline is written into the scope after the first version is defined. Store review happens on Apple or Google's schedule and approval cannot be guaranteed, but submission support and reasonable review responses are included when specified."),
    ("Who owns the app, and what happens after launch?","The agreed project accounts and store listing are set up in your name, and the included source code and backend setup notes are handed over. Any maintenance or post-launch support is written separately; app stores, hosting providers, libraries, and other vendors keep their own terms.")],
   related=["custom-software","websites","booking-systems"]),
 
- dict(slug="ai-chatbots", name="ai chatbots", h1=("answers customers,", "without inventing prices"),
+ dict(slug="ai-chatbots", name="ai chatbots", h1=("help customers get answers", "from your business information"),
   price="$750", title="AI Chatbot for Your Business — from $750 | Leon Builds",
-  desc="AI chatbots trained on your business that answer customer questions on your website 24/7 — and say 'I don't know' instead of making things up.",
-  intro=["most of what customers ask is the same twenty questions: hours, prices, availability, 'do you do X'. a chatbot trained on your business answers those instantly, at 2am, in multiple languages.",
-   "the difference between a good one and a lawsuit is restraint: mine cite your real information and say 'i don't know — here's how to reach a person' instead of inventing a price you'll have to honour. the assistant on this site is one i built."],
+  desc="A website chatbot built around your approved business information, with answer testing, lead capture, and clear rules for human handoff. From $750.",
+  intro=["customers often ask the same questions: hours, prices, availability, 'do you do X'. a chatbot can help answer them after hours and in multiple languages, using the information you approve.",
+   "we ground the assistant in your approved information, test its answers, and give it a clear route to a person when it is unsure. ai can still make mistakes, so sensitive decisions stay with your staff. the assistant on this site is one Leon built."],
   pains=["staff answer the same questions all day","after-hours visitors leave without answers","your website gets traffic but no messages","spanish or chinese-speaking customers get no help","you tried a chatbot builder and it made things up"],
-  build=["a chatbot trained only on your verified business information","escalation to a human the moment it should","lead capture built in — conversations become contacts","multilingual: english, spanish, portuguese, chinese","guardrails: no invented prices, no promises you didn't make"],
-  proof=("compliance-aware assistant","a chinese-language assistant for a regulated market: every claim must cite a source, and it declines to answer rather than break advertising law. try the one on this site — bottom right."),
+  build=["a chatbot grounded in your approved business information","written handoff rules and a way for visitors to reach a person","lead capture so visitors can request a reply","multilingual: english, spanish, portuguese, chinese","rules and tests for prices, policies, and questions it should not answer"],
+  proof=("two different assistant projects","Leon built a chinese-language health-education prototype with source citations and safety rules. the project assistant on this website is a separate build: try it at the bottom right to discuss a project or request a reply."),
  faqs=[("what does a chatbot cost?","from $750 for a site chatbot trained on your business. connecting it to booking or your other systems adds scope — fixed quote before anything starts."),
-   ("will it say something wrong to a customer?","that risk is the whole design problem. mine only answer from your approved information, cite it, and hand off to a human when unsure. i've built one for a market where a wrong sentence breaks the law."),
-   ("can it capture leads?","yes — the good ones qualify a visitor and package the conversation for you, like the assistant on this page does.")],
+   ("will it say something wrong to a customer?","it can. we reduce that risk with approved source material, answer testing, clear limits, and human handoff. prices, policies, and sensitive decisions need explicit rules; an ai assistant should never be treated as infallible."),
+   ("can it capture leads?","yes — we can add a short handoff that collects the visitor's project details and contact information for your reply. the assistant on this site shows that flow.")],
   review_ids=["testimonial-06"],
   related=["ai-phone-agents","business-automation","websites"]),
 
  dict(slug="ai-phone-agents", name="ai phone agents", h1=("your phone, answered", "at 2am and during the rush"),
   price="$1,000", title="AI Phone Agent — from $1,000 | Leon Builds",
   desc="An AI that answers your business phone, handles the repetitive calls, books appointments and hands anything unusual to a person. Built with written handoff rules.",
-  intro=["missed calls are missed revenue: every call that rings out while your team is busy is a customer calling the next name on the list.",
-   "an ai phone agent answers instantly, handles the repetitive calls — hours, booking, status checks — and transfers to a person the moment the call isn't routine. that handoff rule gets written down with you, not guessed."],
+  intro=["when your team is busy, a missed call can mean a missed booking. an ai phone agent can help with routine questions while staff focus on customers.",
+   "we define which calls it can handle — hours, booking, status checks — and when it should transfer or take a message. those rules are agreed with you and tested before launch. ai can make mistakes, so important decisions stay with a person."],
   pains=["calls ring out during the rush or after close","one person spends half their day on 'are you open' and 'is it ready'","voicemail is where your leads go to die","the front desk can't book and answer phones at once"],
-  build=["an agent that answers every call, immediately","booking wired into your real calendar or scheduling system","status lookups from your own systems where they expose data","instant transfer to staff on anything unusual — rules in writing","call summaries so you see what customers actually ask"],
-  proof=("built with the same discipline as the review desk","every ai system i ship keeps a human in the loop by design — the review desk drafts replies but a person presses send. phone agents get the same treatment."),
- faqs=[("what happens when the ai can't handle a call?","it transfers to a person, following escalation rules we write down together before launch. the goal is removing repetitive calls, not removing humans."),
+  build=["an agent for routine calls, with a fallback when the service is unavailable","booking wired into your real calendar or scheduling system","status lookups from your own systems where they expose data","staff transfer or message-taking under agreed rules","call summaries so you see what customers actually ask"],
+  proof=("built with the same discipline as the review desk","every ai system we ship keeps a human in the loop by design — the review desk drafts replies but a person presses send. phone agents get the same treatment."),
+ faqs=[("what happens when the ai can't handle a call?","we agree on transfer and message-taking rules before launch, including what happens when no staff member is available. the goal is reducing repetitive calls while keeping a route to a person."),
    ("what does it cost?","from $1,000 depending on what the agent needs to do — answering and booking is simpler than pulling live order status from your systems."),
-   ("does it work with my scheduling software?","often, if your system exposes the data. i verify the specific integration before quoting rather than promising first.")],
+   ("does it work with my scheduling software?","often, if your system exposes the data. we verify the specific integration before quoting rather than promising first.")],
   review_ids=["testimonial-05"],
   related=["ai-chatbots","booking-systems","business-automation"]),
 
@@ -121,9 +121,9 @@ SERVICES = [
   price="$500", title="Workflow & Business Automation — from $500 | Leon Builds",
   desc="Form-to-sheet-to-email workflows, Google Workspace and n8n automation, and integrations that stop your team copying data between systems by hand.",
   intro=["most 'we need software' problems are actually 'two systems don't talk' problems. the fix is rarely a new platform — it's a pipe between the tools you already pay for.",
-   "i build those pipes where your team can see them: google workspace automations in apps script, n8n workflows your staff can read and edit, and integrations with quickbooks, stripe, slack, your pos, your ats."],
+   "we build those pipes where your team can see them: google workspace automations in apps script, n8n workflows your staff can read and edit, and integrations with quickbooks, stripe, slack, twilio, your pos, or your ats."],
   pains=["data gets copied between systems by hand","new leads and form submissions sit unanswered","reports take hours of exporting and pasting","approvals and handoffs live in someone's memory","five tools, none of them talking to each other"],
-  build=["form → sheet → document → email chains, end to end","n8n pipelines your team can edit without calling me","integrations: quickbooks, stripe, google, slack, twilio, your pos","automatic reports that build themselves on schedule","document workflows: created, filed, approved, versioned"],
+  build=["form → sheet → document → email chains, end to end","n8n pipelines your team can edit without calling us","integrations: quickbooks, stripe, google, slack, twilio, your pos","automatic reports that build themselves on schedule","document workflows: created, filed, approved, versioned"],
   proof=("document control","a request names a template; seconds later the google doc exists, filed and shared correctly. approval locks it, publishing versions it. built in apps script, then again as six n8n workflows the team edits themselves."),
   faqs=[("what should i automate first?","the thing a person does most often with the least judgment — retyping, forwarding, filing. we find it in the free call; it's usually obvious within ten minutes."),
    ("is this ai?","mostly not, and that's a feature. deterministic automations are cheaper and more reliable. ai enters only where reading or drafting is involved."),
@@ -139,24 +139,24 @@ SERVICES = [
   pains=["you've outgrown the spreadsheet that runs part of the business","off-the-shelf tools each do 70% of what you need","your industry has a workflow no product understands","you're paying for five subscriptions to approximate one system"],
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
   proof=("ALLCPR Site Intelligence","an operational location-planning platform that helps a CPR training network screen expansion markets across all 33,772 U.S. ZIP codes while keeping uncertainty and field validation visible."),
- faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — i'll tell you so in the free call. custom wins when the missing 30% is the part your business actually runs on."),
+ faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — we'll tell you so in the free call. custom wins when the missing part is what your business actually runs on."),
    ("what does custom software cost?","full builds start at $1,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
-   ("what happens if you get hit by a bus?","the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make me irreplaceable.")],
+   ("can another developer take over later?","yes. the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make us irreplaceable.")],
   review_ids=["testimonial-02", "testimonial-07"],
   related=["mobile-apps","business-automation","business-dashboards"]),
 
  dict(slug="booking-systems", name="booking & online ordering", h1=("customers book and order themselves —", "the reminder does the rest"),
   price="$600", title="Booking & Online Ordering — from $600 | Leon Builds",
-  desc="Booking and ordering on your website: appointments, deposits, reminders and a direct-order cart. Leon charges no booking fee; provider terms still apply.",
+  desc="Booking and ordering on your website: appointments, deposits, reminders and a direct-order cart. We add no booking fee; provider terms still apply.",
   intro=["every booking handled by phone uses staff time, and every no-show leaves a slot unused. online booking removes the retyping; reminders, deposits and easy rescheduling give you measurable ways to address missed appointments.",
-   "i build booking around your site, calendar and rules instead of defaulting to a generic branded widget. any payment, messaging, hosting or calendar-provider fees stay visible in the written scope.",
+   "we build booking around your site, calendar and rules instead of defaulting to a generic branded widget. any payment, messaging, hosting or calendar-provider fees stay visible in the written scope.",
    "ordering works the same way. a direct cart gives returning customers a channel you control. marketplace, card, delivery and hosting costs vary by provider and contract, so the comparison uses your real statements."],
   pains=["booking happens by phone and eats front-desk time","no-shows are killing your calendar","after-hours visitors can't book and don't call back","a delivery app takes a cut of every order and owns your customer","your current booking tool takes a cut or looks like an ad for itself"],
-  build=["booking pages that match your site, not a widget's brand","staff calendars, service durations, buffer rules","deposits and card-on-file through stripe","automatic sms/email reminders and easy rescheduling","sync with the calendar your team already lives in","direct ordering with no per-order commission added by Leon: cart, payment, and a ticket that reaches the kitchen"],
+  build=["booking pages that match your site, not a widget's brand","staff calendars, service durations, buffer rules","deposits and card-on-file through stripe","automatic sms/email reminders and easy rescheduling","sync with the calendar your team already lives in","direct ordering with no per-order commission added by us: cart, payment, and a ticket that reaches the kitchen"],
   proof=("built like the ordering system","the same server-side discipline as the multi-brand ordering platform: rules enforced where customers can't edit them."),
-  faqs=[("what does a booking system cost?","from $600 built into your site, and direct online ordering from $600. leon charges no monthly per-booking or per-order cut; payment, messaging, hosting and other provider terms still apply."),
+  faqs=[("what does a booking system cost?","from $600 built into your site, and direct online ordering from $600. we charge no monthly per-booking or per-order cut; payment, messaging, hosting and other provider terms still apply."),
    ("can customers pay a deposit when they book?","yes — deposits, full prepayment or card-on-file, through stripe, with receipts handled."),
-   ("we already use a scheduling tool. keep it?","if it works, keep it — sometimes the right build is your website talking to it. i'll tell you which in the free call.")],
+   ("we already use a scheduling tool. keep it?","if it works, keep it — sometimes the right build is your website talking to it. we'll tell you which in the free call.")],
   related=["websites","ai-phone-agents","business-automation"]),
 
  dict(slug="business-dashboards", name="dashboards & internal tools", h1=("the four numbers that decide", "your week, on one screen"),
@@ -170,7 +170,7 @@ SERVICES = [
   proof=("ALLCPR Site Intelligence","decision support covering all 33,772 U.S. ZIP codes, with Maps context, public data, company history, uncertainty ranges, screening verdicts and team exports."),
  faqs=[("what does a dashboard cost?","both a small internal tool and a dashboard start at $750, and scale with how many systems have to feed them. fixed quote before work starts."),
    ("our data is a mess. does that matter?","that's normal — cleaning and joining it is part of the build, not a surcharge surprise."),
-   ("can it pull from our pos / quickbooks / sheets?","usually yes. i verify your specific systems before quoting.")],
+   ("can it pull from our pos / quickbooks / sheets?","usually yes. we verify your specific systems before quoting.")],
   review_ids=["testimonial-02"],
   related=["business-automation","ai-chatbots","custom-software"]),
 
@@ -178,13 +178,13 @@ SERVICES = [
   price="$300", title="Technical SEO & AI Search Optimization | Leon Builds",
   desc="Technical SEO, Search Console cleanup and answer-ready site structure. Measurable changes without fake locations, ranking promises or mass content.",
   intro=["google search and ai answer systems both need a crawlable site, clear language, useful pages and claims they can verify. there is no separate shortcut that replaces those fundamentals.",
-   "i fix the technical and content structure: titles, internal links, indexing, schema, sitemaps, page speed and direct answers to real buyer questions — without fake city pages or mass-produced articles."],
+   "we fix the technical and content structure: titles, internal links, indexing, schema, sitemaps, page speed and direct answers to real buyer questions — without fake city pages or mass-produced articles."],
   pains=["google has discovered pages but does not index the ones that matter","the site never says the service in the words customers search","important pages are buried or linked with vague anchor text","nobody measures impressions, clicks, calls or inquiries after a change"],
   build=["search console and index-coverage diagnosis","titles, descriptions, headings, canonicals, sitemaps and crawlable internal links","useful service and industry pages with distinct buyer answers","structured data that matches visible content","clear entity, proof and citation paths for answer systems","measurement tied to calls, quote requests and bookings"],
   proof=("this site's public search foundation","inspect the clean sitemap, canonical pages, reciprocal language clusters, public proof links and structured data. none of those is presented as a ranking guarantee."),
   faqs=[("how is ai search different from seo?","there is no special markup that guarantees ai visibility. clear, crawlable, useful pages and verifiable claims support both traditional search and answer systems."),
    ("what does it cost?","from $300 for a technical pass on an existing site. ongoing work is scoped in writing — no vague monthly retainer."),
-   ("can you guarantee rankings?","no. i can document the changes, validate the technical implementation and measure impressions, clicks and inquiries, but search engines decide rankings."),
+   ("can you guarantee rankings?","no. we can document the changes, validate the technical implementation and measure impressions, clicks and inquiries, but search engines decide rankings."),
    ("do i need an llms.txt file?","it can provide a concise factual index for some systems, but it is not a google ranking control. the main work still belongs in visible pages, normal links and accurate structured data.")],
   related=["websites","ai-chatbots","business-dashboards"]),
 ]
@@ -196,19 +196,19 @@ INDUSTRIES = [
   intro=["restaurants run on thin margins while marketplace terms vary and the phone pulls staff away during a rush. a direct website can add a channel you control alongside the platforms that bring discovery.",
    "beastypages.com, a client website, shows the underlying interaction: business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations remain mocked."],
   pains=["delivery apps take a commission on orders that were already yours","the phone rings out during every rush","your menu is a pdf nobody can read on a phone","'are you open' and 'do you have parking' — forty times a day","multiple locations or brands, zero shared systems"],
-  fixes=[("online ordering you own","direct ordering with no per-order commission added by Leon — cart, payment, kitchen ticket. from $600","booking-systems"),
+  fixes=[("online ordering you own","direct ordering with no per-order commission added by us — cart, payment, kitchen ticket. from $600","booking-systems"),
    ("ai phone agent","answers during the rush, takes the routine calls, hands the rest to staff. from $1,000","ai-phone-agents"),
    ("a menu-first website","fast, phone-first, editable by you when prices change. from $300","websites"),
    ("review desk","every review read and a reply drafted for you — a human presses send. from $750",None)],
   proof=("the beastypages.com client website","open the public website to inspect business-specific menus, server-side pricing and vendor-scoped demo tickets. payments and kitchen operations are not live."),
-  faqs=[("can i stop paying delivery-app commissions?","you can give regular customers a direct pickup or own-delivery option without Leon adding a per-order cut. marketplaces can still be useful for discovery, while payment, hosting, messaging and delivery providers keep their own terms."),
-   ("what does online ordering cost?","from $600 one-time for ordering on your own site; leon charges no per-order cut. payment, hosting and other provider fees still apply. compare that to a month of commissions."),
+  faqs=[("can i stop paying delivery-app commissions?","you can give regular customers a direct pickup or own-delivery option without us adding a per-order cut. marketplaces can still be useful for discovery, while payment, hosting, messaging and delivery providers keep their own terms."),
+   ("what does online ordering cost?","from $600 one-time for ordering on your own site; we charge no per-order cut. payment, hosting and other provider fees still apply. compare that to a month of commissions."),
    ("i have two locations with different menus.","that can be handled with a shared site and separate location menus, hours and order routing. the exact payment and kitchen integrations are verified before quoting.")],
   related_services=["booking-systems","ai-phone-agents","websites"]),
 
  dict(slug="contractors", name="contractors & home services", h1=("contractor web design &", "lead follow-up"),
   title="Contractor Web Design & Lead Follow-Up | Leon Builds",
-  desc="Contractor website design, quote-request capture, lead follow-up and job workflows for U.S. home-service businesses, built directly by Leon.",
+  desc="Contractor website design, quote-request capture, lead follow-up and job workflows for U.S. home-service businesses, built by a founder-led studio.",
   intro=["contracting work is won and lost in the follow-up: the lead that came in while you were on a roof, the estimate that never went out, the customer who called someone else because you answered second.",
    "software fixes the boring half of that — instant lead responses, scheduling, job status a customer can check without calling you."],
   pains=["leads arrive while you're on site and go cold","estimates and invoices happen at 9pm from the truck","customers call constantly for status updates","jobs live on a whiteboard or in one person's head","reviews never get asked for, so the profile looks dead"],
@@ -217,9 +217,9 @@ INDUSTRIES = [
    ("customer portal","clients see their own job status, photos and invoices. from $1,500","custom-software"),
    ("a website that sells","before/after work, service areas, instant quote requests. from $300","websites")],
   proof=("document control","approvals, versioned documents and automatic filing — the same machinery that keeps a contracting back office from living in someone's memory."),
-  faqs=[("i'm not technical at all. is that a problem?","no. you describe the week, i build around it, and everything is handed over working with training included."),
+  faqs=[("i'm not technical at all. is that a problem?","no. you describe the week, we build around it, and everything is handed over working with training included."),
    ("where is a practical place to start?","lead follow-up is often a focused first workflow because response timing and handoffs can be measured. compatible standard scopes start at $600; timing depends on the tools and access involved."),
-   ("do you work outside california?","yes — remote across the u.s. this kind of build never needs me on site.")],
+   ("do you work outside california?","yes — remote across the u.s. this kind of build never needs us on site.")],
   related_services=["business-automation","custom-software","websites"]),
 
  dict(slug="automotive", name="auto repair & automotive", h1=("auto repair web design,", "booking & call automation"),
@@ -233,8 +233,8 @@ INDUSTRIES = [
    ("ai phone agent","handles hours, booking and routine status; transfers the rest. from $1,000","ai-phone-agents"),
    ("shop website","services, trust proof, booking and a clear call path on any phone. from $300","websites")],
   proof=("public implementation evidence","inspect shipped product screens, a public workflow demo and a clearly labelled client website with demo ordering; none is presented as an automotive outcome claim."),
-  faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. i verify yours specifically before quoting anything."),
-   ("what is a focused first step?","status notifications can reduce manual update calls when the shop system exposes reliable status data. i verify that data and define what will be measured before quoting."),
+  faqs=[("does this work with my shop management system?","often — many expose the data needed for status and booking. we verify yours specifically before quoting anything."),
+   ("what is a focused first step?","status notifications can reduce manual update calls when the shop system exposes reliable status data. we verify that data and define what will be measured before quoting."),
    ("multiple locations?","yes — shared platform, per-location calendars and numbers is a normal build.")],
   related_services=["ai-phone-agents","booking-systems","business-automation"]),
 
@@ -242,15 +242,15 @@ INDUSTRIES = [
   title="Software for Medical & Dental Offices | Leon Builds",
   desc="Online booking, appointment reminders and after-hours question handling for clinics and dental practices. Careful, human-in-the-loop builds.",
   intro=["a practice front desk answers the same questions all day — insurance, hours, directions, 'can i move my appointment' — while missed appointments leave unused time. reminders and self-service rescheduling address one part of that workflow and can be measured against the current baseline.",
-   "health care deserves the careful version of software: reminders and booking that reduce the front desk load, an assistant that answers the routine and hands anything clinical straight to a human. i've built compliance-aware ai that declines to answer rather than overstep — that's the posture your patients get."],
+   "we focus on administrative work: reminders, booking, and approved logistical information. clinical advice is outside the scope. if an assistant is included, its answers need testing and a clear path to staff; ai can still make mistakes."],
   pains=["no-shows burn schedule and revenue","the phone queue is insurance and reschedule questions","after-hours callers reach voicemail and book elsewhere","forms are still paper or pdf-by-email"],
   fixes=[("appointment reminders","sms/email sequences with timing and opt-out rules; track confirmations, reschedules and missed appointments. from $600","booking-systems"),
    ("online booking & rescheduling","patients handle the routine moves themselves. from $600","booking-systems"),
    ("after-hours question handling","routine questions answered; anything clinical goes to staff. from $1,000","ai-phone-agents"),
    ("digital intake forms","filled on a phone before the visit, filed automatically. from $600","business-automation")],
-  proof=("compliance-aware assistant","a health-education assistant for a regulated market: deterministic safety rules run before any model, every claim cites a source, and it declines rather than break the rules. that is the standard of care i bring near medicine."),
-  faqs=[("is this hipaa compliant?","builds are designed so sensitive data stays in your existing systems wherever possible, and i'm direct about what i will and won't touch. compliance requirements get scoped in writing before anything starts — never assumed."),
-   ("will ai talk to my patients about medical questions?","no. routine logistics only — anything clinical routes to your staff. i build assistants that decline rather than guess."),
+  proof=("health-education prototype","Leon built a chinese-language health-education prototype with source citations and safety checks that run before the model. it is an example of bounded assistant design, not clinical validation or a guarantee of compliance."),
+  faqs=[("is this hipaa compliant?","builds are designed so sensitive data stays in your existing systems wherever possible, and we're direct about what we will and won't touch. compliance requirements get scoped in writing before anything starts — never assumed."),
+   ("will ai talk to my patients about medical questions?","the assistant is scoped for routine logistics, not medical advice. we agree on limits and staff handoff, then test them before launch. those controls reduce risk but do not make model answers infallible."),
    ("what does this cost?","reminders and intake from about $600; booking from $600. fixed written quotes.")],
   related_services=["booking-systems","ai-chatbots","business-automation"]),
 
@@ -266,7 +266,7 @@ INDUSTRIES = [
    ("listing website","fast property pages with inquiry capture that reaches you instantly. from $300","websites")],
   proof=("Loqol disclosure workflow","a public demo showing per-user saved answers, an agent review workspace, consistency checks and generated documents. signing and email delivery are incomplete."),
   faqs=[("can tenants see each other's information?","no — per-account visibility is enforced on the server, which is the core of the build."),
-   ("we use appfolio / buildium / yardi.","keep it if it works — often the right build is a portal or automation talking to your existing system. i verify the integration before quoting."),
+   ("we use appfolio / buildium / yardi.","keep it if it works — often the right build is a portal or automation talking to your existing system. we verify the integration before quoting."),
    ("what does a tenant portal cost?","from $1,500 depending on what tenants and owners need to see and do.")],
   related_services=["custom-software","business-automation","websites"]),
 
@@ -297,7 +297,7 @@ INDUSTRIES = [
    ("reminder automation","class reminders and win-back nudges that send themselves. from $600","business-automation"),
    ("a site that converts","schedule, pricing and signup without a phone call. from $300","websites")],
   proof=("curio","a consumer subscription app on the app store — retention mechanics, streaks and subscriptions are literally what it runs on."),
-  faqs=[("we use mindbody / glofox. switch?","only if it's failing you. often the right move is automation around what you have — i'll say which in the free call."),
+  faqs=[("we use mindbody / glofox. switch?","only if it's failing you. often the right move is automation around what you have — we'll say which in the free call."),
    ("can members pay online?","yes — stripe subscriptions, class packs and drop-ins, with receipts and failed-payment recovery."),
    ("what does this cost?","booking from $600; most gym builds land between $600 and $3,500.")],
   related_services=["booking-systems","websites","business-dashboards"]),
@@ -314,7 +314,7 @@ INDUSTRIES = [
    ("storefront","fast product pages, clean checkout, no template bloat. from $300","websites")],
   proof=("the beastypages.com client website","a public client website showing business-specific catalogs, menus, server-side pricing and vendor-scoped demo tickets. payments and fulfillment are not live."),
   faqs=[("we're on shopify / square. is that a problem?","no — keep them. most retail builds connect and automate around the platform you're on."),
-   ("can inventory sync between online and the register?","usually yes, depending on your pos. i verify the specific integration before quoting."),
+   ("can inventory sync between online and the register?","usually yes, depending on your pos. we verify the specific integration before quoting."),
    ("what should we fix first?","whatever loses money silently — usually inventory drift or unwatched online orders.")],
   related_services=["business-automation","business-dashboards","websites"]),
 
@@ -336,13 +336,13 @@ INDUSTRIES = [
 
  dict(slug="startups", name="startups", h1=("software for", "startups & founders"),
   title="MVP & Product Development for Startups | Leon Builds",
-  desc="MVPs that actually ship: app + backend + payments from one developer who has taken his own product through App Store review.",
+  desc="MVPs that actually ship: app, backend and payments from a founder-led studio with a live product through App Store review.",
   intro=["a founder with an idea needs the version of the product that can meet users — not a six-month engagement, not a no-code demo that collapses at the first real feature.",
-   "i've shipped my own consumer app solo: design, code, backend, subscriptions, app store review, the appeal when review got it wrong. that end-to-end path is what an mvp needs; the agreed repo, included source and setup notes are part of the written handoff, while third-party and licensed terms remain."],
+   "Leon shipped a consumer app end to end: design, code, backend, subscriptions, app store review, and the appeal when review got it wrong. that full path is what an mvp needs; the agreed repo, included source and setup notes are part of the written handoff, while third-party and licensed terms remain."],
   pains=["you have the idea and the users, not the technical team","agency quotes start at six figures","the no-code prototype hit its ceiling","your technical co-founder search is month six"],
   fixes=[("mvp build","the smallest version that real users can use — app or web. from $3,500","custom-software"),
    ("app + backend + payments","the whole stack, not just screens. from $3,500","mobile-apps"),
-   ("ai features","assistants, retrieval and pipelines with guardrails that hold. from $1,000","ai-chatbots"),
+   ("ai features","assistants, retrieval and pipelines with tested limits and human handoff. from $1,000","ai-chatbots"),
    ("ongoing development","a standing block of hours as you see fit. from $400/mo",None)],
   proof=("curio","consumer ios app on the app store: react/typescript, capacitor, express, postgres, storekit subscriptions, ai content in four languages — built alone."),
   faqs=[("how fast can an mvp ship?","weeks, not quarters — scope decides. we cut to the version that tests the idea, in writing, before building."),
@@ -466,7 +466,7 @@ def footer():
   </div>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
-    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">Email Leon</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
+    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">Email us</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
@@ -547,7 +547,7 @@ def cta_block(starter, quote_first=False):
     return f'''<div class="ctarow">
       {primary}
       {secondary}
-      <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
+      <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email us directly →</a>
     </div>
     <p class="assist-fallback">Not ready to talk? <button class="linklike" type="button" data-assist-open data-assist-starter="{e(starter)}">Describe the problem to the site assistant.</button></p>'''
 
@@ -609,9 +609,9 @@ def service_page(s):
     related = partner_related + ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
     starter = f'i\'m looking at {s["name"]} — here\'s my situation: '
     quote_first = s["slug"] == "mobile-apps"
-    service_label = "Custom iOS and Android app development" if quote_first else f'leon --services {s["slug"]}'
+    service_label = "Custom iOS and Android app development" if quote_first else f'leon builds --services {s["slug"]}'
     pains_heading = "Is this the app problem you have?" if quote_first else "Does this sound familiar?"
-    build_heading = "What the first release can include" if quote_first else "What I build for this"
+    build_heading = "What the first release can include" if quote_first else "What we build for this"
     proof_label = "Public product proof" if quote_first else "proof, not promises"
     proof_heading = "A live app you can verify" if quote_first else "Evidence related to this service"
     faq_label = "Before scoping an app" if quote_first else "questions people ask first"
@@ -659,7 +659,7 @@ def service_page(s):
       <article><span>02</span><h3>Website with a backend</h3><p>Accounts, a database, an admin area or APIs add application work. Typically starts at $625.</p></article>
       <article><span>03</span><h3>Booking or ordering</h3><p>Calendars, reminders, deposits, menus or checkout are scoped as a customer workflow. Starts at $600.</p></article>
     </div>
-    <p class="sub web-scope-note">If an existing website only needs one repair, I will say so. If a standard platform is the better fit, I will recommend that instead of custom code.</p>
+    <p class="sub web-scope-note">If an existing website only needs one repair, we'll say so. If a standard platform is the better fit, we'll recommend that instead of custom code.</p>
     <p class="label web-industry-label">web design by business type</p>
     <div class="relrow"><a class="rel" href="/industries/contractors">contractor web design →</a><a class="rel" href="/industries/automotive">auto repair web design →</a><a class="rel" href="/industries/restaurants">restaurant web design →</a><a class="rel" href="/industries/gyms">gym web design →</a><a class="rel" href="/industries/professional-services">professional-firm websites →</a></div>
   </div>
@@ -820,7 +820,7 @@ def industry_page(i):
 <section class="sec page-hero">
   <div class="rail">
     {crumbs(bc)}
-    <p class="label">leon --industries {i["slug"]}</p>
+    <p class="label">leon builds --industries {i["slug"]}</p>
     <h1 class="dsp">{e(i["h1"][0])} <em>{e(i["h1"][1])}</em></h1>
     {intro}
     {cta_block(starter)}
@@ -829,7 +829,7 @@ def industry_page(i):
 {web_focus}{sprint_bridge}<section class="sec">
   <div class="rail">
     <p class="label">the usual pain</p>
-    <h2 class="page-section-title">Problems I hear from {e(i["name"])} owners</h2>
+    <h2 class="page-section-title">Problems we hear from {e(i["name"])} owners</h2>
     <ul class="plist wide">{pains}</ul>
   </div>
 </section>
@@ -1082,7 +1082,7 @@ def missed_lead_recovery_page():
             'prompt acknowledgment, owner handoff and tracking. Starting at $1,500.')
     faqs = [
         ("Can you improve my current website instead?",
-         "Yes. If the current site is sound, Leon can repair its estimate path and connect the follow-up workflow instead of replacing pages that already work."),
+         "Yes. If the current site is sound, we can repair its estimate path and connect the follow-up workflow instead of replacing pages that already work."),
         ("Is this lead generation, ad management, or a guarantee?",
          "No. This product improves how an existing visitor becomes an estimate request and how that request reaches your team. Traffic, lead quality, pricing, availability, and your sales process still determine results."),
         ("When do the 10 business days start, and what is handed over?",
@@ -1139,7 +1139,7 @@ def missed_lead_recovery_page():
     {crumbs(bc)}
     <p class="label">Contractor website + missed-lead follow-up</p>
     <h1 class="dsp business-copy">A contractor website that captures estimate requests <em>and follows up automatically.</em></h1>
-    <p class="sub business-copy">Leon builds the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
+    <p class="sub business-copy">We build the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
     <div class="ctarow">{review_cta}{call_cta}</div>
     <p class="hero-local business-copy">Based in California. Working remotely with contractors and home-service businesses across the U.S.</p>
   </div>
@@ -1187,7 +1187,7 @@ def missed_lead_recovery_page():
 <section class="sec" id="proof" aria-labelledby="contractor-proof-title">
   <div class="rail">
     <p class="label">Operational business-system proof</p>
-    <h2 class="page-section-title" id="contractor-proof-title">See how Leon turns a business decision into a reviewable workflow.</h2>
+    <h2 class="page-section-title" id="contractor-proof-title">See how we turn a business decision into a reviewable workflow.</h2>
     <div class="proofcard">
       <figure class="case-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure>
       <p class="label">Operational client system · ALLCPR</p>
@@ -1203,7 +1203,7 @@ def missed_lead_recovery_page():
     <p class="label">Three questions before booking</p>
     {faq_html(faqs)}
     <div class="ctarow">{review_cta}{call_cta}</div>
-    <p class="sub business-copy">Bring your current website. Leon will show you the smallest sensible improvement and say plainly if this product is not the right fit.</p>
+    <p class="sub business-copy">Bring your current website. We'll show you the smallest sensible improvement and say plainly if this product is not the right fit.</p>
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -1213,13 +1213,13 @@ def technical_partner_page():
     """One-on-one technical planning and build support for owner-led businesses."""
     path = '/technical-build-partner'
     title = 'Technical Build Partner for Small Businesses | Leon Builds'
-    desc = ('Bring one business bottleneck. Leon plans and builds the smallest useful website, '
+    desc = ('Bring one business bottleneck. We plan and build the smallest useful website, '
             'automation, internal tool, or app, with written scope and direct handoff.')
     faqs = [
         ("Do I need to know what should be built?",
          "No. Bring the bottleneck and what a useful result would look like. The Systems Plan exists to turn that into a concrete recommendation before a larger build."),
         ("Should I book the free call or start with the $199 Systems Plan?",
-         "Use the free 15-minute call to confirm whether Leon is a fit. Choose the Systems Plan when the problem needs a working session and you want a written recommendation, budget range, timeline, and first-milestone scope to keep whether or not you continue."),
+         "Use the free 15-minute call to confirm whether we're a fit. Choose the Systems Plan when the problem needs a working session and you want a written recommendation, budget range, timeline, and first-milestone scope to keep whether or not you continue."),
         ("Can the whole project be delivered in 1–3 days?",
          "That timing applies only to the first working milestone for a ready, well-scoped project. The full schedule is confirmed in writing after scope and access are checked."),
         ("What is handed over when the work is done?",
@@ -1231,7 +1231,7 @@ def technical_partner_page():
         {
             "@type": "Offer", "name": "Systems Plan", "url": f"{BASE}{path}#offers",
             "price": "199", "priceCurrency": "USD",
-            "description": "Written problem map, smallest recommended solution, and proposed scope, budget, and timeline. Credited toward the agreed build if the client continues with Leon.",
+            "description": "Written problem map, smallest recommended solution, and proposed scope, budget, and timeline. Credited toward the agreed build if the client continues with us.",
         },
         {
             "@type": "Offer", "name": "Focused Build Sprint", "url": f"{BASE}{path}#offers",
@@ -1289,10 +1289,10 @@ def technical_partner_page():
     <div>
       {crumbs(bc)}
       <p class="label">One-on-one technical build support for owner-led businesses</p>
-      <h1 class="dsp business-copy">Bring the bottleneck. Leon will plan and build the smallest fix that works.</h1>
+      <h1 class="dsp business-copy">Bring the bottleneck. We'll plan and build the smallest fix that works.</h1>
       <p class="sub business-copy">Lost leads, repeated admin work, an outdated website, or a tool or app that is stuck: work directly with Leon to choose one useful result, define it in writing, and see it working before handoff.</p>
       <div class="ctarow">{quote_cta}{call_cta}</div>
-      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. Leon usually replies to the email you provide the same business day.</p>
+      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. We usually reply to the email you provide the same business day.</p>
     </div>
     <aside class="hero-proof partner-hero-proof" aria-label="Public work you can inspect before contacting Leon">
       <div class="hero-proof-head"><span>Public proof</span><small>Inspect before you contact</small></div>
@@ -1307,7 +1307,7 @@ def technical_partner_page():
 <div class="partner-trust-wrap">
   <div class="rail partner-trust" aria-label="Trust and project terms">
     <a href="/reviews" data-evt="technical_partner_reviews_click"><b>3 approved client reviews</b><span>Read the exact feedback →</span></a>
-    <p><b>Direct with Leon Kelvin Li</b><span>The person on the call writes the code.</span></p>
+    <p><b>Founder-led delivery</b><span>You work directly with Leon, who writes the code.</span></p>
     <p><b>Scope before spend</b><span>Work, exclusions, price, and timing are written first.</span></p>
     <p><b>Clear handoff</b><span>The agreed source, accounts, and setup notes are named.</span></p>
   </div>
@@ -1338,12 +1338,12 @@ def technical_partner_page():
         </ul>
       </div>
       <div>
-        <p class="label">What Leon takes responsibility for</p>
+        <p class="label">What we take responsibility for</p>
         <ul class="blist">
-          <li>{check}maps the current workflow before recommending a tool</li>
-          <li>{check}says when an off-the-shelf product is enough</li>
-          <li>{check}writes the scope, exclusions, price, and timeline before building</li>
-          <li>{check}shows a reviewable working milestone and hands over the agreed source, accounts, and setup notes</li>
+          <li>{check}we map the current workflow before recommending a tool</li>
+          <li>{check}we say when an off-the-shelf product is enough</li>
+          <li>{check}we write the scope, exclusions, price, and timeline before building</li>
+          <li>{check}we show a reviewable working milestone and hand over the agreed source, accounts, and setup notes</li>
         </ul>
       </div>
     </div>
@@ -1352,8 +1352,8 @@ def technical_partner_page():
 
 <section class="sec partner-proof-section" id="proof" aria-labelledby="partner-proof-title">
   <div class="rail">
-    <p class="label">Problems Leon has taken from unclear to working</p>
-    <h2 class="page-section-title" id="partner-proof-title">Inspect the work before you trust Leon with yours.</h2>
+    <p class="label">Problems we've taken from unclear to working</p>
+    <h2 class="page-section-title" id="partner-proof-title">Inspect the work before you trust us with yours.</h2>
     <div class="fixrow partner-proof-grid">
       <a class="fixcard link" href="/work#work-site-intelligence"><figure class="service-proof-media"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><p class="proof-status">Operational client system · ALLCPR</p><h3>Turn a recurring location decision into one reviewable workflow</h3><p>Leon built screening across 33,772 U.S. ZIP codes with selected public and Maps context, uncertainty ranges, reasons for and against each area, maps, and a team export. Human field checks remain explicit.</p><span class="go">Read the case and client feedback →</span></a>
       <a class="fixcard link" href="/work#work-curio-public"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><p class="proof-status">Live product · App Store</p><h3>Take a consumer app from product decisions through release</h3><p>Leon built Curio's iPhone client, backend, subscriptions, content pipeline, and four-language release end to end. Its current App Store status is public and verifiable.</p><span class="go">Verify the live product →</span></a>
@@ -1368,13 +1368,13 @@ def technical_partner_page():
     <p class="label">Choose the next decision, not the biggest package</p>
     <h2 class="page-section-title business-copy">Four clear starting points, from a free fit check to ongoing capacity.</h2>
     <div class="partner-chooser" aria-label="Which Technical Build Partner starting point should I choose?">
-      <p><b>Free fit call</b><span>Confirm whether Leon is a fit before deciding.</span></p>
+      <p><b>Free fit call</b><span>Confirm whether we're a fit before deciding.</span></p>
       <p><b>$199 Systems Plan</b><span>Leave with a written recommendation you keep.</span></p>
       <p><b>Focused Build Sprint</b><span>Ship one defined working result.</span></p>
       <p><b>Monthly partner</b><span>Keep one recurring technical priority moving.</span></p>
     </div>
     <div class="scope-grid">
-      <article><span>01</span><h3>Systems Plan</h3><p class="offer-fit">Best when you know the bottleneck but not the right fix.</p><p class="pricetag"><b>$199</b></p><p>A 45-minute working session, written problem map, recommended first milestone, budget range, timeline, and access checklist. Keep the plan either way; the $199 is credited if Leon builds the agreed milestone.</p>{systems_plan_cta}</article>
+      <article><span>01</span><h3>Systems Plan</h3><p class="offer-fit">Best when you know the bottleneck but not the right fix.</p><p class="pricetag"><b>$199</b></p><p>A 45-minute working session, written problem map, recommended first milestone, budget range, timeline, and access checklist. Keep the plan either way; the $199 is credited if we build the agreed milestone.</p>{systems_plan_cta}</article>
       <article><span>02</span><h3>Focused Build Sprint</h3><p class="offer-fit">Best when one result can be clearly defined and tested.</p><p class="pricetag"><b>From $1,500</b></p><p>One working milestone with plain-language success checks, a scheduled review, testing, and the agreed source or setup handoff. It might be a quote path, one automation, an internal-tool milestone, or one app milestone. Larger scope is quoted first.</p>{sprint_cta}</article>
       <article><span>03</span><h3>Ongoing Technical Build Partner</h3><p class="offer-fit">Best when priorities keep changing but ownership cannot.</p><p class="pricetag"><b>From $2,000/month</b></p><p>One recurring priority, a written backlog, a weekly progress note, and a monthly planning and review call. The first month is scoped around one primary milestone plus agreed maintenance or fixes—not unlimited development. Capacity, exclusions, and rollover are written before the month starts.</p>{ongoing_cta}</article>
     </div>
@@ -1389,7 +1389,7 @@ def technical_partner_page():
     <p class="label">Questions before starting</p>
     {faq_html(faqs)}
     <div class="ctarow">{quote_cta}{call_cta}</div>
-    <p class="sub business-copy">Bring the bottleneck. Leon will help decide whether the right first move is a website, automation, internal tool, app, or no custom build at all.</p>
+    <p class="sub business-copy">Bring the bottleneck. We'll help decide whether the right first move is a website, automation, internal tool, app, or no custom build at all.</p>
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -1410,7 +1410,7 @@ def listing_page(kind, items, title, desc, blurb):
     featured = ('''<div class="proofcard">
       <p class="label">Not sure which service fits?</p>
       <h2>Start with the bottleneck, then choose the smallest useful build.</h2>
-      <p class="sub">Work directly with Leon on a website, automation, internal tool, app, or a written Systems Plan before committing to a larger build.</p>
+      <p class="sub">Work with us on a website, automation, internal tool, app, or a written Systems Plan before committing to a larger build.</p>
       <a class="cx-mini" href="/technical-build-partner">See the Technical Build Partner offer →</a>
     </div>''' if kind == 'services' else '<!-- featured offer is service-specific -->')
     return head(title, desc, path, schema) + ICONS + nav() + f'''
@@ -1418,8 +1418,8 @@ def listing_page(kind, items, title, desc, blurb):
 <section class="sec page-hero">
   <div class="rail">
     {crumbs(bc)}
-    <p class="label">leon --{kind}</p>
-    <h1 class="dsp">{e(kind)} <em>{'i build' if kind=='services' else 'i build for'}</em></h1>
+    <p class="label">leon builds --{kind}</p>
+    <h1 class="dsp">{e(kind)} <em>{'we build' if kind=='services' else 'we build for'}</em></h1>
     <p class="sub">{e(blurb)}</p>
   </div>
 </section>
@@ -1496,7 +1496,7 @@ def about_page():
         <li><svg class="ic"><use href="#ic-check"/></svg>an online ordering system where one kitchen runs several brands and a single cart splits itself per brand, with each brand's accounting kept separate</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
         <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform covering all 33,772 U.S. ZIP codes with Maps context, public data, company history, and uncertainty ranges</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a compliance-aware assistant in chinese where deterministic safety rules run before any model does, and it declines to answer rather than break advertising law</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a chinese-language health-education prototype with source citations and safety checks that run before the model</li>
       </ul>
     </div>
     <div>
@@ -1531,7 +1531,7 @@ def about_page():
 
 CAL_SLUG = "leonbuilds/15min"
 
-ZH_CALL_DESCRIPTION = "免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工、哪里最费时间，我会告诉你适合怎么做、大概从多少钱起，也会直说暂时不需要做系统。"
+ZH_CALL_DESCRIPTION = "免费 15 分钟，中文沟通。你说说生意里哪一块还在靠人工、哪里最费时间，Leon 会告诉你适合怎么做、大概从多少钱起，也会直说暂时不需要做系统。"
 
 CAL_COPY = {
     "en": {
@@ -1857,7 +1857,7 @@ def quote_page():
     bc = [("home","/"),("get a quote", None)]
     schema = [breadcrumb_schema(bc, path)]
     page_head = head("Get a Fixed Quote | Leon Builds",
-        "Tell Leon what is broken, manual, or missing. Plain words are enough to start a clear, fixed-scope project conversation.",
+        "Tell us what is broken, manual, or missing. Plain words are enough to start a clear, fixed-scope project conversation.",
         path, schema).replace('<body>', '<body class="quote-page" data-assistant-launcher="hidden">', 1)
     return page_head + ICONS + nav() + '''
 <main id="main">
@@ -1865,18 +1865,18 @@ def quote_page():
   <div class="rail">
     ''' + crumbs(bc) + '''
     <p class="label" id="quote-context-label">Fixed-scope project inquiry</p>
-    <h1 class="dsp" id="quote-context-title">Tell me what is <em>broken, manual, or missing.</em></h1>
-    <p class="sub business-copy" id="quote-context-intro">Plain words are enough. Leon reads every request and will ask the questions needed to recommend a sensible first version.</p>
+    <h1 class="dsp" id="quote-context-title">Tell us what is <em>broken, manual, or missing.</em></h1>
+    <p class="sub business-copy" id="quote-context-intro">Plain words are enough. We'll read your request and ask the questions needed to recommend a sensible first version.</p>
   </div>
 </section>
 <section class="sec">
   <div class="rail">
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
       <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
-      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where Leon should reply"></label>
-      <button class="btn btn-solid magnet qsend" type="submit"><span>Send it to Leon</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email Leon</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
-      <p class="qnote" id="qnote">No payment or commitment. This goes directly to Leon; scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email Leon</a> · <a href="tel:+15108267735" data-evt="phone_click">Call Leon</a></p>
+      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where we should reply"></label>
+      <button class="btn btn-solid magnet qsend" type="submit"><span>Send your project</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email us</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
+      <p class="qnote" id="qnote">No payment or commitment. This goes directly to us; scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email us</a> · <a href="tel:+15108267735" data-evt="phone_click">Call us</a></p>
       <details>
         <summary>Add project details <i>(optional)</i></summary>
         <div style="display:grid;gap:1.1rem;margin-top:1.1rem">
@@ -1906,12 +1906,12 @@ def quote_page():
     <div class="qok" id="qok" hidden tabindex="-1" role="region" aria-labelledby="qok-title">
       <span class="qok-mark" aria-hidden="true">✓</span>
       <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
-      <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon.</em></h2>
-      <p class="sub">We received your request and saved it for Leon. He usually replies to the email you provided the same business day.</p>
+      <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon Builds.</em></h2>
+      <p class="sub">We received your request. We usually reply to the email you provided the same business day.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
         <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-        <a class="btn magnet" href="/work"><span>See Leon's work</span></a>
+        <a class="btn magnet" href="/work"><span>See our work</span></a>
       </div>
     </div>
   </div>
@@ -1930,12 +1930,12 @@ def quote_page():
   var contractorReview=service==='contractor-lead-recovery';
   var technicalPartner=service==='technical-build-partner';
   if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
-  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send the bottleneck to Leon':'Send it to Leon');
+  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send the bottleneck':'Send your project');
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
     document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
-    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. Leon will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
+    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. We will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
     document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
     f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
@@ -1943,14 +1943,14 @@ def quote_page():
     f.elements.service.value=service;
     f.elements.package.value=packageName;
     document.getElementById('quote-context-label').textContent='Technical build partner inquiry';
-    document.getElementById('quote-context-title').innerHTML='Tell Leon what is <em>slowing the business down.</em>';
-    document.getElementById('quote-context-intro').textContent='Describe the bottleneck in plain words. Leon will recommend the smallest sensible next step before asking you to commit to a larger build.';
+    document.getElementById('quote-context-title').innerHTML='Tell us what is <em>slowing the business down.</em>';
+    document.getElementById('quote-context-intro').textContent='Describe the bottleneck in plain words. We will recommend the smallest sensible next step before asking you to commit to a larger build.';
     document.getElementById('quote-problem-label').textContent='What is slowing the business down, and what would a useful result look like?';
     f.elements.problem.placeholder='Leads get lost after the form, staff copy the same data twice, or the product is stuck before release…';
     if(packageName==='systems-plan'){
       document.getElementById('quote-context-label').textContent='$199 Systems Plan';
       document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the bottleneck and the result you need. Leon will confirm fit before you pay for the 45-minute working session and written plan.';
+      document.getElementById('quote-context-intro').textContent='Describe the bottleneck and the result you need. We will confirm fit before you pay for the 45-minute working session and written plan.';
       document.getElementById('quote-problem-label').textContent='What bottleneck should the Systems Plan solve?';
       f.elements.problem.placeholder='Staff repeat the same task, tools do not connect, leads get lost, or another specific bottleneck…';
       buttonText.textContent='Ask to start the Systems Plan';
@@ -1958,14 +1958,14 @@ def quote_page():
     }else if(packageName==='focused-build-sprint'){
       document.getElementById('quote-context-label').textContent='Focused Build Sprint · from $1,500';
       document.getElementById('quote-context-title').innerHTML='Define one <em>working milestone.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the single result that should be working at the end. Leon will reply with the acceptance checks, scope, price, and timeline before work begins.';
+      document.getElementById('quote-context-intro').textContent='Describe the single result that should be working at the end. We will reply with the acceptance checks, scope, price, and timeline before work begins.';
       document.getElementById('quote-problem-label').textContent='What one working result should this sprint deliver?';
       f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
       idleButtonText='Discuss a focused build';
     }else if(packageName==='ongoing-technical-partner'){
       document.getElementById('quote-context-label').textContent='Ongoing Technical Build Partner · from $2,000/month';
-      document.getElementById('quote-context-title').innerHTML='Set one <em>technical priority lane.</em>';
-      document.getElementById('quote-context-intro').textContent='Share the first milestone and the maintenance or fixes competing for attention. Leon will propose a bounded monthly scope; this is not unlimited development.';
+      document.getElementById('quote-context-title').innerHTML='Pick your first <em>monthly priority.</em>';
+      document.getElementById('quote-context-intro').textContent='Share the first milestone and the maintenance or fixes competing for attention. We will propose a bounded monthly scope; this is not unlimited development.';
       document.getElementById('quote-problem-label').textContent='What is the first priority, and what keeps interrupting it?';
       f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
       idleButtonText='Discuss ongoing support';
@@ -2008,7 +2008,7 @@ def quote_page():
     var d=Object.fromEntries(new FormData(f).entries());
     Object.keys(d).forEach(function(k){ if(typeof d[k]==='string') d[k]=d[k].trim(); });
     var invalid=null;
-    if(!d.problem){ err.textContent='tell me at least a sentence about what you need.'; invalid=f.elements.problem; }
+    if(!d.problem){ err.textContent='tell us at least a sentence about what you need.'; invalid=f.elements.problem; }
     else if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(d.email||'')){ err.textContent='that email does not look right.'; invalid=f.elements.email; }
     if(invalid){
       invalid.setAttribute('aria-invalid','true');
@@ -2158,11 +2158,11 @@ for i in INDUSTRIES: w(f'industries/{i["slug"]}.html', industry_page(i))
 
 w('services/index.html', listing_page('services', SERVICES,
   "Services — Websites, Apps, AI & Automation | Leon Builds",
-  "Every service Leon builds, with honest starting prices: websites, mobile apps, AI chatbots and phone agents, automation, portals, dashboards and more.",
-  "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and i'll quote the shape of it."))
+  "Every service we build, with honest starting prices: websites, mobile apps, AI chatbots and phone agents, automation, portals, dashboards and more.",
+  "every price is a published floor, not a quote. most jobs turn out to be two or three of these stitched together — describe the problem and we'll quote the shape of it."))
 
 w('industries/index.html', listing_page('industries', INDUSTRIES,
-  "Industries I Build Software For | Leon Builds",
+  "Industries We Build Software For | Leon Builds",
   "Software, AI and automation shaped for restaurants, contractors, auto shops, clinics, real estate, logistics, gyms, retail, firms and startups.",
   "the problems repeat inside an industry — the fixes below come from systems already running, not a template's guess. don't see yours? that's what custom means."))
 
