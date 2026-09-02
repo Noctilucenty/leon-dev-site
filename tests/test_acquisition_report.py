@@ -303,6 +303,127 @@ class AcquisitionReportTests(unittest.TestCase):
         self.assertFalse(report["economics"]["inputsComplete"])
         self.assertFalse(report["intentReview"]["passed"])
 
+    def test_unconfirmed_export_coverage_keeps_its_totals_unknown(self):
+        cases = (
+            ("events", ("sessions",), "observedScopedSessions", 10),
+            ("leads", ("inquiries",), "observedScopedInquiries", 4),
+            (
+                "acquisition", ("booked", "qualified", "won"), "observedScopedStages",
+                {"booked": 2, "attended": 2, "qualified": 2, "won": 1},
+            ),
+        )
+        for source, fields, diagnostic, observed in cases:
+            for value in (False, None, "true", 1, "missing"):
+                with self.subTest(source=source, completeness=value):
+                    config = complete_config()
+                    flag = source + "Complete"
+                    if value == "missing":
+                        config["dataReadiness"].pop(flag)
+                    else:
+                        config["dataReadiness"][flag] = value
+                    report = self.build(config=config)
+                    for field in fields:
+                        self.assertIsNone(report["funnel"][field])
+                    self.assertFalse(report["data"][source]["complete"])
+                    self.assertFalse(report["data"][source]["reportable"])
+                    self.assertGreater(report["data"][source]["recordsRead"], 0)
+                    self.assertEqual(report["data"][source][diagnostic], observed)
+                    self.assertEqual(report["verdict"], "ITERATE")
+                    if source == "acquisition":
+                        self.assertIsNone(report["data"][source]["attended"])
+
+    def test_missing_all_coverage_flags_cannot_diagnose_a_funnel_drop(self):
+        config = complete_config()
+        config.pop("dataReadiness")
+        report = self.build(config=config)
+        for field in ("sessions", "inquiries", "booked", "qualified", "won"):
+            self.assertIsNone(report["funnel"][field])
+        self.assertIsNone(report["funnel"]["weakestMeasurableTransition"])
+        self.assertFalse(any(row["measurable"] for row in report["funnel"]["transitions"]))
+        self.assertEqual(report["data"]["events"]["scopedRecords"], 10)
+        self.assertEqual(report["data"]["leads"]["scopedRecords"], 4)
+        self.assertEqual(report["data"]["acquisition"]["scopedStageRecords"], 7)
+
+    def test_complete_empty_exports_are_zero_not_unknown(self):
+        report = self.build(event_rows=[], lead_rows=[], acquisition_rows=[])
+        for field in ("sessions", "inquiries", "booked", "qualified", "won"):
+            self.assertEqual(report["funnel"][field], 0)
+        for source in ("events", "leads", "acquisition"):
+            self.assertTrue(report["data"][source]["complete"])
+            self.assertTrue(report["data"][source]["reportable"])
+
+    def test_invalid_scope_cannot_publish_first_party_totals(self):
+        for scope in ({}, {"mode": "invalid"}, {"mode": "utm-campaign"},
+                      {"mode": "utm-campaign", "utmCampaign": "   "}):
+            with self.subTest(scope=scope):
+                config = complete_config()
+                config["scope"] = scope
+                report = self.build(config=config)
+                self.assertEqual(report["verdict"], "PAUSE")
+                for field in ("sessions", "inquiries", "booked", "qualified", "won"):
+                    self.assertIsNone(report["funnel"][field])
+                self.assertIsNone(report["funnel"]["weakestMeasurableTransition"])
+                self.assertEqual(report["data"]["leads"]["recordsRead"], 4)
+                self.assertIsNone(report["data"]["leads"]["observedScopedInquiries"])
+
+    def test_invalid_window_cannot_publish_first_party_totals(self):
+        cases = (
+            ({"startDate": "bad", "endDate": "2026-08-10"}, 10),
+            ({"startDate": "2026-08-10", "endDate": "2026-08-01"}, 10),
+            ({"startDate": "2026-08-01", "endDate": "2026-08-11"}, 10),
+            ({"startDate": "2026-08-01", "endDate": "2026-08-10"}, 9),
+            ({"startDate": "2026-08-01", "endDate": "2026-08-10"}, None),
+        )
+        for window, limit in cases:
+            with self.subTest(window=window, limit=limit):
+                config = complete_config()
+                config["window"] = window
+                config["limits"]["calendarDays"] = limit
+                report = self.build(config=config)
+                self.assertEqual(report["verdict"], "PAUSE")
+                for field in ("sessions", "inquiries", "booked", "qualified", "won"):
+                    self.assertIsNone(report["funnel"][field])
+                self.assertIsNone(report["funnel"]["weakestMeasurableTransition"])
+                self.assertEqual(report["data"]["events"]["recordsRead"], 10)
+                self.assertIsNone(report["data"]["events"]["observedScopedSessions"])
+
+    def test_corrupt_input_cannot_be_made_reportable_by_complete_flag(self):
+        fields_by_source = {
+            "events": ("sessions",), "leads": ("inquiries",),
+            "acquisition": ("booked", "qualified", "won"),
+        }
+        for source, fields in fields_by_source.items():
+            with self.subTest(source=source):
+                inputs = {
+                    "events": input_data(Path("events.jsonl"), events()),
+                    "leads": input_data(Path("leads.jsonl"), leads()),
+                    "acquisition": input_data(Path("acquisition.jsonl"), acquisition()),
+                }
+                inputs[source].errors.append("test: incomplete JSONL record")
+                report = reporter.build_report(
+                    complete_config(), complete_economics(),
+                    inputs["events"], inputs["leads"], inputs["acquisition"],
+                )
+                self.assertEqual(report["verdict"], "PAUSE")
+                self.assertTrue(report["data"][source]["complete"])
+                self.assertFalse(report["data"][source]["reportable"])
+                self.assertGreater(report["data"][source]["recordsRead"], 0)
+                for field in fields:
+                    self.assertIsNone(report["funnel"][field])
+
+    def test_missing_correlation_ids_do_not_publish_partial_totals(self):
+        event_rows = events()
+        event_rows[0].pop("sessionId")
+        lead_rows = leads()
+        lead_rows[0].pop("receiptId")
+        report = self.build(event_rows=event_rows, lead_rows=lead_rows)
+        self.assertIsNone(report["funnel"]["sessions"])
+        self.assertIsNone(report["funnel"]["inquiries"])
+        self.assertFalse(report["data"]["events"]["reportable"])
+        self.assertFalse(report["data"]["leads"]["reportable"])
+        self.assertEqual(report["data"]["events"]["observedScopedSessions"], 9)
+        self.assertEqual(report["data"]["leads"]["observedScopedInquiries"], 3)
+
     def test_missing_acquisition_file_keeps_stages_unknown(self):
         config = complete_config()
         config["dataReadiness"]["acquisitionComplete"] = False

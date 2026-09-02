@@ -25,6 +25,12 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > for the saved Bay Area and Seattle-Tacoma expansion, the eight added
 > phrase-match keywords, unchanged $100 total/$5 CPC controls, and the first
 > 10-impression zero-click snapshot.
+>
+> **Latest live-state reconciliation — 2026-09-02 PT:** see
+> [`live-campaign-checkpoint-2026-09-02.md`](live-campaign-checkpoint-2026-09-02.md)
+> for the paused campaign, billing hold, $14.79 lifetime spend, disclosed search
+> terms, conversion-action roles, and remaining approval-gated work. This audit
+> did not change ads, bidding, locations, billing, or the September 3 end date.
 
 ## Safety contract
 

@@ -31,6 +31,15 @@ missing upstream stage. The weakest transition is selected only from adjacent
 transitions whose two counts are both available and whose populations are
 numerically coherent.
 
+An existing file is not necessarily a complete export. Each first-party total
+stays `unknown` until its own `dataReadiness` flag is literally `true`, the file
+passes integrity checks, and the scope and review window are valid. Missing
+session or receipt identifiers also prevent partial totals from being presented
+as complete. A confirmed-complete, valid empty export can report zero.
+The JSON report keeps `observedScopedSessions`, `observedScopedInquiries`, and
+`observedScopedStages` as partial diagnostic observations, separately from the
+reportable funnel totals. Do not turn these observations into conversion rates.
+
 Admin-authenticated `qa_exclusion` rows in `acquisition.jsonl` remove only their
 exact synthetic quote `receiptId` or Cal `bookingUid` from these counts. The
 original lead, booking stages, and exclusion rows remain append-only and visible

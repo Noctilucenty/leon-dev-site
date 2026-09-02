@@ -50,8 +50,9 @@ qualification standard comparable across all three wedges.
   or separate the business from customer data.
 - First offer: map the current order path and compare a smaller integration with
   a custom build.
-- Proof allowed: Leon built one cart and checkout that split orders and accounting
-  across 22 businesses. Do not claim a financial result that was not measured.
+- Proof allowed: Leon built the beastypages.com client website with business
+  menus and a demonstration cart. Payments and kitchen operations are not live.
+  Do not present the demo as a working checkout or claim a measured financial result.
 
 ## Comparable sample
 
