@@ -599,6 +599,14 @@ a{ color:inherit; text-decoration:none; }
 .ctarow{ display:flex; flex-wrap:wrap; align-items:center; gap:.7rem; margin-top:2rem; }
 .cx-mini{ font-size:12px; color:var(--dim); letter-spacing:.03em; text-underline-offset:3px; }
 .cx-mini:hover{ color:var(--ac); }
+/* Inline link inside running prose. Inherits the paragraph's size and tracking so
+   the sentence keeps one type size; .cx-mini must never be used mid-sentence. */
+.tlink{
+  color:var(--ac-hi); text-decoration:underline;
+  text-decoration-color:var(--ac-line); text-decoration-thickness:1px;
+  text-underline-offset:3px; transition:color .2s,text-decoration-color .2s;
+}
+.tlink:hover,.tlink:focus-visible{ color:#fff; text-decoration-color:var(--ac); }
 .linklike{ background:none; border:none; padding:0; font:inherit; color:var(--ac); cursor:pointer; text-decoration:underline; text-underline-offset:3px; }
 .assist-fallback{ margin:.85rem 0 0; color:var(--faint); font-size:11.5px; line-height:1.65; text-transform:none; }
 
@@ -1111,16 +1119,17 @@ a{ color:inherit; text-decoration:none; }
   max-width:15ch; margin-top:.9rem; color:var(--fg);
   font-size:clamp(2.7rem,4.7vw,5.15rem); line-height:.98;
   font-weight:400; letter-spacing:-.04em; text-transform:none;
+  text-wrap:balance;
 }
 .technical-partner-page .page-hero .sub{
   max-width:60ch; margin-top:1.35rem; color:#c5c5c5;
-  font-size:18px; line-height:1.55;
+  font-size:18px; line-height:1.55; text-wrap:pretty;
 }
 .technical-partner-page .btn{ min-height:48px; font-family:var(--dsp); font-size:14px; }
 .technical-partner-page .ctarow{ gap:.75rem; margin-top:1.65rem; }
 .partner-cta-note{
-  max-width:64ch; margin:.85rem 0 0; color:#969696;
-  font-size:13px; line-height:1.55;
+  max-width:60ch; margin:.85rem 0 0; color:#969696;
+  font-size:13px; line-height:1.55; text-wrap:pretty;
 }
 .partner-hero-proof{ align-self:center; }
 .partner-hero-proof > p{ line-height:1.55; }
@@ -1134,7 +1143,7 @@ a{ color:inherit; text-decoration:none; }
 }
 .partner-trust > *{
   min-width:0; min-height:112px; display:flex; flex-direction:column;
-  justify-content:center; gap:.3rem; margin:0; padding:1.15rem 1.25rem;
+  justify-content:flex-start; gap:.3rem; margin:0; padding:1.4rem 1.25rem;
   border-left:1px solid var(--line-2);
 }
 .partner-trust > *:first-child{ border-left:0; }
@@ -1145,6 +1154,7 @@ a{ color:inherit; text-decoration:none; }
 
 .technical-partner-page .page-section-title{
   max-width:31ch; font-size:clamp(1.75rem,3.2vw,2.8rem); line-height:1.08;
+  text-wrap:balance;
 }
 .technical-partner-page .two-col{ margin-top:2rem; }
 .technical-partner-page .blist{ gap:.8rem; }
@@ -1163,6 +1173,9 @@ a{ color:inherit; text-decoration:none; }
 }
 .technical-partner-page .partner-proof-grid .service-proof-media img{
   width:100%; height:100%; object-fit:cover;
+}
+.technical-partner-page .partner-proof-grid .service-proof-media--map img{
+  object-position:78% 62%;
 }
 .technical-partner-page .partner-proof-grid .proof-status{
   margin:0 0 .7rem; color:var(--ac); font-size:11px; letter-spacing:.06em;
@@ -1184,8 +1197,8 @@ a{ color:inherit; text-decoration:none; }
   border-radius:14px; background:var(--line-2);
 }
 .partner-chooser p{
-  min-height:118px; display:flex; flex-direction:column; justify-content:center;
-  gap:.38rem; margin:0; padding:1.1rem 1.2rem; background:#050505;
+  min-height:118px; display:flex; flex-direction:column; justify-content:flex-start;
+  gap:.38rem; margin:0; padding:1.35rem 1.2rem; background:#050505;
 }
 .partner-chooser b{ color:#fff; font-size:14px; font-weight:500; }
 .partner-chooser span{ color:#999; font-size:13px; line-height:1.45; }
@@ -1206,6 +1219,9 @@ a{ color:inherit; text-decoration:none; }
   min-height:44px; display:flex; align-items:flex-end; margin-top:auto;
   padding-top:1.2rem; color:var(--ac-hi); font-size:13px;
 }
+.technical-partner-page .blist li,
+.technical-partner-page .scope-grid article > p,
+.technical-partner-page .faq p{ text-wrap:pretty; }
 .partner-timing{
   margin:1.2rem 0 0; padding:1rem 1.1rem; border:1px solid var(--ac-line);
   border-radius:12px; background:rgba(155,140,255,.07); color:#c6c6c6;
