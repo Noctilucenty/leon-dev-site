@@ -26,11 +26,19 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > phrase-match keywords, unchanged $100 total/$5 CPC controls, and the first
 > 10-impression zero-click snapshot.
 >
-> **Latest live-state reconciliation — 2026-09-02 PT:** see
+> **Earlier live-state reconciliation — 2026-09-02 PT:** see
 > [`live-campaign-checkpoint-2026-09-02.md`](live-campaign-checkpoint-2026-09-02.md)
 > for the paused campaign, billing hold, $14.79 lifetime spend, disclosed search
 > terms, conversion-action roles, and remaining approval-gated work. This audit
 > did not change ads, bidding, locations, billing, or the September 3 end date.
+>
+> **Latest live state — resumed 2026-09-02, 4:06 PM PT:** see
+> [`campaign-resumed-2026-09-02.md`](campaign-resumed-2026-09-02.md).
+> Following separate owner authorization and final checks, the existing campaign
+> is **Enabled / Eligible (Limited)**, with its $5 bid ceiling, $100 total budget,
+> and September 3 end date unchanged. The clean RSA and ad group are eligible;
+> both older RSAs remain paused. Billing and privacy checks passed. This is an
+> activation receipt, not evidence of new customers or additional spend approval.
 
 ## Safety contract
 
