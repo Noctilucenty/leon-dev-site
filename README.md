@@ -52,6 +52,12 @@ npm run check                           # content, site-integrity and server reg
    Set **Build Command** to `npm run build:static` and **Publish Directory** to
    `dist`. Never publish the repository root `.`. Pretty URLs serve
    `/services/websites` from `dist/services/websites.html`.
+   **Retiring a public file is an overwrite, not a deletion.** Render keeps files
+   from earlier deploys reachable after they leave `dist/` (measured 2026-09-01: a
+   removed image still served six minutes after the deploy, past the CDN TTL). To
+   take something down, publish replacement content at the same path and verify
+   the live bytes; renaming alone leaves the old URL serving the old bytes. See
+   `LEARNING_LOG.md`.
 2. **Assistant API (new):** Render **web service** from this same repo — *New + →
    Blueprint* picks up `render.yaml` (name `leon-assist`, `npm install`,
    `node server/index.js`, health `/api/health`). Then add `OPENAI_API_KEY` in that

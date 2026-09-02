@@ -130,3 +130,37 @@ generates, and cannot be enforced on a Marketplace card. The only lever is
 moving the listing to a different city, which trades one geographic distortion
 for another and changes who sees it. Left as Leon's decision rather than
 silently changed.
+
+---
+
+## 2026-09-01 · Removing a file from `dist/` does not unpublish it on Render
+
+**Believed:** dropping the two Loqol proof screenshots from the static manifest
+and shipping their replacements under new names would take the originals off
+the site, because `dist/` is untracked and Render builds it fresh on every push.
+
+**True:** six minutes after the rename deploy (d258f37) was live — past the
+300-second `s-maxage` — both old paths still returned 200 with the original
+bytes, cache status MISS, even with a cache-busting query. **[measured]** The
+build itself was clean: `build_static.py` refuses to run over unexpected files,
+and the build log shows 68 + 1 files with no error, so the stale copies were not
+in the publish directory. Render's storage kept them. The same held for the
+temporary `-seller-`/`-disclosure-` names once the next deploy removed them.
+**[measured]** Assets deleted on 2026-08-19/20 do 404 today, so the retention is
+not permanent. **[measured]** It is long enough to matter for a takedown.
+**[reasoned]**
+
+**What worked:** publishing the redacted images under the ORIGINAL filenames
+(c7acee3). Six minutes after that deploy, both original URLs served bytes
+pixel-identical to the local redacted files. **[measured]**
+
+**Rule:** on this host a takedown is an overwrite, not a deletion. To retire a
+public file, ship replacement content at the same path, then verify the live
+bytes after the cache window. Renaming alone leaves the old URL serving the old
+bytes. Corollary: never give a public asset a name or content you would be
+unwilling to keep serving.
+
+**Second lesson:** the first check ran 20 seconds after the deploy, inside the
+shared-cache window, and nearly recorded a cache artifact as a hosting property.
+The 08-21 rule applies here too: one reading is not a verdict. Wait out the TTL
+and read again before writing anything down.
