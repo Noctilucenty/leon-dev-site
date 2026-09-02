@@ -1283,7 +1283,7 @@ def technical_partner_page():
     call_cta = '''<a class="btn magnet" href="/call?service=technical-build-partner" data-evt="technical_partner_call_click"><span class="business-copy">Book a free 15-minute fit call</span></a>'''
     systems_plan_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=systems-plan" data-evt="technical_partner_systems_plan_click">Start with the $199 Systems Plan →</a>'''
     sprint_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=focused-build-sprint" data-evt="technical_partner_sprint_click">Discuss one focused build →</a>'''
-    ongoing_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=ongoing-technical-partner" data-evt="technical_partner_ongoing_click">Discuss ongoing support →</a>'''
+    ongoing_cta = '''<a class="cx-mini" href="/quote?service=technical-build-partner&amp;package=ongoing-technical-partner" data-evt="technical_partner_ongoing_click">Discuss an ongoing partnership →</a>'''
     page_head = head(title, desc, path, schema).replace(
         '<body>', '<body class="technical-partner-page" data-assistant-launcher="hidden">', 1
     )
@@ -1293,9 +1293,9 @@ def technical_partner_page():
   <div class="rail partner-hero-grid">
     <div>
       {crumbs(bc)}
-      <p class="label">One-on-one technical build support for owner-led businesses</p>
+      <p class="label">Technical Build Partner for owner-led businesses</p>
       <h1 class="dsp business-copy">Bring the bottleneck. We'll plan and build the smallest fix that works.</h1>
-      <p class="sub business-copy">Lost leads, repeated admin work, an outdated website, or a tool or app that is stuck. You work directly with Leon, who scopes one result in writing, builds it, and shows it working before handoff.</p>
+      <p class="sub business-copy">Whether it's lost leads, repeated admin work, an outdated website, or a tool or app that is stuck, you work directly with Leon. He scopes one result in writing, builds it, and shows it working before handoff.</p>
       <div class="ctarow">{quote_cta}{call_cta}</div>
       <p class="partner-cta-note business-copy">No payment or commitment to send the problem. We reply to the email you provide, usually the same business day.</p>
     </div>
@@ -1303,7 +1303,7 @@ def technical_partner_page():
       <div class="hero-proof-head"><span>Public proof</span><small>Inspect before you contact</small></div>
       <a href="/work#work-site-intelligence" data-evt="technical_partner_hero_proof_system_click"><span>01</span><div><strong>ALLCPR Site Intelligence</strong><small>Operational planning system across 33,772 U.S. ZIP codes</small></div></a>
       <a href="/work#work-curio-public" data-evt="technical_partner_hero_proof_app_click"><span>02</span><div><strong>Curio</strong><small>Live App Store product built end to end</small></div></a>
-      <a href="/work#work-beastypages" data-evt="technical_partner_hero_proof_web_click"><span>03</span><div><strong>beastypages.com</strong><small>Phone-first client website with an inspectable demo flow</small></div></a>
+      <a href="/work#work-beastypages" data-evt="technical_partner_hero_proof_web_click"><span>03</span><div><strong>beastypages.com</strong><small>Phone-first client website with a demo cart you can try</small></div></a>
       <p>One person · written scope · reviewable checkpoints · agreed handoff</p>
     </aside>
   </div>
@@ -1311,7 +1311,7 @@ def technical_partner_page():
 
 <div class="partner-trust-wrap">
   <div class="rail partner-trust" aria-label="Trust and project terms">
-    <a href="/reviews" data-evt="technical_partner_trust_reviews_click"><b>3 approved client reviews</b><span>Read the exact feedback →</span></a>
+    <a href="/reviews" data-evt="technical_partner_trust_reviews_click"><b>3 client reviews</b><span>Published with permission — read them →</span></a>
     <p><b>Founder-led delivery</b><span>You work with Leon directly. He writes the code and answers for it.</span></p>
     <p><b>Scope before spend</b><span>Work, exclusions, price, and timing are written down before anything is billed.</span></p>
     <p><b>Clear handoff</b><span>The source, accounts, and setup notes named in the scope are yours to keep.</span></p>
@@ -1321,7 +1321,7 @@ def technical_partner_page():
 <div class="landing-jump-wrap" aria-label="Find it fast">
   <nav class="rail landing-jump">
     <span>Find it fast</span>
-    <a href="#fit">How it works</a>
+    <a href="#fit">Who it's for</a>
     <a href="#proof">Work to inspect</a>
     <a href="#offers">Choose a start</a>
     <a href="#faq">Questions</a>
@@ -1331,7 +1331,7 @@ def technical_partner_page():
 <section class="sec" id="fit">
   <div class="rail">
     <p class="label">Start with the business problem, not a software shopping list</p>
-    <h2 class="page-section-title business-copy">Direct technical ownership without hiring an in-house lead.</h2>
+    <h2 class="page-section-title business-copy">The technical side gets an owner, without the cost of an in-house hire.</h2>
     <div class="two-col">
       <div>
         <p class="label">What you can bring</p>
@@ -1362,8 +1362,8 @@ def technical_partner_page():
     <p class="label">Problems we've taken from unclear to working</p>
     <h2 class="page-section-title" id="partner-proof-title">Inspect the work before you trust us with yours.</h2>
     <div class="fixrow partner-proof-grid">
-      <a class="fixcard link" href="/work#work-site-intelligence"><figure class="service-proof-media service-proof-media--map"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><p class="proof-status">Operational client system · ALLCPR</p><h3>Turn a recurring location decision into one reviewable workflow</h3><p>Leon built screening across 33,772 U.S. ZIP codes with selected public and Maps context, uncertainty ranges, reasons for and against each area, maps, and a team export. The system ranks and explains; the final field check stays with the team.</p><span class="go">Read the case and client feedback →</span></a>
-      <a class="fixcard link" href="/work#work-curio-public"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><p class="proof-status">Live product · App Store</p><h3>Take a consumer app from product decisions through release</h3><p>Leon built Curio's iPhone client, backend, subscriptions, content pipeline, and four-language release end to end. It is live on the App Store, where anyone can check it.</p><span class="go">Verify the live product →</span></a>
+      <a class="fixcard link" href="/work#work-site-intelligence"><figure class="service-proof-media service-proof-media--map"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><p class="proof-status">Operational client system · ALLCPR</p><h3>Turn a recurring location decision into one reviewable workflow</h3><p>Leon built a screening system across all 33,772 U.S. ZIP codes using selected public data and Google Maps context. It shows uncertainty ranges, the reasons for and against each area, maps, and a team export. The system ranks and explains; the final field check stays with the team.</p><span class="go">Read the case and client feedback →</span></a>
+      <a class="fixcard link" href="/work#work-curio-public"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><p class="proof-status">Live product · App Store</p><h3>Take a consumer app from product decisions through release</h3><p>Leon built the Curio iPhone app, its backend, subscriptions, content pipeline, and a four-language release, end to end. It is live on the App Store, where anyone can check it.</p><span class="go">Verify the live product →</span></a>
       <a class="fixcard link" href="/work#work-beastypages"><figure class="service-proof-media service-proof-media--center"><img src="/assets/proof/home-screen-ui.png" alt="beastypages.com phone-first business website interface" loading="lazy" width="700" height="450"></figure><p class="proof-status">Client website · demo checkout</p><h3>Give phone visitors a clearer path through a business website</h3><p>Leon built phone-first business pages, menus, search, and a demonstration cart. The work page marks which parts are live and which are demos, so you know exactly what shipped.</p><span class="go">Inspect the website project →</span></a>
     </div>
     <a class="section-link" href="/reviews" data-evt="technical_partner_reviews_click">Read all 3 approved client reviews →</a>
@@ -1375,15 +1375,15 @@ def technical_partner_page():
     <p class="label">Choose the next decision, not the biggest package</p>
     <h2 class="page-section-title business-copy">One free call, then three defined ways to start.</h2>
     <div class="partner-chooser" aria-label="Which Technical Build Partner starting point should I choose?">
-      <p><b>Free fit call</b><span>Confirm whether we're a fit before deciding.</span></p>
-      <p><b>$199 Systems Plan</b><span>Leave with a written recommendation you keep.</span></p>
-      <p><b>Focused Build Sprint</b><span>Ship one defined working result.</span></p>
-      <p><b>Monthly partner</b><span>Keep one recurring technical priority moving.</span></p>
+      <a href="#start"><b>Free fit call</b><span>Confirm whether we're a fit before deciding.</span></a>
+      <a href="#offer-plan"><b>$199 Systems Plan</b><span>Leave with a written recommendation you keep.</span></a>
+      <a href="#offer-sprint"><b>Focused Build Sprint</b><span>Ship one defined working result.</span></a>
+      <a href="#offer-ongoing"><b>Ongoing partner</b><span>Keep one recurring technical priority moving.</span></a>
     </div>
     <div class="scope-grid">
-      <article><span>01</span><h3>Systems Plan</h3><p class="offer-fit">Best when you know the bottleneck but not the right fix.</p><p class="pricetag"><b>$199</b></p><p>A 45-minute working session, written problem map, recommended first milestone, budget range, timeline, and access checklist. The plan is yours whatever you decide. If we build the agreed milestone, the $199 is credited toward it.</p>{systems_plan_cta}</article>
-      <article><span>02</span><h3>Focused Build Sprint</h3><p class="offer-fit">Best when one result can be clearly defined and tested.</p><p class="pricetag"><b>From $1,500</b></p><p>One working milestone with plain-language success checks, a scheduled review, testing, and the agreed source or setup handoff. That could be a quote path, one automation, an internal-tool milestone, or one app milestone. Anything larger is quoted in writing before work starts.</p>{sprint_cta}</article>
-      <article><span>03</span><h3>Ongoing Technical Build Partner</h3><p class="offer-fit">Best when priorities keep changing but ownership cannot.</p><p class="pricetag"><b>From $2,000/month</b></p><p>One recurring priority, a written backlog, a weekly progress note, and a monthly planning and review call. The first month is scoped around one primary milestone plus agreed maintenance or fixes—not unlimited development. Capacity, exclusions, and rollover are written before the month starts.</p>{ongoing_cta}</article>
+      <article id="offer-plan"><span>01</span><h3>Systems Plan</h3><p class="offer-fit">Best when you know the bottleneck but not the right fix.</p><p class="pricetag"><b>$199</b></p><p>A 45-minute working session, written problem map, recommended first milestone, budget range, timeline, and access checklist. The plan is yours whatever you decide. If we build the agreed milestone, the $199 is credited toward it.</p>{systems_plan_cta}</article>
+      <article id="offer-sprint"><span>02</span><h3>Focused Build Sprint</h3><p class="offer-fit">Best when one result can be clearly defined and tested.</p><p class="pricetag"><b>From $1,500</b></p><p>One working milestone with plain-language success checks, a scheduled review, testing, and the agreed source or setup handoff. That could be a quote path, one automation, an internal-tool milestone, or one app milestone. Anything larger is quoted in writing before work starts.</p>{sprint_cta}</article>
+      <article id="offer-ongoing"><span>03</span><h3>Ongoing Technical Build Partner</h3><p class="offer-fit">Best when priorities keep changing but ownership cannot.</p><p class="pricetag"><b>From $2,000/month</b></p><p>One recurring priority, a written backlog, a weekly progress note, and a monthly planning and review call. The first month is scoped around one primary milestone plus agreed maintenance or fixes—not unlimited development. Capacity, exclusions, and rollover are written before the month starts.</p>{ongoing_cta}</article>
     </div>
     <p class="partner-timing business-copy">For a ready, well-scoped project, the first reviewable milestone—not the full build—can be targeted within 1–3 business days. The full schedule is confirmed in writing once scope and access are checked.</p>
     <div class="scope-boundary business-copy"><p><b>Not included:</b> provider fees, paid advertising, bulk data cleanup, ongoing content, and anything outside the written scope. Each is quoted separately, never slipped in.</p></div>
@@ -1395,7 +1395,7 @@ def technical_partner_page():
   <div class="rail">
     <p class="label">Questions before starting</p>
     {faq_html(faqs)}
-    <div class="ctarow">{quote_cta}{call_cta}</div>
+    <div class="ctarow" id="start">{quote_cta}{call_cta}</div>
     <p class="sub business-copy">Bring the bottleneck. We'll tell you whether the right first move is a website, an automation, an internal tool, an app, or no custom build at all.</p>
   </div>
 </section>

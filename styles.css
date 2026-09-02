@@ -1116,6 +1116,7 @@ a{ color:inherit; text-decoration:none; }
 .technical-partner-page .foot-in h4,
 .technical-partner-page .offer-kicker,
 .technical-partner-page .proof-status{ font-family:var(--mono); }
+.technical-partner-page .label{ color:var(--dim); }
 .technical-partner-page .sec{ padding:clamp(3.8rem,7vw,6.2rem) 0; }
 .technical-partner-page .page-hero{ padding:7.35rem 0 clamp(3.5rem,6vw,5rem); }
 .partner-hero-grid{
@@ -1203,10 +1204,15 @@ a{ color:inherit; text-decoration:none; }
   margin:1.6rem 0 1rem; overflow:hidden; border:1px solid var(--line-2);
   border-radius:14px; background:var(--line-2);
 }
-.partner-chooser p{
+.partner-chooser > *{
   min-height:118px; display:flex; flex-direction:column; justify-content:flex-start;
   gap:.38rem; margin:0; padding:1.35rem 1.2rem; background:#050505;
+  transition:background .2s;
 }
+.partner-chooser a:hover,.partner-chooser a:focus-visible{ background:rgba(155,140,255,.08); }
+.partner-chooser a:focus-visible{ outline:2px solid var(--ac); outline-offset:-2px; }
+.technical-partner-page .scope-grid article,
+.technical-partner-page #start{ scroll-margin-top:5.5rem; }
 .partner-chooser b{ color:#fff; font-size:14px; font-weight:500; }
 .partner-chooser span{ color:#999; font-size:13px; line-height:1.45; }
 .technical-partner-page .scope-grid{ gap:1rem; }
@@ -1274,6 +1280,7 @@ a{ color:inherit; text-decoration:none; }
   .technical-partner-page .ctarow{ align-items:stretch; }
   .technical-partner-page .ctarow .btn{
     width:100%; justify-content:center; white-space:normal; text-align:center; line-height:1.4;
+    padding-inline:.85rem; font-size:13.5px;
   }
   .partner-trust{ grid-template-columns:1fr; }
   .partner-trust > *{ min-height:94px; border-left:0; border-top:1px solid var(--line-2); }
@@ -1283,6 +1290,6 @@ a{ color:inherit; text-decoration:none; }
   }
   .technical-partner-page .landing-jump a{ width:100%; justify-content:center; padding-inline:.55rem; }
   .partner-chooser{ grid-template-columns:1fr; }
-  .partner-chooser p{ min-height:92px; }
+  .partner-chooser > *{ min-height:92px; }
   .technical-partner-page .scope-grid article{ min-height:0; }
 }
