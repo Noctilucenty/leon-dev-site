@@ -247,18 +247,22 @@ test('technical build partner is a concrete, attributable offer with honest timi
     .trim();
 
   assert.match(html, /<title>Technical Build Partner for Small Businesses \| Leon Builds<\/title>/);
-  assert.match(html, /<meta name="description" content="Work directly with Leon to plan and build the smallest useful website, automation, internal tool, or app for your business\. Fixed scope or ongoing support\.">/);
+  assert.match(html, /<meta name="description" content="Bring one business bottleneck\. Leon plans and builds the smallest useful website, automation, internal tool, or app, with written scope and direct handoff\.">/);
   assert.match(html, /<link rel="canonical" href="https:\/\/leonbuilds\.org\/technical-build-partner">/);
   assert.match(html, /<body class="technical-partner-page" data-assistant-launcher="hidden">/);
-  assert.match(visible, /One technical partner for the next bottleneck in your business\./i);
-  assert.match(visible, /For a ready, well-scoped project, the first working milestone can be targeted within 1–3 business days\./i);
-  assert.match(visible, /Systems Plan \$199/i);
-  assert.match(visible, /Focused Build Sprint From \$1,500/i);
-  assert.match(visible, /Ongoing Technical Partner From \$2,000\/month/i);
+  assert.match(visible, /Bring the bottleneck\. Leon will plan and build the smallest fix that works\./i);
+  assert.match(visible, /Lost leads, repeated admin work, an outdated website, or a tool or app that is stuck/i);
+  assert.match(visible, /first reviewable milestone—not the full build—can be targeted within 1–3 business days/i);
+  assert.match(visible, /No payment or commitment to send the problem/i);
+  assert.match(visible, /(?:Systems Plan \$199|\$199 Systems Plan)/i);
+  assert.match(visible, /Focused Build Sprint[^$]*From \$1,500/i);
+  assert.match(visible, /Ongoing Technical Build Partner[^$]*From \$2,000\/month/i);
   assert.match(visible, /one primary milestone plus agreed maintenance or fixes—not unlimited development/i);
-  assert.match(visible, /Reserved capacity, exclusions, and rollover are written before the month starts/i);
+  assert.match(visible, /Capacity, exclusions, and rollover are written before the month starts/i);
   assert.match(visible, /45-minute working session/i);
   assert.match(visible, /weekly progress note/i);
+  assert.match(visible, /Free fit call Confirm whether Leon is a fit before deciding/i);
+  assert.match(visible, /Read all 3 approved client reviews/i);
   assert.match(html, /class="fixrow partner-proof-grid"/);
   assert.match(html, /class="service-proof-media service-proof-media--center"><img src="\/assets\/proof\/home-screen-ui\.png" alt="beastypages\.com phone-first business website interface"/);
   assert.match(html, /package=systems-plan" data-evt="technical_partner_systems_plan_click"/);
@@ -268,6 +272,9 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(html, /href="\/quote\?service=technical-build-partner"/);
   assert.equal((html.match(/href="\/call\?service=technical-build-partner"/g) || []).length, 2);
   assert.equal((html.match(/href="\/quote\?service=technical-build-partner"/g) || []).length, 2);
+  assert.match(html, /class="btn btn-solid magnet" href="\/quote\?service=technical-build-partner"[^>]*data-evt="technical_partner_quote_click"/);
+  assert.match(html, /technical_partner_quote_click[\s\S]*technical_partner_call_click/);
+  assert.doesNotMatch(html, /data-testimonial-id=/, 'approved testimonial placement is not expanded without permission');
   assert.match(html, /"@type": "WebPage"/);
   assert.match(html, /"@type": "Service"/);
   assert.match(html, /"@type": "BusinessAudience"/);
@@ -276,7 +283,7 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(html, /"minPrice": "2000"/);
   assert.doesNotMatch(html, /"price": "(?:1500|2000)"/);
   assert.match(html, /"unitText": "MONTH"/);
-  assert.equal((html.match(/<details\b/g) || []).length, 3);
+  assert.equal((html.match(/<details\b/g) || []).length, 4);
 
   for (const file of [
     'index.html', 'services/index.html', 'about.html', 'work.html',
@@ -286,6 +293,7 @@ test('technical build partner is a concrete, attributable offer with honest timi
   ]) assert.match(read(file), /href="\/technical-build-partner"/, `${file} links to the offer`);
 
   assert.equal((read('index.html').match(/class="offer-card/g) || []).length, 3, 'homepage still has exactly three offer cards');
+  assert.match(read('index.html'), /class="partner-entry" href="\/technical-build-partner"/);
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/technical-build-partner<\/loc>/);
 
   const call = read('call.html');
@@ -304,7 +312,7 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(quote, /Focused Build Sprint · from \$1,500/);
   assert.match(quote, /What one working result should this sprint deliver\?/);
   assert.match(quote, /Describe the single result that should be working at the end/);
-  assert.match(quote, /Ongoing Technical Partner · from \$2,000\/month/);
+  assert.match(quote, /Ongoing Technical Build Partner · from \$2,000\/month/);
   assert.match(quote, /What is the first priority, and what keeps interrupting it\?/);
   assert.match(quote, /Leon will propose a bounded monthly scope; this is not unlimited development/);
   assert.match(quote, /packageName=.*get\('package'\)/);

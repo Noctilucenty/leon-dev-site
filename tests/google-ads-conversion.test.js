@@ -284,6 +284,11 @@ test('consent preference dialog restores focus and presents equal-weight actions
   const css = fs.readFileSync(path.join(ROOT, 'assist.css'), 'utf8');
   assert.doesNotMatch(css, /\.ads-consent button\.allow/);
   assert.doesNotMatch(h.banner.innerHTML, /class="allow"/);
+  assert.match(h.banner.innerHTML, /Allow ad measurement\?/);
+  assert.match(h.banner.innerHTML, /Google Ads may use cookies/);
+  assert.match(h.banner.innerHTML, /quote, booked call, phone click or WhatsApp click/);
+  assert.match(h.banner.innerHTML, /does not intentionally send form entries or contact details/);
+  assert.match(h.banner.innerHTML, /ad personalization stays off/);
 });
 
 test('privacy copy discloses the optional Google path and exposes a preference control', () => {

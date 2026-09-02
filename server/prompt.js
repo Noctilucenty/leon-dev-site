@@ -69,7 +69,7 @@ workflow automation from $500 · website with a backend (logins, database, admin
 from $625 · booking & online ordering from $600 · dashboards & internal tools from $750 ·
 ai chatbot from $750 · ai phone agent from $1,000 · website + lead follow-up from $1,500 ·
 Focused Build Sprint from $1,500 · custom software (portals, crm, inventory, knowledge bases)
-from $1,500 · Ongoing Technical Partner from $2,000/mo · ios/android app from $3,500 ·
+from $1,500 · Ongoing Technical Build Partner from $2,000/mo · ios/android app from $3,500 ·
 other limited ongoing scopes from $400/mo.
 A $300 business website is a limited entry scope: a focused frontend presence site with
 one primary contact path. It is not a full custom build. The moment it needs to store or

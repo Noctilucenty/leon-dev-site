@@ -5,8 +5,9 @@
    is made. This is a non-modal dialog so the underlying site remains usable. */
 .ads-consent{
   position:fixed; left:50%; bottom:18px; z-index:160;
-  width:min(520px,calc(100vw - 36px)); transform:translateX(-50%);
-  padding:1rem 1.05rem; box-sizing:border-box;
+  width:min(1120px,calc(100vw - 36px)); transform:translateX(-50%);
+  display:grid; grid-template-columns:minmax(0,1fr) auto; gap:.25rem 1rem;
+  align-items:center; padding:.8rem 1rem; box-sizing:border-box;
   background:#050505; color:var(--fg,#fafafa);
   border:1px solid var(--line-2,#262626); border-radius:12px;
   box-shadow:0 22px 70px rgba(0,0,0,.72);
@@ -14,23 +15,31 @@
 }
 .ads-consent[hidden]{ display:none; }
 .ads-consent:focus-visible{ outline:2px solid var(--ac,#9b8cff); outline-offset:3px; }
-.ads-consent p{ margin:0; color:var(--mid,#aaa); font-size:12px; line-height:1.55; letter-spacing:.01em; }
-.ads-consent .ads-consent-title{ margin-bottom:.4rem; color:var(--fg,#fafafa); font-size:13px; font-weight:700; }
+.ads-consent p{ margin:0; color:var(--mid,#aaa); font-size:11.5px; line-height:1.5; letter-spacing:.01em; }
+.ads-consent .ads-consent-title{ grid-column:1; margin-bottom:0; color:var(--fg,#fafafa); font-size:13px; font-weight:700; }
+.ads-consent #ads-consent-description{ grid-column:1; }
 .ads-consent a{ color:var(--ac,#9b8cff); text-underline-offset:3px; }
-.ads-consent > div{ display:flex; gap:.55rem; margin-top:.8rem; }
+.ads-consent > div{ grid-column:2; grid-row:1 / 3; display:flex; gap:.55rem; margin-top:0; }
 .ads-consent button{
-  min-height:44px; flex:1; padding:.62rem .75rem; cursor:pointer;
+  min-width:154px; min-height:44px; flex:1; padding:.62rem .75rem; cursor:pointer;
   border:1px solid var(--line-2,#262626); border-radius:8px;
   background:#0b0b0e; color:var(--fg,#fafafa);
-  font:600 12px/1.3 var(--mono,'JetBrains Mono',monospace);
+  font:600 12px/1.3 var(--mono,'JetBrains Mono',monospace); white-space:nowrap;
 }
 .ads-consent button:hover{ border-color:var(--ac,#9b8cff); }
 .ads-consent button:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
 .ads-consent-open .as-launch{ visibility:hidden; }
 
-@media (max-width:520px){
-  .ads-consent{ bottom:calc(10px + env(safe-area-inset-bottom,0px)); width:calc(100vw - 20px); padding:.9rem; }
-  .ads-consent > div{ flex-direction:column; }
+@media (max-width:700px){
+  .ads-consent{
+    bottom:calc(8px + env(safe-area-inset-bottom,0px)); width:calc(100vw - 16px);
+    grid-template-columns:1fr; padding:.75rem .8rem;
+  }
+  .ads-consent p{ font-size:11.5px; line-height:1.45; }
+  .ads-consent .ads-consent-title{ grid-column:1; margin-bottom:.15rem; font-size:12.5px; }
+  .ads-consent #ads-consent-description{ grid-column:1; }
+  .ads-consent > div{ grid-column:1; grid-row:auto; display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.55rem; }
+  .ads-consent button{ min-width:0; padding:.55rem .45rem; white-space:normal; }
 }
 
 .as-launch{

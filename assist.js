@@ -173,23 +173,23 @@
     var lang = ((document.documentElement.getAttribute('lang') || 'en').slice(0, 2)).toLowerCase();
     var copy = {
       en: {
-        title: 'Allow conversion measurement?',
-        body: 'If you allow, Google Ads may use cookies to connect an ad click with a quote request, booked call, phone click or WhatsApp click. Leon Builds does not intentionally send form entries or contact details with these events, and ad personalization stays off. Automatic customer-data collection must also remain disabled in Google Ads.',
+        title: 'Allow ad measurement?',
+        body: 'If you allow, Google Ads may use cookies to connect an ad click with a quote, booked call, phone click or WhatsApp click. Leon Builds does not intentionally send form entries or contact details with these events, and ad personalization stays off.',
         allow: 'Allow measurement', deny: 'No thanks', privacy: 'Privacy details'
       },
       es: {
         title: '\u00bfPermitir la medici\u00f3n de conversiones?',
-        body: 'Si aceptas, Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Leon Builds no env\u00eda intencionalmente datos del formulario ni datos de contacto con estos eventos, y la personalizaci\u00f3n de anuncios sigue desactivada. La recopilaci\u00f3n autom\u00e1tica de datos de clientes tambi\u00e9n debe seguir desactivada en Google Ads.',
+        body: 'Si aceptas, Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Leon Builds no env\u00eda intencionalmente datos del formulario ni datos de contacto con estos eventos, y la personalizaci\u00f3n de anuncios sigue desactivada.',
         allow: 'Permitir medici\u00f3n', deny: 'No, gracias', privacy: 'Detalles de privacidad'
       },
       pt: {
         title: 'Permitir medi\u00e7\u00e3o de convers\u00f5es?',
-        body: 'Se voc\u00ea permitir, o Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. A Leon Builds n\u00e3o envia intencionalmente dados do formul\u00e1rio nem dados de contato nesses eventos, e a personaliza\u00e7\u00e3o de an\u00fancios continua desativada. A coleta autom\u00e1tica de dados de clientes tamb\u00e9m deve permanecer desativada no Google Ads.',
+        body: 'Se voc\u00ea permitir, o Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. A Leon Builds n\u00e3o envia intencionalmente dados do formul\u00e1rio nem dados de contato nesses eventos, e a personaliza\u00e7\u00e3o de an\u00fancios continua desativada.',
         allow: 'Permitir medi\u00e7\u00e3o', deny: 'N\u00e3o, obrigado', privacy: 'Detalhes de privacidade'
       },
       zh: {
         title: '\u5141\u8bb8\u8f6c\u5316\u8861\u91cf\uff1f',
-        body: '\u5982\u679c\u5141\u8bb8\uff0cGoogle Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002Leon Builds \u4e0d\u4f1a\u6545\u610f\u5728\u8fd9\u4e9b\u4e8b\u4ef6\u4e2d\u53d1\u9001\u8868\u5355\u5185\u5bb9\u6216\u8054\u7cfb\u65b9\u5f0f\uff0c\u5e7f\u544a\u4e2a\u6027\u5316\u4ecd\u4fdd\u6301\u5173\u95ed\u3002Google Ads \u4e2d\u7684\u81ea\u52a8\u5ba2\u6237\u6570\u636e\u6536\u96c6\u4e5f\u5fc5\u987b\u4fdd\u6301\u5173\u95ed\u3002',
+        body: '\u5982\u679c\u5141\u8bb8\uff0cGoogle Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002Leon Builds \u4e0d\u4f1a\u6545\u610f\u5728\u8fd9\u4e9b\u4e8b\u4ef6\u4e2d\u53d1\u9001\u8868\u5355\u5185\u5bb9\u6216\u8054\u7cfb\u65b9\u5f0f\uff0c\u5e7f\u544a\u4e2a\u6027\u5316\u4ecd\u4fdd\u6301\u5173\u95ed\u3002',
         allow: '\u5141\u8bb8\u8861\u91cf', deny: '\u4e0d\u7528\u4e86', privacy: '\u9690\u79c1\u8be6\u60c5'
       }
     };
