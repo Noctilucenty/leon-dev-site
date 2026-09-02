@@ -964,8 +964,8 @@ def work_page():
 
       <article class="case-card" id="work-loqol">
         <figure class="case-media loqol-proof-grid">
-          <img src="/assets/proof/loqol-seller-questionnaire.png" alt="Loqol seller questionnaire with conflicting public-sewer and septic-tank answers saved" loading="lazy" width="1800" height="900">
-          <img src="/assets/proof/loqol-disclosure-pdf.png" alt="Three-page California disclosure PDF generated from saved Loqol answers" loading="lazy" width="1800" height="900">
+          <img src="/assets/proof/loqol-questionnaire.png" alt="Loqol seller questionnaire with conflicting public-sewer and septic-tank answers saved" loading="lazy" width="1800" height="900">
+          <img src="/assets/proof/loqol-filled-pdf.png" alt="Three-page California disclosure PDF generated from saved Loqol answers" loading="lazy" width="1800" height="900">
           <img class="loqol-flag" src="/assets/proof/loqol-contradiction.png" alt="Loqol flags the sewer and septic contradiction for review" loading="lazy" width="350" height="360">
         </figure>
         <div class="case-copy">
