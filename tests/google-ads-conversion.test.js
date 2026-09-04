@@ -25,7 +25,7 @@ function storage(seed = {}) {
   };
 }
 
-function harness(seed = {}, sharedSession) {
+function harness(seed = {}, sharedSession, windowSeed = {}) {
   const listeners = new Map();
   const scripts = [];
   const firstPartyBeacons = [];
@@ -91,6 +91,7 @@ function harness(seed = {}, sharedSession) {
     setTimeout,
     clearTimeout
   };
+  Object.assign(window, windowSeed);
   window.window = window;
 
   const context = {
@@ -137,6 +138,19 @@ function selectorTarget(match) {
     return result === true ? {} : result;
   };
 }
+
+test('homepage can own the single page view while legacy pages keep the automatic event', () => {
+  const legacy = harness();
+  assert.equal(legacy.firstPartyBeacons.length, 1);
+  assert.equal(legacy.window.__leonMeasurementPageViewSent, true);
+
+  const homepage = harness({}, undefined, {
+    __leonMeasurementOwnsPageView: true
+  });
+  assert.equal(homepage.firstPartyBeacons.length, 0);
+  homepage.window.leonEvt('page_view');
+  assert.equal(homepage.firstPartyBeacons.length, 1);
+});
 
 test('real Google Ads labels use basic consent mode and explicit empty user-data overrides', () => {
   for (const label of Object.values(LABELS)) assert.ok(SOURCE.includes(label), label);

@@ -1,6 +1,6 @@
 # Homepage publication
 
-The homepage is a static export of `Noctilucenty/freelance2` at commit `e9c7aa8c9b62f166652cacf7b59f97349f3a11c1`,
+The homepage is a static export of `Noctilucenty/freelance2` at commit `2520085fcd4bbac87600b179fa1614fd90e99cc4`,
 branch `codex/initial-site`. Editable source: `/Users/leon/Desktop/dev/freelance2`.
 
 The Render static site `leonkelvinli` (`srv-d9s1dhon74is73fonuag`) serves

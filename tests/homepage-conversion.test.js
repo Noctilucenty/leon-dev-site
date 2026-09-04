@@ -12,6 +12,11 @@ const html = read('index.html');
 const css = read('styles.css');
 const js = read('app.js');
 const assist = read('assist.js');
+const homepageClientJs = fs
+  .readdirSync(path.join(ROOT, 'homepage/_next/static/chunks'))
+  .filter(file => file.endsWith('.js'))
+  .map(file => read(path.join('homepage/_next/static/chunks', file)))
+  .join('\n');
 
 function attributes(tag) {
   const result = Object.create(null);
@@ -414,4 +419,16 @@ test('homepage suppresses only the floating assistant launcher and close cannot 
   assert.match(assist, /function close\(\)\s*\{\s*panel\.hidden = true; launch\.hidden = !launcherEnabled;/);
   assert.match(assist, /closest\('\[data-assist-open\]'\)/, 'explicit, contextual assistant triggers remain supported');
   assert.doesNotMatch(read('quote.html'), /data-assist-open/, 'quote page keeps the two-field inquiry path free of a competing helper');
+});
+
+test('homepage loads the versioned consent and attribution bridge exactly once', () => {
+  assert.match(homepageClientJs, /\/assist\.js\?v=20260904-homepage/);
+  assert.match(homepageClientJs, /__leonMeasurementOwnsPageView/);
+  assert.match(homepageClientJs, /__leonMeasurementPageViewSent/);
+  assert.match(homepageClientJs, /leon_analytics_session/);
+  for (const field of ['utmTerm', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
+    assert.ok(homepageClientJs.includes(field), `homepage bridge preserves ${field}`);
+  }
+  assert.match(assist, /if \(window\.__leonMeasurementOwnsPageView\) return;/);
+  assert.match(assist, /window\.__leonMeasurementPageViewSent = true;/);
 });

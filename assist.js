@@ -457,8 +457,14 @@
   }
   window.leonEvt = evt;
 
-  // one page_view per load — this is what the /api/traffic sources table counts
-  run(function () { evt('page_view'); });
+  // one page_view per load — this is what the /api/traffic sources table counts.
+  // The current homepage owns this call so it can fall back cleanly if this
+  // bridge fails to load; legacy pages keep the established automatic event.
+  run(function () {
+    if (window.__leonMeasurementOwnsPageView) return;
+    evt('page_view');
+    window.__leonMeasurementPageViewSent = true;
+  });
 
   // declarative events: any element with data-evt fires on click
   run(function () {
