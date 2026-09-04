@@ -39,6 +39,13 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > and September 3 end date unchanged. The clean RSA and ad group are eligible;
 > both older RSAs remain paused. Billing and privacy checks passed. This is an
 > activation receipt, not evidence of new customers or additional spend approval.
+>
+> **Latest live state — homepage destinations saved 2026-09-04 PT:** see
+> [`homepage-destination-update-2026-09-04.md`](homepage-destination-update-2026-09-04.md).
+> All three Google RSAs now use the canonical homepage while preserving their
+> existing attribution setup. The campaign's September 3 end date was not
+> extended, so it is not serving. The Leon Builds Meta promotions remain Off and
+> have internal profile/message destinations rather than website final URLs.
 
 ## Safety contract
 
