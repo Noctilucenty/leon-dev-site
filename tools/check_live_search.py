@@ -124,11 +124,14 @@ def _validate_page(html: str, url: str, origin: str) -> None:
         parser.close()
     except (UnicodeError, ValueError) as exc:
         raise IndexNowError(f"cannot parse live page {url}: {exc}") from exc
-    if parser.canonicals != [url]:
+    # Vinext serializes the origin-only homepage canonical without the optional
+    # trailing slash. That URL is identical to the sitemap's explicit root `/`.
+    canonicals = [f"{origin}/" if value == origin else value for value in parser.canonicals]
+    if canonicals != [url]:
         raise IndexNowError(
             f"live page {url} canonical tags are {parser.canonicals!r}, expected exactly {[url]!r}"
         )
-    validate_public_url(parser.canonicals[0], origin)
+    validate_public_url(canonicals[0], origin)
     if parser.noindex:
         raise IndexNowError(f"live page {url} has noindex in {', '.join(parser.noindex)}")
 

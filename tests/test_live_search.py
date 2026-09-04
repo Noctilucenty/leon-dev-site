@@ -140,6 +140,18 @@ class LiveSearchTests(unittest.TestCase):
         )
         self.assertEqual(result, {"sitemap_urls": 2, "pages_checked": 2})
 
+    def test_origin_only_homepage_canonical_matches_explicit_root_slash(self) -> None:
+        homepage = FakeResponse(
+            200,
+            f'<link rel="canonical" href="{ORIGIN}"><p>home</p>',
+            f"{ORIGIN}/",
+            "text/html; charset=utf-8",
+        )
+        result = check_live_search.check_live_foundations(
+            opener=self.site_opener({f"{ORIGIN}/": homepage}), root=self.root
+        )
+        self.assertEqual(result, {"sitemap_urls": 2, "pages_checked": 2})
+
     def test_live_foundations_fail_closed_on_crawl_signals(self) -> None:
         cases = {
             "wrong canonical": FakeResponse(
