@@ -153,6 +153,12 @@ class ChangedUrlTests(GitFixture):
 
 
 class ProtocolTests(unittest.TestCase):
+    def test_origin_only_root_canonical_normalizes_to_slash(self) -> None:
+        self.assertEqual(
+            indexnow.validate_public_url("https://leonbuilds.org"),
+            "https://leonbuilds.org/",
+        )
+
     def test_payload_rejects_off_host_and_duplicates(self) -> None:
         key = KEY
         with self.assertRaises(indexnow.IndexNowError):

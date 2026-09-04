@@ -103,6 +103,7 @@ def validate_public_url(url: str, origin: str = SITE_ORIGIN) -> str:
         parsed = urllib.parse.urlsplit(url.strip())
     except ValueError as exc:
         raise IndexNowError(f"invalid public URL: {url!r}") from exc
+    path = parsed.path or "/"
     if (
         parsed.scheme != "https"
         or parsed.netloc.lower() != expected.netloc
@@ -110,10 +111,10 @@ def validate_public_url(url: str, origin: str = SITE_ORIGIN) -> str:
         or parsed.password
         or parsed.query
         or parsed.fragment
-        or not parsed.path.startswith("/")
+        or not path.startswith("/")
     ):
         raise IndexNowError(f"URL is not a clean same-origin HTTPS URL: {url!r}")
-    return urllib.parse.urlunsplit(("https", expected.netloc, parsed.path or "/", "", ""))
+    return urllib.parse.urlunsplit(("https", expected.netloc, path, "", ""))
 
 
 def parse_sitemap(text: str, origin: str = SITE_ORIGIN, label: str = "sitemap.xml") -> dict[str, str]:
