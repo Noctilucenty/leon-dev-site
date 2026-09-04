@@ -126,8 +126,8 @@ def check_url(row, source, medium, errors, prefix):
     query = parse_qs(parsed.query, keep_blank_values=True)
     if parsed.scheme != "https" or parsed.netloc != "leonbuilds.org":
         errors.append(f"{prefix}: final URL must use https://leonbuilds.org")
-    if parsed.path.rstrip("/") != "/missed-lead-recovery":
-        errors.append(f"{prefix}: final URL must use /missed-lead-recovery")
+    if parsed.path != "/":
+        errors.append(f"{prefix}: final URL must use the canonical root /")
     expected = {
         "utm_source": row.get("utm_source", ""),
         "utm_medium": row.get("utm_medium", ""),
@@ -191,7 +191,7 @@ def check_readme(errors):
         "$100 total across 10 calendar", "Meta receives $0",
         "not $100 per platform", "not launch authorization",
         "google-search-app-development-draft.csv", "HOLD_NO_BUDGET",
-        "Leon Builds business advertising only", "/services/mobile-apps",
+        "Leon Builds business advertising only", "Canonical root landing page",
     ):
         if required not in text:
             errors.append(f"README.md: missing required contract text {required!r}")
@@ -364,8 +364,8 @@ def check_app_url(row, errors, prefix):
     query = parse_qs(parsed.query, keep_blank_values=True)
     if parsed.scheme != "https" or parsed.netloc != "leonbuilds.org":
         errors.append(f"{prefix}: final URL must use https://leonbuilds.org")
-    if parsed.path.rstrip("/") != "/services/mobile-apps":
-        errors.append(f"{prefix}: final URL must use /services/mobile-apps")
+    if parsed.path != "/":
+        errors.append(f"{prefix}: final URL must use the canonical root /")
     expected = {
         "utm_source": row.get("utm_source", ""),
         "utm_medium": row.get("utm_medium", ""),
@@ -429,7 +429,7 @@ def check_app_google(errors):
     if account and account.get("text") != "Leon Builds business advertising only":
         errors.append(f"{label}: Leon Builds-only account boundary is required")
     landing = one_setting(rows, "landing_page", errors, label)
-    if landing and landing.get("text") != "https://leonbuilds.org/services/mobile-apps":
+    if landing and landing.get("text") != "https://leonbuilds.org/":
         errors.append(f"{label}: canonical landing-page map changed")
 
     keywords = [row for row in rows if row.get("record_type") == "keyword"]

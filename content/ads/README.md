@@ -89,20 +89,19 @@ python3 tools/check_ads_pack.py
 - `economics-calculator.csv` — the four owner-approved test controls, blank
   business-economics inputs, spreadsheet formulas, and stop-rule templates.
 
-## Canonical offer and landing page
+## Canonical root landing page
 
-Every eligible ad resolves to:
+Every Google and Meta ad destination in this pack resolves to:
 
-`https://leonbuilds.org/missed-lead-recovery`
+`https://leonbuilds.org/`
 
-The page describes a **Contractor Lead Recovery System**: a focused contractor
-website or lead page, estimate intake, prompt acknowledgment, up to two
-follow-ups, one owner handoff, and a basic event log. The published starting
-scope is $1,500, subject to a compatibility check and written fixed quote. The
-implementation window is 10 business days only after scope, access, compatible
-tools, and approved copy are ready. Ads must preserve those boundaries and must
-not recast the system as lead generation, ad management, a call center, or a
-revenue promise.
+The homepage presents Leon Builds' current website and automation offer, including
+the Website + Automation starting point of $1,500. Contractor ad copy retains its
+narrower estimate-intake, acknowledgment, follow-up, and owner-handoff scope.
+Changing the destination does not waive copy/landing review or turn a draft into
+launch authorization. Ads must preserve their stated boundaries and must not
+recast the work as lead generation, ad management, a call center, or a revenue
+promise.
 
 The first test may target Bay Area contractors, but the service itself is
 available remotely across the United States. Every auto-shop and restaurant row
@@ -111,17 +110,16 @@ separately reviewed matching offer and landing page.
 
 ## App-development lane — held for a separate decision
 
-The separate app Search draft maps both ad groups only to:
+The separate app Search draft also maps both ad groups only to:
 
-`https://leonbuilds.org/services/mobile-apps`
+`https://leonbuilds.org/`
 
-That existing service page states the current published starting point of
-**$3,500**, describes iOS and Android development, backend and account scope,
-store submission, fixed written quoting, ownership boundaries, and truthful
-live App Store product proof. The ad copy does not name the proof product or
-claim that it produced client revenue, downloads, bookings, or another business
-result. Before any future test, the page still needs a fresh mobile and desktop
-visual review against the exact ad combinations.
+The homepage does not currently present a dedicated app-development offer or the
+draft's $3,500 starting point. Every app row therefore remains `HOLD_NO_BUDGET`;
+the destination change does not make either RSA eligible. Before any future test,
+the landing experience and exact ad combinations need a fresh mobile, desktop,
+offer, and truth review. The ad copy must not claim client revenue, downloads,
+bookings, or another business result.
 
 The two held intent groups are deliberately narrow:
 
