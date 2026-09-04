@@ -25,6 +25,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "dist"
 SITE_HOSTS = {"leonbuilds.org", "www.leonbuilds.org"}
 SITE_VERSION_FILE = PurePosixPath("site-version.txt")
+HOMEPAGE_DIRECTORY = "homepage"
+HOMEPAGE_ASSETS = {
+    "_next": {".css", ".js", ".woff", ".woff2"},
+    "images": {".ico", ".jpeg", ".jpg", ".png", ".svg", ".webp"},
+}
 
 PUBLIC_FILES = (
     "styles.css",
@@ -44,6 +49,7 @@ FORBIDDEN_TOP_LEVEL = {
     ".git",
     "content",
     "data",
+    "homepage",
     "node_modules",
     "research",
     "server",
@@ -276,6 +282,55 @@ def discover_resources(
                 add_resource(manifest, target, scan_queue)
 
 
+def overlay_homepage(manifest: dict[PurePosixPath, Path]) -> None:
+    """Publish the reviewed static export without widening the public root.
+
+    Include every allowed chunk/font because module imports are not HTML asset
+    references. Build metadata, server output and arbitrary export files never
+    become public. Keep the legacy resource manifest for the remaining pages.
+    """
+    directory = ROOT / HOMEPAGE_DIRECTORY
+    if directory.is_symlink() or not directory.is_dir():
+        raise StaticBuildError("homepage must be a real directory containing the reviewed export")
+    for name in ("index.html", "favicon.svg"):
+        manifest[PurePosixPath(name)] = require_source(f"{HOMEPAGE_DIRECTORY}/{name}")
+    for name in HOMEPAGE_ASSETS:
+        asset_directory = directory / name
+        if asset_directory.is_symlink() or not asset_directory.is_dir():
+            raise StaticBuildError(f"homepage asset directory is missing or unsafe: {name}")
+
+    for source in sorted(directory.rglob("*")):
+        relative = PurePosixPath(source.relative_to(directory).as_posix())
+        if source.is_symlink():
+            raise StaticBuildError(f"homepage source may not be a symlink: {relative}")
+        if any(part.startswith(".") for part in relative.parts):
+            raise StaticBuildError(f"hidden path is not a homepage asset: {relative}")
+        if relative.as_posix() in {"index.html", "favicon.svg"}:
+            if not source.is_file():
+                raise StaticBuildError(f"homepage source must be a file: {relative}")
+            continue
+        allowed_suffixes = HOMEPAGE_ASSETS.get(relative.parts[0])
+        if allowed_suffixes is None:
+            raise StaticBuildError(f"unexpected homepage export path: {relative}")
+        if source.is_dir():
+            continue
+        if not source.is_file() or relative.suffix.lower() not in allowed_suffixes:
+            raise StaticBuildError(f"unsupported homepage asset: {relative}")
+        if relative in manifest:
+            raise StaticBuildError(f"homepage asset would overwrite a legacy resource: {relative}")
+        manifest[relative] = require_source(f"{HOMEPAGE_DIRECTORY}/{relative.as_posix()}")
+
+    # Absolute resource URLs in the export resolve in the combined publication,
+    # not in its source storage directory. Fail before writing any missing asset.
+    parser = ResourceParser()
+    parser.feed(manifest[PurePosixPath("index.html")].read_text(encoding="utf-8"))
+    parser.close()
+    for value in parser.resources:
+        relative = local_resource(value, PurePosixPath("index.html"))
+        if relative is not None and relative not in manifest:
+            raise StaticBuildError(f"homepage references an unpublished resource: {relative}")
+
+
 def build_manifest() -> dict[PurePosixPath, Path]:
     pages = sitemap_pages()
     manifest: dict[PurePosixPath, Path] = {page: require_source(page) for page in pages}
@@ -291,6 +346,7 @@ def build_manifest() -> dict[PurePosixPath, Path]:
             manifest[relative] = require_source(relative)
 
     discover_resources(manifest, pages)
+    overlay_homepage(manifest)
     for relative in manifest:
         if relative.parts[0] in FORBIDDEN_TOP_LEVEL or relative.name in FORBIDDEN_ROOT_NAMES:
             raise StaticBuildError(f"forbidden path entered static manifest: {relative.as_posix()}")

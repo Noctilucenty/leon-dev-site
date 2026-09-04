@@ -4,7 +4,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const ROOT = path.resolve(__dirname, '..');
-const read = (file) => fs.readFileSync(path.join(ROOT, file), 'utf8');
+// The root source remains available for legacy page generation. Assertions must
+// inspect the reviewed export that the publisher actually serves at /.
+const read = (file) => fs.readFileSync(
+  path.join(ROOT, file === 'index.html' ? 'homepage/index.html' : file), 'utf8'
+);
 const text = (html) => html
   .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
   .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
@@ -22,7 +26,7 @@ function publicHtmlFiles() {
       const absolute = path.join(directory, entry.name);
       const relative = path.join(prefix, entry.name);
       if (entry.isDirectory()) {
-        if (['assets', 'content', 'data', 'node_modules', 'private', 'research', 'server', 'tests', 'tools'].includes(entry.name)) continue;
+        if (['assets', 'content', 'data', 'homepage', 'node_modules', 'private', 'research', 'server', 'tests', 'tools'].includes(entry.name)) continue;
         visit(absolute, relative);
       } else if (entry.name.endsWith('.html')) {
         out.push(relative);
@@ -48,17 +52,29 @@ function schemaNodes(html) {
   });
 }
 
-test('homepage metadata and first screen state the focused acquisition offer', () => {
+test('published homepage metadata, services, and inquiry path state the current offer', () => {
   const html = read('index.html');
-  assert.match(html, /<title>Small Business Websites &amp; Lead Follow-Up \| Leon Builds<\/title>/i);
-  assert.match(html, /<meta name="description" content="Leon Builds creates fast business websites, lead-follow-up systems, and workflow automation for small businesses in California and across the U\.S\.">/i);
-  assert.match(text(html), /websites \+ lead follow-up for small businesses/i);
-  assert.match(text(html), /turn website visitors into calls, bookings, and quote requests/i);
+  const visible = text(html);
+  assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
+  assert.match(html, /<meta\b[^>]*name="description"[^>]*content="[^\"]*Websites from \$300\.[^\"]*Automation from \$500\./i);
+  assert.match(html, /<link\b[^>]*rel="canonical"[^>]*href="https:\/\/leonbuilds\.org\/?"/i);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 1);
+  assert.match(visible, /websites that/i);
+  assert.match(visible, /small businesses/i);
   assert.ok(html.indexOf('id="services"') < html.indexOf('id="work"'));
-  assert.match(html, /href="\/quote"[^>]*data-evt="hero_quote_click"/i);
-  assert.match(html, /href="\/work"[^>]*data-evt="hero_work_click"/i);
-  assert.match(text(html), /website \+ follow-up from \$1,500/i);
-  assert.doesNotMatch(text(html), /small-business web design · custom software/i);
+  assert.match(html, /href="#start"/i);
+  assert.match(html, /href="#work"/i);
+  assert.match(html, /id="start"/i);
+  assert.match(html, /<form\b/i);
+  assert.match(html, /id="quote-email"[^>]*type="email"|type="email"[^>]*id="quote-email"/i);
+  assert.match(html, /id="quote-problem"/i);
+  for (const price of ['$300', '$1,500', '$500']) {
+    assert.match(visible, new RegExp('\\$\\s*' + price.slice(1)), `homepage includes the published ${price} starting floor`);
+  }
+  const nodes = schemaNodes(html);
+  assert.equal(nodes.find(node => node['@id'] === 'https://leonbuilds.org/#business')?.['@type'], 'Organization');
+  assert.equal(nodes.find(node => node['@id'] === 'https://leonbuilds.org/#leon')?.['@type'], 'Person');
+  assert.doesNotMatch(html, /"@type"\s*:\s*"ProfessionalService"/i);
 });
 
 test('work archive is indexable, canonical, and honest about proof status', () => {
@@ -240,7 +256,7 @@ test('app-development landing page is clear, credible, and quote-first', () => {
 });
 
 test('app service has natural authority links from relevant proof and identity pages', () => {
-  assert.match(read('index.html'), /href="\/services\/mobile-apps"[^>]*data-evt="service_mobile_apps_click"/i);
+  assert.match(read('index.html'), /href="(?:https:\/\/leonbuilds\.org)?\/services\/mobile-apps"/i);
   assert.match(read('work.html'), /work-curio-public[\s\S]*href="\/services\/mobile-apps"/i);
   assert.match(read('about.html'), /shipped product[\s\S]*href="\/services\/mobile-apps"/i);
 });

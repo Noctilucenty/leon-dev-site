@@ -7,7 +7,7 @@ Positioning: based in California, building for businesses across the U.S.
 The missed-lead sprint is an intentionally Bay Area-targeted acquisition test;
 the rest of the catalog remains nationwide.
 
-**Style references.** [ultracontext.com](https://ultracontext.com) for structure and motion —
+**Legacy subpage style references.** [ultracontext.com](https://ultracontext.com) for structure and motion —
 floating nav pill, bracket-hover links, an orbit graphic in the hero, alternating
 project rows, three pricing tiers, a multi-column footer.
 [impossibl.com](https://impossibl.com) for the mood — pure black, mono, lowercase,
@@ -15,7 +15,8 @@ huge side rails, ordered-dither pixel canvases, `details` FAQ. The accent is a
 slightly purple `#9b8cff`, which is the only colour on the page.
 
 ```
-index.html          the homepage — hand-written; 12 sections incl. problem cards + trust
+homepage/           reviewed freelance2 static homepage export; replaces / at build time
+index.html          legacy homepage source retained for the existing asset manifest
 services/*.html     GENERATED — 9 service pages + index (tools/build_pages.py)
 industries/*.html   GENERATED — 10 industry pages + index
 missed-lead-recovery.html  GENERATED — focused 10-business-day acquisition offer
@@ -29,10 +30,13 @@ tools/build_pages.py  regenerates everything marked GENERATED (edit its in-file 
 render.yaml         blueprint for the API service (leon-assist)
 ```
 
-The **site source** is still plain static files with no bundler. Deployment uses
-`tools/build_static.py` to assemble an explicit public allowlist in `dist/`; the
-**API** is the only runtime with dependencies, and it deploys as a separate Render
-web service.
+The **homepage source** lives in the private `Noctilucenty/freelance2` repository
+(local path `~/Desktop/dev/freelance2`). Its React/Vinext static export is stored
+in `homepage/`. The remaining pages retain their existing plain static sources.
+`tools/build_static.py` assembles the legacy public allowlist, then overlays only
+the reviewed homepage, favicon, browser chunks, fonts and images into `dist/`.
+The **API** remains a separate Render web service; this publication branch does
+not change its runtime, data or secrets. See `HOMEPAGE_DEPLOYMENT.md`.
 
 ## Run it
 
@@ -48,7 +52,8 @@ npm run check                           # content, site-integrity and server reg
 
 ## Two deployments, one repo
 
-1. **Static site:** Render static site → leonbuilds.org, auto-deploys on push.
+1. **Static site:** Render `leonkelvinli` → leonbuilds.org, publishing the
+   `codex/freelance2-homepage` branch. The API continues to use `main`.
    Set **Build Command** to `npm run build:static` and **Publish Directory** to
    `dist`. Never publish the repository root `.`. Pretty URLs serve
    `/services/websites` from `dist/services/websites.html`.

@@ -22,7 +22,7 @@ SITE_ORIGIN = "https://leonbuilds.org"
 INTERNAL_HOSTS = {"leonbuilds.org", "www.leonbuilds.org"}
 # Generated publish output mirrors every canonical source page and must never
 # be counted as another source tree when developers preview a production build.
-SKIP_PARTS = {".git", "dist", "node_modules"}
+SKIP_PARTS = {".git", "dist", "homepage", "node_modules"}
 VERIFICATION_FILE = re.compile(r"^google[a-z0-9]+\.html$", re.I)
 
 
@@ -50,6 +50,14 @@ class Page:
     def label(self) -> str:
         return self.file.relative_to(ROOT).as_posix()
 
+    @property
+    def source_file(self) -> Path:
+        # Keep the logical root route while validating the exact HTML published
+        # by build_static.py's homepage overlay, including its links and claims.
+        if self.file == ROOT / "index.html":
+            return ROOT / "homepage" / "index.html"
+        return self.file
+
 
 class SiteHTMLParser(HTMLParser):
     def __init__(self, file: Path):
@@ -76,6 +84,10 @@ class SiteHTMLParser(HTMLParser):
         elif tag == "link":
             rels = {part.lower() for part in attrs.get("rel", "").split()}
             href = attrs.get("href", "").strip()
+            # The static exporter serializes an origin-only root URL without a
+            # slash. It is the same root as the sitemap's explicit / spelling.
+            if href == SITE_ORIGIN:
+                href += "/"
             if "canonical" in rels:
                 self.page.canonicals.append((href, line))
             if "alternate" in rels and attrs.get("hreflang"):
@@ -120,7 +132,7 @@ def html_files() -> list[Path]:
 def parse_page(file: Path, errors: list[str]) -> Page:
     parser = SiteHTMLParser(file)
     try:
-        parser.feed(file.read_text(encoding="utf-8"))
+        parser.feed(parser.page.source_file.read_text(encoding="utf-8"))
         parser.close()
     except (OSError, UnicodeError) as exc:
         errors.append(f"{file.relative_to(ROOT)}: cannot read HTML: {exc}")
@@ -411,7 +423,7 @@ def validate_truth_claims(pages: list[Page], errors: list[str]) -> None:
     )
     for page in pages:
         try:
-            lowered = page.file.read_text(encoding="utf-8").lower()
+            lowered = page.source_file.read_text(encoding="utf-8").lower()
         except (OSError, UnicodeError) as exc:
             errors.append(f"{page.label}: cannot check public claims: {exc}")
             continue
