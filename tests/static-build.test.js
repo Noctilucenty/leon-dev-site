@@ -118,6 +118,7 @@ test('static build publishes only pages and required referenced assets', () => {
   for (const relative of [
     'content/publication-ledger.csv', 'content/posts.md',
     'tests/static-build.test.js', 'tools/build_static.py',
+    'docs/seo/SEO_AUDIT.md', 'docs/seo/TOP_100_SEO_OPPORTUNITIES.csv', 'content/seo/publication.json',
     'server/index.js', 'data/events.jsonl', 'research',
     'package.json', 'package-lock.json', 'README.md', 'render.yaml', '.env',
     'assets/facebook.png', 'assets/listings/fb_en_1hook.png',

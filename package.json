@@ -11,9 +11,11 @@
     "pages": "python3 tools/build_pages.py",
     "build:static": "python3 tools/build_static.py",
     "indexnow:check": "python3 tools/indexnow.py",
+    "seo:check": "python3 tools/seo_system.py check && python3 -m unittest tests/test_seo_system.py",
+    "seo:opportunities": "python3 tools/seo_system.py opportunities --output docs/seo/TOP_100_SEO_OPPORTUNITIES.csv",
     "posts": "python3 tools/make_posts.py",
     "social": "python3 tools/make_social.py",
-    "check": "python3 tools/make_posts.py --check && python3 tools/check_prices.py && python3 tools/check_copy.py && python3 tools/check_publication_ledger.py && python3 tools/check_outbound_pack.py && python3 tools/check_ads_pack.py && python3 tools/check_testimonial_release.py && python3 tools/check_site.py && python3 tools/build_static.py --check && python3 -m unittest tests/test_acquisition_report.py tests/test_indexnow.py tests/test_live_search.py && node --check assist.js && node --test tests/*.test.js"
+    "check": "python3 tools/make_posts.py --check && python3 tools/check_prices.py && python3 tools/check_copy.py && python3 tools/check_publication_ledger.py && python3 tools/check_outbound_pack.py && python3 tools/check_ads_pack.py && python3 tools/check_testimonial_release.py && python3 tools/check_site.py && python3 tools/build_static.py --check && python3 tools/seo_system.py check && python3 -m unittest tests/test_seo_system.py tests/test_acquisition_report.py tests/test_indexnow.py tests/test_live_search.py && node --check assist.js && node --test tests/*.test.js"
   },
   "dependencies": {
     "express": "^4.21.2",

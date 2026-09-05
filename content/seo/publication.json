@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "legacy_snapshot": "49 byte-verified live sitemap URLs at 0c983d4bb3ea94af16b3afe5817f7c143a9db338, September 5, 2026. Grandfathered, not freshly scored.",
+  "legacy_paths": ["/","/about","/call","/work","/work/allcpr-site-intelligence","/work/curio-app","/work/beastypages-website","/guides/contractor-inquiry-workflow","/missed-lead-recovery","/technical-build-partner","/quote","/privacy","/es","/pt","/zh","/services/","/services/websites","/services/mobile-apps","/services/ai-chatbots","/services/ai-phone-agents","/services/business-automation","/services/custom-software","/services/booking-systems","/services/business-dashboards","/services/seo","/industries/","/industries/restaurants","/industries/contractors","/industries/automotive","/industries/healthcare","/industries/real-estate","/industries/logistics","/industries/gyms","/industries/retail","/industries/professional-services","/industries/startups","/es/automatizacion","/es/pedidos-en-linea","/es/pagina-web","/pt/automacao","/pt/pedidos-online","/pt/criar-site","/zh/zidonghua","/zh/zaixian-diandan","/zh/zuo-wangzhan","/es/agendar","/pt/agendar","/zh/yuyue","/reviews"],
+  "reviews": [
+    {
+      "path": "/guides/website-builder-or-custom-software",
+      "decision": "INDEX",
+      "source_file": "content/seo/buyer-guide.json",
+      "sha256": "e9f03da0a9b2c3e74dc7a3107f7c42426fe062fd192b4cf9343739ca336c219a",
+      "rendered_file": "guides/website-builder-or-custom-software.html",
+      "rendered_sha256": "4d3efa2a064036bf894df638b01536cbd4238bed665865b29bb98bad4bb9540d",
+      "reviewed_at": "2026-09-05",
+      "producer": "/root/leonbuilds_seo_system",
+      "reviewer": "/root",
+      "review_type": "In-chat editorial assessment plus independent root review of the full source at this hash. Root confirmed 9/10 clarity, usefulness, trust and decision support; no blocking copy changes. Not a paid model review or measured performance.",
+      "scores": {"SearchIntentMatch":9,"InformationGain":9,"SourceQuality":9,"Originality":9,"Completeness":9,"Readability":9,"Curiosity":9,"FactualConfidence":9,"DuplicateSafety":9,"ConversionFit":9},
+      "rationale": "Answers a buyer decision distinct from hiring a website developer. Gives a concrete request-path example and reusable scope checklist; recommends smaller existing tools; links actual project proof and discloses commercial interest. No vendor ranking, external specification, market statistic or guaranteed outcome. Main uncertainty is search demand, not the usefulness of the decision explanation."
+    }
+  ]
+}

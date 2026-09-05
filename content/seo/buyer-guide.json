@@ -1,0 +1,87 @@
+{
+  "id": "website-builder-or-custom-software",
+  "path": "/guides/website-builder-or-custom-software",
+  "title": "Website Builder or Custom Software? Choose the Smallest Build",
+  "description": "A plain-language guide to choosing a website builder, connecting tools you already use, or commissioning custom software—with a checklist for your first quote.",
+  "published_at": "2026-09-05",
+  "updated_at": "2026-09-05",
+  "author": "Leon Kelvin Li",
+  "answer": "Use a website builder when you mainly need people to understand your business and contact you. Connect your existing tools when the problem is repetitive work between them. Consider custom software when an important part of your business cannot work well with either option.",
+  "intro": "A new website can look impressive and still leave the real problem untouched. If quote requests already arrive but nobody owns the reply, changing the homepage will not fix the handoff. Start by naming the job that is failing—not the technology you want to buy.",
+  "choices": [
+    {
+      "name": "A website builder or a focused website",
+      "fits": "Customers need to see your services, trust your work, and contact, book or buy from you.",
+      "test": "Can a standard page, form or booking tool complete the whole customer journey? If yes, start there.",
+      "watch": "Check who can edit the site, what the platform costs, and whether you can move your content later. Paying someone to set up a builder is still a valid option."
+    },
+    {
+      "name": "An automation between existing tools",
+      "fits": "The right tools are already in place, but someone keeps copying information or chasing the next step.",
+      "test": "Write one example: when a request arrives, it should appear in the right place and notify the responsible person.",
+      "watch": "Decide what happens when the connection fails, what must stop on a reply, and who checks exceptions. A connection is not a complete process."
+    },
+    {
+      "name": "Custom software",
+      "fits": "Your team needs its own rules, permissions, shared records or approval steps that existing tools cannot handle well.",
+      "test": "Show a real task that fails with the tools you have. Then ask for the smallest working version that solves that task.",
+      "watch": "Budget for maintenance, backups, access control and handover—not just the first screen. Custom does not automatically mean better."
+    }
+  ],
+  "sections": [
+    {
+      "id": "find-the-bottleneck",
+      "heading": "Follow one customer request all the way through",
+      "paragraphs": [
+        "Imagine a customer asking a contractor for an estimate. First they decide whether the business does their type of work. Then they send their details. Someone needs to receive those details, take responsibility and reply.",
+        "If the customer cannot find the request button, the website needs attention. If the request lands in an unmonitored inbox, the handoff needs attention. If staff must compare complex job rules across several systems, the team may need a small internal tool.",
+        "The same business can need all three eventually. It does not need to buy all three at once. Fix the step that blocks the next useful action."
+      ]
+    },
+    {
+      "id": "compare-quotes",
+      "heading": "Compare what the quote finishes, not how many features it lists",
+      "paragraphs": [
+        "Two quotes for a website may cover different jobs. One may include pages and a contact link. Another may include customer accounts, stored requests, permissions and staff tools. The name of the project does not tell you the scope.",
+        "Ask each provider to describe the same finished journey: what the customer does, what your team receives, and what happens if a step fails. Include the accounts, recurring provider fees, content editing and support that remain your responsibility.",
+        "A useful proposal also says what is not included. That makes a smaller first version easier to agree on and a later change easier to price."
+      ]
+    },
+    {
+      "id": "what-to-send",
+      "heading": "Bring a real example to the first conversation",
+      "paragraphs": [
+        "Instead of asking for an AI-powered platform, try: “Customers fill out this form. We copy the details into this sheet. Sometimes two people reply, and sometimes nobody does. We need one person to own each request.”",
+        "That gives a developer something to inspect. It may lead to a form repair, an automation or a custom tool. The solution should earn its complexity by removing a specific problem."
+      ]
+    }
+  ],
+  "checklist": [
+    "The person who needs to do the task.",
+    "One real example of the task from start to finish, with private details removed.",
+    "The exact step that is slow, confusing or unreliable.",
+    "The tools and accounts you already use.",
+    "What would count as a working first version.",
+    "Who will own the system and maintain it after handover."
+  ],
+  "boundary": "This is a buyer decision guide, not a vendor ranking or a promise that software will bring more customers. A clearer workflow cannot replace demand, a useful offer or a team that responds. Leon Builds sells implementation services, so the recommendations are not an independent product review.",
+  "evidence": [
+    {
+      "path": "/work/beastypages-website",
+      "label": "A customer-facing website example",
+      "note": "Inspect the Beasty Pages catalog and ordering design. Its payment and kitchen progression are simulations, not a live ordering result."
+    },
+    {
+      "path": "/work/allcpr-site-intelligence",
+      "label": "An internal software example",
+      "note": "See how ALLCPR's location-planning system organizes a specific business decision, with human validation kept in the process."
+    },
+    {
+      "path": "/guides/contractor-inquiry-workflow",
+      "label": "Check an inquiry handoff",
+      "note": "Use the contractor guide to inspect what happens after a request is submitted."
+    }
+  ],
+  "next_step": "If the right next step is still unclear, send the current website and the example task. Ask Leon for a focused review before committing to a larger build.",
+  "cta": {"path": "/#start", "label": "Ask for a website review"}
+}

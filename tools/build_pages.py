@@ -9,9 +9,11 @@ Anything inside services/ and industries/ is overwritten on every run.
 Render static sites serve pretty URLs, so /services/websites -> websites.html.
 """
 import html, json, os, datetime, subprocess
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from testimonial_gate import load_testimonial_release
+from seo_system import assert_publication_paths, related_html, read_json as seo_json, validate_topics
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = "https://leonbuilds.org"
@@ -608,6 +610,8 @@ def service_page(s):
         else ''
     )
     related = partner_related + ''.join(f'<a class="rel" href="/services/{r}">{e(next(x["name"] for x in SERVICES if x["slug"]==r))} →</a>' for r in s["related"])
+    decision_guide = related_html(path)
+    decision_guide = '\n    ' + decision_guide if decision_guide else ''
     starter = f'i\'m looking at {s["name"]} — here\'s my situation: '
     quote_first = s["slug"] == "mobile-apps"
     service_label = "Custom iOS and Android app development" if quote_first else f'leon builds --services {s["slug"]}'
@@ -712,7 +716,7 @@ def service_page(s):
   <div class="rail">
     <p class="label">{e(faq_label)}</p>
     <h2 class="page-section-title">{e(faq_heading)}</h2>
-    {faq_html(s["faqs"])}
+    {faq_html(s["faqs"])}{decision_guide}
     <p class="label" style="margin-top:3rem">related</p>
     <div class="relrow">{related}</div>
     {cta_block(starter, quote_first=quote_first)}
@@ -1230,6 +1234,57 @@ def contractor_inquiry_guide_page():
 </section>
 </article>
 </main>''' + footer() + '</body></html>'
+
+
+def buyer_decision_guide_page():
+    guide = seo_json('buyer-guide.json')
+    path = guide['path']
+    assert_publication_paths([path])
+    bc = [('home', '/'), ('services', '/services/'), ('choosing the right build', None)]
+    schema = [
+        {'@context': 'https://schema.org', '@type': 'WebPage', '@id': BASE + path + '#page',
+         'url': BASE + path, 'name': guide['title'], 'description': guide['description'],
+         'mainEntity': {'@id': BASE + path + '#article'}},
+        {'@context': 'https://schema.org', '@type': 'Article', '@id': BASE + path + '#article',
+         'headline': guide['title'], 'description': guide['description'], 'abstract': guide['answer'],
+         'author': {'@type': 'Person', '@id': BASE + '/#leon', 'name': guide['author'], 'url': BASE + '/about'},
+         'publisher': {'@id': BASE + '/#business'}, 'mainEntityOfPage': {'@id': BASE + path + '#page'},
+         'datePublished': guide['published_at'], 'dateModified': guide['updated_at'],
+         'citation': [BASE + row['path'] for row in guide['evidence']]},
+        breadcrumb_schema(bc, path),
+    ]
+    choices = ''.join(f'<article><h3>{e(row["name"])}</h3><p>{e(row["fits"])}</p><p><strong>Try this:</strong> {e(row["test"])}</p><p>{e(row["watch"])}</p></article>' for row in guide['choices'])
+    sections = ''.join(f'<section class="sec" id="{e(row["id"])}"><div class="rail"><h2 class="page-section-title">{e(row["heading"])}</h2>' + ''.join(f'<p class="sub business-copy">{e(paragraph)}</p>' for paragraph in row['paragraphs']) + '</div></section>' for row in guide['sections'])
+    checklist = ''.join(f'<li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>{e(item)}</li>' for item in guide['checklist'])
+    evidence = ''.join(f'<article><h3><a href="{e(row["path"])}" data-evt="seo_related_click">{e(row["label"])}</a></h3><p>{e(row["note"])}</p></article>' for row in guide['evidence'])
+    page_head = head(guide['title'] + ' | Leon Builds', guide['description'], path, schema).replace('<body>', '<body class="evidence-page guide-page" data-assistant-launcher="hidden">', 1)
+    return page_head + ICONS + nav() + f'''
+<main id="main"><article>
+<section class="sec page-hero guide-hero"><div class="rail">
+{crumbs(bc)}<p class="label">Buyer decision guide · reviewed September 5, 2026 · <a href="/about">Leon Kelvin Li</a></p>
+<h1 class="dsp business-copy">Website builder or custom software? <em>Choose the smallest build.</em></h1>
+<p class="sub business-copy">{e(guide['answer'])}</p>
+<p class="sub business-copy">{e(guide['intro'])}</p>
+<a class="cx-mini" href="#scope-checklist">Jump to the quote-preparation checklist →</a>
+</div></section>
+<section class="sec" id="compare-options" data-view-event="proof_view"><div class="rail">
+<h2 class="page-section-title">Match the build to the job.</h2><div class="scope-grid business-copy">{choices}</div>
+</div></section>
+{sections}
+<section class="sec" id="scope-checklist"><div class="rail">
+<h2 class="page-section-title">Your quote-preparation checklist</h2>
+<ul class="blist business-copy">{checklist}</ul>
+<p class="sub business-copy">{e(guide['boundary'])}</p>
+</div></section>
+<section class="sec" id="examples"><div class="rail">
+<h2 class="page-section-title">See the differences in real work</h2><div class="scope-grid business-copy">{evidence}</div>
+</div></section>
+<section class="sec guide-start" data-view-event="start_section_view"><div class="rail">
+<h2 class="page-section-title">Start with the problem, not a shopping list.</h2>
+<p class="sub business-copy">{e(guide['next_step'])}</p>
+<div class="ctarow"><a class="btn btn-solid magnet" href="{e(guide['cta']['path'])}" data-evt="seo_guide_review_click"><span>{e(guide['cta']['label'])}</span></a><a class="btn magnet" href="/services/"><span>See services and published starting prices</span></a></div>
+</div></section>
+</article></main>''' + footer() + '</body></html>'
 
 
 def work_page():
@@ -1790,6 +1845,7 @@ def listing_page(kind, items, title, desc, blurb):
       <h2>Start with the bottleneck, then choose the smallest useful build.</h2>
       <p class="sub">Work with us on a website, automation, internal tool, app, or a written Systems Plan before committing to a larger build.</p>
       <a class="cx-mini" href="/technical-build-partner">See the Technical Build Partner offer →</a>
+      <p class="sub business-copy"><a href="/guides/website-builder-or-custom-software" data-evt="seo_related_click">Website builder, automation or custom software? Use the decision guide before choosing a service.</a></p>
     </div>''' if kind == 'services' else '<!-- featured offer is service-specific -->')
     return head(title, desc, path, schema) + ICONS + nav() + f'''
 <main id="main">
@@ -2658,14 +2714,17 @@ if REVIEWS_ROUTE_ENABLED:
 w('missed-lead-recovery.html', missed_lead_recovery_page())
 w('technical-build-partner.html', technical_partner_page())
 w('guides/contractor-inquiry-workflow.html', contractor_inquiry_guide_page())
+w('guides/website-builder-or-custom-software.html', buyer_decision_guide_page())
 
 # sitemap + robots
 urls = ['/', '/about', '/call', '/work'] + [f'/work/{case["slug"]}' for case in CASE_STUDIES] \
-     + ['/guides/contractor-inquiry-workflow', '/missed-lead-recovery', '/technical-build-partner', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+     + ['/guides/contractor-inquiry-workflow', '/guides/website-builder-or-custom-software', '/missed-lead-recovery', '/technical-build-partner', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
 if REVIEWS_ROUTE_ENABLED:
     urls.append('/reviews')
+assert_publication_paths(urls)
+validate_topics(paths=urls)
 
 # A sitemap date means "this URL's content changed", not "the sitemap builder ran".
 # The old builder stamped TODAY on all forty URLs whenever one page changed, making
@@ -2674,13 +2733,33 @@ if REVIEWS_ROUTE_ENABLED:
 # copy or no-op generator run making an old page look new.
 def url_output(url):
     if url == '/':
-        return 'index.html'
+        return 'homepage/index.html'
     # Language homes intentionally use /es, /pt and /zh without trailing slashes.
     # Resolve any route backed by a directory before asking Git for its lastmod;
     # otherwise every generator run falsely stamps those unchanged homes as today.
+    if not url.endswith('/') and os.path.isfile(os.path.join(ROOT, url.strip('/') + '.html')):
+        return url.strip('/') + '.html'
     if url.endswith('/') or os.path.isdir(os.path.join(ROOT, url.strip('/'))):
         return url.strip('/') + '/index.html'
     return url.strip('/') + '.html'
+
+def committed_sitemap_dates():
+    """Keep an unchanged page's published date across merges and rebuilds."""
+    result = subprocess.run(['git', 'show', 'HEAD:sitemap.xml'], cwd=ROOT,
+                            capture_output=True, text=True)
+    if result.returncode:
+        return {}
+    try:
+        root = ET.fromstring(result.stdout)
+        ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+        return {row.findtext('sm:loc', namespaces=ns): row.findtext('sm:lastmod', namespaces=ns)
+                for row in root.findall('sm:url', ns)}
+    except ET.ParseError:
+        return {}
+
+
+SITEMAP_DATES = committed_sitemap_dates()
+
 
 def url_lastmod(url):
     rel = url_output(url)
@@ -2692,6 +2771,9 @@ def url_lastmod(url):
         check=True, capture_output=True, text=True).stdout.strip()
     if dirty:
         return TODAY
+    prior = SITEMAP_DATES.get(BASE + url)
+    if prior:
+        return prior
     committed = subprocess.run(
         ['git', 'log', '-1', '--format=%cs', '--', rel], cwd=ROOT,
         check=True, capture_output=True, text=True).stdout.strip()

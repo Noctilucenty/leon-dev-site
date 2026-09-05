@@ -19,6 +19,7 @@ from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 
 from testimonial_gate import TestimonialGateError, testimonial_release_errors
+from seo_system import assert_publication_paths, validate_topics
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +50,7 @@ FORBIDDEN_TOP_LEVEL = {
     ".git",
     "content",
     "data",
+    "docs",
     "homepage",
     "node_modules",
     "research",
@@ -191,6 +193,12 @@ def sitemap_pages() -> list[PurePosixPath]:
         pages.append(relative)
     if not pages:
         raise StaticBuildError("sitemap.xml has no public pages")
+    try:
+        paths = [urllib.parse.urlsplit(url).path for url in seen_urls]
+        assert_publication_paths(paths, check_rendered=True)
+        validate_topics(paths=paths)
+    except (ValueError, KeyError, OSError) as exc:
+        raise StaticBuildError(f"SEO publication gate: {exc}") from exc
     return pages
 
 
