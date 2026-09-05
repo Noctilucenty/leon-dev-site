@@ -258,7 +258,7 @@ def main():
     elif args.command == "opportunities":
         rows = opportunities()
         buffer = io.StringIO()
-        writer = csv.DictWriter(buffer, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(buffer, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
         if args.output:
