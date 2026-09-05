@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Software for Logistics &amp; Trucking | Leon Builds</title>
 <meta name="description" content="Dispatch boards, driver apps, document automation and customer tracking for logistics and warehouse operations.">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f6f5f1">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href="https://leonbuilds.org/industries/logistics">
 
 <meta property="og:type" content="website">
@@ -23,25 +23,26 @@
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500&amp;display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assist.css">
+<link rel="stylesheet" href="/site-design.css">
+<script src="/site-motion.js" defer></script>
 <script type="application/ld+json">[{"@context": "https://schema.org", "@type": "Service", "@id": "https://leonbuilds.org/industries/logistics#service", "name": "software for logistics & warehousing", "url": "https://leonbuilds.org/industries/logistics", "mainEntityOfPage": "https://leonbuilds.org/industries/logistics", "provider": {"@id": "https://leonbuilds.org/#leon"}, "areaServed": {"@type": "Country", "name": "United States"}, "description": "Dispatch boards, driver apps, document automation and customer tracking for logistics and warehouse operations."}, {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "our process is unusual. can software fit it?", "acceptedAnswer": {"@type": "Answer", "text": "unusual processes are the reason custom exists — the build is shaped around your real workflow, not a template's guess."}}, {"@type": "Question", "name": "what's the first thing to fix?", "acceptedAnswer": {"@type": "Answer", "text": "usually the dispatch copy-paste loop — highest error rate, easiest automation."}}, {"@type": "Question", "name": "do drivers need new hardware?", "acceptedAnswer": {"@type": "Answer", "text": "no — driver tools run on the phones they already carry."}}]}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "home", "item": "https://leonbuilds.org/"}, {"@type": "ListItem", "position": 2, "name": "industries", "item": "https://leonbuilds.org/industries/"}, {"@type": "ListItem", "position": 3, "name": "logistics & warehousing", "item": "https://leonbuilds.org/industries/logistics"}]}]</script>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol></svg><a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="nav" id="nav">
   <a class="mark" href="/">
-    <span class="mark-dot">[<span class="blink">•</span>]</span>
+    <span class="mark-dot" aria-hidden="true">lb</span>
     <span class="mark-name">Leon Builds</span>
     <span class="mark-handle">by Leon Kelvin Li</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">
-    <a href="/#services"><i>[</i><span>Services &amp; pricing</span><i>]</i></a>
+    <a href="/#services"><i>[</i><span>Services</span><i>]</i></a>
     <a href="/work"><i>[</i><span>Work</span><i>]</i></a>
-    <a href="/reviews"><i>[</i><span>Reviews</span><i>]</i></a>
     <a href="/about"><i>[</i><span>About</span><i>]</i></a>
-    <a class="nav-book" href="/quote"><i>[</i><span>Get a fixed quote</span><i>]</i></a>
+    <a class="nav-book" href="/#start"><i>[</i><span>Start</span><i>]</i></a>
   </nav>
   <div class="nav-end">
     <a class="btn btn-solid magnet" href="/quote" data-evt="nav_quote_click"><span>Get a fixed quote</span></a>
@@ -52,9 +53,13 @@
 <section class="sec page-hero">
   <div class="rail">
     <p class="crumbs"><a href="/">home</a> <i>/</i> <a href="/industries/">industries</a> <i>/</i> <span>logistics &amp; warehousing</span></p>
-    <p class="label">leon builds --industries logistics</p>
+    <p class="label">For logistics &amp; warehousing</p>
     <h1 class="dsp">software for <em>logistics &amp; warehousing</em></h1>
-    <p class="sub">logistics runs on information handoffs — and every handoff that happens by phone, email-forward or retyping is a delay and an error waiting to happen.</p><p class="sub">dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem.</p>
+    <p class="visual-intro">Connect dispatch, drivers and customer updates.</p><div class="flow-scene" data-flow="logistics">
+<div class="flow-scene-top"><span>Example workflow</span><button type="button" class="flow-play" data-flow-play hidden>Play example <span aria-hidden="true">↻</span></button></div>
+<div class="flow-stage"><div class="flow-node flow-node-0"><span class="flow-window-bar" aria-hidden="true"><i></i><i></i><i></i></span><div class="flow-node-face"><span class="flow-node-symbol" aria-hidden="true">↗</span><strong>Load assigned</strong><span class="flow-object" aria-hidden="true"><span class="flow-mini-lines"><i></i><i></i></span></span></div></div><span class="flow-connector" aria-hidden="true"><i></i><b>→</b></span><div class="flow-node flow-node-1"><span class="flow-window-bar" aria-hidden="true"><i></i><i></i><i></i></span><div class="flow-node-face"><span class="flow-node-symbol" aria-hidden="true">⌘</span><strong>Driver update</strong><span class="flow-object" aria-hidden="true"><span class="flow-mini-lines"><i></i><i></i></span></span></div></div><span class="flow-connector" aria-hidden="true"><i></i><b>→</b></span><div class="flow-node flow-node-2"><span class="flow-window-bar" aria-hidden="true"><i></i><i></i><i></i></span><div class="flow-node-face"><span class="flow-node-symbol" aria-hidden="true">✓</span><strong>Customer tracking</strong><span class="flow-object" aria-hidden="true"><span class="flow-mini-lines"><i></i><i></i></span></span></div></div></div>
+<div class="flow-scene-bottom"><small>Illustration only. Nothing is sent.</small><span class="flow-feedback" aria-live="polite" data-complete="Example complete"></span></div>
+</div><p class="visual-caution">An example of the process—not a promise of business results. Integrations are checked first.</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="/call" data-evt="cta_call_click"><span>book a free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="/quote" data-evt="pricing_cta_click"><span>get a fixed quote</span></a>
@@ -63,13 +68,15 @@
     <p class="assist-fallback">Not ready to talk? <button class="linklike" type="button" data-assist-open data-assist-starter="i run a business in logistics &amp; warehousing — here&#x27;s what i&#x27;m dealing with: ">Describe the problem to the site assistant.</button></p>
   </div>
 </section>
-<section class="sec">
+<details class="rail visual-details"><summary>Scope &amp; examples for logistics &amp; warehousing</summary><div class="visual-details-content">
+<p class="sub">logistics runs on information handoffs — and every handoff that happens by phone, email-forward or retyping is a delay and an error waiting to happen.</p><p class="sub">dispatchers copying between emails and spreadsheets, drivers texting photos of paperwork, customers calling for eta: each of those is a solved software problem.</p><section class="sec">
   <div class="rail">
     <p class="label">the usual pain</p>
     <h2 class="page-section-title">Problems we hear from logistics &amp; warehousing owners</h2>
     <ul class="plist wide"><li>dispatch copies the same info between email, sheets and texts</li><li>drivers hand in paperwork that gets retyped</li><li>customers call for status because they can&#x27;t see it</li><li>inventory counts drift from reality</li></ul>
   </div>
 </section>
+</div></details>
 <section class="sec">
   <div class="rail">
     <p class="label">what actually fixes it</p>
@@ -105,9 +112,16 @@
   </div>
 </section>
 </main><footer class="foot">
-  <div class="rail foot-in">
+  <div class="rail footer-topline">
+    <a class="mark" href="/"><span class="mark-name">Leon Builds</span></a>
+    <a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">leondragon3798@gmail.com ↗</a>
+    <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a>
+  </div>
+  <details class="rail footer-directory">
+    <summary>Explore services, guides &amp; work</summary>
+  <div class="foot-in">
     <div class="foot-brand">
-      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Builds</span><span class="mark-handle">by Leon Kelvin Li</span></a>
+      <a class="mark" href="/"><span class="mark-dot" aria-hidden="true">lb</span><span class="mark-name">Leon Builds</span><span class="mark-handle">by Leon Kelvin Li</span></a>
       <p>small-business websites, lead follow-up and workflow automation, built directly by one california-based developer.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
@@ -115,9 +129,10 @@
     <nav><h4>explore</h4><a href="/work">work and case studies</a><a href="/reviews">approved client feedback</a><a href="/guides/contractor-inquiry-workflow">contractor inquiry guide</a><a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
     <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
+  </details>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
-    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">Email us</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
+    <p><a href="/es">Español</a> · <a href="/pt">Português</a> · <a href="/zh">中文</a> · <a href="/privacy">Privacy</a></p>
   </div>
 </footer>
 <script src="/app.js" defer></script>

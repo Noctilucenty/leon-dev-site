@@ -14,6 +14,7 @@ from pathlib import Path
 
 from testimonial_gate import load_testimonial_release
 from seo_system import assert_publication_paths, related_html, read_json as seo_json, validate_topics
+from visual_explainers import service_visual, industry_visual, choice_scene, flow_scene
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE = "https://leonbuilds.org"
@@ -358,7 +359,7 @@ INDUSTRIES = [
 # TEMPLATE
 # ══════════════════════════════════════════════════════════════════
 
-FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@200;300;400;500;600&amp;family=Space+Grotesk:wght@300;400;500&amp;display=swap" rel="stylesheet">'
+FONTS = ''  # The shared design layer reuses the homepage's self-hosted fonts.
 
 def e(s): return html.escape(str(s), quote=True)
 
@@ -429,22 +430,19 @@ def homepage_testimonial_section():
 </section>'''
 
 def nav():
-    reviews_href = '/reviews' if REVIEWS_ROUTE_ENABLED else '/#testimonials'
-    reviews_link = (f'<a href="{reviews_href}"><i>[</i><span>Reviews</span><i>]</i></a>\n    '
-                    if REVIEWS_PUBLISHED else '')
     return f'''<a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
 <header class="nav" id="nav">
   <a class="mark" href="/">
-    <span class="mark-dot">[<span class="blink">•</span>]</span>
+    <span class="mark-dot" aria-hidden="true">lb</span>
     <span class="mark-name">Leon Builds</span>
     <span class="mark-handle">by Leon Kelvin Li</span>
   </a>
   <nav class="nav-mid" id="navMid" aria-label="site">
-    <a href="/#services"><i>[</i><span>Services &amp; pricing</span><i>]</i></a>
+    <a href="/#services"><i>[</i><span>Services</span><i>]</i></a>
     <a href="/work"><i>[</i><span>Work</span><i>]</i></a>
-    {reviews_link}<a href="/about"><i>[</i><span>About</span><i>]</i></a>
-    <a class="nav-book" href="/quote"><i>[</i><span>Get a fixed quote</span><i>]</i></a>
+    <a href="/about"><i>[</i><span>About</span><i>]</i></a>
+    <a class="nav-book" href="/#start"><i>[</i><span>Start</span><i>]</i></a>
   </nav>
   <div class="nav-end">
     <a class="btn btn-solid magnet" href="/quote" data-evt="nav_quote_click"><span>Get a fixed quote</span></a>
@@ -457,9 +455,16 @@ def footer():
     reviews_link = (f'<a href="{reviews_href}">approved client feedback</a>'
                     if REVIEWS_PUBLISHED else '')
     return f'''<footer class="foot">
-  <div class="rail foot-in">
+  <div class="rail footer-topline">
+    <a class="mark" href="/"><span class="mark-name">Leon Builds</span></a>
+    <a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">leondragon3798@gmail.com ↗</a>
+    <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a>
+  </div>
+  <details class="rail footer-directory">
+    <summary>Explore services, guides &amp; work</summary>
+  <div class="foot-in">
     <div class="foot-brand">
-      <a class="mark" href="/"><span class="mark-dot">[<span class="blink">•</span>]</span><span class="mark-name">Leon Builds</span><span class="mark-handle">by Leon Kelvin Li</span></a>
+      <a class="mark" href="/"><span class="mark-dot" aria-hidden="true">lb</span><span class="mark-name">Leon Builds</span><span class="mark-handle">by Leon Kelvin Li</span></a>
       <p>small-business websites, lead follow-up and workflow automation, built directly by one california-based developer.</p>
       <p class="avail"><i></i>available for new projects</p>
     </div>
@@ -467,9 +472,10 @@ def footer():
     <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/guides/contractor-inquiry-workflow">contractor inquiry guide</a><a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
     <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
+  </details>
   <div class="rail foot-bar">
     <p>© <span id="yr">2026</span> <span class="keepcase">Leon Kelvin Li</span> · california · working with businesses across the u.s.</p>
-    <p><a href="mailto:leondragon3798@gmail.com" data-evt="footer_email_click">Email us</a> · <a href="tel:+15108267735" data-evt="footer_phone_click">(510) 826-7735</a></p>
+    <p><a href="/es">Español</a> · <a href="/pt">Português</a> · <a href="/zh">中文</a> · <a href="/privacy">Privacy</a></p>
   </div>
 </footer>
 <script src="/app.js" defer></script>
@@ -492,8 +498,8 @@ def head(title, desc, path, schema, alts='', head_extra='', social_image='/asset
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f6f5f1">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href="{BASE}{path}">
 {head_links}
 <meta property="og:type" content="website">
@@ -513,6 +519,8 @@ def head(title, desc, path, schema, alts='', head_extra='', social_image='/asset
 {FONTS}
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assist.css">
+<link rel="stylesheet" href="/site-design.css">
+<script src="/site-motion.js" defer></script>
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>'''
@@ -684,12 +692,13 @@ def service_page(s):
     {crumbs(bc)}
     <p class="label">{e(service_label)}</p>
     <h1 class="dsp" >{e(s["h1"][0])} <em>{e(s["h1"][1])}</em></h1>
-    {intro}
-    <p class="pricetag">starting at <b>{s["price"]}</b> · written fixed quote before any work starts · based in california, working with businesses across the u.s.</p>
+    {service_visual(s['slug'])}
+    <p class="pricetag">From <b>{s["price"]}</b> · final scope and price agreed in writing</p>
     {cta_block(starter, quote_first=quote_first)}
   </div>
 </section>
-{reviews}{web_guide}<section class="sec">
+<details class="rail visual-details"><summary>Scope, examples &amp; what is included</summary><div class="visual-details-content">
+{intro}{reviews}{web_guide}<section class="sec">
   <div class="rail two-col">
     <div>
       <h2 class="page-section-title">{e(pains_heading)}</h2>
@@ -701,6 +710,7 @@ def service_page(s):
     </div>
   </div>
 </section>
+</div></details>
 <section class="sec">
   <div class="rail">
     <p class="label">{e(proof_label)}</p>
@@ -826,19 +836,21 @@ def industry_page(i):
 <section class="sec page-hero">
   <div class="rail">
     {crumbs(bc)}
-    <p class="label">leon builds --industries {i["slug"]}</p>
+    <p class="label">For {e(i["name"])}</p>
     <h1 class="dsp">{e(i["h1"][0])} <em>{e(i["h1"][1])}</em></h1>
-    {intro}
+    {industry_visual(i['slug'])}
     {cta_block(starter)}
   </div>
 </section>
-{web_focus}{sprint_bridge}<section class="sec">
+<details class="rail visual-details"><summary>Scope &amp; examples for {e(i["name"])}</summary><div class="visual-details-content">
+{intro}{web_focus}{sprint_bridge}<section class="sec">
   <div class="rail">
     <p class="label">the usual pain</p>
     <h2 class="page-section-title">Problems we hear from {e(i["name"])} owners</h2>
     <ul class="plist wide">{pains}</ul>
   </div>
 </section>
+</div></details>
 <section class="sec">
   <div class="rail">
     <p class="label">what actually fixes it</p>
@@ -1257,16 +1269,19 @@ def buyer_decision_guide_page():
     sections = ''.join(f'<section class="sec" id="{e(row["id"])}"><div class="rail"><h2 class="page-section-title">{e(row["heading"])}</h2>' + ''.join(f'<p class="sub business-copy">{e(paragraph)}</p>' for paragraph in row['paragraphs']) + '</div></section>' for row in guide['sections'])
     checklist = ''.join(f'<li><svg class="ic" aria-hidden="true"><use href="#ic-check"/></svg>{e(item)}</li>' for item in guide['checklist'])
     evidence = ''.join(f'<article><h3><a href="{e(row["path"])}" data-evt="seo_related_click">{e(row["label"])}</a></h3><p>{e(row["note"])}</p></article>' for row in guide['evidence'])
-    page_head = head(guide['title'] + ' | Leon Builds', guide['description'], path, schema).replace('<body>', '<body class="evidence-page guide-page" data-assistant-launcher="hidden">', 1)
+    page_head = head(guide['title'] + ' | Leon Builds', guide['description'], path, schema).replace('<body>', '<body class="evidence-page guide-page visual-guide" data-assistant-launcher="hidden">', 1)
     return page_head + ICONS + nav() + f'''
 <main id="main"><article>
 <section class="sec page-hero guide-hero"><div class="rail">
-{crumbs(bc)}<p class="label">Buyer decision guide · reviewed September 5, 2026 · <a href="/about">Leon Kelvin Li</a></p>
-<h1 class="dsp business-copy">Website builder or custom software? <em>Choose the smallest build.</em></h1>
-<p class="sub business-copy">{e(guide['answer'])}</p>
-<p class="sub business-copy">{e(guide['intro'])}</p>
-<a class="cx-mini" href="#scope-checklist">Jump to the quote-preparation checklist →</a>
+<p class="label">Website · automation · custom software</p>
+<h1 class="dsp business-copy">What do you <em>actually need?</em></h1>
+{choice_scene()}
+<p class="choice-verdict">Choose the smallest option that fixes the broken step. <strong>You do not need all three at once.</strong></p>
+<div class="ctarow"><a class="btn btn-solid" href="{e(guide['cta']['path'])}" data-evt="seo_guide_review_click"><span>Help me choose ↗</span></a><span class="visual-caution">Send your website and one task that is not working.</span></div>
+<p class="visual-byline">By <a href="/about">Leon Kelvin Li</a> · September 5, 2026 · Leon Builds sells implementation services.</p>
 </div></section>
+<details class="rail visual-details" id="full-guide"><summary>Read the full guide &amp; quote checklist</summary><div class="visual-details-content">
+<p class="sub business-copy">{e(guide['answer'])}</p><p class="sub business-copy">{e(guide['intro'])}</p>
 <section class="sec" id="compare-options" data-view-event="proof_view"><div class="rail">
 <h2 class="page-section-title">Match the build to the job.</h2><div class="scope-grid business-copy">{choices}</div>
 </div></section>
@@ -1276,12 +1291,12 @@ def buyer_decision_guide_page():
 <ul class="blist business-copy">{checklist}</ul>
 <p class="sub business-copy">{e(guide['boundary'])}</p>
 </div></section>
+</div></details>
 <section class="sec" id="examples"><div class="rail">
-<h2 class="page-section-title">See the differences in real work</h2><div class="scope-grid business-copy">{evidence}</div>
+<h2 class="page-section-title">See it in real work.</h2><div class="scope-grid business-copy">{evidence}</div>
 </div></section>
 <section class="sec guide-start" data-view-event="start_section_view"><div class="rail">
-<h2 class="page-section-title">Start with the problem, not a shopping list.</h2>
-<p class="sub business-copy">{e(guide['next_step'])}</p>
+<h2 class="page-section-title">Show the problem. <em>Start small.</em></h2>
 <div class="ctarow"><a class="btn btn-solid magnet" href="{e(guide['cta']['path'])}" data-evt="seo_guide_review_click"><span>{e(guide['cta']['label'])}</span></a><a class="btn magnet" href="/services/"><span>See services and published starting prices</span></a></div>
 </div></section>
 </article></main>''' + footer() + '</body></html>'
@@ -2041,7 +2056,7 @@ def booker(lang="en"):
   <a class="btn calendar-direct" id="leon-cal-direct" href="__CAL_URL__" target="_blank" rel="noopener" data-evt="calendar_direct_fallback">__DIRECT__</a>
 </div>
 <div class="calwrap" id="leon-booker" aria-busy="true" style="min-height:680px;position:relative">
-  <div id="leon-cal-status" role="status" style="position:absolute;inset:0;z-index:2;min-height:680px;padding:2rem;background:#050505;pointer-events:none">
+  <div id="leon-cal-status" role="status" style="position:absolute;inset:0;z-index:2;min-height:680px;padding:2rem;background:#f6f5f1;pointer-events:none">
     <p class="label" id="leon-cal-status-text">__LOADING__</p>
     <div aria-hidden="true" style="margin-top:2rem;display:grid;gap:1rem">
       <i style="display:block;height:3.25rem;border:1px solid #262626;border-radius:9px;background:linear-gradient(90deg,#090909,#151515,#090909)"></i>
@@ -2097,7 +2112,7 @@ def booker(lang="en"):
     var attr={};
     try{ attr=JSON.parse(localStorage.getItem('leon_attr')||'{}')||{}; }catch(e){}
     var query=new URLSearchParams(location.search);
-    var out={layout:'month_view',theme:'dark'};
+    var out={layout:'month_view',theme:'light'};
     var source=safeParam(query.get('utm_source')||query.get('s')||attr.utmSource,120);
     var medium=safeParam(query.get('utm_medium')||attr.utmMedium,120);
     var campaign=safeParam(query.get('utm_campaign')||attr.utmCampaign,120);
@@ -2167,7 +2182,7 @@ def booker(lang="en"):
   Cal.ns.leon15('on',{action:'linkFailed',callback:failed});
   Cal.ns.leon15('on',{action:'bookingSuccessfulV2',callback:booked});
   Cal.ns.leon15('inline',{elementOrSelector:'#leon-cal',config:calConfig,calLink:'__CAL_SLUG__'});
-  Cal.ns.leon15('ui',{theme:'dark',hideEventTypeDetails:false,layout:'month_view'});
+  Cal.ns.leon15('ui',{theme:'light',hideEventTypeDetails:false,layout:'month_view'});
   var embedScript=document.querySelector('script[src="https://app.cal.com/embed/embed.js"]');
   if(embedScript) embedScript.addEventListener('error',failed,{once:true});
   timeout=setTimeout(failed,15000);

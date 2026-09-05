@@ -27,7 +27,7 @@ class SeoSystemTests(unittest.TestCase):
 
     def test_distinct_reviewers_and_valid_review_date_are_required(self):
         for change in [{"producer": ""}, {"reviewer": " "},
-                       {"reviewer": "/root/leonbuilds_seo_system"},
+                       {"reviewer": seo.read_json("publication.json")["reviews"][0]["producer"]},
                        {"reviewed_at": "tomorrow"}, {"reviewed_at": "2099-01-01"}]:
             data = seo.read_json("publication.json")
             data["reviews"][0].update(change)
@@ -132,9 +132,13 @@ class SeoSystemTests(unittest.TestCase):
         after = ET.parse(ROOT / "sitemap.xml").getroot()
         ns = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
         dates = lambda root: {row.findtext("sm:loc", namespaces=ns): row.findtext("sm:lastmod", namespaces=ns) for row in root.findall("sm:url", ns)}
-        self.assertEqual(dates(before)[seo.ORIGIN + "/"], dates(after)[seo.ORIGIN + "/"])
-        self.assertEqual(dates(before)[seo.ORIGIN + "/about"], dates(after)[seo.ORIGIN + "/about"])
-        self.assertEqual(dates(before)[seo.ORIGIN + "/work"], dates(after)[seo.ORIGIN + "/work"])
+        for url, prior_date in dates(before).items():
+            route = url.removeprefix(seo.ORIGIN).strip("/")
+            file = "homepage/index.html" if not route else (
+                route + "/index.html" if (ROOT / route / "index.html").is_file() else route + ".html")
+            prior_bytes = subprocess.check_output(["git", "show", "HEAD:" + file], cwd=ROOT)
+            if prior_bytes == (ROOT / file).read_bytes():
+                self.assertEqual(prior_date, dates(after)[url], url)
 
 
 if __name__ == "__main__":

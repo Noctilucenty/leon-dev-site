@@ -198,7 +198,8 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   for (const href of ['#scope', '#proof', '#faq']) assert.match(html, new RegExp(`href="${href}"`));
   assert.ok(html.indexOf('class="landing-jump-wrap"') < html.indexOf('id="scope"'), 'find-it-fast links appear before the detailed scope');
   assert.ok(html.indexOf('id="scope"') < html.indexOf('id="proof"'), 'scope appears before proof');
-  assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
+  const faqBlock = html.match(/<div class="faq">[\s\S]*?<\/div>/)?.[0] || '';
+  assert.equal((faqBlock.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
   assert.match(visible, /Client website project · demo checkout/i);
   assert.match(visible, /beastypages\.com/i);
   assert.match(visible, /Illustrative workflow · not a live client result/i);
@@ -299,7 +300,8 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(html, /"minPrice": "2000"/);
   assert.doesNotMatch(html, /"price": "(?:1500|2000)"/);
   assert.match(html, /"unitText": "MONTH"/);
-  assert.equal((html.match(/<details\b/g) || []).length, 4);
+  const faqBlock = html.match(/<div class="faq">[\s\S]*?<\/div>/)?.[0] || '';
+  assert.equal((faqBlock.match(/<details\b/g) || []).length, 4);
 
   for (const file of [
     'services/index.html', 'about.html', 'work.html',

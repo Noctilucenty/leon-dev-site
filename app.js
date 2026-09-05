@@ -60,7 +60,10 @@
     if (h !== 'leonkelvinli.onrender.com') return;
     location.replace('https://leonbuilds.org' + location.pathname + location.search + location.hash);
   })();
-  var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // The shared light design owns its motion. Do not stack terminal scrambling,
+  // dither loops, magnetic controls and a second reveal system underneath it.
+  var reduced = !!document.querySelector('link[href="/site-design.css"]') ||
+    (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   var fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };

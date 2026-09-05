@@ -9,13 +9,13 @@
       "source_file": "content/seo/buyer-guide.json",
       "sha256": "e9f03da0a9b2c3e74dc7a3107f7c42426fe062fd192b4cf9343739ca336c219a",
       "rendered_file": "guides/website-builder-or-custom-software.html",
-      "rendered_sha256": "4d3efa2a064036bf894df638b01536cbd4238bed665865b29bb98bad4bb9540d",
+      "rendered_sha256": "418fa73031158a20e0a4f903a58855b3d36b35481faf3927dad24ccf405e74bf",
       "reviewed_at": "2026-09-05",
-      "producer": "/root/leonbuilds_seo_system",
-      "reviewer": "/root",
-      "review_type": "In-chat editorial assessment plus independent root review of the full source at this hash. Root confirmed 9/10 clarity, usefulness, trust and decision support; no blocking copy changes. Not a paid model review or measured performance.",
-      "scores": {"SearchIntentMatch":9,"InformationGain":9,"SourceQuality":9,"Originality":9,"Completeness":9,"Readability":9,"Curiosity":9,"FactualConfidence":9,"DuplicateSafety":9,"ConversionFit":9},
-      "rationale": "Answers a buyer decision distinct from hiring a website developer. Gives a concrete request-path example and reusable scope checklist; recommends smaller existing tools; links actual project proof and discloses commercial interest. No vendor ranking, external specification, market statistic or guaranteed outcome. Main uncertainty is search demand, not the usefulness of the decision explanation."
+      "producer": "/root",
+      "reviewer": "/root/comparison_reader_audit",
+      "review_type": "Independent in-chat source-level editorial review of the visual-first edition at this rendered hash, following revisions to two factual/visual blockers. Root separately performs browser and regression checks. These are editorial assessments, not user testing, paid model scores or measured performance.",
+      "scores": {"SearchIntentMatch":9,"InformationGain":9,"SourceQuality":9,"Originality":9,"Completeness":9,"Readability":9,"Curiosity":9,"FactualConfidence":9,"DuplicateSafety":9.5,"ConversionFit":9},
+      "rationale": "The three literal categories are visible with distinct page/gallery/contact, form/inbox/message, and rule-check/human-approval objects. Each selected example keeps an ownership or cost caution. Not all three at once matches the complete guide. All 38 checked source body strings remain in optional native details; proof, simulation limitations, author and commercial disclosure remain outside. Replay is progressively enabled and no example sends data. Demand, conversion and search performance remain unmeasured."
     }
   ]
 }

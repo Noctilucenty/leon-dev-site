@@ -231,7 +231,7 @@ test('app-development landing page is clear, credible, and quote-first', () => {
   assert.match(html, /<title>iOS &amp; Android App Development — from \$3,500 \| Leon Builds<\/title>/i);
   assert.match(visible, /turn your app idea into a working iPhone and Android product/i);
   assert.match(visible, /founders and businesses/i);
-  assert.match(visible, /starting at \$3,500/i);
+  assert.match(hero.replace(/<[^>]+>/g, ' '), /(?:starting at|from)\s+\$3,500/i);
   assert.match(visible, /fixed written quote|written fixed quote/i);
   assert.match(visible, /custom iOS and Android app development/i);
   assert.match(visible, /mobile website is usually the smaller first step/i);

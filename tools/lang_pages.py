@@ -19,6 +19,8 @@ is why the service pages can sit beside them at /pt/<slug> without the
 
 # Slug per (language, service). Chosen to read like the phrase the buyer
 # would actually type, not like a translation of the English slug.
+from visual_explainers import local_visual, LOCAL_FLOWS
+
 SLUGS = {
     ('pt', 'websites'):   'criar-site',
     ('pt', 'ordering'):   'pedidos-online',
@@ -53,9 +55,9 @@ STARTING_PRICES = {
 LANGS = {
     'pt': dict(
         html_lang='pt-BR', hreflang='pt-BR', home='/pt',
-        nav=[('/pt#faco', 'o que fazemos'), ('/pt#precos', 'preços'),
-             ('/pt#feito', 'projetos'), ('/call', 'agendar 15 min'),
-             ('/', 'english')],
+        nav=[('/pt#faco', 'Serviços'), ('/pt#precos', 'Preços'),
+             ('/pt#feito', 'Projetos'), ('/call', 'Agendar'),
+             ('/', 'EN')],
         contact_kind='wa',
         wa_text='Oi%20Leon%2C%20vi%20o%20seu%20site.%20Meu%20neg%C3%B3cio%20%C3%A9%3A%20',
         contact_label='whatsapp',
@@ -69,9 +71,9 @@ LANGS = {
     ),
     'es': dict(
         html_lang='es', hreflang='es', home='/es',
-        nav=[('/es#hago', 'lo que hacemos'), ('/es#precios', 'precios'),
-             ('/es#hecho', 'proyectos'), ('/call', 'agendar 15 min'),
-             ('/', 'english')],
+        nav=[('/es#hago', 'Servicios'), ('/es#precios', 'Precios'),
+             ('/es#hecho', 'Proyectos'), ('/call', 'Agendar'),
+             ('/', 'EN')],
         contact_kind='wa',
         wa_text='Hola%20Leon%2C%20vi%20tu%20p%C3%A1gina.%20Mi%20negocio%20es%3A%20',
         contact_label='whatsapp',
@@ -85,9 +87,9 @@ LANGS = {
     ),
     'zh': dict(
         html_lang='zh-Hans', hreflang='zh', home='/zh',
-        nav=[('/zh#zuo', '我们能做什么'), ('/zh#jiage', '价格'),
-             ('/zh#zuoguo', '做过的东西'), ('/call', '预约 15 分钟'),
-             ('/', 'english')],
+        nav=[('/zh#zuo', '服务'), ('/zh#jiage', '价格'),
+             ('/zh#zuoguo', '案例'), ('/call', '预约'),
+             ('/', 'EN')],
         # WeChat, not WhatsApp. Every other language page leads with WhatsApp
         # and the Chinese pages inherited it, which is a button a Chinese owner
         # in the US will never press — while the copy told them to 发微信 and
@@ -230,8 +232,8 @@ def render(lang, key, page, ctx):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(page['title'])}</title>
 <meta name="description" content="{e(page['metaDescription'])}">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f6f5f1">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href="{BASE}{path}">
 {alts}
 <meta property="og:type" content="website">
@@ -247,6 +249,8 @@ def render(lang, key, page, ctx):
 {FONTS}
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assist.css">
+<link rel="stylesheet" href="/site-design.css">
+<script src="/site-motion.js" defer></script>
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body>'''
@@ -259,7 +263,7 @@ def render(lang, key, page, ctx):
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 <header class="nav" id="nav">
   <a class="mark" href="{L['home']}">
-    <span class="mark-dot">[<span class="blink">•</span>]</span>
+    <span class="mark-dot" aria-hidden="true">lb</span>
     <span class="mark-name">Leon Builds</span>
     <span class="mark-handle">/ by Leon Kelvin Li</span>
   </a>
@@ -295,7 +299,7 @@ def render(lang, key, page, ctx):
   <div class="rail">
     <p class="crumbs"><a href="{L['home']}">{e(L['crumb_home'])}</a> <i>/</i> <span>{e(page['h1_plain'])} {e(page['h1_em'])}</span></p>
     <h1 class="dsp">{e(page['h1_plain'])} <em>{e(page['h1_em'])}</em></h1>
-    {intro}
+    {local_visual(lang, key)}
     <p class="pricetag">{e(page['pricetag'])}</p>
     <div class="ctarow">
       <a class="btn btn-solid magnet" href="{contact}"{wa_attr} data-evt="contact_click_{lang}_{key}"><span>{e(primary_label)}</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
@@ -305,6 +309,8 @@ def render(lang, key, page, ctx):
   </div>
 </section>
 
+<details class="rail visual-details"><summary>{e(LOCAL_FLOWS[lang]['details'])}</summary>
+<div class="visual-details-content">{intro}
 <section class="sec">
   <div class="rail two-col">
     <div>
@@ -317,6 +323,7 @@ def render(lang, key, page, ctx):
     </div>
   </div>
 </section>
+</div></details>
 
 <section class="sec">
   <div class="rail">
@@ -504,8 +511,8 @@ def render_call(lang, booker, ctx):
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{e(C['title'])}</title>
 <meta name="description" content="{e(C['desc'])}">
-<meta name="theme-color" content="#000000">
-<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#f6f5f1">
+<meta name="color-scheme" content="light">
 <link rel="canonical" href="{BASE}{path}">
 {alts}
 <meta property="og:type" content="website">
@@ -520,6 +527,8 @@ def render_call(lang, booker, ctx):
 {FONTS}
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assist.css">
+<link rel="stylesheet" href="/site-design.css">
+<script src="/site-motion.js" defer></script>
 <script type="application/ld+json">{json.dumps(schema, ensure_ascii=False)}</script>
 </head>
 <body class="call-page" data-assistant-launcher="hidden">{ICONS}<a class="skip" href="#main">{e(L['skip'])}</a>
@@ -527,7 +536,7 @@ def render_call(lang, booker, ctx):
 <div class="cursor" id="cursor" aria-hidden="true"><span></span></div>
 <header class="nav" id="nav">
   <a class="mark" href="{L['home']}">
-    <span class="mark-dot">[<span class="blink">•</span>]</span>
+    <span class="mark-dot" aria-hidden="true">lb</span>
     <span class="mark-name">Leon Builds</span>
     <span class="mark-handle">/ by Leon Kelvin Li</span>
   </a>
