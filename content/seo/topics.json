@@ -1,31 +1,1559 @@
 {
-  "version": 1,
-  "measurement_state": "Query demand and competition are unknown until dated Search Console or other authorized evidence is supplied.",
+  "version": 2,
+  "measurement_state": "Queries are editorial mappings to existing page content, not measured keyword demand. Dated Search Console observations remain separate; demand and competition for these proposed variants are unknown.",
   "topics": [
-    {"id":"websites","canonical_path":"/services/websites","language":"en","cluster":"websites","primary_query":"small business web design","aliases":["business website design","fixed price website","hire a website developer"],"question_queries":["how much does a business website cost","can I update my own website"],"related_entities":["responsive design","content editing","website handover"],"search_intents":["hire a website builder"],"relationships":[{"path":"/guides/website-builder-or-custom-software","type":"prerequisite","label":"Not sure what to buy? Compare a website, an automation and custom software."}]},
-    {"id":"automation","canonical_path":"/services/business-automation","language":"en","cluster":"operations","primary_query":"small business workflow automation","aliases":["automate repetitive admin","connect business tools","stop copying data between apps"],"question_queries":["what business tasks can be automated"],"related_entities":["CRM","handoff","exception handling"],"search_intents":["connect existing tools"],"relationships":[{"path":"/guides/website-builder-or-custom-software","type":"comparison","label":"Already have the tools? Check whether a connection or a custom build solves the problem."}]},
-    {"id":"custom-software","canonical_path":"/services/custom-software","language":"en","cluster":"operations","primary_query":"custom software for small business","aliases":["internal business tool developer","custom workflow software"],"question_queries":["when does a business need custom software"],"related_entities":["permissions","shared records","approval workflow"],"search_intents":["commission a business tool"],"relationships":[{"path":"/guides/website-builder-or-custom-software","type":"prerequisite","label":"Before commissioning software, compare it with a standard tool or a smaller automation."}]},
-    {"id":"mobile-apps","canonical_path":"/services/mobile-apps","language":"en","cluster":"products","primary_query":"small business mobile app developer","aliases":["iOS Android app development","build a first app release"],"question_queries":["do I need an app or a mobile website","who owns my app after development"],"related_entities":["App Store","Google Play","backend","subscriptions"],"search_intents":["commission an app"],"relationships":[]},
-    {"id":"chatbot","canonical_path":"/services/ai-chatbots","language":"en","cluster":"customer-support","primary_query":"AI chatbot for small business","aliases":["website assistant setup","business FAQ chatbot"],"question_queries":["how does a chatbot hand off to staff"],"related_entities":["approved business information","human handoff"],"search_intents":["set up a website assistant"],"relationships":[]},
-    {"id":"phone-agent","canonical_path":"/services/ai-phone-agents","language":"en","cluster":"customer-support","primary_query":"AI phone agent for business","aliases":["automated phone receptionist setup","after hours phone assistant"],"question_queries":["what should an AI receptionist not answer"],"related_entities":["call routing","appointment requests","human escalation"],"search_intents":["scope a phone assistant"],"relationships":[]},
-    {"id":"booking","canonical_path":"/services/booking-systems","language":"en","cluster":"customer-journey","primary_query":"online booking system setup","aliases":["appointment booking website","restaurant online ordering setup"],"question_queries":["can customers book from my website"],"related_entities":["calendar","reminders","ordering","payments"],"search_intents":["implement booking or ordering"],"relationships":[]},
-    {"id":"dashboard","canonical_path":"/services/business-dashboards","language":"en","cluster":"operations","primary_query":"custom business dashboard","aliases":["business reporting dashboard developer","combine business reports"],"question_queries":["what should a small business dashboard show"],"related_entities":["reporting","data sources","decision support"],"search_intents":["commission a reporting tool"],"relationships":[]},
-    {"id":"seo","canonical_path":"/services/seo","language":"en","cluster":"websites","primary_query":"small business technical SEO setup","aliases":["website crawlability fixes","search ready website setup"],"question_queries":["is my website visible to search engines"],"related_entities":["canonical URL","sitemap","Google Search Console"],"search_intents":["repair search foundations"],"relationships":[]},
-    {"id":"buyer-guide","canonical_path":"/guides/website-builder-or-custom-software","language":"en","cluster":"buying-software","primary_query":"website builder vs custom software","aliases":["template website or custom build","do I need automation or custom software","which type of website does my business need"],"question_queries":["how do I compare website development quotes","what should I send a developer before getting a quote"],"related_entities":["website builder","workflow automation","custom software","project scope"],"search_intents":["choose the smallest useful build"],"relationships":[]},
-    {"id":"contractor-guide","canonical_path":"/guides/contractor-inquiry-workflow","language":"en","cluster":"customer-journey","primary_query":"contractor quote request workflow","aliases":["what happens after an estimate request","contractor inquiry handoff"],"question_queries":["how do I check my estimate request form"],"related_entities":["estimate request","acknowledgment","lead owner"],"search_intents":["inspect an inquiry process"],"relationships":[]},
-    {"id":"missed-lead-service","canonical_path":"/missed-lead-recovery","language":"en","cluster":"customer-journey","primary_query":"contractor lead follow up setup","aliases":["website and estimate follow up service","missed inquiry recovery setup"],"question_queries":["who can set up contractor inquiry follow up"],"related_entities":["lead handoff","website","reply rules"],"search_intents":["hire for a website and handoff build"],"relationships":[]}
+    {
+      "id": "websites",
+      "canonical_path": "/services/websites",
+      "language": "en",
+      "cluster": "websites",
+      "primary_query": "small business web design",
+      "aliases": [
+        "business website design",
+        "fixed price website",
+        "hire a website developer"
+      ],
+      "question_queries": [
+        "how much does a business website cost",
+        "can I update my own website"
+      ],
+      "related_entities": [
+        "responsive design",
+        "content editing",
+        "website handover"
+      ],
+      "search_intents": [
+        "hire a website builder"
+      ],
+      "relationships": [
+        {
+          "path": "/guides/website-builder-or-custom-software",
+          "type": "prerequisite",
+          "label": "Not sure what to buy? Compare a website, an automation and custom software."
+        }
+      ],
+      "intent_key": "business-web-design",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Hire a developer for a business website; comparison advice belongs to the buyer guide, and contractor-specific packages have their own scope.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "automation",
+      "canonical_path": "/services/business-automation",
+      "language": "en",
+      "cluster": "operations",
+      "primary_query": "small business workflow automation",
+      "aliases": [
+        "automate repetitive admin",
+        "connect business tools",
+        "stop copying data between apps"
+      ],
+      "question_queries": [
+        "what business tasks can be automated"
+      ],
+      "related_entities": [
+        "CRM",
+        "handoff",
+        "exception handling"
+      ],
+      "search_intents": [
+        "connect existing tools"
+      ],
+      "relationships": [
+        {
+          "path": "/guides/website-builder-or-custom-software",
+          "type": "comparison",
+          "label": "Already have the tools? Check whether a connection or a custom build solves the problem."
+        }
+      ],
+      "intent_key": "business-workflow-automation",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Connect existing business tools and repeatable administrative work; a new permissioned application belongs to custom software.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "custom-software",
+      "canonical_path": "/services/custom-software",
+      "language": "en",
+      "cluster": "operations",
+      "primary_query": "custom software for small business",
+      "aliases": [
+        "internal business tool developer",
+        "custom workflow software"
+      ],
+      "question_queries": [
+        "when does a business need custom software"
+      ],
+      "related_entities": [
+        "permissions",
+        "shared records",
+        "approval workflow"
+      ],
+      "search_intents": [
+        "commission a business tool"
+      ],
+      "relationships": [
+        {
+          "path": "/guides/website-builder-or-custom-software",
+          "type": "prerequisite",
+          "label": "Before commissioning software, compare it with a standard tool or a smaller automation."
+        }
+      ],
+      "intent_key": "custom-business-software",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Commission a custom internal application with business rules and permissions; do not duplicate the existing-tool automation service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "mobile-apps",
+      "canonical_path": "/services/mobile-apps",
+      "language": "en",
+      "cluster": "products",
+      "primary_query": "small business mobile app developer",
+      "aliases": [
+        "iOS Android app development",
+        "build a first app release"
+      ],
+      "question_queries": [
+        "do I need an app or a mobile website",
+        "who owns my app after development"
+      ],
+      "related_entities": [
+        "App Store",
+        "Google Play",
+        "backend",
+        "subscriptions"
+      ],
+      "search_intents": [
+        "commission an app"
+      ],
+      "relationships": [],
+      "intent_key": "mobile-app-development",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Commission an iPhone or Android product; Curio is supporting portfolio evidence, not another app-development hiring page.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "chatbot",
+      "canonical_path": "/services/ai-chatbots",
+      "language": "en",
+      "cluster": "customer-support",
+      "primary_query": "AI chatbot for small business",
+      "aliases": [
+        "website assistant setup",
+        "business FAQ chatbot"
+      ],
+      "question_queries": [
+        "how does a chatbot hand off to staff"
+      ],
+      "related_entities": [
+        "approved business information",
+        "human handoff"
+      ],
+      "search_intents": [
+        "set up a website assistant"
+      ],
+      "relationships": [],
+      "intent_key": "business-chatbot-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Scope an assistant that answers approved business questions and hands off to people; telephone handling belongs to the phone-agent service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "phone-agent",
+      "canonical_path": "/services/ai-phone-agents",
+      "language": "en",
+      "cluster": "customer-support",
+      "primary_query": "AI phone agent for business",
+      "aliases": [
+        "automated phone receptionist setup",
+        "after hours phone assistant"
+      ],
+      "question_queries": [
+        "what should an AI receptionist not answer"
+      ],
+      "related_entities": [
+        "call routing",
+        "appointment requests",
+        "human escalation"
+      ],
+      "search_intents": [
+        "scope a phone assistant"
+      ],
+      "relationships": [],
+      "intent_key": "business-phone-agent-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Scope incoming telephone handling and human transfers, not a general website chatbot or guaranteed autonomous receptionist.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "booking",
+      "canonical_path": "/services/booking-systems",
+      "language": "en",
+      "cluster": "customer-journey",
+      "primary_query": "online booking system setup",
+      "aliases": [
+        "appointment booking website",
+        "business online ordering setup"
+      ],
+      "question_queries": [
+        "can customers book from my website"
+      ],
+      "related_entities": [
+        "calendar",
+        "reminders",
+        "ordering",
+        "payments"
+      ],
+      "search_intents": [
+        "implement booking or ordering"
+      ],
+      "relationships": [],
+      "intent_key": "booking-ordering-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Implement booking or ordering tools; the restaurant industry page applies these services to restaurant-specific needs.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "dashboard",
+      "canonical_path": "/services/business-dashboards",
+      "language": "en",
+      "cluster": "operations",
+      "primary_query": "custom business dashboard",
+      "aliases": [
+        "business reporting dashboard developer",
+        "combine business reports"
+      ],
+      "question_queries": [
+        "what should a small business dashboard show"
+      ],
+      "related_entities": [
+        "reporting",
+        "data sources",
+        "decision support"
+      ],
+      "search_intents": [
+        "commission a reporting tool"
+      ],
+      "relationships": [],
+      "intent_key": "business-dashboard-build",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Build a reporting view for real decisions; the ALLCPR case is project evidence rather than a duplicate dashboard service offer.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "seo",
+      "canonical_path": "/services/seo",
+      "language": "en",
+      "cluster": "websites",
+      "primary_query": "small business technical SEO setup",
+      "aliases": [
+        "website crawlability fixes",
+        "search ready website setup"
+      ],
+      "question_queries": [
+        "is my website visible to search engines"
+      ],
+      "related_entities": [
+        "canonical URL",
+        "sitemap",
+        "Google Search Console"
+      ],
+      "search_intents": [
+        "repair search foundations"
+      ],
+      "relationships": [],
+      "intent_key": "technical-search-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Repair crawlability and search foundations without promising rankings; broad website construction has a different service owner.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "buyer-guide",
+      "canonical_path": "/guides/website-builder-or-custom-software",
+      "language": "en",
+      "cluster": "buying-software",
+      "primary_query": "website builder vs custom software",
+      "aliases": [
+        "template website or custom build",
+        "do I need automation or custom software",
+        "which type of website does my business need"
+      ],
+      "question_queries": [
+        "how do I compare website development quotes",
+        "what should I send a developer before getting a quote"
+      ],
+      "related_entities": [
+        "website builder",
+        "workflow automation",
+        "custom software",
+        "project scope"
+      ],
+      "search_intents": [
+        "choose the smallest useful build"
+      ],
+      "relationships": [],
+      "intent_key": "choose-website-automation-software",
+      "page_type": "guide",
+      "audience": "buyers comparing solutions",
+      "intent_boundary": "Help a buyer choose the smallest useful website, automation or custom application before requesting a quote; not a vendor hiring page.",
+      "translation_of": null,
+      "editorial_status": "publication_reviewed"
+    },
+    {
+      "id": "contractor-guide",
+      "canonical_path": "/guides/contractor-inquiry-workflow",
+      "language": "en",
+      "cluster": "customer-journey",
+      "primary_query": "contractor quote request workflow",
+      "aliases": [
+        "what happens after an estimate request",
+        "contractor inquiry handoff"
+      ],
+      "question_queries": [
+        "how do I check my estimate request form"
+      ],
+      "related_entities": [
+        "estimate request",
+        "acknowledgment",
+        "lead owner"
+      ],
+      "search_intents": [
+        "inspect an inquiry process"
+      ],
+      "relationships": [],
+      "intent_key": "inspect-contractor-inquiry-workflow",
+      "page_type": "guide",
+      "audience": "contractors",
+      "intent_boundary": "Explain and inspect the steps after an estimate request; the lead-recovery page owns the specific paid implementation offer.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "missed-lead-service",
+      "canonical_path": "/missed-lead-recovery",
+      "language": "en",
+      "cluster": "customer-journey",
+      "primary_query": "contractor lead follow up setup",
+      "aliases": [
+        "website and estimate follow up service",
+        "missed inquiry recovery setup"
+      ],
+      "question_queries": [
+        "who can set up contractor inquiry follow up"
+      ],
+      "related_entities": [
+        "lead handoff",
+        "website",
+        "reply rules"
+      ],
+      "search_intents": [
+        "hire for a website and handoff build"
+      ],
+      "relationships": [],
+      "intent_key": "contractor-lead-recovery-package",
+      "page_type": "service",
+      "audience": "contractors",
+      "intent_boundary": "Describe the focused website and estimate-follow-up package; the contractor industry page surveys broader needs and the guide teaches inspection.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "brand-home",
+      "canonical_path": "/",
+      "language": "en",
+      "cluster": "brand",
+      "primary_query": "Leon Builds",
+      "aliases": [
+        "Leon Builds websites and automation",
+        "Leon Builds developer"
+      ],
+      "question_queries": [
+        "What does Leon Builds do"
+      ],
+      "related_entities": [
+        "Leon Builds",
+        "Leon Kelvin Li"
+      ],
+      "search_intents": [
+        "Introduce Leon Builds and route visitors to services and proof"
+      ],
+      "relationships": [],
+      "intent_key": "brand-home",
+      "page_type": "home",
+      "audience": "business owners",
+      "intent_boundary": "Introduce Leon Builds and route visitors to services and proof; individual services, prices and founder biography retain their own owners.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "founder-about",
+      "canonical_path": "/about",
+      "language": "en",
+      "cluster": "brand",
+      "primary_query": "Leon Kelvin Li software developer",
+      "aliases": [
+        "about Leon Kelvin Li",
+        "who builds Leon Builds"
+      ],
+      "question_queries": [
+        "Who is behind Leon Builds"
+      ],
+      "related_entities": [
+        "Leon Kelvin Li",
+        "Leon Builds"
+      ],
+      "search_intents": [
+        "Explain the named developer and working approach"
+      ],
+      "relationships": [],
+      "intent_key": "founder-about",
+      "page_type": "trust",
+      "audience": "business owners",
+      "intent_boundary": "Explain the named developer and working approach; the homepage introduces the business and the work hub contains project evidence.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "book-project-call",
+      "canonical_path": "/call",
+      "language": "en",
+      "cluster": "contact",
+      "primary_query": "book a call with Leon Builds",
+      "aliases": [
+        "Leon Builds consultation call",
+        "schedule a project call with Leon"
+      ],
+      "question_queries": [
+        "How can I book a project call with Leon Builds"
+      ],
+      "related_entities": [
+        "project call",
+        "Leon Builds"
+      ],
+      "search_intents": [
+        "Arrange the existing project consultation"
+      ],
+      "relationships": [],
+      "intent_key": "book-project-call",
+      "page_type": "conversion",
+      "audience": "business owners",
+      "intent_boundary": "Arrange the existing project consultation; use the quote page to submit a written brief, not a second calendar page.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "portfolio-hub",
+      "canonical_path": "/work",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "Leon Builds portfolio",
+      "aliases": [
+        "Leon Builds case studies",
+        "Leon Builds project examples"
+      ],
+      "question_queries": [
+        "What has Leon Builds built"
+      ],
+      "related_entities": [
+        "Leon Builds",
+        "Curio",
+        "ALLCPR",
+        "BeastyPages"
+      ],
+      "search_intents": [
+        "Browse actual project evidence and its stated status"
+      ],
+      "relationships": [],
+      "intent_key": "portfolio-hub",
+      "page_type": "case_study_hub",
+      "audience": "prospective clients",
+      "intent_boundary": "Browse actual project evidence and its stated status; named project case studies answer narrower questions.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "allcpr-case",
+      "canonical_path": "/work/allcpr-site-intelligence",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "ALLCPR Site Intelligence case study",
+      "aliases": [
+        "ALLCPR location planning platform",
+        "Leon Builds ALLCPR project"
+      ],
+      "question_queries": [
+        "What does the ALLCPR Site Intelligence project show"
+      ],
+      "related_entities": [
+        "ALLCPR",
+        "location planning",
+        "decision support"
+      ],
+      "search_intents": [
+        "Explain the publicly approved ALLCPR implementation and its limits"
+      ],
+      "relationships": [],
+      "intent_key": "allcpr-case",
+      "page_type": "case_study",
+      "audience": "prospective clients",
+      "intent_boundary": "Explain the publicly approved ALLCPR implementation and its limits; this is case evidence, not a claim about guaranteed expansion outcomes.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "curio-case",
+      "canonical_path": "/work/curio-app",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "Curio app development case study",
+      "aliases": [
+        "Leon Builds Curio app project",
+        "how Leon built Curio"
+      ],
+      "question_queries": [
+        "What did Leon build for the Curio app"
+      ],
+      "related_entities": [
+        "Curio",
+        "iPhone app",
+        "Leon Kelvin Li"
+      ],
+      "search_intents": [
+        "Describe Curio as an owned-product development example"
+      ],
+      "relationships": [],
+      "intent_key": "curio-case",
+      "page_type": "case_study",
+      "audience": "prospective clients",
+      "intent_boundary": "Describe Curio as an owned-product development example; the product website owns app-user questions and the service page owns commissioning an app.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "beastypages-case",
+      "canonical_path": "/work/beastypages-website",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "BeastyPages website case study",
+      "aliases": [
+        "Leon Builds beastypages.com project",
+        "BeastyPages web development example"
+      ],
+      "question_queries": [
+        "What does the BeastyPages website project demonstrate"
+      ],
+      "related_entities": [
+        "BeastyPages",
+        "website delivery"
+      ],
+      "search_intents": [
+        "Show the public BeastyPages project evidence and boundaries"
+      ],
+      "relationships": [],
+      "intent_key": "beastypages-case",
+      "page_type": "case_study",
+      "audience": "prospective clients",
+      "intent_boundary": "Show the public BeastyPages project evidence and boundaries; avoid presenting it as a separate generic website-design service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "technical-build-partner",
+      "canonical_path": "/technical-build-partner",
+      "language": "en",
+      "cluster": "buying-software",
+      "primary_query": "technical build partner for small business",
+      "aliases": [
+        "developer to plan and build business tools",
+        "Leon Builds technical partner"
+      ],
+      "question_queries": [
+        "Who can help scope and implement a business bottleneck"
+      ],
+      "related_entities": [
+        "project scoping",
+        "implementation",
+        "handover"
+      ],
+      "search_intents": [
+        "Help a buyer with an unclear technical bottleneck scope an implementation partnership"
+      ],
+      "relationships": [],
+      "intent_key": "technical-build-partner",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Help a buyer with an unclear technical bottleneck scope an implementation partnership; individual services own known product requests.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "request-project-quote",
+      "canonical_path": "/quote",
+      "language": "en",
+      "cluster": "contact",
+      "primary_query": "get a quote from Leon Builds",
+      "aliases": [
+        "Leon Builds project quote",
+        "send Leon Builds a project brief"
+      ],
+      "question_queries": [
+        "How do I request a fixed quote from Leon Builds"
+      ],
+      "related_entities": [
+        "project brief",
+        "quote",
+        "Leon Builds"
+      ],
+      "search_intents": [
+        "Collect a written project brief for a scoped quote"
+      ],
+      "relationships": [],
+      "intent_key": "request-project-quote",
+      "page_type": "conversion",
+      "audience": "business owners",
+      "intent_boundary": "Collect a written project brief for a scoped quote; the call page owns scheduling and service pages describe public starting scope.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "privacy-policy",
+      "canonical_path": "/privacy",
+      "language": "en",
+      "cluster": "trust",
+      "primary_query": "Leon Builds privacy policy",
+      "aliases": [
+        "Leon Builds data handling",
+        "privacy of Leon Builds project inquiries"
+      ],
+      "question_queries": [
+        "How does Leon Builds handle project inquiry data"
+      ],
+      "related_entities": [
+        "privacy",
+        "project inquiry data"
+      ],
+      "search_intents": [
+        "Find the actual site privacy disclosure"
+      ],
+      "relationships": [],
+      "intent_key": "privacy-policy",
+      "page_type": "privacy",
+      "audience": "business owners",
+      "intent_boundary": "Find the actual site privacy disclosure; this is a trust and navigation destination, not a generic privacy-advice acquisition article.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "services-hub",
+      "canonical_path": "/services/",
+      "language": "en",
+      "cluster": "services",
+      "primary_query": "Leon Builds services",
+      "aliases": [
+        "Leon Builds service menu",
+        "compare Leon Builds services"
+      ],
+      "question_queries": [
+        "Which services does Leon Builds offer"
+      ],
+      "related_entities": [
+        "websites",
+        "apps",
+        "automation",
+        "business tools"
+      ],
+      "search_intents": [
+        "Navigate the available service categories and published starting prices"
+      ],
+      "relationships": [],
+      "intent_key": "services-hub",
+      "page_type": "service_hub",
+      "audience": "business owners",
+      "intent_boundary": "Navigate the available service categories and published starting prices; detailed hiring questions belong to the relevant service owner.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industries-hub",
+      "canonical_path": "/industries/",
+      "language": "en",
+      "cluster": "industries",
+      "primary_query": "industries Leon Builds works with",
+      "aliases": [
+        "Leon Builds industry solutions",
+        "business sectors served by Leon Builds"
+      ],
+      "question_queries": [
+        "Which types of businesses does Leon Builds build for"
+      ],
+      "related_entities": [
+        "business industries",
+        "workflows"
+      ],
+      "search_intents": [
+        "Browse industry-specific starting points without implying a client project in every sector"
+      ],
+      "relationships": [],
+      "intent_key": "industries-hub",
+      "page_type": "industry_hub",
+      "audience": "business owners",
+      "intent_boundary": "Browse industry-specific starting points without implying a client project in every sector; individual industry pages own their narrower context.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-restaurants",
+      "canonical_path": "/industries/restaurants",
+      "language": "en",
+      "cluster": "industries/restaurants",
+      "primary_query": "restaurant website design",
+      "aliases": [
+        "restaurant web design",
+        "restaurant online ordering setup"
+      ],
+      "question_queries": [
+        "How can a restaurant connect its menu and ordering"
+      ],
+      "related_entities": [
+        "menus",
+        "online orders",
+        "restaurant websites"
+      ],
+      "search_intents": [
+        "Apply existing development services to restaurants"
+      ],
+      "relationships": [],
+      "intent_key": "industry-restaurants",
+      "page_type": "industry",
+      "audience": "restaurants",
+      "intent_boundary": "Apply existing development services to restaurants; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-contractors",
+      "canonical_path": "/industries/contractors",
+      "language": "en",
+      "cluster": "industries/contractors",
+      "primary_query": "contractor website design",
+      "aliases": [
+        "contractor web design",
+        "website tools for contractors"
+      ],
+      "question_queries": [
+        "What website tools can help a contractor handle inquiries"
+      ],
+      "related_entities": [
+        "estimate requests",
+        "contractor websites"
+      ],
+      "search_intents": [
+        "Apply existing development services to contractors"
+      ],
+      "relationships": [],
+      "intent_key": "industry-contractors",
+      "page_type": "industry",
+      "audience": "contractors",
+      "intent_boundary": "Apply existing development services to contractors; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-automotive",
+      "canonical_path": "/industries/automotive",
+      "language": "en",
+      "cluster": "industries/automotive",
+      "primary_query": "auto repair website design",
+      "aliases": [
+        "auto repair shop website",
+        "website booking for an auto shop"
+      ],
+      "question_queries": [
+        "What website and booking tools can an auto shop use"
+      ],
+      "related_entities": [
+        "repair appointments",
+        "job updates"
+      ],
+      "search_intents": [
+        "Apply existing development services to auto repair businesses"
+      ],
+      "relationships": [],
+      "intent_key": "industry-automotive",
+      "page_type": "industry",
+      "audience": "auto repair businesses",
+      "intent_boundary": "Apply existing development services to auto repair businesses; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-healthcare",
+      "canonical_path": "/industries/healthcare",
+      "language": "en",
+      "cluster": "industries/healthcare",
+      "primary_query": "software for medical and dental offices",
+      "aliases": [
+        "administrative tools for medical practices",
+        "dental office appointment software development"
+      ],
+      "question_queries": [
+        "What administrative workflows can a medical office simplify"
+      ],
+      "related_entities": [
+        "appointments",
+        "administrative workflows"
+      ],
+      "search_intents": [
+        "Apply existing development services to medical and dental offices"
+      ],
+      "relationships": [],
+      "intent_key": "industry-healthcare",
+      "page_type": "industry",
+      "audience": "medical and dental offices",
+      "intent_boundary": "Apply existing development services to medical and dental offices; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-real-estate",
+      "canonical_path": "/industries/real-estate",
+      "language": "en",
+      "cluster": "industries/real-estate",
+      "primary_query": "software for property management",
+      "aliases": [
+        "real estate workflow software",
+        "property maintenance request tools"
+      ],
+      "question_queries": [
+        "How can property teams keep maintenance requests organized"
+      ],
+      "related_entities": [
+        "property requests",
+        "vendor handoff"
+      ],
+      "search_intents": [
+        "Apply existing development services to property and real estate teams"
+      ],
+      "relationships": [],
+      "intent_key": "industry-real-estate",
+      "page_type": "industry",
+      "audience": "property and real estate teams",
+      "intent_boundary": "Apply existing development services to property and real estate teams; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-logistics",
+      "canonical_path": "/industries/logistics",
+      "language": "en",
+      "cluster": "industries/logistics",
+      "primary_query": "software for logistics and trucking",
+      "aliases": [
+        "dispatch workflow software",
+        "warehouse and logistics business tools"
+      ],
+      "question_queries": [
+        "How can dispatch and customer updates connect"
+      ],
+      "related_entities": [
+        "dispatch",
+        "driver updates",
+        "tracking"
+      ],
+      "search_intents": [
+        "Apply existing development services to logistics businesses"
+      ],
+      "relationships": [],
+      "intent_key": "industry-logistics",
+      "page_type": "industry",
+      "audience": "logistics businesses",
+      "intent_boundary": "Apply existing development services to logistics businesses; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-gyms",
+      "canonical_path": "/industries/gyms",
+      "language": "en",
+      "cluster": "industries/gyms",
+      "primary_query": "software for gyms and fitness businesses",
+      "aliases": [
+        "gym booking website",
+        "fitness class booking tools"
+      ],
+      "question_queries": [
+        "How can a gym connect class booking and reminders"
+      ],
+      "related_entities": [
+        "fitness classes",
+        "membership",
+        "reminders"
+      ],
+      "search_intents": [
+        "Apply existing development services to fitness businesses"
+      ],
+      "relationships": [],
+      "intent_key": "industry-gyms",
+      "page_type": "industry",
+      "audience": "fitness businesses",
+      "intent_boundary": "Apply existing development services to fitness businesses; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-retail",
+      "canonical_path": "/industries/retail",
+      "language": "en",
+      "cluster": "industries/retail",
+      "primary_query": "software for retail and ecommerce",
+      "aliases": [
+        "retail order workflow tools",
+        "online store operational software"
+      ],
+      "question_queries": [
+        "How can a retail team organize incoming orders"
+      ],
+      "related_entities": [
+        "orders",
+        "inventory",
+        "staff alerts"
+      ],
+      "search_intents": [
+        "Apply existing development services to retail businesses"
+      ],
+      "relationships": [],
+      "intent_key": "industry-retail",
+      "page_type": "industry",
+      "audience": "retail businesses",
+      "intent_boundary": "Apply existing development services to retail businesses; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-professional-services",
+      "canonical_path": "/industries/professional-services",
+      "language": "en",
+      "cluster": "industries/professional-services",
+      "primary_query": "software for professional firms",
+      "aliases": [
+        "professional services client portal",
+        "client intake tools for professional firms"
+      ],
+      "question_queries": [
+        "How can a professional firm organize client intake"
+      ],
+      "related_entities": [
+        "client intake",
+        "documents",
+        "portals"
+      ],
+      "search_intents": [
+        "Apply existing development services to professional firms"
+      ],
+      "relationships": [],
+      "intent_key": "industry-professional-services",
+      "page_type": "industry",
+      "audience": "professional firms",
+      "intent_boundary": "Apply existing development services to professional firms; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "industry-startups",
+      "canonical_path": "/industries/startups",
+      "language": "en",
+      "cluster": "industries/startups",
+      "primary_query": "MVP development for startups",
+      "aliases": [
+        "startup product development",
+        "first product build for founders"
+      ],
+      "question_queries": [
+        "How can a founder scope the first usable product"
+      ],
+      "related_entities": [
+        "MVP",
+        "product scope",
+        "user feedback"
+      ],
+      "search_intents": [
+        "Apply existing development services to startup founders"
+      ],
+      "relationships": [],
+      "intent_key": "industry-startups",
+      "page_type": "industry",
+      "audience": "startup founders",
+      "intent_boundary": "Apply existing development services to startup founders; this is an industry-specific overview, not proof of an undisclosed client or a duplicate general service.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "client-feedback",
+      "canonical_path": "/reviews",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "Leon Builds client feedback",
+      "aliases": [
+        "Leon Builds reviews",
+        "approved Leon Builds testimonials"
+      ],
+      "question_queries": [
+        "What feedback have Leon Builds clients approved for publication"
+      ],
+      "related_entities": [
+        "client feedback",
+        "approved testimonials"
+      ],
+      "search_intents": [
+        "Read approved client statements with their actual scope"
+      ],
+      "relationships": [],
+      "intent_key": "client-feedback",
+      "page_type": "trust",
+      "audience": "prospective clients",
+      "intent_boundary": "Read approved client statements with their actual scope; do not imply a third-party aggregate rating or unapproved review evidence.",
+      "translation_of": null,
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "brand-home-es",
+      "canonical_path": "/es",
+      "language": "es",
+      "cluster": "brand",
+      "primary_query": "Leon Builds en español",
+      "aliases": [
+        "desarrollo web con Leon en español",
+        "servicios de Leon Builds en español"
+      ],
+      "question_queries": [
+        "Qué ofrece Leon Builds en español"
+      ],
+      "related_entities": [
+        "páginas web",
+        "automatización"
+      ],
+      "search_intents": [
+        "Localized home destination in the existing brand-home hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "brand-home",
+      "page_type": "home",
+      "audience": "business owners",
+      "intent_boundary": "Localized home destination in the existing brand-home hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "brand-home",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "brand-home-pt",
+      "canonical_path": "/pt",
+      "language": "pt-BR",
+      "cluster": "brand",
+      "primary_query": "Leon Builds em português",
+      "aliases": [
+        "desenvolvimento web com Leon em português",
+        "serviços Leon Builds em português"
+      ],
+      "question_queries": [
+        "O que a Leon Builds faz"
+      ],
+      "related_entities": [
+        "sites",
+        "automação"
+      ],
+      "search_intents": [
+        "Localized home destination in the existing brand-home hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "brand-home",
+      "page_type": "home",
+      "audience": "business owners",
+      "intent_boundary": "Localized home destination in the existing brand-home hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "brand-home",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "brand-home-zh",
+      "canonical_path": "/zh",
+      "language": "zh-Hans",
+      "cluster": "brand",
+      "primary_query": "Leon Builds 中文服务",
+      "aliases": [
+        "Leon Builds 中文网站开发",
+        "会说中文的 Leon 开发者"
+      ],
+      "question_queries": [
+        "Leon Builds 提供什么服务"
+      ],
+      "related_entities": [
+        "网站",
+        "自动化"
+      ],
+      "search_intents": [
+        "Localized home destination in the existing brand-home hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "brand-home",
+      "page_type": "home",
+      "audience": "business owners",
+      "intent_boundary": "Localized home destination in the existing brand-home hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "brand-home",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "automation-es",
+      "canonical_path": "/es/automatizacion",
+      "language": "es",
+      "cluster": "operations",
+      "primary_query": "automatización para pequeños negocios",
+      "aliases": [
+        "conectar herramientas de negocio",
+        "automatizar tareas administrativas"
+      ],
+      "question_queries": [
+        "Qué tareas de un negocio se pueden automatizar"
+      ],
+      "related_entities": [
+        "automatización",
+        "chatbots",
+        "derivación a personas"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing automation hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-workflow-automation",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing automation hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "automation",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "automation-pt",
+      "canonical_path": "/pt/automacao",
+      "language": "pt-BR",
+      "cluster": "operations",
+      "primary_query": "automação para pequenos negócios",
+      "aliases": [
+        "conectar ferramentas da empresa",
+        "automatizar tarefas administrativas"
+      ],
+      "question_queries": [
+        "Quais tarefas do negócio podem ser automatizadas"
+      ],
+      "related_entities": [
+        "automação",
+        "chatbot",
+        "encaminhamento humano"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing automation hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-workflow-automation",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing automation hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "automation",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "automation-zh",
+      "canonical_path": "/zh/zidonghua",
+      "language": "zh-Hans",
+      "cluster": "operations",
+      "primary_query": "商家流程自动化",
+      "aliases": [
+        "企业重复工作自动化",
+        "商家 AI 客服自动化"
+      ],
+      "question_queries": [
+        "商家的哪些重复工作可以自动化"
+      ],
+      "related_entities": [
+        "自动化",
+        "AI 客服",
+        "人工接手"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing automation hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-workflow-automation",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing automation hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "automation",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "booking-es",
+      "canonical_path": "/es/pedidos-en-linea",
+      "language": "es",
+      "cluster": "customer-journey",
+      "primary_query": "pedidos en línea y citas para negocios",
+      "aliases": [
+        "sistema de pedidos en la web",
+        "reservas y pedidos para comercios"
+      ],
+      "question_queries": [
+        "Cómo recibir pedidos y reservas en mi página"
+      ],
+      "related_entities": [
+        "pedidos",
+        "citas",
+        "calendario"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing booking hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "booking-ordering-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing booking hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "booking",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "booking-pt",
+      "canonical_path": "/pt/pedidos-online",
+      "language": "pt-BR",
+      "cluster": "customer-journey",
+      "primary_query": "pedidos online e agendamento para negócios",
+      "aliases": [
+        "sistema de pedidos no site",
+        "agendamentos e pedidos para empresas"
+      ],
+      "question_queries": [
+        "Como receber pedidos e agendamentos pelo meu site"
+      ],
+      "related_entities": [
+        "pedidos",
+        "agendamento",
+        "calendário"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing booking hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "booking-ordering-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing booking hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "booking",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "booking-zh",
+      "canonical_path": "/zh/zaixian-diandan",
+      "language": "zh-Hans",
+      "cluster": "customer-journey",
+      "primary_query": "商家网上点单和预约系统",
+      "aliases": [
+        "网站在线点单",
+        "商家在线预约设置"
+      ],
+      "question_queries": [
+        "怎样让客人在网站下单或预约"
+      ],
+      "related_entities": [
+        "点单",
+        "预约",
+        "提醒"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing booking hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "booking-ordering-setup",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing booking hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "booking",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "websites-es",
+      "canonical_path": "/es/pagina-web",
+      "language": "es",
+      "cluster": "websites",
+      "primary_query": "diseño web para pequeños negocios",
+      "aliases": [
+        "página web para mi negocio",
+        "sitio web con seguimiento de consultas"
+      ],
+      "question_queries": [
+        "Cómo dar seguimiento a las consultas de mi página web"
+      ],
+      "related_entities": [
+        "diseño web",
+        "consultas",
+        "seguimiento"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing websites hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-web-design",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing websites hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "websites",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "websites-pt",
+      "canonical_path": "/pt/criar-site",
+      "language": "pt-BR",
+      "cluster": "websites",
+      "primary_query": "criar site para pequenos negócios",
+      "aliases": [
+        "site para minha empresa",
+        "site com acompanhamento de contatos"
+      ],
+      "question_queries": [
+        "Como acompanhar os pedidos de orçamento do meu site"
+      ],
+      "related_entities": [
+        "site",
+        "orçamentos",
+        "acompanhamento"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing websites hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-web-design",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing websites hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "websites",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "websites-zh",
+      "canonical_path": "/zh/zuo-wangzhan",
+      "language": "zh-Hans",
+      "cluster": "websites",
+      "primary_query": "商家网站制作",
+      "aliases": [
+        "企业网站开发",
+        "网站询价跟进系统"
+      ],
+      "question_queries": [
+        "怎样跟进网站收到的询价"
+      ],
+      "related_entities": [
+        "网站",
+        "询价",
+        "跟进"
+      ],
+      "search_intents": [
+        "Localized service destination in the existing websites hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "business-web-design",
+      "page_type": "service",
+      "audience": "business owners",
+      "intent_boundary": "Localized service destination in the existing websites hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "websites",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "book-project-call-es",
+      "canonical_path": "/es/agendar",
+      "language": "es",
+      "cluster": "contact",
+      "primary_query": "agendar una llamada con Leon Builds",
+      "aliases": [
+        "reservar consulta con Leon Builds",
+        "llamada de proyecto con Leon en español"
+      ],
+      "question_queries": [
+        "Cómo agendar una llamada con Leon Builds"
+      ],
+      "related_entities": [
+        "llamada",
+        "proyecto"
+      ],
+      "search_intents": [
+        "Localized conversion destination in the existing book-project-call hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "book-project-call",
+      "page_type": "conversion",
+      "audience": "business owners",
+      "intent_boundary": "Localized conversion destination in the existing book-project-call hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "book-project-call",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "book-project-call-pt",
+      "canonical_path": "/pt/agendar",
+      "language": "pt-BR",
+      "cluster": "contact",
+      "primary_query": "agendar conversa com Leon Builds",
+      "aliases": [
+        "marcar consulta com Leon Builds",
+        "conversa de projeto com Leon em português"
+      ],
+      "question_queries": [
+        "Como marcar uma conversa com Leon Builds"
+      ],
+      "related_entities": [
+        "conversa",
+        "projeto"
+      ],
+      "search_intents": [
+        "Localized conversion destination in the existing book-project-call hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "book-project-call",
+      "page_type": "conversion",
+      "audience": "business owners",
+      "intent_boundary": "Localized conversion destination in the existing book-project-call hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "book-project-call",
+      "editorial_status": "legacy_review_pending"
+    },
+    {
+      "id": "book-project-call-zh",
+      "canonical_path": "/zh/yuyue",
+      "language": "zh-Hans",
+      "cluster": "contact",
+      "primary_query": "预约 Leon Builds 通话",
+      "aliases": [
+        "预约 Leon 项目咨询",
+        "和 Leon 用中文讨论项目"
+      ],
+      "question_queries": [
+        "怎样预约 Leon Builds 项目通话"
+      ],
+      "related_entities": [
+        "通话",
+        "项目咨询"
+      ],
+      "search_intents": [
+        "Localized conversion destination in the existing book-project-call hreflang family"
+      ],
+      "relationships": [],
+      "intent_key": "book-project-call",
+      "page_type": "conversion",
+      "audience": "business owners",
+      "intent_boundary": "Localized conversion destination in the existing book-project-call hreflang family; owns this language's navigation or buyer question, not a new service or a separate proof claim.",
+      "translation_of": "book-project-call",
+      "editorial_status": "legacy_review_pending"
+    }
   ],
   "candidates": [
-    {"topic":"Keep or rebuild an existing website","primary_query":"repair website or rebuild","canonical_path":"/services/websites","cluster":"websites","action":"improve_existing","reason":"Add a concrete diagnostic only after inspecting a real repair case."},
-    {"topic":"Ownership and handover checklist","primary_query":"what should I own after a website build","canonical_path":"/guides/website-ownership-handover","cluster":"buying-software","action":"research","reason":"Useful contract preparation; avoid legal advice and invented ownership guarantees."},
-    {"topic":"Website recurring costs","primary_query":"website ongoing costs after launch","canonical_path":"/services/websites","cluster":"websites","action":"improve_existing","reason":"Explain approved scope and provider-dependent fees, not invented market prices."},
-    {"topic":"Automation failure recovery","primary_query":"what happens when an automation fails","canonical_path":"/guides/automation-failure-recovery","cluster":"operations","action":"research","reason":"Create a real, de-identified failure/retry example before publishing."},
-    {"topic":"Website form delivery diagnosis","primary_query":"website contact form not receiving emails","canonical_path":"/guides/contact-form-delivery","cluster":"customer-journey","action":"research","reason":"Can draw on verified receipt versus delivery engineering; no private inbox details."},
-    {"topic":"Scope the first app release","primary_query":"what to include in an app MVP","canonical_path":"/services/mobile-apps","cluster":"products","action":"improve_existing","reason":"One example of a first useful release should add more than a generic feature list."},
-    {"topic":"Booking link or custom booking system","primary_query":"booking link vs custom booking system","canonical_path":"/services/booking-systems","cluster":"customer-journey","action":"improve_existing","reason":"Compare actual business constraints without unverified vendor feature claims."},
-    {"topic":"Chatbot handoff test","primary_query":"how to test a business chatbot before launch","canonical_path":"/guides/business-chatbot-tests","cluster":"customer-support","action":"research","reason":"Publish a reusable test sheet after reviewing safe, non-sensitive example questions."},
-    {"topic":"App store preparation","primary_query":"what do I need before submitting a business app","canonical_path":"/services/mobile-apps","cluster":"products","action":"improve_existing","reason":"Use current official store sources and clearly separate assistance from approval."},
-    {"topic":"A useful dashboard starts with a decision","primary_query":"what metrics should a small business dashboard show","canonical_path":"/services/business-dashboards","cluster":"operations","action":"improve_existing","reason":"A worked decision example is needed; no fabricated client improvements."},
-    {"topic":"Website builder or custom software","primary_query":"website builder vs custom software","canonical_path":"/guides/website-builder-or-custom-software","cluster":"buying-software","action":"review_new","reason":"Original plain-language buyer guide; no measured query demand yet."}
-  ]
+    {
+      "topic": "Keep or rebuild an existing website",
+      "primary_query": "repair website or rebuild",
+      "canonical_path": "/services/websites",
+      "cluster": "websites",
+      "action": "improve_existing",
+      "reason": "Add a concrete diagnostic only after inspecting a real repair case."
+    },
+    {
+      "topic": "Ownership and handover checklist",
+      "primary_query": "what should I own after a website build",
+      "canonical_path": "/guides/website-ownership-handover",
+      "cluster": "buying-software",
+      "action": "research",
+      "reason": "Useful contract preparation; avoid legal advice and invented ownership guarantees."
+    },
+    {
+      "topic": "Website recurring costs",
+      "primary_query": "website ongoing costs after launch",
+      "canonical_path": "/services/websites",
+      "cluster": "websites",
+      "action": "improve_existing",
+      "reason": "Explain approved scope and provider-dependent fees, not invented market prices."
+    },
+    {
+      "topic": "Automation failure recovery",
+      "primary_query": "what happens when an automation fails",
+      "canonical_path": "/guides/automation-failure-recovery",
+      "cluster": "operations",
+      "action": "research",
+      "reason": "Create a real, de-identified failure/retry example before publishing."
+    },
+    {
+      "topic": "Website form delivery diagnosis",
+      "primary_query": "website contact form not receiving emails",
+      "canonical_path": "/guides/contact-form-delivery",
+      "cluster": "customer-journey",
+      "action": "research",
+      "reason": "Can draw on verified receipt versus delivery engineering; no private inbox details."
+    },
+    {
+      "topic": "Scope the first app release",
+      "primary_query": "what to include in an app MVP",
+      "canonical_path": "/services/mobile-apps",
+      "cluster": "products",
+      "action": "improve_existing",
+      "reason": "One example of a first useful release should add more than a generic feature list."
+    },
+    {
+      "topic": "Booking link or custom booking system",
+      "primary_query": "booking link vs custom booking system",
+      "canonical_path": "/services/booking-systems",
+      "cluster": "customer-journey",
+      "action": "improve_existing",
+      "reason": "Compare actual business constraints without unverified vendor feature claims."
+    },
+    {
+      "topic": "Chatbot handoff test",
+      "primary_query": "how to test a business chatbot before launch",
+      "canonical_path": "/guides/business-chatbot-tests",
+      "cluster": "customer-support",
+      "action": "research",
+      "reason": "Publish a reusable test sheet after reviewing safe, non-sensitive example questions."
+    },
+    {
+      "topic": "App store preparation",
+      "primary_query": "what do I need before submitting a business app",
+      "canonical_path": "/services/mobile-apps",
+      "cluster": "products",
+      "action": "improve_existing",
+      "reason": "Use current official store sources and clearly separate assistance from approval."
+    },
+    {
+      "topic": "A useful dashboard starts with a decision",
+      "primary_query": "what metrics should a small business dashboard show",
+      "canonical_path": "/services/business-dashboards",
+      "cluster": "operations",
+      "action": "improve_existing",
+      "reason": "A worked decision example is needed; no fabricated client improvements."
+    },
+    {
+      "topic": "Website builder or custom software",
+      "primary_query": "website builder vs custom software",
+      "canonical_path": "/guides/website-builder-or-custom-software",
+      "cluster": "buying-software",
+      "action": "review_new",
+      "reason": "Original plain-language buyer guide; no measured query demand yet."
+    }
+  ],
+  "coverage_scope": "Every current canonical sitemap route has one explicit intent mapping. Mapping does not grant editorial approval, establish search demand, or change publication eligibility.",
+  "semantic_policy": "One intent key per language and one owner per canonical route. Normalized aliases and conservative lexical-equivalence signatures detect likely duplicate query claims; editorial review still decides meaning and evidence."
 }

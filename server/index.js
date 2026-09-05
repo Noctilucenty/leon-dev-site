@@ -45,6 +45,8 @@ let OpenAI = null;
 try { OpenAI = require('openai'); } catch (e) { /* handled at call time */ }
 
 const { SYSTEM_PROMPT } = require('./prompt');
+const { buildSearchFunnel } = require('./search-funnel');
+const { webVitalsReport } = require('./web-vitals-report');
 const {
   validateLead,
   persistLead,
@@ -980,6 +982,18 @@ app.get('/api/traffic', (req, res) => {
     : rawEvents.filter((event, index) => !eventIsQaExcluded(event, index));
   const deviceJourney = deviceJourneyStats(events);
   const reviewMilestones = reviewMilestoneStats(events);
+  let searchFunnel;
+  try {
+    const end = req.query.end || new Date().toISOString().slice(0, 10);
+    const defaultStart = new Date(Date.parse(end) - 27 * 86400000);
+    const start = req.query.start || (Number.isFinite(defaultStart.getTime()) ? defaultStart.toISOString().slice(0, 10) : '');
+    searchFunnel = buildSearchFunnel({ events: rawEvents,
+      leads: readLeads(Number.MAX_SAFE_INTEGER, { includeSynthetic: true }),
+      acquisition: acquisitionRecords, start, end,
+      eventsTruncated: rawEvents.length >= 5000,
+      // Retained files do not establish a complete collection window.
+      coverageVerified: false });
+  } catch (_) { return res.status(400).json({ error: 'invalid search report dates or evidence' }); }
   if (req.query.format === 'json') {
     return res.json({
       count: events.length,
@@ -987,6 +1001,8 @@ app.get('/api/traffic', (req, res) => {
       qaExcludedSessionCount: removedQaSessionIds.size,
       deviceJourney,
       reviewMilestones,
+      searchFunnel,
+      webVitals: webVitalsReport(events, searchFunnel.period),
       events
     });
   }

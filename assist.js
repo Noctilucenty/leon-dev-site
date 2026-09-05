@@ -452,6 +452,14 @@
         var value = eventExtraValue(k, extra[k]);
         if (value) payload[k] = value;
       });
+      if (name === 'web_vital' && /^(LCP|INP|CLS)$/.test(extra.metricName || '')
+          && typeof extra.metricValue === 'number' && isFinite(extra.metricValue)
+          && /^[A-Za-z0-9_-]{1,96}$/.test(extra.metricId || '')) {
+        payload.metricName = extra.metricName;
+        payload.metricValue = extra.metricValue;
+        payload.metricId = extra.metricId;
+        payload.metricRating = extra.metricRating;
+      }
       var body = JSON.stringify(payload);
       if (navigator.sendBeacon) {
         navigator.sendBeacon(API_BASE + '/api/event', new Blob([body], { type: 'application/json' }));
@@ -467,6 +475,32 @@
     } catch (e) {}
   }
   window.leonEvt = evt;
+
+  // Same-origin, non-blocking real-user measurements. Use Google's pinned
+  // algorithms, not a home-grown INP approximation; never send DOM text/entries.
+  run(function () {
+    if (!window.PerformanceObserver || window.__leonVitalsStarted) return;
+    window.__leonVitalsStarted = true;
+    function start() {
+      var script = document.createElement('script');
+      script.src = '/assets/vendor/web-vitals-6.2.1.js';
+      script.async = true;
+      script.onload = function () {
+        try {
+          var send = function (metric) {
+            evt('web_vital', { metricName: metric.name, metricValue: metric.value,
+              metricId: metric.id, metricRating: metric.rating });
+          };
+          window.webVitals.onLCP(send);
+          window.webVitals.onINP(send);
+          window.webVitals.onCLS(send);
+        } catch (e) { /* measurement is never a content dependency */ }
+      };
+      document.head.appendChild(script);
+    }
+    if (document.readyState === 'complete') start();
+    else window.addEventListener('load', start, { once: true });
+  });
 
   // one page_view per load — this is what the /api/traffic sources table counts.
   // The current homepage owns this call so it can fall back cleanly if this

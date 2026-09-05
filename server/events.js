@@ -98,6 +98,8 @@ function normalizeEvent(raw, now) {
   const legacyUtm = eventText(raw.utm, 120);
   const legacyMedium = eventText(raw.medium, 120);
   const legacyCampaign = eventText(raw.campaign, 120);
+  const firstRecorded = firstPresent(raw, ['firstPage', 'firstRef', 'firstReferrer', 'firstUtm', 'firstUtmSource', 'firstMedium', 'firstUtmMedium', 'firstCampaign', 'firstUtmCampaign'], 300) || Object.keys(firstAttribution).length > 0;
+  const firstFallback = firstRecorded ? {} : currentAttribution;
   const out = {
     ts: now || new Date().toISOString(),
     name: raw.name,
@@ -105,17 +107,17 @@ function normalizeEvent(raw, now) {
     sessionId: anonymousSession(raw),
     firstPage: firstPresent(raw, ['firstPage'], 200),
     lastPage: firstPresent(raw, ['lastPage'], 200) || pathNow,
-    firstRef: firstReferrer(raw, ['firstRef', 'firstReferrer']) || legacyRef,
+    firstRef: firstReferrer(raw, ['firstRef', 'firstReferrer']) || (firstRecorded ? '' : legacyRef),
     lastRef: firstReferrer(raw, ['lastRef', 'lastReferrer']) || legacyRef,
-    firstUtm: firstPresent(raw, ['firstUtm', 'firstUtmSource'], 120) || legacyUtm,
+    firstUtm: firstPresent(raw, ['firstUtm', 'firstUtmSource'], 120) || (firstRecorded ? '' : legacyUtm),
     lastUtm: firstPresent(raw, ['lastUtm', 'lastUtmSource'], 120) || legacyUtm,
-    firstMedium: firstPresent(raw, ['firstMedium', 'firstUtmMedium'], 120) || legacyMedium,
+    firstMedium: firstPresent(raw, ['firstMedium', 'firstUtmMedium'], 120) || (firstRecorded ? '' : legacyMedium),
     lastMedium: firstPresent(raw, ['lastMedium', 'lastUtmMedium'], 120) || legacyMedium,
-    firstCampaign: firstPresent(raw, ['firstCampaign', 'firstUtmCampaign'], 120) || legacyCampaign,
+    firstCampaign: firstPresent(raw, ['firstCampaign', 'firstUtmCampaign'], 120) || (firstRecorded ? '' : legacyCampaign),
     lastCampaign: firstPresent(raw, ['lastCampaign', 'lastUtmCampaign'], 120) || legacyCampaign,
-    firstUtmTerm: firstAttribution.utmTerm || currentAttribution.utmTerm || '',
+    firstUtmTerm: firstAttribution.utmTerm || firstFallback.utmTerm || '',
     lastUtmTerm: lastAttribution.utmTerm || currentAttribution.utmTerm || '',
-    firstUtmContent: firstAttribution.utmContent || currentAttribution.utmContent || '',
+    firstUtmContent: firstAttribution.utmContent || firstFallback.utmContent || '',
     lastUtmContent: lastAttribution.utmContent || currentAttribution.utmContent || '',
     // Backward-compatible fields used by existing Render-log searches.
     ref: legacyRef,
@@ -128,11 +130,21 @@ function normalizeEvent(raw, now) {
 
   const device = eventExtraValue('device', raw.device);
   if (device) out.device = device;
+  if (raw.name === 'web_vital') {
+    if (!['LCP', 'INP', 'CLS'].includes(raw.metricName)
+        || typeof raw.metricValue !== 'number' || !Number.isFinite(raw.metricValue)
+        || raw.metricValue < 0 || raw.metricValue > (raw.metricName === 'CLS' ? 100 : 3600000)
+        || !/^[A-Za-z0-9_-]{1,96}$/.test(raw.metricId || '')) return null;
+    out.metricName = raw.metricName;
+    out.metricValue = raw.metricValue;
+    out.metricId = raw.metricId;
+    if (['good', 'needs-improvement', 'poor'].includes(raw.metricRating)) out.metricRating = raw.metricRating;
+  }
 
   for (const field of ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
     const title = field.charAt(0).toUpperCase() + field.slice(1);
     out[field] = currentAttribution[field] || '';
-    out['first' + title] = firstAttribution[field] || currentAttribution[field] || '';
+    out['first' + title] = firstAttribution[field] || firstFallback[field] || '';
     out['last' + title] = lastAttribution[field] || currentAttribution[field] || '';
   }
 

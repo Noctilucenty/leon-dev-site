@@ -15,6 +15,89 @@ class SeoSystemTests(unittest.TestCase):
         self.assertGreater(seo.validate_topics(), 40)
         seo.assert_publication_paths(seo.sitemap_paths())
 
+    def test_every_canonical_route_has_one_honest_owner_including_translations(self):
+        topics = seo.read_json("topics.json")["topics"]
+        self.assertEqual(len(topics), 50)
+        self.assertEqual({topic["canonical_path"] for topic in topics}, set(seo.sitemap_paths()))
+        self.assertEqual(sum(bool(topic["translation_of"]) for topic in topics), 15)
+        self.assertEqual(sum(topic["editorial_status"] == "legacy_review_pending" for topic in topics), 49)
+        self.assertEqual({seo.language_family(topic["language"]) for topic in topics}, {"en", "es", "pt", "zh"})
+
+    def test_missing_duplicate_and_noncanonical_owners_fail_closed(self):
+        for mutation, message in [("missing", "missing intent ownership"),
+                                  ("duplicate", "multiple topic owners"),
+                                  ("alias_route", "noncanonical path")]:
+            data = seo.read_json("topics.json")
+            if mutation == "missing":
+                data["topics"].pop()
+            elif mutation == "duplicate":
+                duplicate = copy.deepcopy(data["topics"][0])
+                duplicate["id"] = "shadow-owner"
+                data["topics"].append(duplicate)
+            else:
+                data["topics"][0]["canonical_path"] += ".html"
+            with self.assertRaisesRegex(ValueError, message):
+                seo.validate_topics(data)
+
+    def test_same_language_intent_cannot_get_a_second_url(self):
+        data = seo.read_json("topics.json")
+        data["topics"][1]["intent_key"] = data["topics"][0]["intent_key"]
+        with self.assertRaisesRegex(ValueError, "same-language intent"):
+            seo.validate_topics(data)
+
+    def test_conservative_paraphrase_guard_catches_word_order_and_inflection(self):
+        data = seo.read_json("topics.json")
+        data["topics"][1]["aliases"].append("web design for small businesses")
+        with self.assertRaisesRegex(ValueError, "lexically equivalent"):
+            seo.validate_topics(data)
+        self.assertEqual(seo.semantic_query_key("hire a website developer", "en"),
+                         seo.semantic_query_key("hire website developers", "en"))
+        self.assertNotEqual(seo.semantic_query_key("what should AI answer", "en"),
+                            seo.semantic_query_key("what should AI not answer", "en"))
+        self.assertNotEqual(seo.semantic_query_key("contractor website", "en"),
+                            seo.semantic_query_key("restaurant website", "en"))
+        # No claim that word-token heuristics understand arbitrary Chinese paraphrases.
+        self.assertNotEqual(seo.semantic_query_key("网站制作", "zh-Hans"),
+                            seo.semantic_query_key("制作网站", "zh-Hans"))
+
+    def test_candidate_cannot_claim_a_paraphrase_of_an_existing_owner(self):
+        data = seo.read_json("topics.json")
+        data["candidates"].append({"primary_query": "web design for small businesses",
+                                   "canonical_path": "/guides/another-website-page"})
+        with self.assertRaisesRegex(ValueError, "candidate duplicates an owned intent"):
+            seo.validate_topics(data)
+
+    def test_translation_family_matches_visible_language_and_reciprocal_hreflang(self):
+        for mutation, message in [("language", "language differs"),
+                                  ("parent", "not in page hreflang"),
+                                  ("missing_parent", "translation family")]:
+            data = seo.read_json("topics.json")
+            topic = next(row for row in data["topics"] if row["canonical_path"] == "/es/pagina-web")
+            if mutation == "language":
+                topic["language"] = "pt-BR"
+                topic["intent_key"] = "different-to-reach-page-check"
+            elif mutation == "parent":
+                topic["translation_of"] = "phone-agent"
+                topic["intent_key"] = next(row["intent_key"] for row in data["topics"] if row["id"] == "phone-agent")
+            else:
+                topic["translation_of"] = None
+            with self.assertRaisesRegex(ValueError, message):
+                seo.validate_topics(data)
+
+    def test_mapping_does_not_upgrade_legacy_editorial_approval(self):
+        data = seo.read_json("topics.json")
+        data["topics"][0]["editorial_status"] = "publication_reviewed"
+        with self.assertRaisesRegex(ValueError, "fresh legacy editorial approval"):
+            seo.validate_topics(data)
+
+    def test_aliases_are_arrays_and_intent_boundaries_are_required(self):
+        for change in [{"aliases": "keyword list"}, {"question_queries": [False]},
+                       {"relationships": {}}, {"intent_boundary": "generic"}]:
+            data = seo.read_json("topics.json")
+            data["topics"][0].update(change)
+            with self.assertRaises(ValueError):
+                seo.validate_topics(data)
+
     def test_new_pages_need_review(self):
         with self.assertRaisesRegex(ValueError, "explicit publication review"):
             seo.assert_publication_paths(["/another-synonym-page"])

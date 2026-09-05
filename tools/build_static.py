@@ -41,6 +41,8 @@ PUBLIC_FILES = (
     "apple-touch-icon.png",
     "assets/favicon.svg",
     "assets/og.png",
+    "assets/vendor/web-vitals-6.2.1.js",
+    "assets/vendor/web-vitals.LICENSE.txt",
     "sitemap.xml",
     "robots.txt",
     "llms.txt",

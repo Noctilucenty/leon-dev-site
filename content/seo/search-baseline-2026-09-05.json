@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "observedOn": "2026-09-05",
+  "evidenceType": "signed_in_search_console_ui_observation_not_api_export",
+  "property": "https://leonbuilds.org/",
+  "period": {
+    "start": "2026-08-19",
+    "end": "2026-09-03",
+    "timezone": "Search Console displayed reporting dates"
+  },
+  "filters": {
+    "searchType": "web",
+    "country": "all",
+    "device": "all",
+    "query": "all"
+  },
+  "webSearch": {
+    "clicks": 6,
+    "impressions": 56,
+    "ctrPercent": 10.7,
+    "averagePosition": 13.2,
+    "queryRows": null,
+    "pageRows": null,
+    "jointQueryPageRows": null
+  },
+  "googleGenerativeAi": {
+    "impressions": 3,
+    "clicks": null,
+    "pageRows": [
+      {
+        "page": "/",
+        "impressions": 1
+      },
+      {
+        "page": "/restaurants",
+        "impressions": 1
+      },
+      {
+        "page": "/services/",
+        "impressions": 1
+      }
+    ],
+    "aggregation": "Property total and displayed page rows are separate scopes; do not sum them to reconstruct the property total."
+  },
+  "indexCoverage": {
+    "reportUpdatedOn": "2026-08-27",
+    "indexed": 37,
+    "notIndexed": 7,
+    "isCurrentSitemapCoverage": false
+  },
+  "urlInspection": {
+    "url": "https://leonbuilds.org/guides/website-builder-or-custom-software",
+    "status": "unknown_to_google",
+    "requestStatus": "indexing_requested_priority_queue",
+    "requestDate": "2026-09-05"
+  },
+  "coreWebVitals": {
+    "mobile": "no_data",
+    "desktop": "no_data"
+  },
+  "outcomes": {
+    "organicSessions": null,
+    "qualifiedInquiries": null,
+    "bookings": null,
+    "installs": null,
+    "retainedUsers": null
+  },
+  "limitations": [
+    "Native UI observation, not an export or connected API history. Missing rows and outcomes are unknown, not zero.",
+    "Traffic window ends before the September 4 comparison and September 5 visual release; no release lift can be inferred.",
+    "AI impressions are not clicks, citations, recommendations, leads or installs.",
+    "URL indexing requests do not guarantee indexing or rank. Sitewide indexing report is a dated snapshot."
+  ]
+}

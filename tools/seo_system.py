@@ -19,6 +19,7 @@ import unicodedata
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from html import escape
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -107,28 +108,179 @@ def assert_publication_paths(paths, publication=None, root=ROOT, check_rendered=
             raise ValueError(f"new route requires an explicit publication review: {path}")
 
 
+PAGE_TYPES = {"home", "service", "service_hub", "industry", "industry_hub", "case_study",
+              "case_study_hub", "guide", "conversion", "trust", "privacy"}
+# Deliberately small, reviewable equivalences: this is a collision guard, not an
+# embedding model or a claim to understand arbitrary paraphrases. Audience,
+# industry, question and action words otherwise remain in the signature.
+QUERY_EQUIVALENTS = {
+    "en": {"websites": "website", "sites": "website", "site": "website", "apps": "app",
+           "businesses": "business", "developers": "developer", "development": "developer",
+           "builders": "builder", "designing": "design", "automate": "automation"},
+    "es": {"sitios": "sitio", "paginas": "pagina", "negocios": "negocio", "empresas": "empresa",
+           "automatizar": "automatizacion"},
+    "pt": {"sites": "site", "negocios": "negocio", "empresas": "empresa", "automatizar": "automacao"},
+}
+QUERY_STOPWORDS = {
+    "en": {"a", "an", "the", "for", "of", "with", "my", "to"},
+    "es": {"el", "la", "los", "las", "un", "una", "de", "del", "para", "mi"},
+    "pt": {"o", "a", "os", "as", "um", "uma", "de", "do", "da", "para", "meu", "minha"},
+}
+
+
+def language_family(language):
+    if not isinstance(language, str) or not re.fullmatch(r"[a-z]{2}(?:-[A-Za-z]{2,8})?", language):
+        raise ValueError("invalid topic language")
+    family = language.split("-")[0]
+    if family not in {"en", "es", "pt", "zh"}:
+        raise ValueError("unsupported topic language")
+    return family
+
+
+def semantic_query_key(query, language):
+    """Conservative lexical-equivalence key; CJK keeps exact normalized wording."""
+    family = language_family(language)
+    value = normalize_query(query)
+    if family == "zh":
+        return value
+    folded = "".join(char for char in unicodedata.normalize("NFKD", value)
+                     if not unicodedata.combining(char))
+    terms = [QUERY_EQUIVALENTS.get(family, {}).get(term, term) for term in folded.split()
+             if term not in QUERY_STOPWORDS.get(family, set())]
+    return " ".join(sorted(terms)) or value
+
+
+class TopicPageParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.language = ""
+        self.canonicals = []
+        self.alternates = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "html":
+            self.language = attrs.get("lang", "")
+        if tag == "link":
+            rel = (attrs.get("rel") or "").lower().split()
+            if "canonical" in rel:
+                self.canonicals.append(attrs.get("href", ""))
+            if "alternate" in rel and attrs.get("hreflang"):
+                self.alternates.append((attrs["hreflang"], attrs.get("href", "")))
+
+
+def topic_page(path):
+    parser = TopicPageParser()
+    parser.feed(source_for(path).read_text(encoding="utf-8"))
+    return parser
+
+
+def canonical_identity(url):
+    # Empty root path and '/' are the same URL; do not normalize other aliases.
+    return ORIGIN + "/" if url == ORIGIN else url
+
+
 def validate_topics(data=None, paths=None):
-    data = data or read_json("topics.json")
-    paths = set(paths or sitemap_paths())
-    ownership, identities = {}, set()
+    data = read_json("topics.json") if data is None else data
+    paths = set(sitemap_paths() if paths is None else paths)
+    if not isinstance(data.get("topics"), list) or not paths:
+        raise ValueError("topic inventory and canonical paths must be nonempty")
+    ownership, semantic_owners, identities, routes, intents = {}, {}, {}, {}, {}
+    publication = read_json("publication.json")
+    legacy = set(publication["legacy_paths"])
     for topic in data["topics"]:
+        for field in ("id", "canonical_path", "language", "cluster", "primary_query", "intent_key", "audience", "intent_boundary"):
+            if not isinstance(topic.get(field), str) or not topic[field].strip():
+                raise ValueError(f"missing topic field: {field}")
+        if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", topic["id"]):
+            raise ValueError("invalid topic ID")
         if topic["id"] in identities:
             raise ValueError(f"duplicate topic ID: {topic['id']}")
-        identities.add(topic["id"])
-        if topic["canonical_path"] not in paths:
+        identities[topic["id"]] = topic
+        path = topic["canonical_path"]
+        if not safe_path(path) or path not in paths:
             raise ValueError(f"topic targets a noncanonical path: {topic['id']}")
+        if path in routes:
+            raise ValueError(f"canonical route has multiple topic owners: {path}")
+        routes[path] = topic
+        family = language_family(topic["language"])
+        intent = (family, topic["intent_key"])
+        if intent in intents:
+            raise ValueError(f"same-language intent has multiple canonical owners: {topic['intent_key']}")
+        intents[intent] = path
+        if topic.get("page_type") not in PAGE_TYPES or len(topic["intent_boundary"].strip()) < 30:
+            raise ValueError("topic needs a supported page type and an explicit intent boundary")
+        expected_status = "legacy_review_pending" if path in legacy else "publication_reviewed"
+        if topic.get("editorial_status") != expected_status:
+            raise ValueError(f"ownership must not imply a fresh legacy editorial approval: {path}")
+        for field in ("aliases", "question_queries", "related_entities", "search_intents"):
+            values = topic.get(field)
+            if not isinstance(values, list) or any(not isinstance(value, str) or not value.strip() for value in values):
+                raise ValueError(f"{field} must be an array of nonempty strings")
+        if not topic["search_intents"]:
+            raise ValueError("topic must state its search intent")
         for query in [topic["primary_query"], *topic["aliases"], *topic["question_queries"]]:
-            key = (topic["language"], normalize_query(query))
+            key = (family, normalize_query(query))
             if not key[1]:
                 raise ValueError("empty query")
-            previous = ownership.setdefault(key, topic["canonical_path"])
-            if previous != topic["canonical_path"]:
+            previous = ownership.setdefault(key, path)
+            if previous != path:
                 raise ValueError(f"query has competing canonical owners: {query}")
+            semantic_key = (family, semantic_query_key(query, topic["language"]))
+            previous = semantic_owners.setdefault(semantic_key, path)
+            if previous != path:
+                raise ValueError(f"lexically equivalent queries have competing owners; review intent: {query}")
+        if not isinstance(topic.get("relationships"), list):
+            raise ValueError("relationships must be an array")
+        related = set()
         for relation in topic["relationships"]:
-            if relation["path"] not in paths or relation["path"] == topic["canonical_path"]:
-                raise ValueError(f"invalid related path: {relation['path']}")
-            if relation["type"] not in {"prerequisite", "comparison", "example", "deeper_dive"} or not relation["label"]:
+            if not isinstance(relation, dict) or relation.get("path") not in paths or relation["path"] == path:
+                raise ValueError("invalid related path")
+            if relation["path"] in related:
+                raise ValueError("duplicate related path")
+            related.add(relation["path"])
+            if relation.get("type") not in {"prerequisite", "comparison", "example", "deeper_dive"} or not isinstance(relation.get("label"), str) or not relation["label"].strip():
                 raise ValueError("relationship requires a supported type and useful label")
+    if set(routes) != paths:
+        raise ValueError("canonical routes missing intent ownership: " + ", ".join(sorted(paths - set(routes))))
+    pages = {path: topic_page(path) for path in paths}
+    for path, topic in routes.items():
+        page = pages[path]
+        if language_family(page.language) != language_family(topic["language"]):
+            raise ValueError(f"topic language differs from visible page: {path}")
+        if [canonical_identity(url) for url in page.canonicals] != [ORIGIN + path]:
+            raise ValueError(f"topic does not match the page canonical: {path}")
+        parent_id = topic.get("translation_of")
+        if language_family(topic["language"]) != "en" and not parent_id:
+            raise ValueError(f"localized route needs its actual English translation family: {path}")
+        if parent_id:
+            parent = identities.get(parent_id)
+            if not parent or parent.get("translation_of") or language_family(parent["language"]) != "en" or language_family(topic["language"]) == "en":
+                raise ValueError(f"invalid translation parent: {path}")
+            if topic["intent_key"] != parent["intent_key"] or topic["page_type"] != parent["page_type"]:
+                raise ValueError(f"translation changes the canonical intent or page type: {path}")
+            parent_path = parent["canonical_path"]
+            if ("en", ORIGIN + parent_path) not in [(lang, canonical_identity(url)) for lang, url in page.alternates]:
+                raise ValueError(f"translation parent is not in page hreflang: {path}")
+            if not any(language_family(lang) == language_family(topic["language"]) and canonical_identity(url) == ORIGIN + path
+                       for lang, url in pages[parent_path].alternates if lang != "x-default"):
+                raise ValueError(f"translation family is not reciprocal: {path}")
+    # Proposed pages cannot bypass ownership simply by remaining in the candidate
+    # queue. A collision requires merging/rephrasing the intent, not a new URL.
+    if not isinstance(data.get("candidates"), list):
+        raise ValueError("candidates must be an array")
+    candidate_owners = dict(semantic_owners)
+    for candidate in data["candidates"]:
+        if not isinstance(candidate, dict) or not safe_path(candidate.get("canonical_path")):
+            raise ValueError("invalid candidate canonical path")
+        query = candidate.get("primary_query")
+        if not isinstance(query, str) or not normalize_query(query):
+            raise ValueError("candidate needs a meaningful primary query")
+        language = candidate.get("language", "en")
+        key = (language_family(language), semantic_query_key(query, language))
+        previous = candidate_owners.setdefault(key, candidate["canonical_path"])
+        if previous != candidate["canonical_path"]:
+            raise ValueError(f"candidate duplicates an owned intent; improve or merge with {previous}")
     return len(ownership)
 
 
