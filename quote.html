@@ -60,6 +60,7 @@
 <section class="sec">
   <div class="rail">
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
+      <label>Business website <i>(optional if it is not live)</i><input name="websiteUrl" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com"></label>
       <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
       <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where we should reply"></label>
       <button class="btn btn-solid magnet qsend" type="submit"><span>Send your project</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
@@ -95,7 +96,7 @@
       <span class="qok-mark" aria-hidden="true">✓</span>
       <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
       <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon Builds.</em></h2>
-      <p class="sub">We received your request. We usually reply to the email you provided the same business day.</p>
+      <p class="sub">Your request was saved. Leon will reply to the email you provided.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
         <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
@@ -124,8 +125,8 @@
     document.getElementById('quote-context-label').textContent='Free contractor website review';
     document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
     document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. We will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
-    document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
-    f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
+    document.getElementById('quote-problem-label').textContent='What is the biggest lead problem?';
+    f.elements.problem.placeholder='Estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
   }else if(technicalPartner){
     f.elements.service.value=service;
@@ -170,7 +171,7 @@
     if(window.leonEvt) window.leonEvt(name,details);
   }
   function fingerprint(d){
-    var raw=['service','package','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
+    var raw=['service','package','websiteUrl','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
       .map(function(k){return String(d[k]||'');}).join('\u001f');
     var hash=2166136261;
     for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
@@ -269,6 +270,7 @@
       + line('email',d.email)
       + line('phone',d.phone)
       + line('business',d.company)
+      + line('website',d.websiteUrl)
       + line('package',d.package)
       + line('currently using',d.currentTools)
       + line('timeline',d.timeline)
@@ -289,7 +291,7 @@
       <p class="avail"><i></i>available for new projects</p>
     </div>
     <nav><h4>services</h4><a href="/missed-lead-recovery">website + lead follow-up</a><a href="/services/websites">business websites</a><a href="/services/business-automation">workflow automation</a><a href="/services/">all services and prices</a></nav>
-    <nav><h4>explore</h4><a href="/work">work and case studies</a><a href="/reviews">approved client feedback</a><a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
+    <nav><h4>explore</h4><a href="/work">work and case studies</a><a href="/reviews">approved client feedback</a><a href="/guides/contractor-inquiry-workflow">contractor inquiry guide</a><a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
     <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
   <div class="rail foot-bar">

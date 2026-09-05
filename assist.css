@@ -33,13 +33,13 @@
 @media (max-width:700px){
   .ads-consent{
     bottom:calc(8px + env(safe-area-inset-bottom,0px)); width:calc(100vw - 16px);
-    grid-template-columns:1fr; padding:.75rem .8rem;
+    grid-template-columns:1fr; gap:.2rem; padding:.5rem .55rem;
   }
-  .ads-consent p{ font-size:11.5px; line-height:1.45; }
-  .ads-consent .ads-consent-title{ grid-column:1; margin-bottom:.15rem; font-size:12.5px; }
+  .ads-consent p{ font-size:10.5px; line-height:1.35; }
+  .ads-consent .ads-consent-title{ grid-column:1; margin-bottom:0; font-size:12px; }
   .ads-consent #ads-consent-description{ grid-column:1; }
-  .ads-consent > div{ grid-column:1; grid-row:auto; display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin-top:.55rem; }
-  .ads-consent button{ min-width:0; padding:.55rem .45rem; white-space:normal; }
+  .ads-consent > div{ grid-column:1; grid-row:auto; display:grid; grid-template-columns:1fr 1fr; gap:.35rem; margin-top:.25rem; }
+  .ads-consent button{ min-width:0; min-height:38px; padding:.35rem .4rem; white-space:normal; font-size:11px; }
 }
 
 .as-launch{

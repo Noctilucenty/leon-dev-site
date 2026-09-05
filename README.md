@@ -19,7 +19,9 @@ homepage/           reviewed freelance2 static homepage export; replaces / at bu
 index.html          legacy homepage source retained for the existing asset manifest
 services/*.html     GENERATED — 9 service pages + index (tools/build_pages.py)
 industries/*.html   GENERATED — 10 industry pages + index
-missed-lead-recovery.html  GENERATED — focused 10-business-day acquisition offer
+missed-lead-recovery.html  GENERATED — focused contractor website + follow-up offer
+work/*.html        GENERATED — evidence-bounded case studies
+guides/*.html      GENERATED — original buyer decision guides
 quote.html          GENERATED — quote form; opens the visitor's mail app, logs to the API
 sitemap.xml robots.txt  GENERATED
 styles.css          tokens + layout (+ subpage/widget styles appended at the bottom)
@@ -89,12 +91,12 @@ The frontend finds the API through **one constant**: `API_BASE` at the top of
 | `OPENAI_MODEL` | no | default `gpt-5-mini` |
 | `OPENAI_MAX_OUTPUT` | no | default 700 tokens/reply |
 | `DAILY_MODEL_CAP` | no | default 500 calls/day, then chat politely closes |
-| `RESEND_API_KEY` + `LEAD_TO_EMAIL` | no | recommended on Render; sends the off-host lead copy over HTTPS |
-| `LEAD_FROM_EMAIL` | no | Resend sender; use an address/domain allowed by that Resend account |
+| `RESEND_API_KEY` + `LEAD_TO_EMAIL` | no | recommended on Render; sends the owner notification and visitor receipt over HTTPS |
+| `LEAD_FROM_EMAIL` | no | Resend sender; visitor receipts stay disabled unless this explicitly names a non-`resend.dev` sender allowed by that Resend account |
 | `SMTP_HOST/USER/PASS` (+ optional `SMTP_PORT`) + `LEAD_TO_EMAIL` | no | fallback only on hosts that permit outbound SMTP; the current Render service does not |
 | `LEADS_KEY` | no | admin key for lead/traffic views, delivery probes/status and deep health; accepted only via `x-leads-key` |
 | `EXTRA_ORIGIN` | no | one extra allowed browser origin |
-| `LEON_DATA_DIR` | no | directory for leads/events/acquisition and lead-email outbox JSONL; on Render, set only inside an attached persistent disk |
+| `LEON_DATA_DIR` | no | directory for leads/events/acquisition and owner/visitor email-outbox JSONL; on Render, set only inside an attached persistent disk |
 | `CAL_WEBHOOK_SECRET` | no | enables `/api/cal/webhook`; must exactly match the signing secret configured in Cal |
 | `ACQUISITION_SINK_URL` | no | optional verified HTTPS receiver for minimized funnel-stage envelopes |
 | `ACQUISITION_SINK_TOKEN` | no | optional Bearer credential for that receiver |
@@ -122,6 +124,13 @@ ready. Setting `LEON_DATA_DIR` moves leads, events, acquisition and lead-email
 outbox JSONL together to that directory. Resend/HTTPS is the production route on
 Render; its exact queued payload is stored with the accepted lead, failed sends
 retry with capped backoff, and every retry uses the same provider idempotency key.
+Each genuine accepted lead queues two independent messages: the full owner
+notification and a short visitor receipt with the opaque reference and public
+booking link. The two payloads use separate outbox ledgers and provider idempotency
+keys, so a retry of one cannot duplicate or suppress the other. Synthetic delivery
+probes never queue a visitor receipt. The owner notification keeps its existing
+fallback sender behavior; visitor receipts fail closed when `LEAD_FROM_EMAIL` is
+unset, invalid, or uses Resend's sandbox `resend.dev` domain.
 SMTP remains a fallback for hosts that allow it. Chat leads include a model-written
 conversation summary. First/last referral touch, all five standard UTM values, and present
 `gclid`, `gbraid`, `wbraid`, `fbclid` or `msclkid` values ride along via the bounded
@@ -129,7 +138,12 @@ conversation summary. First/last referral touch, all five standard UTM values, a
 
 `GET /api/health` is a liveness check and reports lead delivery separately:
 `leadEmailProvider`, `leadEmailState`, `leadEmailConfigured`, `leadEmailSupported`,
-and `leadEmailReady`. A complete SMTP setup on Render reports `blocked`, not green.
+`leadEmailReady`, and `visitorEmailConfirmationConfigured`. The visitor field becomes
+true only after a non-sandbox Resend sender is configured and the exact sender-to-owner
+path has a durable inbox-confirmed delivery probe. It does not claim that a message
+reached an arbitrary visitor inbox. `visitorEmailConfirmationState` explains whether
+the provider, sender, or verification gate is still closed. A complete SMTP setup on Render reports
+`blocked`, not green.
 `?deep=1` may check an SMTP connection, but it never sends mail and therefore never
 claims inbox delivery worked. Deep health is admin-only: set `LEADS_KEY` and send it
 in the `x-leads-key` header. It returns 404 when the key is not configured and 401
@@ -346,7 +360,7 @@ nothing syncs for you**: the fleet data in `tools/build_pages.py` (then rerun it
 assistant's price list in `server/prompt.js`. Generated social and classified art is
 deliberately price-free; `tools/check_prices.py` enforces that and verifies fresh renders.
 
-**The page fleet** (`services/`, `industries/`, `missed-lead-recovery.html`, `quote.html`) is generated — copy edits go
+**The page fleet** (`services/`, `industries/`, `work/`, `guides/`, `missed-lead-recovery.html`, `quote.html`) is generated — copy edits go
 in `tools/build_pages.py`'s SERVICES/INDUSTRIES data, never in the output files.
 
 **Icons** are `<symbol>`s in the sprite at the top of `index.html`, used as

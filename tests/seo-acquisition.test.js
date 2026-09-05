@@ -56,7 +56,10 @@ test('published homepage metadata, services, and inquiry path state the current 
   const html = read('index.html');
   const visible = text(html);
   assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
-  assert.match(html, /<meta\b[^>]*name="description"[^>]*content="[^\"]*Websites from \$300\.[^\"]*Automation from \$500\./i);
+  const description = metadataText(html, /<meta\b[^>]*name="description"[^>]*content="([^"]+)"/i);
+  assert.match(description, /free 3-point website review/i);
+  assert.match(description, /websites from \$300/i);
+  assert.match(description, /automation from \$500/i);
   assert.match(html, /<link\b[^>]*rel="canonical"[^>]*href="https:\/\/leonbuilds\.org\/?"/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
   assert.match(visible, /websites that/i);
@@ -86,7 +89,7 @@ test('work archive is indexable, canonical, and honest about proof status', () =
   assert.match(visible, /beastypages\.com/i);
   assert.match(visible, /ALLCPR Site Intelligence/i);
   assert.match(visible, /Operational client system.*ALLCPR/is);
-  assert.match(visible, /all 33,772 U\.S\. ZIP codes/i);
+  assert.match(visible, /33,772 U\.S\. ZIP-code records/i);
   assert.match(visible, /field validation before opening/i);
   assert.doesNotMatch(visible, /guaranteed best location|automatic opening decision/i);
   assert.match(visible, /client website project.*demo checkout/is);
@@ -204,7 +207,9 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   assert.match(visible, /small-business web design that turns visits into calls and bookings/i);
   assert.match(visible, /what your website must answer in five seconds/i);
   assert.match(visible, /website cost depends on what the site must do/i);
-  assert.match(visible, /public product and workflow evidence/i);
+  assert.match(visible, /beastypages\.com client website/i);
+  assert.match(visible, /37 businesses in the September 4, 2026 review snapshot/i);
+  assert.match(html, /href="\/work\/beastypages-website"/i);
   assert.match(html, /data-testimonial-id="testimonial-03"/i);
   assert.match(visible, /I hired Leon to build The Home Screen website/i);
   assert.match(visible, /Current name: beastypages\.com/i);

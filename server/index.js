@@ -55,12 +55,21 @@ const {
   clean,
   verifyMail,
   leadDeliveryConfig,
+  visitorEmailConfirmationConfig,
   leadEmailStatus,
   confirmLeadEmailInbox,
   leadEmailVerification,
   startLeadEmailOutbox
 } = require('./leads');
-const { persistEvent, readEvents, sourceOf, normalizeEvent, funnelStats } = require('./events');
+const {
+  persistEvent,
+  readEvents,
+  sourceOf,
+  normalizeEvent,
+  funnelStats,
+  deviceJourneyStats,
+  reviewMilestoneStats
+} = require('./events');
 const {
   FUNNEL_STAGES,
   STAGE_DEFINITIONS,
@@ -325,6 +334,7 @@ app.get('/api/health', async (req, res) => {
     if (auth !== 'authorized') return res.status(401).json({ error: 'unauthorized' });
   }
   const delivery = leadDeliveryConfig();
+  const visitorConfirmation = visitorEmailConfirmationConfig();
   const acquisitionStorage = acquisitionStorageConfig();
   let emailVerification = { verified: false, confirmedAt: null };
   if (delivery.ready && delivery.provider === 'resend') {
@@ -346,6 +356,8 @@ app.get('/api/health', async (req, res) => {
     leadEmailConfigured: delivery.configured,
     leadEmailSupported: delivery.supported,
     leadEmailReady: delivery.ready,
+    visitorEmailConfirmationConfigured: visitorConfirmation.configured,
+    visitorEmailConfirmationState: visitorConfirmation.state,
     // Backward-compatible name, with corrected semantics: a complete but known-
     // blocked SMTP setup on Render is false instead of a false green.
     leadEmail: delivery.ready,
@@ -716,6 +728,7 @@ app.get('/api/leads', (req, res) => {
     + '<p><a href="mailto:' + escapeHtml(l.email) + '">' + escapeHtml(l.email) + '</a>'
     + (l.phone ? ' · <a href="tel:' + escapeHtml(l.phone) + '">' + escapeHtml(l.phone) + '</a>' : '') + '</p>'
     + (l.company ? '<p><b>business:</b> ' + escapeHtml(l.company) + '</p>' : '')
+    + (l.websiteUrl ? '<p><b>website:</b> ' + escapeHtml(l.websiteUrl) + '</p>' : '')
     + (l.service || l.package ? '<p><b>offer:</b> ' + escapeHtml(l.service || '—')
       + (l.package ? ' · ' + escapeHtml(l.package) : '') + '</p>' : '')
     + (l.problem ? '<pre>' + escapeHtml(l.problem) + '</pre>' : '')
@@ -965,11 +978,15 @@ app.get('/api/traffic', (req, res) => {
   const events = includeQaExcluded
     ? rawEvents
     : rawEvents.filter((event, index) => !eventIsQaExcluded(event, index));
+  const deviceJourney = deviceJourneyStats(events);
+  const reviewMilestones = reviewMilestoneStats(events);
   if (req.query.format === 'json') {
     return res.json({
       count: events.length,
       qaExcludedEventCount,
       qaExcludedSessionCount: removedQaSessionIds.size,
+      deviceJourney,
+      reviewMilestones,
       events
     });
   }
@@ -1013,6 +1030,18 @@ app.get('/api/traffic', (req, res) => {
   const funnelRows = funnel.stages.map(stage =>
     `<tr data-stage="${stage.id}"><td>${escapeHtml(stage.label)}</td><td>${stage.eventCount}</td><td>${stage.sessionCount}</td><td>${escapeHtml(stepRate(stage))}</td></tr>`
   ).join('');
+  const deviceRows = deviceJourney.map(row =>
+    `<tr><td>${escapeHtml(row.device)}</td><td>${row.pageViews}</td><td>${row.proofViews}</td><td>${row.startViews}</td><td>${row.formStarts}</td><td>${row.leadsAccepted}</td><td>${row.bookings}</td></tr>`
+  ).join('');
+  const baselineRate = stage => {
+    if (!stage.baselineSessionCount) return '—';
+    const percent = (stage.attributableCount * 100 / stage.baselineSessionCount)
+      .toFixed(1).replace(/\.0$/, '');
+    return `${stage.attributableCount}/${stage.baselineSessionCount} · ${percent}%`;
+  };
+  const milestoneRows = reviewMilestones.stages.map(stage =>
+    `<tr data-milestone="${stage.id}"><td>${escapeHtml(stage.label)}</td><td>${stage.eventCount}</td><td>${stage.sessionCount}</td><td>${escapeHtml(baselineRate(stage))}</td></tr>`
+  ).join('');
   const recent = events.slice(-40).reverse().map(ev =>
     `<tr><td>${escapeHtml(String(ev.ts || '').slice(5, 16).replace('T', ' '))}</td><td>${escapeHtml(ev.name)}</td><td>${escapeHtml(ev.path || '')}</td><td>${escapeHtml(sourceOf(ev))}</td><td>${escapeHtml([
       ev.receipt ? 'receipt ' + ev.receipt : '',
@@ -1033,6 +1062,12 @@ app.get('/api/traffic', (req, res) => {
     + '<h2>unique-session funnel</h2>'
     + `<table class="funnel"><thead><tr><th>stage</th><th>event records</th><th>unique sessions*</th><th>step rate†</th></tr></thead><tbody>${funnelRows}</tbody></table>`
     + `<p class="note">* event counts include all records; unique sessions exclude ${funnel.sessionlessEventCount} of ${funnel.funnelEventCount} funnel records with no session ID (including legacy data). † each step-rate numerator includes only session IDs also recorded in every preceding row. Direct calendar bookings remain visible in their row's unique-session total even when no accepted-lead event was recorded for that session.</p>`
+    + '<h2>review journey milestones</h2>'
+    + `<table class="review-milestones"><thead><tr><th>milestone</th><th>event records</th><th>unique sessions</th><th>rate vs page-view sessions</th></tr></thead><tbody>${milestoneRows}</tbody></table>`
+    + '<p class="note">Milestones are independent. A visitor can jump from the hero directly to the form, so a skipped proof or Start view does not erase a later action.</p>'
+    + '<h2>device journey</h2>'
+    + `<table class="device-journey"><thead><tr><th>viewport</th><th>page views</th><th>proof views</th><th>start views</th><th>form starts</th><th>accepted leads</th><th>bookings</th></tr></thead><tbody>${deviceRows}</tbody></table>`
+    + '<p class="note">Event counts by anonymous viewport bucket. Historical events without a bucket are shown as unknown; this is a diagnostic view, not a count of people.</p>'
     + `<h2>page views by first-touch source</h2><table>${rows(bySource)}</table>`
     + `<h2>page views by last-touch source</h2><table>${rows(byLastSource)}</table>`
     + '<p class="note">Known AI-domain referral means the browser supplied that domain as the referrer. It does not prove Leon Builds was cited, mentioned, or recommended in an answer.</p>'

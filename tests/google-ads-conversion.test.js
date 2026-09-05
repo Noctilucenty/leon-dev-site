@@ -300,9 +300,19 @@ test('consent preference dialog restores focus and presents equal-weight actions
   assert.doesNotMatch(h.banner.innerHTML, /class="allow"/);
   assert.match(h.banner.innerHTML, /Allow ad measurement\?/);
   assert.match(h.banner.innerHTML, /Google Ads may use cookies/);
-  assert.match(h.banner.innerHTML, /quote, booked call, phone click or WhatsApp click/);
-  assert.match(h.banner.innerHTML, /does not intentionally send form entries or contact details/);
-  assert.match(h.banner.innerHTML, /ad personalization stays off/);
+  assert.match(h.banner.innerHTML, /quote, booking, phone and WhatsApp actions/);
+  assert.match(h.banner.innerHTML, /Form details stay out/);
+  assert.match(h.banner.innerHTML, /personalization stays off/);
+});
+
+test('each explicit consent choice is recorded as a first-party event', () => {
+  const allow = harness();
+  allow.click(selectorTarget(selector => selector === '[data-ads-consent-allow]'));
+  assert.equal(allow.firstPartyBeacons.length, 2, 'page view plus consent choice');
+
+  const deny = harness();
+  deny.click(selectorTarget(selector => selector === '[data-ads-consent-deny]'));
+  assert.equal(deny.firstPartyBeacons.length, 2, 'page view plus consent choice');
 });
 
 test('privacy copy discloses the optional Google path and exposes a preference control', () => {

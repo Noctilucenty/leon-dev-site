@@ -22,6 +22,10 @@ const LEAD_EMAIL_OUTBOX_FILE = dataFile(
   'lead-email-outbox.jsonl',
   'LEAD_EMAIL_OUTBOX_FILE'
 );
+const LEAD_VISITOR_EMAIL_OUTBOX_FILE = dataFile(
+  'lead-visitor-email-outbox.jsonl',
+  'LEAD_VISITOR_EMAIL_OUTBOX_FILE'
+);
 const LEAD_EMAIL_CONFIRMATIONS_FILE = dataFile(
   'lead-email-confirmations.jsonl',
   'LEAD_EMAIL_CONFIRMATIONS_FILE'
@@ -53,6 +57,14 @@ const TECHNICAL_PARTNER_PACKAGES = new Set([
 const newReceiptId = () => 'lead_' + randomUUID();
 
 const present = v => typeof v === 'string' ? !!v.trim() : !!v;
+
+function mailboxDomain(value) {
+  const text = String(value || '').trim();
+  const bracketed = text.match(/<([^<>]+)>$/);
+  const address = String(bracketed ? bracketed[1] : text).trim().toLowerCase();
+  if (!EMAIL_RE.test(address)) return '';
+  return address.slice(address.lastIndexOf('@') + 1);
+}
 
 function isRenderRuntime(env) {
   return /^(1|true|yes)$/i.test(String(env.RENDER || '')) || present(env.RENDER_SERVICE_ID);
@@ -130,6 +142,42 @@ function leadDeliveryConfig(env = process.env) {
   };
 }
 
+/* Resend's default onboarding@resend.dev identity is useful for proving the
+ * owner notification inside one account, but it is a sandbox identity and is
+ * not a safe basis for mail to arbitrary visitor addresses. Fail closed until
+ * LEAD_FROM_EMAIL explicitly names a non-sandbox sender. Provider acceptance
+ * and inbox delivery remain separate operational checks. The exact sender and
+ * owner-recipient configuration must also have a durable inbox-confirmed probe;
+ * a plausible-looking domain alone never enables mail to visitors. */
+function visitorEmailConfirmationConfig(env = process.env) {
+  const delivery = leadDeliveryConfig(env);
+  if (!delivery.ready || delivery.provider !== 'resend') {
+    return { configured: false, state: 'delivery_unavailable' };
+  }
+  if (!present(env.LEAD_FROM_EMAIL)) {
+    return { configured: false, state: 'sender_not_configured' };
+  }
+  const domain = mailboxDomain(env.LEAD_FROM_EMAIL);
+  if (!domain) return { configured: false, state: 'sender_invalid' };
+  if (domain === 'resend.dev' || domain.endsWith('.resend.dev')) {
+    return { configured: false, state: 'sandbox_sender' };
+  }
+  let verification;
+  try {
+    verification = leadEmailVerification(env);
+  } catch (error) {
+    return { configured: false, state: 'verification_unavailable' };
+  }
+  if (!verification.verified) {
+    return { configured: false, state: 'sender_unverified' };
+  }
+  return {
+    configured: true,
+    state: 'verified',
+    confirmedAt: verification.confirmedAt
+  };
+}
+
 function validateLead(body) {
   // Bots fill the hidden `website` field. Checked before anything else so the
   // response cannot be used to tell which check rejected them. Give the fake
@@ -164,6 +212,7 @@ function validateLead(body) {
     service,
     package: packageName,
     problem: clean(body.problem, 4000, true),
+    websiteUrl: clean(body.websiteUrl, 300),
     currentTools: clean(body.currentTools, 500),
     desiredOutcome: clean(body.desiredOutcome, 1000, true),
     timeline: clean(body.timeline, 120),
@@ -223,7 +272,7 @@ function leadFingerprint(lead) {
   const canonical = {};
   for (const key of Object.keys(lead || {}).sort()) {
     if (key === 'ts' || key === 'receiptId' || key === 'idempotencyKey'
-        || key === '_emailOutbox') continue;
+        || key === '_emailOutbox' || key === '_visitorEmailOutbox') continue;
     const value = lead[key];
     if (value === '' || value == null) continue;
     canonical[key] = value;
@@ -237,7 +286,7 @@ function leadEmailSubject(lead) {
 
 function leadEmailText(lead) {
   return Object.entries(lead)
-    .filter(([key, value]) => key !== '_emailOutbox' && value)
+    .filter(([key, value]) => !['_emailOutbox', '_visitorEmailOutbox'].includes(key) && value)
     .map(([key, value]) => `${key}: ${value}`)
     .join('\n');
 }
@@ -258,6 +307,39 @@ function createResendOutbox(lead, env = process.env) {
       reply_to: lead.email,
       subject: leadEmailSubject(lead),
       text: leadEmailText(lead)
+    }
+  };
+}
+
+/* The visitor receipt is intentionally a separate provider operation from the
+ * owner notification. Its own immutable payload and idempotency key let either
+ * message retry without suppressing or duplicating the other. Keep the copy to
+ * facts the server can prove: the request was saved, and the public booking
+ * page exists. It makes no promise about inbox delivery or response timing. */
+function createVisitorResendOutbox(lead, env = process.env) {
+  return {
+    version: EMAIL_OUTBOX_VERSION,
+    provider: 'resend',
+    queuedAt: new Date().toISOString(),
+    idempotencyKey: `lead-visitor-confirmation/${lead.receiptId}`,
+    payload: {
+      from: String(env.LEAD_FROM_EMAIL || '').trim(),
+      to: [lead.email],
+      reply_to: String(env.LEAD_TO_EMAIL || '').trim(),
+      subject: `Leon Builds received your request [${lead.receiptId}]`,
+      text: [
+        'Hi,',
+        '',
+        'Your project request was saved for Leon to review.',
+        `Reference: ${lead.receiptId}`,
+        '',
+        'If you would like to choose a time now, book a free 15-minute call:',
+        'https://leonbuilds.org/call',
+        '',
+        'You can reply to this email if you need to add context.',
+        '',
+        'Leon Builds'
+      ].join('\n')
     }
   };
 }
@@ -288,7 +370,7 @@ function outboxDeliveryFingerprint(outbox) {
 
 function publicLead(lead) {
   if (!lead || typeof lead !== 'object') return lead;
-  const { _emailOutbox, ...visible } = lead;
+  const { _emailOutbox, _visitorEmailOutbox, ...visible } = lead;
   return visible;
 }
 
@@ -350,6 +432,28 @@ function readLeadEmailOutbox({ required = false } = {}) {
   return events;
 }
 
+function readLeadVisitorEmailOutbox({ required = false } = {}) {
+  const events = readJsonl(LEAD_VISITOR_EMAIL_OUTBOX_FILE, {
+    strict: true,
+    missingOkay: !required
+  });
+  if (required && events.length === 0) {
+    throw new Error(
+      `required JSONL ledger is empty: ${path.basename(LEAD_VISITOR_EMAIL_OUTBOX_FILE)}`);
+  }
+  for (let index = 0; index < events.length; index += 1) {
+    const event = events[index];
+    if (!event || event.version !== EMAIL_OUTBOX_VERSION
+        || event.kind !== 'visitor_confirmation'
+        || !RECEIPT_ID_RE.test(String(event.receiptId || ''))
+        || !['queued', 'failed', 'sent'].includes(event.state)) {
+      throw new Error(
+        `invalid visitor email outbox event: ${path.basename(LEAD_VISITOR_EMAIL_OUTBOX_FILE)} record ${index + 1}`);
+    }
+  }
+  return events;
+}
+
 function readLeadEmailConfirmations() {
   const events = readJsonl(LEAD_EMAIL_CONFIRMATIONS_FILE, {
     strict: true,
@@ -370,6 +474,7 @@ function readLeadEmailConfirmations() {
 }
 
 const volatileOutboxStates = new Map();
+const volatileVisitorOutboxStates = new Map();
 
 function appendOutboxState(event) {
   try {
@@ -396,6 +501,35 @@ function outboxStateByReceipt({ required = false } = {}) {
   return states;
 }
 
+function appendVisitorOutboxState(event) {
+  try {
+    fs.mkdirSync(path.dirname(LEAD_VISITOR_EMAIL_OUTBOX_FILE), { recursive: true });
+    fs.appendFileSync(LEAD_VISITOR_EMAIL_OUTBOX_FILE, JSON.stringify(event) + '\n');
+    return true;
+  } catch (error) {
+    console.error(
+      `visitor email outbox write failed: ${event.receiptId}`,
+      String(error && error.message || error).slice(0, 300));
+    return false;
+  }
+}
+
+function recordVisitorOutboxState(event) {
+  if (appendVisitorOutboxState(event)) volatileVisitorOutboxStates.delete(event.receiptId);
+  else volatileVisitorOutboxStates.set(event.receiptId, event);
+}
+
+function visitorOutboxStateByReceipt({ required = false } = {}) {
+  const states = new Map();
+  for (const event of readLeadVisitorEmailOutbox({ required })) {
+    states.set(event.receiptId, event);
+  }
+  for (const [receiptId, event] of volatileVisitorOutboxStates) {
+    states.set(receiptId, event);
+  }
+  return states;
+}
+
 function retryDelayMs(attempts) {
   const exponent = Math.max(0, Math.min(Number(attempts || 1) - 1, 10));
   return Math.min(EMAIL_OUTBOX_RETRY_BASE_MS * (2 ** exponent), EMAIL_OUTBOX_RETRY_MAX_MS);
@@ -409,6 +543,23 @@ function validResendOutbox(lead) {
   if (!payload || typeof payload !== 'object'
       || typeof payload.from !== 'string'
       || !Array.isArray(payload.to) || !payload.to[0]
+      || typeof payload.subject !== 'string'
+      || typeof payload.text !== 'string') return null;
+  return outbox;
+}
+
+function validVisitorResendOutbox(lead) {
+  if (!lead || lead.synthetic === true) return null;
+  const outbox = lead._visitorEmailOutbox;
+  const payload = outbox && outbox.payload;
+  if (!outbox || outbox.version !== EMAIL_OUTBOX_VERSION || outbox.provider !== 'resend') return null;
+  if (!/^lead-visitor-confirmation\/lead_[0-9a-f-]{36}$/i.test(
+    String(outbox.idempotencyKey || ''))) return null;
+  if (!payload || typeof payload !== 'object'
+      || typeof payload.from !== 'string'
+      || !Array.isArray(payload.to) || payload.to.length !== 1
+      || String(payload.to[0] || '').toLowerCase() !== String(lead.email || '').toLowerCase()
+      || typeof payload.reply_to !== 'string' || !payload.reply_to
       || typeof payload.subject !== 'string'
       || typeof payload.text !== 'string') return null;
   return outbox;
@@ -488,6 +639,76 @@ async function drainLeadEmailOutboxPass({ force = false, leads, now = Date.now()
   return result;
 }
 
+async function drainLeadVisitorEmailOutboxPass({ force = false, leads, now = Date.now() } = {}) {
+  const queued = new Map();
+  for (const lead of leads || readStoredLeads({ strict: true })) {
+    if (lead && lead.receiptId && validVisitorResendOutbox(lead)) {
+      queued.set(lead.receiptId, lead);
+    }
+  }
+  const states = visitorOutboxStateByReceipt({ required: queued.size > 0 });
+  for (const receiptId of queued.keys()) {
+    if (!states.has(receiptId)) {
+      throw new Error(`visitor email outbox is missing queue state for ${receiptId}`);
+    }
+  }
+
+  for (const [receiptId, event] of volatileVisitorOutboxStates) {
+    if (appendVisitorOutboxState(event)) volatileVisitorOutboxStates.delete(receiptId);
+  }
+
+  const result = { queued: queued.size, attempted: 0, sent: 0, failed: 0, skipped: 0 };
+  for (const [receiptId, lead] of queued) {
+    const prior = states.get(receiptId);
+    if (prior && prior.state === 'sent') {
+      result.skipped += 1;
+      continue;
+    }
+    if (!force && prior && prior.state === 'failed'
+        && Date.parse(prior.nextAttemptAt || '') > now) {
+      result.skipped += 1;
+      continue;
+    }
+
+    const attempts = Math.max(0, Number(prior && prior.attempts) || 0) + 1;
+    result.attempted += 1;
+    try {
+      const providerResult = await sendViaHttp(lead._visitorEmailOutbox);
+      recordVisitorOutboxState({
+        version: EMAIL_OUTBOX_VERSION,
+        kind: 'visitor_confirmation',
+        receiptId,
+        state: 'sent',
+        at: new Date(now).toISOString(),
+        attempts,
+        provider: 'resend',
+        providerMessageId: clean(String(providerResult && providerResult.id || ''), 200)
+      });
+      result.sent += 1;
+      console.log(`LEAD_VISITOR_CONFIRMATION_MAILED receiptId=${receiptId} via https (resend)`);
+    } catch (error) {
+      const message = String(error && error.message || error).slice(0, 500);
+      const nextAttemptAt = new Date(now + retryDelayMs(attempts)).toISOString();
+      recordVisitorOutboxState({
+        version: EMAIL_OUTBOX_VERSION,
+        kind: 'visitor_confirmation',
+        receiptId,
+        state: 'failed',
+        at: new Date(now).toISOString(),
+        attempts,
+        nextAttemptAt,
+        provider: 'resend',
+        error: message
+      });
+      result.failed += 1;
+      console.error(
+        `LEAD_VISITOR_CONFIRMATION_FAILED receiptId=${receiptId}`, message,
+        `— durable retry queued for ${nextAttemptAt}`);
+    }
+  }
+  return result;
+}
+
 let outboxDrainPromise = null;
 let outboxDrainRequested = false;
 
@@ -519,6 +740,33 @@ function drainLeadEmailOutbox(options = {}) {
   return outboxDrainPromise;
 }
 
+let visitorOutboxDrainPromise = null;
+let visitorOutboxDrainRequested = false;
+
+function drainLeadVisitorEmailOutbox(options = {}) {
+  if (visitorOutboxDrainPromise) {
+    visitorOutboxDrainRequested = true;
+    return visitorOutboxDrainPromise;
+  }
+  visitorOutboxDrainPromise = (async () => {
+    let nextOptions = options;
+    let aggregate = { queued: 0, attempted: 0, sent: 0, failed: 0, skipped: 0 };
+    try {
+      do {
+        visitorOutboxDrainRequested = false;
+        const pass = await drainLeadVisitorEmailOutboxPass(nextOptions);
+        aggregate = Object.fromEntries(
+          Object.keys(aggregate).map(key => [key, aggregate[key] + pass[key]]));
+        nextOptions = { force: !!options.force, now: options.now };
+      } while (visitorOutboxDrainRequested);
+      return aggregate;
+    } finally {
+      visitorOutboxDrainPromise = null;
+    }
+  })();
+  return visitorOutboxDrainPromise;
+}
+
 let outboxTimer = null;
 
 function scheduleLeadEmailOutbox(lead) {
@@ -528,6 +776,11 @@ function scheduleLeadEmailOutbox(lead) {
     drainLeadEmailOutbox({ leads: [lead] }).catch(error => {
       console.error('lead email outbox trigger failed:', String(error && error.message || error).slice(0, 300));
     });
+    drainLeadVisitorEmailOutbox({ leads: [lead] }).catch(error => {
+      console.error(
+        'visitor email outbox trigger failed:',
+        String(error && error.message || error).slice(0, 300));
+    });
   });
 }
 
@@ -536,9 +789,17 @@ function startLeadEmailOutbox() {
   drainLeadEmailOutbox().catch(error => {
     console.error('lead email outbox startup failed:', String(error && error.message || error).slice(0, 300));
   });
+  drainLeadVisitorEmailOutbox().catch(error => {
+    console.error(
+      'visitor email outbox startup failed:', String(error && error.message || error).slice(0, 300));
+  });
   outboxTimer = setInterval(() => {
     drainLeadEmailOutbox().catch(error => {
       console.error('lead email outbox scan failed:', String(error && error.message || error).slice(0, 300));
+    });
+    drainLeadVisitorEmailOutbox().catch(error => {
+      console.error(
+        'visitor email outbox scan failed:', String(error && error.message || error).slice(0, 300));
     });
   }, EMAIL_OUTBOX_SCAN_MS);
   outboxTimer.unref();
@@ -546,9 +807,14 @@ function startLeadEmailOutbox() {
 
 function persistLead(lead) {
   const delivery = leadDeliveryConfig();
-  const storedLead = delivery.ready && delivery.provider === 'resend'
-    ? { ...lead, _emailOutbox: createResendOutbox(lead) }
-    : lead;
+  const visitorDelivery = visitorEmailConfirmationConfig();
+  let storedLead = lead;
+  if (delivery.ready && delivery.provider === 'resend') {
+    storedLead = { ...lead, _emailOutbox: createResendOutbox(lead) };
+    if (lead.synthetic !== true && visitorDelivery.configured) {
+      storedLead._visitorEmailOutbox = createVisitorResendOutbox(lead);
+    }
+  }
   // 1. stdout — the sink that always works
   console.log('LEAD ' + JSON.stringify(lead));
   // A queued event is written before the lead. An orphan event is harmless if
@@ -563,6 +829,25 @@ function persistLead(lead) {
     provider: 'resend'
   })) {
     return { stored: false };
+  }
+  if (storedLead._visitorEmailOutbox && !appendVisitorOutboxState({
+    version: EMAIL_OUTBOX_VERSION,
+    kind: 'visitor_confirmation',
+    receiptId: lead.receiptId,
+    state: 'queued',
+    at: storedLead._visitorEmailOutbox.queuedAt,
+    attempts: 0,
+    provider: 'resend'
+  })) {
+    // A visitor receipt is useful, but it is secondary to saving the inquiry
+    // and notifying Leon. If only its ledger is unavailable, omit that receipt
+    // from this lead instead of turning a healthy owner-delivery path into a
+    // 503 and leaving the owner queue orphaned.
+    const { _visitorEmailOutbox, ...ownerDeliverableLead } = storedLead;
+    storedLead = ownerDeliverableLead;
+    console.error(
+      `LEAD_VISITOR_CONFIRMATION_NOT_QUEUED receiptId=${lead.receiptId} — ` +
+      'visitor outbox storage unavailable; owner capture continues');
   }
   // 2. jsonl — required before the visitor is told the request was saved
   try {
@@ -989,8 +1274,11 @@ module.exports = {
   clean,
   verifyMail,
   leadDeliveryConfig,
+  visitorEmailConfirmationConfig,
   drainLeadEmailOutbox,
+  drainLeadVisitorEmailOutbox,
   readLeadEmailOutbox,
+  readLeadVisitorEmailOutbox,
   leadEmailStatus,
   confirmLeadEmailInbox,
   leadEmailVerification,

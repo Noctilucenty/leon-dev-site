@@ -174,22 +174,22 @@
     var copy = {
       en: {
         title: 'Allow ad measurement?',
-        body: 'Google Ads may use cookies to connect an ad click with a quote, booked call, phone click or WhatsApp click. Leon Builds does not intentionally send form entries or contact details; ad personalization stays off.',
+        body: 'Google Ads may use cookies to measure quote, booking, phone and WhatsApp actions. Form details stay out; personalization stays off.',
         allow: 'Allow measurement', deny: 'No thanks', privacy: 'Privacy details'
       },
       es: {
         title: '\u00bfPermitir la medici\u00f3n de conversiones?',
-        body: 'Google Ads puede usar cookies para relacionar un clic en un anuncio con una solicitud de presupuesto, una llamada reservada o un clic en tel\u00e9fono o WhatsApp. Leon Builds no env\u00eda intencionalmente datos del formulario ni datos de contacto. La personalizaci\u00f3n de anuncios sigue desactivada.',
+        body: 'Google Ads puede usar cookies para medir solicitudes, reservas y clics en tel\u00e9fono o WhatsApp. Los datos del formulario quedan fuera; la personalizaci\u00f3n sigue desactivada.',
         allow: 'Permitir medici\u00f3n', deny: 'No, gracias', privacy: 'Detalles de privacidad'
       },
       pt: {
         title: 'Permitir medi\u00e7\u00e3o de convers\u00f5es?',
-        body: 'O Google Ads poder\u00e1 usar cookies para relacionar um clique no an\u00fancio a um pedido de or\u00e7amento, chamada agendada ou clique em telefone ou WhatsApp. A Leon Builds n\u00e3o envia intencionalmente dados do formul\u00e1rio nem dados de contato. A personaliza\u00e7\u00e3o de an\u00fancios continua desativada.',
+        body: 'O Google Ads pode usar cookies para medir pedidos, agendamentos e cliques em telefone ou WhatsApp. Os dados do formul\u00e1rio ficam de fora; a personaliza\u00e7\u00e3o continua desativada.',
         allow: 'Permitir medi\u00e7\u00e3o', deny: 'N\u00e3o, obrigado', privacy: 'Detalhes de privacidade'
       },
       zh: {
         title: '\u5141\u8bb8\u8f6c\u5316\u8861\u91cf\uff1f',
-        body: 'Google Ads \u53ef\u80fd\u4f7f\u7528 Cookie\uff0c\u5c06\u5e7f\u544a\u70b9\u51fb\u4e0e\u62a5\u4ef7\u7533\u8bf7\u3001\u9884\u7ea6\u901a\u8bdd\u3001\u7535\u8bdd\u70b9\u51fb\u6216 WhatsApp \u70b9\u51fb\u5173\u8054\u3002Leon Builds \u4e0d\u4f1a\u6545\u610f\u53d1\u9001\u8868\u5355\u5185\u5bb9\u6216\u8054\u7cfb\u65b9\u5f0f\u3002\u5e7f\u544a\u4e2a\u6027\u5316\u4ecd\u4fdd\u6301\u5173\u95ed\u3002',
+        body: 'Google Ads \u53ef\u80fd\u4f7f\u7528 Cookie \u8861\u91cf\u62a5\u4ef7\u3001\u9884\u7ea6\u3001\u7535\u8bdd\u548c WhatsApp \u64cd\u4f5c\u3002\u8868\u5355\u5185\u5bb9\u4e0d\u4f1a\u53d1\u9001\uff0c\u5e7f\u544a\u4e2a\u6027\u5316\u4fdd\u6301\u5173\u95ed\u3002',
         allow: '\u5141\u8bb8\u8861\u91cf', deny: '\u4e0d\u7528\u4e86', privacy: '\u9690\u79c1\u8be6\u60c5'
       }
     };
@@ -255,6 +255,7 @@
         adsConsentUpdate('denied');
       }
     }
+    evt(value === 'granted' ? 'ads_consent_granted' : 'ads_consent_denied');
   }
 
   run(function () {
@@ -419,6 +420,16 @@
     try {
       var payload = {
         name: name, path: location.pathname,
+        device: (function () {
+          var width = Math.max(
+            Number(window.innerWidth) || 0,
+            Number(document.documentElement && document.documentElement.clientWidth) || 0
+          );
+          if (!width) return 'unknown';
+          if (width <= 700) return 'mobile';
+          if (width <= 1024) return 'tablet';
+          return 'desktop';
+        }()),
         ref: String(attribution.referrer || '').slice(0, 200),
         utm: attribution.utmSource || '',
         medium: attribution.utmMedium || '',
@@ -484,6 +495,24 @@
         } catch (err) {}
       }
     }, { passive: true });
+  });
+
+  // View milestones are opt-in through a data attribute so content can expose
+  // funnel steps without adding page-specific scripts. Each element fires once
+  // per load after at least a third of it becomes visible.
+  run(function () {
+    if (!('IntersectionObserver' in window)) return;
+    var targets = Array.prototype.slice.call(document.querySelectorAll('[data-view-event]'));
+    if (!targets.length) return;
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.33) return;
+        var name = entry.target.getAttribute('data-view-event');
+        if (name) evt(name);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: [0.33] });
+    targets.forEach(function (target) { observer.observe(target); });
   });
 
   /* A transcript is bounded by MESSAGE COUNT everywhere else, which says

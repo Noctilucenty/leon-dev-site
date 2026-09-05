@@ -64,7 +64,9 @@ test('static build publishes only pages and required referenced assets', () => {
   assert.equal(result.status, 0, diagnostic(result));
 
   for (const relative of [
-    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html', 'work.html', 'missed-lead-recovery.html', 'technical-build-partner.html',
+    'index.html', 'about.html', 'privacy.html', 'quote.html', 'call.html', 'work.html',
+    'work/allcpr-site-intelligence.html', 'work/curio-app.html', 'work/beastypages-website.html',
+    'guides/contractor-inquiry-workflow.html', 'missed-lead-recovery.html', 'technical-build-partner.html',
     'services/index.html', 'services/websites.html', 'es/index.html',
     'styles.css', 'assist.css', 'app.js', 'assist.js',
     'assets/favicon.svg', 'assets/og.png', 'favicon.ico', 'apple-touch-icon.png',
@@ -87,7 +89,9 @@ test('static build publishes only pages and required referenced assets', () => {
     );
   }
   for (const relative of [
-    'work.html', 'privacy.html', 'quote.html', 'assist.js', 'styles.css',
+    'work.html', 'work/allcpr-site-intelligence.html', 'work/curio-app.html',
+    'work/beastypages-website.html', 'guides/contractor-inquiry-workflow.html',
+    'privacy.html', 'quote.html', 'assist.js', 'styles.css',
     'services/websites.html', 'services/mobile-apps.html', 'industries/contractors.html',
     'es/index.html', 'pt/index.html', 'zh/index.html', 'assets/og.png',
     'sitemap.xml', 'robots.txt', 'llms.txt'

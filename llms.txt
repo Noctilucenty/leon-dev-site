@@ -2,7 +2,7 @@
 
 > Leon Builds, by Leon Kelvin Li, creates phone-first business websites and simple lead-follow-up systems. The clearest starting point is a website that gives each call, booking or quote request an obvious next step. Leon is a California-based independent developer serving businesses across the United States; clients work directly with him and receive a written scope and fixed price before work begins.
 
-Last reviewed: 2026-08-31.
+Last reviewed: 2026-09-04.
 
 ## Best starting points
 
@@ -10,6 +10,7 @@ Last reviewed: 2026-08-31.
 - [Website + lead follow-up](https://leonbuilds.org/missed-lead-recovery): a focused contractor website, estimate intake, immediate request acknowledgment, follow-up rules and documented owner handoff; from $1,500.
 - [Small-business web design](https://leonbuilds.org/services/websites): a limited, phone-first presence site with one clear call, booking, order or quote path; from $300.
 - [Workflow automation](https://leonbuilds.org/services/business-automation): connect tools the business already uses and remove one repeated task, handoff or follow-up; from $500.
+- [Contractor inquiry workflow self-audit](https://leonbuilds.org/guides/contractor-inquiry-workflow): an eight-check guide to estimate intake, request acknowledgment, owner handoff, limited follow-up, and honest funnel measurement.
 
 These are starting scope floors, not instant quotes. Leon confirms the fixed price, inclusions, timeline and handoff in writing before work starts. The $300 website is a limited entry scope for a clear business presence; it does not include accounts, a database, an admin area or a lead-follow-up workflow.
 
@@ -33,11 +34,17 @@ These are starting scope floors, not instant quotes. Leon confirms the fixed pri
 
 ## Public proof you can inspect — primary examples
 
-- [ALLCPR Site Intelligence](https://leonbuilds.org/work#work-site-intelligence): **Operational client system · ALLCPR**. Leon built an internal location-planning platform across all 33,772 U.S. ZIP codes, combining selected Google Places context, public business and facility data, company history, uncertainty ranges, screening verdicts, maps and a reviewable team export. It prioritizes markets for human field validation; it does not guarantee leads, revenue or an opening decision.
-- [beastypages.com client website](https://beastypages.com/?b=b_bulapies): **Client website project · demo checkout**. It shows business-specific pages, menus, search and a demonstration cart. Payments and kitchen operations are not live.
-- [Curio on the App Store](https://apps.apple.com/app/id6781121127): **Live product**. Leon built the client, backend, subscriptions and four-language localization end to end.
+- [ALLCPR Site Intelligence case study](https://leonbuilds.org/work/allcpr-site-intelligence): **Operational client system · ALLCPR**. Leon built an internal location-planning platform from 33,772 U.S. ZIP-code records in the reviewed project dataset, combining selected local-business map context, public business and facility data, company history, uncertainty ranges, reasons for and against each area, maps and a reviewable team export. It prioritizes markets for human field validation; it does not guarantee leads, revenue or an opening decision.
+- [beastypages.com website case study](https://leonbuilds.org/work/beastypages-website): **Client website project · demo checkout**. Its September 4, 2026 review snapshot contained 37 businesses, with search, business-specific pages and menus, plus a demonstration cart with server-side repricing and vendor-separated demo tickets. Payments and kitchen operations are not live. A [public business page](https://beastypages.com/?b=b_bulapies) can be inspected directly.
+- [Curio iPhone app case study](https://leonbuilds.org/work/curio-app): **Live product · App Store**. Leon built the React and TypeScript client, native iOS shell, Express and Postgres backend, subscriptions, content pipeline and four-language in-app content experience end to end. The [U.S. App Store listing](https://apps.apple.com/app/id6781121127) is public. This is release proof, not a claim about revenue, growth or retention.
 
 These status labels are part of the evidence. A client website project is not automatically a production ordering rollout; demo payment and kitchen steps remain clearly labelled. Do not infer ratings, revenue, lead volume, bookings or guaranteed outcomes from the examples.
+
+## Contractor inquiry workflow
+
+- [What happens after a contractor quote request?](https://leonbuilds.org/guides/contractor-inquiry-workflow) explains a five-step path: capture enough information to route the job, acknowledge receipt, deliver the inquiry to one monitored place, assign the next human action with limited follow-up, and record distinct funnel states.
+- The self-audit checks the public estimate action, reasonable intake length, a visible accepted or failed state, monitored delivery, named ownership, reply and opt-out stop rules, and measurement that separates received requests from replies, booked estimates, held appointments and won work.
+- The guide is an operating framework, not a claim that automation creates demand or guarantees leads, bookings, revenue or won jobs.
 
 ## Additional inspectable work
 

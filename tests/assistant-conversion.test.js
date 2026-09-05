@@ -72,7 +72,7 @@ test('regular quote form uses the same unmistakable transaction state', () => {
   assert.match(source, /class="label" role="status" aria-live="assertive" aria-atomic="true"/);
   assert.match(source, /d\.idempotencyKey=submissionKey/);
   assert.match(source, /Your project was <em>sent to Leon Builds\.<\/em>/);
-  assert.match(source, /We received your request\. We usually reply to the email you provided/);
+  assert.match(source, /Your request was saved\. Leon will reply to the email you provided/);
   assert.match(css, /\.qform\[hidden\]\{ display:none; \}/, 'the form must actually disappear after a successful submit');
   assert.match(css, /\.qok\{[\s\S]*?border:2px solid var\(--ac\)/);
   assert.match(css, /\.qok \.sub\{[\s\S]*?font-size:16px/);

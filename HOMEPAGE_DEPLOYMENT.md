@@ -1,12 +1,13 @@
 # Homepage publication
 
-The homepage is a static export of `Noctilucenty/freelance2` at commit `2520085fcd4bbac87600b179fa1614fd90e99cc4`,
+The homepage is a static export of `Noctilucenty/freelance2` at commit `d14a4eedf0ef60ebdb6ba6e5dab9583c7c86c7fe`,
 branch `codex/initial-site`. Editable source: `/Users/leon/Desktop/dev/freelance2`.
 
 The Render static site `leonkelvinli` (`srv-d9s1dhon74is73fonuag`) serves
 `leonbuilds.org`. Publish the `codex/freelance2-homepage` branch of this repository
-using the existing `npm run build:static` command and `dist` directory. Leave the
-separate `leon-assist` web service on `main`; no API settings or data change.
+using the existing `npm run build:static` command and `dist` directory. The
+separate `leon-assist` web service deploys from `main`; keep its durable lead
+storage and existing owner-email settings in place when publishing API changes.
 
 ## Updating the homepage
 

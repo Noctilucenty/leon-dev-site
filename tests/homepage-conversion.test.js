@@ -7,16 +7,8 @@ const test = require('node:test');
 
 const ROOT = path.join(__dirname, '..');
 const read = file => fs.readFileSync(path.join(ROOT, file), 'utf8');
-
-const html = read('index.html');
-const css = read('styles.css');
-const js = read('app.js');
+const html = read('homepage/index.html');
 const assist = read('assist.js');
-const homepageClientJs = fs
-  .readdirSync(path.join(ROOT, 'homepage/_next/static/chunks'))
-  .filter(file => file.endsWith('.js'))
-  .map(file => read(path.join('homepage/_next/static/chunks', file)))
-  .join('\n');
 
 function attributes(tag) {
   const result = Object.create(null);
@@ -32,403 +24,223 @@ function plainText(source) {
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&(?:apos|#39|#x27);/gi, "'")
-    .replace(/&(?:quot|#34|#x22);/gi, '"')
     .replace(/&amp;/gi, '&')
+    .replace(/&(?:apos|#39|#x27);/gi, "'")
     .replace(/&nbsp;/gi, ' ')
-    .replace(/&rarr;|&#8594;|&#x2192;/gi, '→')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function extractElementAt(source, tag, start) {
+  const tokens = new RegExp(`<\/?${tag}\\b[^>]*>`, 'gi');
+  tokens.lastIndex = start;
+  let depth = 0;
+  let token;
+  while ((token = tokens.exec(source))) {
+    depth += /^<\//.test(token[0]) ? -1 : 1;
+    if (depth === 0) return source.slice(start, tokens.lastIndex);
+  }
+  assert.fail(`${tag} element at ${start} is not closed`);
 }
 
 function elementWithId(source, tag, id) {
   const opener = new RegExp(`<${tag}\\b(?=[^>]*\\bid\\s*=\\s*(["'])${id}\\1)[^>]*>`, 'i');
   const match = opener.exec(source);
-  assert.ok(match, `homepage has a ${tag}#${id}`);
-  const end = source.indexOf(`</${tag}>`, match.index);
-  assert.notEqual(end, -1, `${tag}#${id} is closed`);
-  return source.slice(match.index, end + `</${tag}>`.length);
-}
-
-function mainSource(source = html) {
-  const match = source.match(/<main\b[^>]*>[\s\S]*?<\/main>/i);
-  assert.ok(match, 'homepage has a main landmark');
-  return match[0];
-}
-
-function linksIn(source) {
-  return Array.from(source.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi), match => {
-    const opener = match[0].slice(0, match[0].indexOf('>') + 1);
-    return { attrs: attributes(opener), text: plainText(match[0]) };
-  });
-}
-
-function topLevelSections(source) {
-  const main = mainSource(source);
-  const sections = [];
-  let depth = 0;
-  for (const match of main.matchAll(/<\/?section\b[^>]*>/gi)) {
-    if (/^<\/section/i.test(match[0])) {
-      depth -= 1;
-    } else {
-      if (depth === 0) sections.push(attributes(match[0]));
-      depth += 1;
-    }
-  }
-  assert.equal(depth, 0, 'homepage section tags are balanced');
-  return sections;
-}
-
-function initiallyVisibleMainText(source) {
-  let main = mainSource(source);
-  main = main.replace(/<details\b[^>]*>[\s\S]*?<summary\b[^>]*>([\s\S]*?)<\/summary>[\s\S]*?<\/details>/gi, '$1');
-  main = main.replace(/<template\b[\s\S]*?<\/template>/gi, ' ');
-  return plainText(main);
-}
-
-function articleContaining(source, heading) {
-  const articles = source.match(/<article\b[\s\S]*?<\/article>/gi) || [];
-  const needle = heading.toLowerCase();
-  const result = articles.find(article => plainText(article).toLowerCase().includes(needle));
-  assert.ok(result, `homepage includes the ${heading} card`);
-  return result;
+  assert.ok(match, `published homepage has ${tag}#${id}`);
+  return extractElementAt(source, tag, match.index);
 }
 
 function elementsWithClass(source, tag, className) {
-  const blocks = source.match(new RegExp(`<${tag}\\b(?=[^>]*\\bclass\\s*=\\s*(["'])[^"']*\\b${className}\\b[^"']*\\1)[\\s\\S]*?<\\/${tag}>`, 'gi')) || [];
-  return blocks;
-}
-
-function mediaBlocks(source) {
-  const blocks = [];
-  const startRe = /@media\s*\(([^)]*)\)\s*\{/gi;
-  let start;
-  while ((start = startRe.exec(source))) {
-    let depth = 1;
-    let cursor = startRe.lastIndex;
-    while (cursor < source.length && depth) {
-      if (source[cursor] === '{') depth += 1;
-      else if (source[cursor] === '}') depth -= 1;
-      cursor += 1;
+  const result = [];
+  const openers = new RegExp(`<${tag}\\b[^>]*>`, 'gi');
+  let match;
+  while ((match = openers.exec(source))) {
+    if ((attributes(match[0]).class || '').split(/\s+/).includes(className)) {
+      result.push(extractElementAt(source, tag, match.index));
     }
-    blocks.push({ condition: start[1], body: source.slice(startRe.lastIndex, cursor - 1) });
-    startRe.lastIndex = cursor;
   }
-  return blocks;
+  return result;
 }
 
-function schemaBlocks(source) {
+function linksIn(source) {
+  return Array.from(source.matchAll(/<a\b[^>]*>[\s\S]*?<\/a>/gi), match => ({
+    attrs: attributes(match[0].slice(0, match[0].indexOf('>') + 1)),
+    text: plainText(match[0]),
+  }));
+}
+
+function hrefPath(href) {
+  return new URL(href, 'https://leonbuilds.org').pathname;
+}
+
+function schemaNodes(source) {
   return Array.from(
     source.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi),
+    match => JSON.parse(match[1])
+  ).flatMap(root => Array.isArray(root) ? root : [root]);
+}
+
+function referencedAssets(extension) {
+  const refs = new Set(Array.from(
+    html.matchAll(/(?:href|src)=["'](\/_next\/static\/[^"']+)["']/gi),
     match => match[1]
-  );
+  ).filter(ref => ref.endsWith(extension)));
+  assert.ok(refs.size > 0, `homepage references ${extension} assets`);
+  return Array.from(refs, ref => {
+    const relative = path.join('homepage', ref.replace(/^\//, ''));
+    assert.ok(fs.existsSync(path.join(ROOT, relative)), `${ref} exists`);
+    return read(relative);
+  }).join('\n');
 }
 
-function testimonialPublication() {
-  return JSON.parse(read('content/client-success/testimonial-publication.json')).approved_testimonials;
-}
+const css = referencedAssets('.css');
+const clientJs = referencedAssets('.js');
 
-test('homepage is a short seven-section-or-less service funnel in the approved order', () => {
-  const sections = topLevelSections(html);
-  assert.ok(sections.length <= 7, `homepage has ${sections.length} major sections; maximum is 7`);
+test('published export has the current metadata and four-section navigation', () => {
+  assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
+  const description = attributes(html.match(/<meta\b[^>]*name=["']description["'][^>]*>/i)?.[0] || '').content || '';
+  assert.match(description, /free 3-point website review/i);
+  assert.match(description, /websites from \$300/i);
+  assert.match(description, /automation from \$500/i);
+  assert.match(html, /rel=["']canonical["'][^>]*href=["']https:\/\/leonbuilds\.org\/?["']/i);
+  assert.match(html, /property=["']og:image["'][^>]*assets\/og\.png/i);
 
-  const ids = sections.map(attrs => attrs.id).filter(Boolean);
-  const requiredOrder = ['top', 'services', 'work', 'process', 'faq', 'contact'];
-  let cursor = -1;
-  for (const id of requiredOrder) {
-    const next = ids.indexOf(id, cursor + 1);
-    assert.notEqual(next, -1, `homepage includes #${id} in the approved conversion order`);
-    cursor = next;
-  }
-
-  const visible = initiallyVisibleMainText(html);
-  const words = visible.match(/[\p{L}\p{N}][\p{L}\p{N}'’+&/-]*/gu) || [];
-  assert.ok(words.length <= 600, `homepage has ${words.length} initially visible main words; maximum is 600`);
-
-  assert.doesNotMatch(mainSource(), /\bhidden(?:\s|>)/i, 'homepage does not retain archival content as hidden DOM');
-  assert.doesNotMatch(mainSource(), /long-case|work-archive|legacy-work|archive-hidden|sr-only-work/i);
-});
-
-test('navigation has one coherent brand, service path, and no stale homepage anchors', () => {
+  const sectionIds = Array.from(html.matchAll(/<section\b[^>]*\bid=["']([^"']+)["']/gi), match => match[1]);
+  assert.deepEqual(sectionIds, ['services', 'work', 'about', 'start']);
   const header = html.match(/<header\b[^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
-  assert.ok(header, 'homepage has a header');
-  const links = linksIn(header);
-  const visible = plainText(header);
-
-  assert.match(visible, /Leon Builds/i);
-  assert.match(visible, /by Leon Kelvin Li/i);
-  assert.doesNotMatch(visible, /Noctilucenty/i);
-  assert.ok(links.some(link => link.attrs.href === '#services' && /services\s*&\s*pricing/i.test(link.text)), 'nav links to visible services and pricing');
-  assert.ok(links.some(link => link.attrs.href === '/work' && /\bwork\b/i.test(link.text)), 'nav links to the dedicated work route');
-  assert.ok(links.some(link => link.attrs.href === '/about' && /\babout\b/i.test(link.text)), 'nav links to About');
-  assert.ok(links.some(link => link.attrs.href === '/quote' && /get a fixed quote/i.test(link.text)), 'nav has the one quote CTA');
-  assert.doesNotMatch(header, /href=["']#(?:fix|outcomes|pricing|work)["']/i, 'old homepage anchors are not still advertised');
-
-  const ids = new Set(Array.from(html.matchAll(/\bid\s*=\s*(["'])([^"']+)\1/gi), match => match[2]));
-  for (const link of linksIn(html)) {
-    if (!link.attrs.href || !link.attrs.href.startsWith('#')) continue;
-    assert.ok(ids.has(link.attrs.href.slice(1)), `homepage link ${link.attrs.href} has a real target`);
+  for (const [href, label] of [['#services', 'Services'], ['#work', 'Work'], ['#about', 'About'], ['#start', 'Start']]) {
+    assert.ok(linksIn(header).some(link => link.attrs.href === href && link.text.includes(label)), `${label} is in the nav`);
   }
+  assert.match(header, /href=["']#review-form["'][^>]*data-event=["']mobile_review_cta_click["']/i);
 });
 
-test('hero passes the five-second offer test with one filled CTA and one secondary link', () => {
-  const hero = elementWithId(html, 'section', 'top');
+test('hero uses the free review as its primary action', () => {
+  const hero = elementsWithClass(html, 'section', 'hero-journey')[0] || '';
   const visible = plainText(hero);
-  const copy = elementsWithClass(hero, 'div', 'hero-copy')[0] || '';
-  const actions = elementsWithClass(copy, 'div', 'hero-cta')[0] || '';
-  const links = linksIn(actions);
-  const filled = links.filter(link => /(?:^|\s)(?:btn-solid|btn-primary|primary-cta)(?:\s|$)/.test(link.attrs.class || ''));
-
-  assert.match(visible, /websites\s*\+\s*lead follow-up for small businesses/i);
-  assert.match(visible, /turn website visitors into calls, bookings, and quote requests\./i);
-  assert.match(visible, /We build fast business websites and simple follow-up systems so new inquiries are easier to capture, see, and respond to\./i);
-  assert.match(visible, /websites from \$300/i);
-  assert.match(visible, /website \+ follow-up from \$1,500/i);
-  assert.match(visible, /fixed price before work begins/i);
-  assert.match(visible, /founder-led delivery/i);
-  assert.match(visible, /written scope and fixed price/i);
-  assert.match(visible, /agreed source and account handoff/i);
-  assert.ok(linksIn(hero).some(link => link.attrs.href === '/about' && /founder-led delivery/i.test(link.text)));
-  assert.match(visible, /Founder & developer · your direct contact/i);
-
-  assert.equal(filled.length, 1, 'hero has exactly one filled CTA');
-  assert.equal(filled[0].attrs.href, '/quote');
-  assert.match(filled[0].text, /get a fixed quote/i);
-  assert.equal(links.length, 2, 'hero has one primary CTA and one secondary link');
-  assert.ok(links.some(link => link.attrs.href === '/work' && /see real work/i.test(link.text)), 'hero secondary link opens /work');
-
-  assert.doesNotMatch(copy, /curio|app store|github/i, 'product proof does not replace the buyer offer');
-  assert.doesNotMatch(hero, /<video\b[^>]*\bautoplay/i, 'hero has no autoplay media');
+  assert.match(visible, /websites that make it easy to act/i);
+  assert.match(visible, /automation that follows up/i);
+  assert.match(visible, /small businesses.*clearer inquiry paths and less busywork/i);
+  assert.match(visible, /websites from \$\s*300.*automation from \$\s*500/i);
+  const primary = linksIn(hero).find(link => link.attrs['data-event'] === 'hero_review_cta_click');
+  assert.equal(primary?.attrs.href, '#review-form');
+  assert.match(primary?.text || '', /get a free 3-point review/i);
+  assert.ok(linksIn(hero).some(link => link.attrs.href === '#work' && /see real work/i.test(link.text)));
+  assert.doesNotMatch(hero, /start a project|get a fixed quote|quote_cta_click/i);
 });
 
-test('hero pairs the offer with three immediately verifiable trust paths', () => {
-  const hero = elementWithId(html, 'section', 'top');
-  const panel = elementsWithClass(hero, 'aside', 'hero-proof')[0] || '';
-  const visible = plainText(panel);
-  const links = linksIn(panel);
-
-  assert.match(visible, /public proof/i);
-  assert.match(visible, /ALLCPR Site Intelligence/i);
-  assert.match(visible, /location-planning system/i);
-  assert.match(visible, /live app store product/i);
-  assert.match(visible, /Leon Kelvin Li/i);
-  assert.equal(links.length, 3, 'proof panel has exactly three verification paths');
-  assert.ok(links.some(link => link.attrs.href === '/work#work-site-intelligence'));
-  assert.ok(links.some(link => link.attrs.href === '/work#work-curio-public'));
-  assert.ok(links.some(link => link.attrs.href === '/about'));
-  assert.doesNotMatch(visible, /revenue|bookings generated|guaranteed|five[- ]star/i);
-});
-
-test('services target exposes exactly three canonical starting offers', () => {
+test('service cards have crawlable detail links and scope controls', () => {
   const services = elementWithId(html, 'section', 'services');
-  const cards = elementsWithClass(services, 'a', 'offer-card');
-  assert.equal(cards.length, 3, 'homepage shows exactly three primary service cards');
-  assert.match(plainText(services), /three practical ways to start\./i);
-
+  const cards = elementsWithClass(services, 'article', 'service-v2-card');
+  assert.equal(cards.length, 3);
   const expected = [
-    ['Website + lead follow-up', '$1,500', '/missed-lead-recovery', 'See the 10-day scope'],
-    ['Business website', '$300', '/services/websites', 'See website scope'],
-    ['Workflow automation', '$500', '/services/business-automation', 'See automation scope'],
+    ['/services/websites', '300'],
+    ['/missed-lead-recovery', '1,500'],
+    ['/services/business-automation', '500'],
   ];
-  for (const [name, price, href, cta] of expected) {
-    const card = cards.find(item => plainText(item).toLowerCase().includes(name.toLowerCase()));
-    assert.ok(card, `homepage includes the ${name} card`);
-    assert.match(plainText(card), new RegExp(`from \\${price}`, 'i'), `${name} shows from ${price}`);
-    const cardLink = linksIn(card)[0];
-    assert.equal(cardLink.attrs.href, href, `${name} opens its focused scope`);
-    assert.match(cardLink.text, new RegExp(cta.replace('See website scope', 'See (?:the exact )?website scope'), 'i'), `${name} has the approved scope link`);
+  for (const [index, card] of cards.entries()) {
+    assert.ok(linksIn(card).some(link => hrefPath(link.attrs.href) === expected[index][0]), `${expected[index][0]} is crawlable`);
+    assert.match(plainText(card), new RegExp(`\\$\\s*${expected[index][1]}`));
+    assert.match(card, /<button\b[^>]*aria-label=["']View [^"']+ scope["'][^>]*>[\s\S]*?View scope/i);
   }
-
-  const website = plainText(cards.find(item => plainText(item).toLowerCase().includes('business website')) || '');
-  assert.match(website, /phone-first/i);
-  assert.match(website, /one clear (?:call|booking|order|quote).*(?:path|action)|one clear action/i, '$300 offer is kept to a narrow presence-site scope');
-  assert.doesNotMatch(website, /follow-up|automation|dashboard|\bapp\b/i, '$300 offer does not promise custom-system scope');
-
-  const visible = plainText(services);
-  assert.match(visible, /starting prices are scope floors, not instant quotes/i);
-  assert.match(visible, /written fixed price before work begins/i);
-  assert.ok(linksIn(services).some(link => link.attrs.href === '/services/mobile-apps' && /mobile app development/i.test(link.text)), 'app demand gets one direct secondary path without competing in the hero');
-  assert.equal((visible.match(/\$\s*(?:300|500|1,500)\b/g) || []).length, 3, 'each canonical price appears once in the section');
-  assert.doesNotMatch(visible, /\$\s*1,350\b|first two projects|pilot price/i, 'untracked discount is not published');
 });
 
-test('at least two proof cards demonstrate business-facing systems and the archive lives on /work', () => {
-  const proof = elementWithId(html, 'section', 'work');
-  const articles = proof.match(/<article\b[\s\S]*?<\/article>/gi) || [];
-  assert.equal(articles.length, 3, 'homepage shows exactly three proof cards');
-
-  const orderedText = articles.map(article => plainText(article).toLowerCase());
-  assert.ok(orderedText.some(text => /operational (?:client )?system|live product|client website|public (?:demo|prototype)|prototype/.test(text)), 'proof cards state current status');
-  assert.match(orderedText.join('\n'), /ALLCPR Site Intelligence/i);
-  assert.match(orderedText.join('\n'), /33,772 U\.S\. ZIP codes/i);
-  assert.match(orderedText.join('\n'), /beastypages\.com/);
-  assert.match(orderedText.join('\n'), /client website build.*demo checkout/);
-  assert.match(orderedText.join('\n'), /payments and kitchen operations are not live/);
-  assert.match(orderedText.join('\n'), /curio/);
-  assert.match(orderedText.join('\n'), /live product.*app store/);
-
-  const businessFacing = orderedText.filter(text => /website|business|operator|order|menu|quote|estimate|lead|follow-up|workflow|expansion|location|decision|disclosure|document|handoff|time-saving/.test(text));
-  assert.ok(businessFacing.length >= 2, `${businessFacing.length}/3 proof cards demonstrate business-facing work; at least 2 are required`);
-
-  for (const [index, card] of articles.entries()) {
-    assert.equal(linksIn(card).length, 1, `proof card ${index + 1} has one action`);
-    assert.match(linksIn(card)[0].text, /view (?:the )?(?:proof|case study)|open (?:the )?(?:proof|case study)|verify the live product/i);
-    assert.doesNotMatch(plainText(card), /react|typescript|postgres|capacitor|test suite|architecture|tech stack/i);
-  }
-
-  assert.ok(fs.existsSync(path.join(ROOT, 'work.html')), '/work has a source page');
-  const work = read('work.html');
-  assert.match(work, /<link rel=["']canonical["'] href=["']https:\/\/leonbuilds\.org\/work["']>/i);
-  assert.match(work, /<h1\b/i);
-  for (const name of ['ALLCPR Site Intelligence', 'beastypages.com', 'Loqol disclosures', 'Curio']) assert.match(plainText(work), new RegExp(name.replace('.', '\\.'), 'i'));
-  assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/work<\/loc>/i);
-});
-
-test('testimonials remain conditional and fail closed at the public surface', () => {
-  const publication = testimonialPublication();
-  const marker = html.match(/<!-- TESTIMONIALS:START -->([\s\S]*?)<!-- TESTIMONIALS:END -->/);
-  assert.ok(marker, 'homepage keeps the generator-owned testimonial markers');
-  const cards = marker[1].match(/<article\b(?=[^>]*\bdata-testimonial-id=)[\s\S]*?<\/article>/gi) || [];
-  const header = html.match(/<header\b[^>]*>[\s\S]*?<\/header>/i)?.[0] || '';
-  const reviewsNav = linksIn(header).find(link => /\breviews?\b/i.test(link.text));
-  const reviewsFile = fs.existsSync(path.join(ROOT, 'reviews.html'));
-  const sitemapHasReviews = /<loc>https:\/\/leonbuilds\.org\/reviews<\/loc>/i.test(read('sitemap.xml'));
-  assert.ok(html.indexOf('<!-- TESTIMONIALS:START -->') < html.indexOf('id="work"'), 'released feedback appears before the work catalog');
-
-  if (publication.length === 0) {
-    assert.equal(marker[1].trim(), '', 'zero releases render no review section or placeholder');
-    assert.equal(reviewsNav, undefined, 'zero releases render no Reviews nav link');
-    assert.equal(reviewsFile, false, 'zero releases do not create a hollow /reviews route');
-    assert.equal(sitemapHasReviews, false, 'zero releases do not advertise /reviews');
-    assert.doesNotMatch(html, /id=["'](?:testimonials|reviews)["']|testimonial-(?:card|stars|person|project)|5 out of 5 stars|★★★★★/i);
-  } else {
-    assert.equal(cards.length, Math.min(2, publication.length), 'homepage renders only the released feedback count, capped at two');
-    const renderedIds = cards.map(card => attributes(card.slice(0, card.indexOf('>') + 1))['data-testimonial-id']);
-    assert.equal(new Set(renderedIds).size, renderedIds.length, 'released homepage reviews are not duplicated');
-    assert.ok(renderedIds.every(id => publication.some(item => item.id === id)), 'every rendered review is allowlisted');
-    if (publication.length >= 3) {
-      assert.equal(reviewsNav?.attrs.href, '/reviews', 'three releases make the full Reviews page discoverable');
-      assert.equal(reviewsFile, true, 'three releases create /reviews');
-      assert.equal(sitemapHasReviews, true, 'three releases advertise /reviews');
-    } else {
-      assert.equal(reviewsNav?.attrs.href, '#testimonials', 'one or two releases link directly to homepage feedback');
-      assert.equal(reviewsFile, false, 'one or two releases stay on the homepage');
-      assert.equal(sitemapHasReviews, false);
-    }
-  }
-
-  assert.doesNotMatch(schemaBlocks(html).join('\n'), /aggregateRating|reviewRating|ratingValue|"@type"\s*:\s*"Review"/i, 'homepage emits no review or rating schema');
-});
-
-test('process, personal trust, FAQ, and final CTA each do one job', () => {
-  const process = elementWithId(html, 'section', 'process');
-  const processText = plainText(process);
-  assert.match(processText, /from problem to handoff in three steps/i);
-  assert.equal((process.match(/<li\b[\s\S]*?<\/li>/gi) || []).length, 3, 'process is exactly three steps');
-  assert.match(processText, /broken, manual, or missing/i);
-  assert.match(processText, /scope.*fixed price.*timeline/is);
-  assert.match(processText, /review.*launch.*agreed (?:source|handoff)/is);
-  assert.match(processText, /agreed source, accounts, and setup notes/i);
-
-  const faq = elementWithId(html, 'section', 'faq');
-  const details = faq.match(/<details\b[\s\S]*?<\/details>/gi) || [];
-  assert.equal(details.length, 4, 'homepage keeps exactly four collapsed FAQs');
-  assert.ok(details.every(item => !/<details\b[^>]*\bopen(?:\s|>)/i.test(item)), 'FAQs are collapsed initially');
-  const questions = details.map(item => plainText(item.match(/<summary\b[^>]*>[\s\S]*?<\/summary>/i)?.[0] || ''));
-  assert.deepEqual(questions, [
-    'How much will my project cost?',
-    'How long will it take?',
-    'Can you work with the tools we already use?',
-    'What happens after launch?',
+test('work proof uses canonical case-study pages and repeats the review action', () => {
+  const work = elementWithId(html, 'section', 'work');
+  const projects = elementsWithClass(work, 'article', 'project-scene');
+  assert.equal(projects.length, 3);
+  assert.deepEqual(projects.map(project => hrefPath(linksIn(project)[0].attrs.href)), [
+    '/work/allcpr-site-intelligence',
+    '/work/curio-app',
+    '/work/beastypages-website',
   ]);
-
-  const contact = elementWithId(html, 'section', 'contact');
-  assert.match(plainText(contact), /tell us what is slowing the business down/i);
-  assert.ok(linksIn(contact).some(link => link.attrs.href === '/quote' && /tell us what you need|get a fixed quote/i.test(link.text)));
-  assert.ok(linksIn(contact).some(link => /^\/call(?:\?|$)/.test(link.attrs.href || '') && /book 15 minutes/i.test(link.text)));
-  const filled = linksIn(contact).filter(link => /(?:^|\s)(?:btn-solid|btn-primary|primary-cta)(?:\s|$)/.test(link.attrs.class || ''));
-  assert.equal(filled.length, 1, 'final CTA section has exactly one filled action');
-
-  for (const staleSellerVoice of [
-    'I build fast business websites',
-    'Choose the closest problem. I will say',
-    'Tell me the problem',
-    'I first check whether your current tools',
-    'Tell me what is slowing the business down',
-  ]) assert.doesNotMatch(plainText(html), new RegExp(staleSellerVoice, 'i'));
+  assert.match(plainText(work), /33,772.*ZIP-code records/i);
+  assert.match(plainText(work), /founder-built product/i);
+  assert.match(plainText(work), /client build.*demo checkout/i);
+  assert.match(work, /data-conversion-proof=["']allcpr-case-study["']/i);
+  assert.doesNotMatch(work, /href=["'][^"']*\/work#|apps\.apple\.com|href=["']https:\/\/(?:www\.)?beastypages\.com/i);
+  const repeat = linksIn(html).find(link => link.attrs['data-event'] === 'work_review_cta_click');
+  assert.equal(repeat?.attrs.href, '#review-form');
 });
 
-test('homepage structured data stays factual and matches the focused offer', () => {
-  const blocks = schemaBlocks(html);
-  assert.ok(blocks.length > 0, 'homepage includes JSON-LD');
-  const nodes = blocks.flatMap(block => {
-    const parsed = JSON.parse(block);
-    return parsed['@graph'] || [parsed];
-  });
-  const person = nodes.find(node => node['@type'] === 'Person');
-  const business = nodes.find(node => node['@type'] === 'Organization');
-  const website = nodes.find(node => node['@type'] === 'WebSite');
-  assert.equal(person.jobTitle, 'Independent Software Developer');
-  assert.doesNotMatch(person.description, /student|college|university/i);
-  assert.equal(person.email, undefined, 'unverified domain email and personal Gmail stay out of Person schema');
-  assert.equal(business.name, 'Leon Builds');
-  assert.equal(business.contactPoint.email, 'leondragon3798@gmail.com');
-  assert.deepEqual(business.contactPoint.availableLanguage, ['en', 'zh', 'pt-BR', 'es']);
-  assert.equal(website.name, 'Leon Builds');
-  assert.match(JSON.stringify(business.hasOfferCatalog), /iOS and Android app development/i);
-  assert.ok(!nodes.some(node => node['@type'] === 'ProfessionalService'), 'unverified LocalBusiness-style schema is absent');
-  assert.doesNotMatch(JSON.stringify(nodes), /aggregateRating|reviewRating|ratingValue|Noctilucenty/i);
+test('founder proof, four-step process, and reviews support the start section', () => {
+  const about = elementWithId(html, 'section', 'about');
+  const builder = linksIn(about).find(link => link.attrs['data-event'] === 'about_builder_click');
+  assert.equal(hrefPath(builder.attrs.href), '/about');
+  assert.match(plainText(about), /built by Leon/i);
+  assert.match(plainText(about), /helped us evaluate and plan new locations/i);
+  const process = elementWithId(about, 'div', 'process');
+  assert.equal(elementsWithClass(process, 'div', 'process-stop').length, 4);
+  for (const step of ['Problem', 'Scope', 'Build', 'Launch']) assert.match(plainText(process), new RegExp(`\\b${step}\\b`));
+
+  const start = elementWithId(html, 'section', 'start');
+  assert.match(plainText(start), /three specific improvements to consider/i);
+  assert.match(start, /data-conversion-proof=["']website-client-review["']/i);
+  assert.ok(linksIn(start).some(link => hrefPath(link.attrs.href) === '/reviews' && /client reviews/i.test(link.text)));
+  assert.doesNotMatch(JSON.stringify(schemaNodes(html)), /aggregateRating|reviewRating|ratingValue/i);
 });
 
-test('homepage has responsive touch, keyboard, media, and motion safeguards', () => {
-  assert.equal((html.match(/<h1\b/gi) || []).length, 1, 'homepage has one H1');
-  assert.match(html, /<a\b[^>]*class=["'][^"']*skip[^"']*["'][^>]*href=["']#main["']/i, 'keyboard users have a skip link');
-  assert.match(css, /:focus-visible\s*\{/i, 'keyboard focus is explicitly visible');
-  assert.match(css, /@media\s*\(prefers-reduced-motion\s*:\s*reduce\)/i, 'reduced-motion preference is respected');
-  assert.match(css, /(?:font-size\s*:\s*16px|font-size\s*:\s*1rem)/i, 'body copy has a 16px-or-equivalent base');
-  assert.match(css, /min-height\s*:\s*44px/i, 'primary controls have a 44px touch floor');
-  assert.match(css, /\.burger\s*\{[^}]*width\s*:\s*44px[^}]*height\s*:\s*44px/i,
-    'mobile menu control keeps a 44px touch target');
-  assert.match(css, /\.buyer-proof-card figure\s*\{[^}]*width\s*:\s*100%[^}]*max-width\s*:\s*100%[^}]*min-width\s*:\s*0/i,
-    'proof media cannot use its intrinsic image width to overflow a phone card');
-  assert.match(css, /\.buyer-proof-card figure img\s*\{[^}]*display\s*:\s*block[^}]*width\s*:\s*100%[^}]*max-width\s*:\s*100%[^}]*min-width\s*:\s*0/i,
-    'proof images stay bounded to the proof card');
-  assert.match(css, /\.proof-status\s*\{[^}]*font-size\s*:\s*12px/i,
-    'proof status labels remain readable on mobile');
+test('free-review form keeps an optional URL and a receipt-backed lead contract', () => {
+  const start = elementWithId(html, 'section', 'start');
+  const form = start.match(/<form\b[^>]*>[\s\S]*?<\/form>/i)?.[0] || '';
+  const website = form.match(/<input\b[^>]*id=["']business-url["'][^>]*>/i)?.[0] || '';
+  const problem = form.match(/<textarea\b[^>]*id=["']quote-problem["'][^>]*>/i)?.[0] || '';
+  const email = form.match(/<input\b[^>]*id=["']quote-email["'][^>]*>/i)?.[0] || '';
+  assert.equal(attributes(website).name, 'business-url');
+  assert.equal(attributes(website).inputmode, 'url');
+  assert.doesNotMatch(website, /\brequired(?:\s|=|>)/i);
+  assert.match(problem, /\brequired(?:\s|=|>)/i);
+  assert.match(email, /type=["']email["'][^>]*required/i);
+  assert.match(form, /class=["'][^"']*honeypot[^"']*["'][^>]*name=["']website["']/i);
+  assert.match(plainText(form), /request my review.*no payment or commitment/i);
 
-  const responsive = mediaBlocks(css).some(block => {
-    const max = block.condition.match(/max-width\s*:\s*(\d+)px/i);
-    return max && Number(max[1]) <= 600;
-  });
-  assert.ok(responsive, 'phone layout has an explicit <=600px breakpoint');
-
-  for (const match of mainSource().matchAll(/<img\b[^>]*>/gi)) {
-    const attrs = attributes(match[0]);
-    assert.ok(Object.hasOwn(attrs, 'alt'), `image has alt text: ${match[0].slice(0, 100)}`);
-    if (!/hero/i.test(attrs.class || '')) assert.equal(attrs.loading, 'lazy', 'below-fold images lazy-load');
+  assert.match(clientJs, /\/api\/lead/);
+  assert.match(clientJs, /method:`POST`/);
+  for (const field of ['problem', 'email', 'service', 'sourcePage', 'idempotencyKey', 'websiteUrl', 'website']) {
+    assert.match(clientJs, new RegExp(`${field}:`), `lead payload includes ${field}`);
   }
-  assert.doesNotMatch(html, /\bid\s*=\s*(["'])cursor\1|\bclass\s*=\s*(["'])[^"']*\bcursor\b/i);
-  assert.doesNotMatch(js, /#cursor\b|\.cursor\b|\bhas-cursor\b|custom cursor/i);
-  assert.doesNotMatch(css, /\.has-cursor\b|(^|[,}])\s*\.cursor\b/im);
+  assert.match(clientJs, /receiptId/);
+  assert.match(clientJs, /quote_lead_accepted/);
+  assert.match(clientJs, /mailto:leondragon3798@gmail\.com/);
 });
 
-test('homepage suppresses only the floating assistant launcher and close cannot restore it', () => {
-  assert.match(html, /<body\b[^>]*\bdata-assistant-launcher=["']hidden["']/i);
-  assert.match(assist, /var launcherEnabled = document\.body\.getAttribute\('data-assistant-launcher'\) !== 'hidden'/);
-  assert.match(assist, /document\.body\.appendChild\(panel\);\s*launch\.hidden = !launcherEnabled;/);
-  assert.match(assist, /function close\(\)\s*\{\s*panel\.hidden = true; launch\.hidden = !launcherEnabled;/);
-  assert.match(assist, /closest\('\[data-assist-open\]'\)/, 'explicit, contextual assistant triggers remain supported');
-  assert.doesNotMatch(read('quote.html'), /data-assist-open/, 'quote page keeps the two-field inquiry path free of a competing helper');
-});
+test('schema, mobile CSS, and media safeguards match the exported experience', () => {
+  const nodes = schemaNodes(html);
+  const business = nodes.find(node => node['@id'] === 'https://leonbuilds.org/#business');
+  const person = nodes.find(node => node['@id'] === 'https://leonbuilds.org/#leon');
+  assert.equal(business?.['@type'], 'Organization');
+  assert.equal(business?.founder?.['@id'], person?.['@id']);
+  assert.equal(person?.jobTitle, 'Founder and developer');
+  assert.equal(hrefPath(person?.url), '/about');
 
-test('homepage loads the versioned consent and attribution bridge exactly once', () => {
-  assert.match(homepageClientJs, /\/assist\.js\?v=20260904-homepage/);
-  assert.match(homepageClientJs, /__leonMeasurementOwnsPageView/);
-  assert.match(homepageClientJs, /__leonMeasurementPageViewSent/);
-  assert.match(homepageClientJs, /leon_analytics_session/);
-  for (const field of ['utmTerm', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
-    assert.ok(homepageClientJs.includes(field), `homepage bridge preserves ${field}`);
+  assert.equal((html.match(/<h1\b/gi) || []).length, 1);
+  assert.ok(linksIn(html).some(link =>
+    link.attrs.href === '#main' && (link.attrs.class || '').split(/\s+/).includes('skip-link')
+  ), 'keyboard users have a skip link');
+  for (const image of html.match(/<img\b[^>]*>/gi) || []) {
+    const attrs = attributes(image);
+    assert.ok(Object.hasOwn(attrs, 'alt'));
+    assert.equal(attrs.loading, 'lazy');
+    assert.ok(Number(attrs.width) > 0 && Number(attrs.height) > 0);
   }
+  assert.match(css, /@media\s*\(max-width:600px\)[\s\S]*?\.mobile-nav-cta\{[^}]*min-height:44px[^}]*display:inline-flex/i);
+  assert.match(css, /@media\s*\(prefers-reduced-motion:reduce\)/i);
+  assert.match(clientJs, /matchMedia\(`\(prefers-reduced-motion: reduce\)`\)/);
+});
+
+test('viewport milestones and the versioned bridge preserve one acquisition funnel', () => {
+  assert.match(clientJs, /onFocusCapture/);
+  assert.equal((clientJs.match(/quote_form_start/g) || []).length, 1);
+  assert.match(clientJs, /isIntersecting[\s\S]{0,180}start_section_view/);
+  assert.match(clientJs, /isIntersecting[\s\S]{0,180}proof_view/);
+  assert.equal((clientJs.match(/\b[A-Za-z_$][\w$]*\(`page_view`\)/g) || []).length, 1);
+  assert.match(clientJs, /__leonMeasurementOwnsPageView/);
+  assert.match(clientJs, /__leonMeasurementPageViewPending/);
+  assert.match(clientJs, /__leonMeasurementPageViewSent/);
+  assert.equal((clientJs.match(/\/assist\.js\?v=20260904-lead-journey/g) || []).length, 1);
+  assert.match(html, /<body\b[^>]*data-assistant-launcher=["']hidden["']/i);
   assert.match(assist, /if \(window\.__leonMeasurementOwnsPageView\) return;/);
   assert.match(assist, /window\.__leonMeasurementPageViewSent = true;/);
+  for (const field of ['utmTerm', 'gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
+    assert.ok(clientJs.includes(field), `bridge preserves ${field}`);
+  }
 });

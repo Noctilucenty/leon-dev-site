@@ -61,6 +61,9 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
   assert.match(html, /service==='contractor-lead-recovery'/);
   assert.match(html, /Request the 3-point review/);
   assert.match(html, /name="package" type="hidden"/);
+  assert.match(html, /name="websiteUrl"[^>]*inputmode="url"/);
+  assert.match(html, /raw=\['service','package','websiteUrl','problem'/);
+  assert.match(html, /line\('website',d\.websiteUrl\)/);
 
   for (const event of [
     'quote_submit_attempt',
@@ -78,6 +81,7 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
   assert.match(html, /<button[^>]*type="submit"[^>]*>[\s\S]*Send your project/i);
   assert.doesNotMatch(html, /Need help describing it\?|data-assist-open/i);
   assert.match(html, /No payment or commitment\.[\s\S]*scope and price are agreed before work begins/i);
+  assert.ok(html.indexOf('name="websiteUrl"') < html.indexOf('name="problem"'));
   assert.ok(html.indexOf('name="problem"') < html.indexOf('name="email"'));
   assert.ok(html.indexOf('name="email"') < html.indexOf('type="submit"'));
   assert.ok(html.indexOf('type="submit"') < html.indexOf('<details>'));
@@ -181,8 +185,9 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(html, /Contractor website \+ missed-lead follow-up/i);
   assert.ok(html.indexOf('class="sec page-hero"') < html.indexOf('id="scope"'));
   assert.match(visible, /A contractor website that captures estimate requests and follows up automatically\./i);
-  assert.match(visible, /We build the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff/i);
-  assert.match(visible, /fixed scope from \$1,500 and typically delivered in 10 business days/i);
+  assert.match(visible, /Leon builds the site, estimate form, prompt automatic acknowledgment, owner handoff, and up to two follow-ups/i);
+  assert.match(visible, /Fixed scope starts at \$1,500; timing follows the written scope and access check/i);
+  assert.doesNotMatch(visible, /10[- ]business|10-day/i);
   assert.match(html, /structured (?:estimate )?intake/i);
   assert.match(visible, /Based in California\. Working remotely with contractors and home-service businesses across the U\.S\./i);
   assert.doesNotMatch(html, /id="fit"|id="workflow"|id="automotive"|id="restaurants"|related-services/i, 'removed repetitive sections stay removed');
@@ -194,24 +199,27 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.ok(html.indexOf('class="landing-jump-wrap"') < html.indexOf('id="scope"'), 'find-it-fast links appear before the detailed scope');
   assert.ok(html.indexOf('id="scope"') < html.indexOf('id="proof"'), 'scope appears before proof');
   assert.equal((html.match(/<details\b/g) || []).length, 3, 'contractor landing keeps three FAQs');
-  assert.match(visible, /Operational client system · ALLCPR/i);
-  assert.match(visible, /ALLCPR Site Intelligence/i);
+  assert.match(visible, /Client website project · demo checkout/i);
+  assert.match(visible, /beastypages\.com/i);
   assert.match(visible, /Illustrative workflow · not a live client result/i);
   assert.match(visible, /See the estimate-to-follow-up path/i);
   assert.match(html, /<ol class="contractor-example business-copy" aria-label="Example estimate follow-up workflow">/);
   for (const step of ['Estimate request', 'Clear acknowledgment', 'Owner handoff', 'Follow-up with limits']) assert.match(visible, new RegExp(step));
   assert.match(visible, /A reply or opt-out stops the sequence/i);
-  assert.match(visible, /not a contractor follow-up case study/i);
-  assert.doesNotMatch(visible, /Related website and follow-up work/i);
-  assert.match(visible, /prioritizes markets for field validation.*not a contractor follow-up case study or evidence of leads, revenue, or an opening decision/is);
-  assert.match(html, /href="\/work#work-site-intelligence"/i);
+  assert.match(visible, /evidence of website delivery, not a contractor lead or revenue result/i);
+  assert.match(visible, /Payment and kitchen progression are simulations/i);
+  assert.match(html, /href="\/work\/beastypages-website"/i);
+  assert.match(html, /href="\/guides\/contractor-inquiry-workflow"/i);
+  assert.match(html, /id="proof"[^>]*data-view-event="proof_view"/i);
+  assert.match(html, /id="faq"[^>]*data-view-event="start_section_view"/i);
   assert.match(html, /30 days of fixes (?:for defects )?against the (?:agreed )?written scope/);
   assert.match(visible, /Provider fees remain with the provider/i);
   assert.match(html, /data-evt="cta_call_click"/);
   assert.match(html, /href="\/call\?service=contractor-lead-recovery" data-evt="cta_call_click"/);
   assert.match(html, /href="\/quote\?service=contractor-lead-recovery" data-evt="contractor_review_click"/);
   assert.match(html, /Get a free 3-point website review/i);
-  assert.match(html, /Book a free 15-minute review/i);
+  assert.match(html, /Prefer to talk\? Book 15 minutes/i);
+  assert.match(visible, /three specific observations by email/i);
   assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length, 2, 'booking remains prominent in hero and final CTA');
   assert.equal((html.match(/href="\/quote\?service=contractor-lead-recovery"/g) || []).length, 2, 'the lower-friction written review remains prominent');
   assert.ok((html.match(/<section\b/g) || []).length <= 5, 'landing page stays to the approved focused structure');
@@ -271,7 +279,8 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(visible, /Free fit call Confirm whether we're a fit before deciding/i);
   assert.match(visible, /Read all 3 approved client reviews/i);
   assert.match(html, /class="fixrow partner-proof-grid"/);
-  assert.match(html, /class="service-proof-media service-proof-media--center"><img src="\/assets\/proof\/home-screen-ui\.png" alt="beastypages\.com phone-first business website interface"/);
+  assert.match(html, /class="service-proof-media proof-phone-pair"><img src="\/assets\/proof\/home-screen-catalog\.png" alt="beastypages\.com catalog of local-business destinations"/);
+  assert.match(html, /<img src="\/assets\/proof\/home-screen-menu\.png" alt="beastypages\.com business-specific menu and demonstration cart"/);
   assert.match(html, /package=systems-plan" data-evt="technical_partner_systems_plan_click"/);
   assert.match(html, /package=focused-build-sprint" data-evt="technical_partner_sprint_click"/);
   assert.match(html, /package=ongoing-technical-partner" data-evt="technical_partner_ongoing_click"/);
@@ -293,14 +302,16 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.equal((html.match(/<details\b/g) || []).length, 4);
 
   for (const file of [
-    'index.html', 'services/index.html', 'about.html', 'work.html',
+    'services/index.html', 'about.html', 'work.html',
     'services/websites.html', 'services/business-automation.html',
     'services/business-dashboards.html', 'services/custom-software.html',
     'services/mobile-apps.html'
   ]) assert.match(read(file), /href="\/technical-build-partner"/, `${file} links to the offer`);
 
-  assert.equal((read('index.html').match(/class="offer-card/g) || []).length, 3, 'homepage still has exactly three offer cards');
-  assert.match(read('index.html'), /class="partner-entry" href="\/technical-build-partner"/);
+  const homepage = read('homepage/index.html');
+  assert.equal((homepage.match(/class="service-v2-card\b/g) || []).length, 3, 'published homepage keeps three primary service cards');
+  assert.match(homepage, /href="https:\/\/leonbuilds\.org\/services\/business-automation"/);
+  assert.match(homepage, /href="#review-form"[^>]*data-event="hero_review_cta_click"/);
   assert.match(read('sitemap.xml'), /<loc>https:\/\/leonbuilds\.org\/technical-build-partner<\/loc>/);
 
   const call = read('call.html');

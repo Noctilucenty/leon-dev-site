@@ -23,6 +23,7 @@ const RECEIPT_ID_RE = /^lead_[A-Za-z0-9-]{16,59}$/;
 const BOOKING_UID_RE = /^[A-Za-z0-9._~-]{8,64}$/;
 const SLUG_RE = /^[a-z0-9][a-z0-9-]{0,63}$/;
 const EVENT_STATUSES = new Set(['accepted', 'failed']);
+const DEVICE_CLASSES = new Set(['mobile', 'tablet', 'desktop', 'unknown']);
 
 function validEventName(value) {
   return typeof value === 'string' && EVENT_NAME_RE.test(value);
@@ -43,6 +44,7 @@ function eventExtraValue(field, value) {
   if (field === 'receipt') return RECEIPT_ID_RE.test(text) ? text : '';
   if (field === 'bookingUid') return BOOKING_UID_RE.test(text) ? text : '';
   if (field === 'status') return EVENT_STATUSES.has(text) ? text : '';
+  if (field === 'device') return DEVICE_CLASSES.has(text) ? text : '';
   if (field === 'service' || field === 'package') return SLUG_RE.test(text) ? text : '';
   return '';
 }
@@ -123,6 +125,9 @@ function normalizeEvent(raw, now) {
     term: currentAttribution.utmTerm || '',
     content: currentAttribution.utmContent || ''
   };
+
+  const device = eventExtraValue('device', raw.device);
+  if (device) out.device = device;
 
   for (const field of ['gclid', 'gbraid', 'wbraid', 'fbclid', 'msclkid']) {
     const title = field.charAt(0).toUpperCase() + field.slice(1);
@@ -210,7 +215,9 @@ const HIGH_INTENT_NAMES = new Set([
   'about_quote_click', 'work_quote_click', 'work_final_quote_click',
   'reviews_quote_click', 'footer_email_click', 'footer_phone_click',
   'quote_form_start', 'quote_form_submit', 'quote_submit_attempt',
-  'contractor_review_click',
+  'contractor_review_click', 'hero_review_cta_click',
+  'mobile_review_cta_click', 'work_review_cta_click',
+  'about_review_cta_click', 'service_quote_start', 'calendar_direct_click',
   'chat_first_message', 'chat_handoff_offer_click', 'lead_submit', 'lead_submit_attempt',
   'quote_to_calendar', 'lead_booking_click',
   'calendar_direct_fallback', 'calendar_email_fallback', 'calendar_phone_fallback',
@@ -275,11 +282,95 @@ function funnelStats(events) {
   };
 }
 
+/* A compact device view for deciding whether the next campaign or layout pass
+   should favor phones, tablets or larger screens. These are event counts, not
+   people: the table deliberately avoids pretending an anonymous viewport
+   bucket is a durable user identity. Historical records without a bucket stay
+   visible as unknown. */
+function deviceJourneyStats(events) {
+  const definitions = [
+    ['pageViews', name => name === 'page_view'],
+    ['proofViews', name => name === 'proof_view'],
+    ['startViews', name => name === 'start_section_view'],
+    ['formStarts', name => name === 'quote_form_start'],
+    ['leadsAccepted', name => name === 'lead_submit_success'
+      || name === 'quote_lead_accepted'
+      || name === 'call_request_sent'],
+    ['bookings', name => name === 'calendar_booking_success']
+  ];
+  const order = ['mobile', 'desktop', 'tablet', 'unknown'];
+  const rows = new Map(order.map(device => [device, {
+    device,
+    pageViews: 0,
+    proofViews: 0,
+    startViews: 0,
+    formStarts: 0,
+    leadsAccepted: 0,
+    bookings: 0
+  }]));
+  for (const event of events || []) {
+    const device = DEVICE_CLASSES.has(String(event && event.device || ''))
+      ? String(event.device)
+      : 'unknown';
+    const row = rows.get(device);
+    const name = String(event && event.name || '');
+    for (const [field, match] of definitions) {
+      if (match(name)) row[field] += 1;
+    }
+  }
+  return order.map(device => rows.get(device));
+}
+
+/* Report the new review path as independent milestones against the same
+   page-view baseline. A hero visitor can jump straight to the form, so proof
+   and Start views must not be treated as mandatory gates that erase a real
+   form start from reporting. */
+function reviewMilestoneStats(events) {
+  const definitions = [
+    { id: 'page', label: 'page viewed', names: new Set(['page_view']) },
+    { id: 'proof', label: 'proof viewed', names: new Set(['proof_view']) },
+    { id: 'start', label: 'Start section viewed', names: new Set(['start_section_view']) },
+    { id: 'form', label: 'review form started', names: new Set(['quote_form_start']) },
+    {
+      id: 'lead',
+      label: 'lead accepted by API',
+      names: new Set(['lead_submit_success', 'quote_lead_accepted', 'call_request_sent'])
+    },
+    { id: 'booking', label: 'booking success signal', names: new Set(['calendar_booking_success']) }
+  ];
+  const pageSessions = new Set(
+    (events || [])
+      .filter(event => event && event.name === 'page_view')
+      .map(event => String(event.sessionId || ''))
+      .filter(Boolean)
+  );
+  const stages = definitions.map(definition => {
+    const matching = (events || []).filter(event =>
+      definition.names.has(String(event && event.name || '')));
+    const sessions = new Set(
+      matching.map(event => String(event.sessionId || '')).filter(Boolean));
+    const attributableCount = [...sessions]
+      .filter(session => pageSessions.has(session)).length;
+    return {
+      id: definition.id,
+      label: definition.label,
+      eventCount: matching.length,
+      sessionCount: sessions.size,
+      attributableCount,
+      baselineSessionCount: pageSessions.size,
+      sessionlessEventCount: matching.filter(event => !event.sessionId).length
+    };
+  });
+  return { stages, baselineSessionCount: pageSessions.size };
+}
+
 module.exports = {
   persistEvent,
   readEvents,
   sourceOf,
   normalizeEvent,
   validEventName,
-  funnelStats
+  funnelStats,
+  deviceJourneyStats,
+  reviewMilestoneStats
 };

@@ -46,6 +46,14 @@ Google or Meta campaign. No row in these files is evidence that an ad ran.
 > existing attribution setup. The campaign's September 3 end date was not
 > extended, so it is not serving. The Leon Builds Meta promotions remain Off and
 > have internal profile/message destinations rather than website final URLs.
+>
+> **Prepared successor — not created as of 2026-09-04 PT:** see
+> [`orlando-contractor-review-checkpoint-2026-09-04.md`](orlando-contractor-review-checkpoint-2026-09-04.md).
+> It defines a separate Orlando Search test against the new contractor landing
+> path using only the freshly reconciled unspent portion of the original $100
+> aggregate ceiling. The frozen CSV below remains the earlier build pack. The
+> successor requires a live account readback and action-time owner confirmation
+> before any spend-capable save or enable action.
 
 ## Safety contract
 

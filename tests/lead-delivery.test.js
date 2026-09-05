@@ -1,21 +1,26 @@
 'use strict';
 
 const assert = require('node:assert/strict');
+const { createHash } = require('node:crypto');
 const { once } = require('node:events');
 const fs = require('node:fs');
+const path = require('node:path');
 const test = require('node:test');
 
 const {
   confirmLeadEmailInbox,
   drainLeadEmailOutbox,
+  drainLeadVisitorEmailOutbox,
   leadDeliveryConfig,
   leadEmailVerification,
   leadEmailStatus,
   maskEmail,
   persistLead,
   readLeadEmailOutbox,
+  readLeadVisitorEmailOutbox,
   readLeads,
-  validateLead
+  validateLead,
+  visitorEmailConfirmationConfig
 } = require('../server/leads');
 const { app } = require('../server/index');
 
@@ -25,6 +30,7 @@ const DELIVERY_KEYS = [
   'RESEND_API_KEY',
   'LEAD_TO_EMAIL',
   'LEAD_FROM_EMAIL',
+  'LEAD_VISITOR_EMAIL_OUTBOX_FILE',
   'SMTP_HOST',
   'SMTP_PORT',
   'SMTP_USER',
@@ -44,6 +50,51 @@ function useDeliveryEnv(values) {
   };
 }
 
+function seedVerifiedResendConfig(files, { from, to }) {
+  const receiptId = 'lead_00000000-0000-4000-8000-000000000001';
+  const at = '2026-09-04T12:00:00.000Z';
+  const dataDir = path.join(__dirname, '..', 'data');
+  const configFingerprint = createHash('sha256')
+    .update(JSON.stringify({
+      provider: 'resend',
+      from,
+      to: to.toLowerCase()
+    }))
+    .digest('hex');
+  const probe = {
+    receiptId,
+    synthetic: true,
+    recordType: 'delivery_probe',
+    _emailOutbox: {
+      provider: 'resend',
+      payload: { from, to: [to] }
+    }
+  };
+  const sent = {
+    version: 1,
+    receiptId,
+    state: 'sent',
+    at,
+    attempts: 1,
+    provider: 'resend',
+    providerMessageId: 'verified-config-message-id'
+  };
+  const confirmation = {
+    version: 1,
+    receiptId,
+    state: 'inbox_confirmed',
+    at,
+    configFingerprint
+  };
+  files.set(path.join(dataDir, 'leads.jsonl'), JSON.stringify(probe) + '\n');
+  files.set(path.join(dataDir, 'lead-email-outbox.jsonl'), JSON.stringify(sent) + '\n');
+  files.set(
+    path.join(dataDir, 'lead-email-confirmations.jsonl'),
+    JSON.stringify(confirmation) + '\n'
+  );
+  return receiptId;
+}
+
 test('Resend is the supported Render provider and takes precedence over SMTP', () => {
   const status = leadDeliveryConfig({
     RENDER: 'true',
@@ -61,6 +112,32 @@ test('Resend is the supported Render provider and takes precedence over SMTP', (
   assert.equal(status.ready, true);
   assert.equal(status.state, 'configured_unverified');
   assert.deepEqual(status.missing, []);
+});
+
+test('visitor confirmation fails closed without a verified non-sandbox sender', () => {
+  const base = {
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com'
+  };
+  assert.deepEqual(visitorEmailConfirmationConfig(base), {
+    configured: false,
+    state: 'sender_not_configured'
+  });
+  assert.deepEqual(visitorEmailConfirmationConfig({
+    ...base,
+    LEAD_FROM_EMAIL: 'Leon Builds <onboarding@resend.dev>'
+  }), {
+    configured: false,
+    state: 'sandbox_sender'
+  });
+  assert.deepEqual(visitorEmailConfirmationConfig({
+    ...base,
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@mailer.example.com>'
+  }), {
+    configured: false,
+    state: 'sender_unverified'
+  });
 });
 
 test('complete SMTP configuration is blocked, not ready, on Render', () => {
@@ -185,6 +262,7 @@ test('lead validation preserves bounded first/last attribution and anonymous cor
   const { lead } = validateLead({
     email: 'attribution@example.com',
     problem: 'Connect the booking flow.',
+    websiteUrl: '  example.com/request-a-quote  ',
     sourcePage: '/quote',
     referrer: 'https://facebook.com/groups/example',
     utmSource: 'fbgroup-current',
@@ -252,6 +330,7 @@ test('lead validation preserves bounded first/last attribution and anonymous cor
   assert.equal(lead.msclkid, '0123456789abcdef0123456789abcdef');
   assert.equal(lead.analyticsSessionId, 'session_abc123');
   assert.equal(lead.chatSessionId, 'chat_xyz789');
+  assert.equal(lead.websiteUrl, 'example.com/request-a-quote');
 });
 
 test('one idempotency key returns one receipt and persists/emails only once', async () => {
@@ -261,7 +340,8 @@ test('one idempotency key returns one receipt and persists/emails only once', as
   const restoreEnv = useDeliveryEnv({
     RENDER: 'true',
     RESEND_API_KEY: 'test-key',
-    LEAD_TO_EMAIL: 'owner@example.com'
+    LEAD_TO_EMAIL: 'owner@example.com',
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>'
   });
   const original = {
     fetch: global.fetch,
@@ -276,6 +356,10 @@ test('one idempotency key returns one receipt and persists/emails only once', as
   const appended = [];
   const files = new Map();
   const mailRequests = [];
+  seedVerifiedResendConfig(files, {
+    from: 'Leon Builds <leads@example.com>',
+    to: 'owner@example.com'
+  });
 
   fs.mkdirSync = () => {};
   fs.appendFileSync = (file, data) => {
@@ -287,6 +371,7 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     const key = String(file);
     if (files.has(key)) return files.get(key);
     if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')
         || key.endsWith('/lead-email-confirmations.jsonl')) {
       const error = new Error(`ENOENT: ${key}`);
       error.code = 'ENOENT';
@@ -348,29 +433,53 @@ test('one idempotency key returns one receipt and persists/emails only once', as
     assert.ok(leadLog);
     assert.equal(JSON.parse(leadLog.slice(5)).receiptId, result.receiptId);
 
-    assert.equal(appended.length, 3);
-    const queuedState = JSON.parse(appended[0].data);
-    const durableLead = JSON.parse(appended[1].data);
-    const deliveryState = JSON.parse(appended[2].data);
+    assert.equal(appended.length, 5);
+    const ownerRows = appended
+      .filter(row => String(row.file).endsWith('/lead-email-outbox.jsonl'))
+      .map(row => JSON.parse(row.data));
+    const visitorRows = appended
+      .filter(row => String(row.file).endsWith('/lead-visitor-email-outbox.jsonl'))
+      .map(row => JSON.parse(row.data));
+    const durableLead = JSON.parse(appended.find(
+      row => String(row.file).endsWith('/leads.jsonl')).data);
+    const queuedState = ownerRows[0];
+    const deliveryState = ownerRows[1];
     assert.equal(queuedState.receiptId, result.receiptId);
     assert.equal(queuedState.state, 'queued');
     assert.equal(durableLead.receiptId, result.receiptId);
     assert.equal(durableLead._emailOutbox.provider, 'resend');
+    assert.equal(durableLead._visitorEmailOutbox.provider, 'resend');
     assert.equal(deliveryState.receiptId, result.receiptId);
     assert.equal(deliveryState.state, 'sent');
-    assert.notEqual(appended[0].file, appended[1].file);
-    assert.equal(appended[0].file, appended[2].file);
+    assert.deepEqual(visitorRows.map(row => row.state), ['queued', 'sent']);
+    assert.ok(visitorRows.every(row => row.kind === 'visitor_confirmation'));
 
-    assert.equal(mailRequests.length, 1);
-    const mail = JSON.parse(mailRequests[0].options.body);
+    assert.equal(mailRequests.length, 2);
+    const ownerRequest = mailRequests.find(request =>
+      request.options.headers['idempotency-key'] === `lead-email/${result.receiptId}`);
+    const visitorRequest = mailRequests.find(request =>
+      request.options.headers['idempotency-key'] === `lead-visitor-confirmation/${result.receiptId}`);
+    assert.ok(ownerRequest);
+    assert.ok(visitorRequest);
+    const mail = JSON.parse(ownerRequest.options.body);
     assert.equal(
-      mailRequests[0].options.headers['idempotency-key'],
+      ownerRequest.options.headers['idempotency-key'],
       `lead-email/${result.receiptId}`
     );
     assert.match(mail.subject, new RegExp(result.receiptId));
     assert.match(mail.text, new RegExp(`receiptId: ${result.receiptId}`));
     assert.match(mail.text, /PIPELINE-CHECK-TEST/);
+    const visitorMail = JSON.parse(visitorRequest.options.body);
+    assert.deepEqual(visitorMail.to, ['pipeline-check@example.com']);
+    assert.deepEqual(visitorMail.reply_to, 'owner@example.com');
+    assert.match(visitorMail.subject, new RegExp(result.receiptId));
+    assert.match(visitorMail.text, /Your project request was saved for Leon to review\./);
+    assert.match(visitorMail.text, /https:\/\/leonbuilds\.org\/call/);
+    assert.doesNotMatch(visitorMail.text, /within|hours?|business days?|guarantee/i);
+    assert.doesNotMatch(visitorMail.text, /PIPELINE-CHECK-TEST/);
     assert.ok(logs.some(line => line.includes(`LEAD_MAILED receiptId=${result.receiptId}`)));
+    assert.ok(logs.some(line =>
+      line.includes(`LEAD_VISITOR_CONFIRMATION_MAILED receiptId=${result.receiptId}`)));
     assert.deepEqual(errors, []);
   } finally {
     global.fetch = original.fetch;
@@ -417,6 +526,7 @@ test('admin delivery probe is fixed, synthetic, filtered and receipt-status only
     const key = String(file);
     if (files.has(key)) return files.get(key);
     if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')
         || key.endsWith('/lead-email-confirmations.jsonl')) {
       const error = new Error(`ENOENT: ${key}`);
       error.code = 'ENOENT';
@@ -474,7 +584,14 @@ test('admin delivery probe is fixed, synthetic, filtered and receipt-status only
 
     await new Promise(resolve => setImmediate(resolve));
     await drainLeadEmailOutbox();
+    await drainLeadVisitorEmailOutbox();
     assert.equal(mailRequests.length, 1);
+    assert.equal(readLeadVisitorEmailOutbox().length, 0);
+    assert.equal(
+      String(mailRequests[0].options.headers['idempotency-key']).startsWith(
+        'lead-visitor-confirmation/'),
+      false
+    );
 
     const mail = JSON.parse(mailRequests[0].options.body);
     assert.equal(mail.reply_to, 'pipeline-check@example.com');
@@ -493,6 +610,7 @@ test('admin delivery probe is fixed, synthetic, filtered and receipt-status only
     assert.equal(probes[0].recordType, 'delivery_probe');
     assert.equal(probes[0].email, 'pipeline-check@example.com');
     assert.equal(Object.hasOwn(probes[0], '_emailOutbox'), false);
+    assert.equal(Object.hasOwn(probes[0], '_visitorEmailOutbox'), false);
 
     const defaultList = await global.fetch(base + '/api/leads?format=json', {
       headers: { 'x-leads-key': 'probe-admin-key' }
@@ -628,6 +746,14 @@ test('Resend failure retries from the durable outbox with one stable provider re
   const files = new Map();
   const mailRequests = [];
   const errors = [];
+  seedVerifiedResendConfig(files, {
+    from: 'Leads <leads@example.com>',
+    to: 'owner@example.com'
+  });
+  const ownerRequests = () => mailRequests.filter(request =>
+    String(request.options.headers['idempotency-key']).startsWith('lead-email/'));
+  const visitorRequests = () => mailRequests.filter(request =>
+    String(request.options.headers['idempotency-key']).startsWith('lead-visitor-confirmation/'));
 
   fs.mkdirSync = () => {};
   fs.appendFileSync = (file, data) => {
@@ -637,7 +763,8 @@ test('Resend failure retries from the durable outbox with one stable provider re
   fs.readFileSync = (file, ...args) => {
     const key = String(file);
     if (files.has(key)) return files.get(key);
-    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')) {
       const error = new Error(`ENOENT: ${key}`);
       error.code = 'ENOENT';
       throw error;
@@ -675,8 +802,8 @@ test('Resend failure retries from the durable outbox with one stable provider re
     await drainLeadEmailOutbox();
 
     assert.equal(persistence.stored, true);
-    assert.equal(mailRequests.length, 1);
-    const failed = readLeadEmailOutbox();
+    assert.equal(ownerRequests().length, 1);
+    const failed = readLeadEmailOutbox().filter(state => state.receiptId === lead.receiptId);
     assert.deepEqual(failed.map(state => state.state), ['queued', 'failed']);
     assert.equal(failed[1].receiptId, lead.receiptId);
     assert.equal(failed[1].attempts, 1);
@@ -686,11 +813,13 @@ test('Resend failure retries from the durable outbox with one stable provider re
     // Let persistLead's deferred kick run. It sees the durable failure and does
     // not race the explicit retry while backoff is active.
     await new Promise(resolve => setImmediate(resolve));
-    assert.equal(mailRequests.length, 1);
+    assert.equal(ownerRequests().length, 1);
+    assert.equal(visitorRequests().length, 1);
 
     const visibleLead = readLeads(1)[0];
     assert.equal(visibleLead.receiptId, lead.receiptId);
     assert.equal(Object.hasOwn(visibleLead, '_emailOutbox'), false);
+    assert.equal(Object.hasOwn(visibleLead, '_visitorEmailOutbox'), false);
 
     // Force only bypasses the clock for this regression test. With no explicit
     // in-memory lead, the retry has to be reconstructed from the JSONL record.
@@ -705,34 +834,37 @@ test('Resend failure retries from the durable outbox with one stable provider re
     };
     const retried = await drainLeadEmailOutbox({ force: true });
     assert.equal(retried.sent, 1);
-    assert.equal(mailRequests.length, 2);
-    assert.equal(mailRequests[0].options.body, mailRequests[1].options.body);
+    assert.equal(ownerRequests().length, 2);
+    assert.equal(ownerRequests()[0].options.body, ownerRequests()[1].options.body);
     assert.equal(
-      mailRequests[0].options.headers['idempotency-key'],
-      mailRequests[1].options.headers['idempotency-key']
+      ownerRequests()[0].options.headers['idempotency-key'],
+      ownerRequests()[1].options.headers['idempotency-key']
     );
     assert.equal(
-      mailRequests[1].options.headers['idempotency-key'],
+      ownerRequests()[1].options.headers['idempotency-key'],
       `lead-email/${lead.receiptId}`
     );
 
     // Provider success remains terminal in memory even if its first ledger
     // append fails. The next scan persists that state before considering mail.
     assert.deepEqual(
-      readLeadEmailOutbox().map(state => state.state),
+      readLeadEmailOutbox()
+        .filter(state => state.receiptId === lead.receiptId)
+        .map(state => state.state),
       ['queued', 'failed']
     );
     fs.appendFileSync = virtualAppendFileSync;
     const afterSent = await drainLeadEmailOutbox({ force: true });
     assert.equal(afterSent.attempted, 0);
-    assert.equal(mailRequests.length, 2);
+    assert.equal(ownerRequests().length, 2);
 
-    const states = readLeadEmailOutbox();
+    const states = readLeadEmailOutbox().filter(state => state.receiptId === lead.receiptId);
     assert.deepEqual(states.map(state => state.state), ['queued', 'failed', 'sent']);
     assert.equal(states[2].attempts, 2);
     assert.equal(states[2].providerMessageId, 'resend-retry-id');
 
-    const outboxPath = [...files].find(([, raw]) => raw.includes('"state":"sent"'))[0];
+    const outboxPath = [...files].find(([file]) =>
+      String(file).endsWith('/lead-email-outbox.jsonl'))[0];
     const virtualReadFileSync = fs.readFileSync;
     fs.readFileSync = file => {
       if (String(file) === outboxPath) {
@@ -746,7 +878,7 @@ test('Resend failure retries from the durable outbox with one stable provider re
       drainLeadEmailOutbox({ force: true }),
       /simulated unreadable sent ledger/
     );
-    assert.equal(mailRequests.length, 2);
+    assert.equal(ownerRequests().length, 2);
     fs.readFileSync = virtualReadFileSync;
 
     const intactLedger = files.get(outboxPath);
@@ -755,14 +887,14 @@ test('Resend failure retries from the durable outbox with one stable provider re
       drainLeadEmailOutbox({ force: true }),
       /corrupt JSONL ledger/
     );
-    assert.equal(mailRequests.length, 2);
+    assert.equal(ownerRequests().length, 2);
 
     files.delete(outboxPath);
     await assert.rejects(
       drainLeadEmailOutbox({ force: true }),
       /required JSONL ledger is missing/
     );
-    assert.equal(mailRequests.length, 2);
+    assert.equal(ownerRequests().length, 2);
     files.set(outboxPath, intactLedger);
   } finally {
     global.fetch = original.fetch;
@@ -772,6 +904,272 @@ test('Resend failure retries from the durable outbox with one stable provider re
     console.log = original.log;
     console.error = original.error;
     restoreEnv();
+  }
+});
+
+test('visitor confirmation has an independent durable retry and provider idempotency key', async () => {
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com',
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
+    log: console.log,
+    error: console.error
+  };
+  const files = new Map();
+  const mailRequests = [];
+  const errors = [];
+  seedVerifiedResendConfig(files, {
+    from: 'Leon Builds <leads@example.com>',
+    to: 'owner@example.com'
+  });
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl')
+        || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
+  console.log = () => {};
+  console.error = (...args) => errors.push(args.join(' '));
+  global.fetch = async (url, options) => {
+    if (String(url) !== 'https://api.resend.com/emails') {
+      return original.fetch(url, options);
+    }
+    const request = { url: String(url), options };
+    mailRequests.push(request);
+    const key = String(options.headers['idempotency-key']);
+    const visitorAttempts = mailRequests.filter(candidate =>
+      String(candidate.options.headers['idempotency-key']) === key).length;
+    if (key.startsWith('lead-visitor-confirmation/') && visitorAttempts === 1) {
+      return {
+        ok: false,
+        status: 503,
+        text: async () => 'temporary visitor-confirmation outage'
+      };
+    }
+    return { ok: true, json: async () => ({ id: key.startsWith('lead-email/')
+      ? 'owner-message-id'
+      : 'visitor-confirmation-id' }) };
+  };
+
+  try {
+    const lead = validateLead({
+      name: 'Avery',
+      email: 'avery@example.com',
+      problem: 'Please review the quote path on my business website.',
+      via: 'quote-form',
+      idempotencyKey: 'leadreq_33333333-4444-4555-8666-777777777777'
+    }).lead;
+    const persistence = persistLead(lead);
+    const firstPass = await drainLeadVisitorEmailOutbox();
+
+    assert.equal(persistence.stored, true);
+    assert.equal(firstPass.failed, 1);
+    assert.deepEqual(
+      readLeadVisitorEmailOutbox().map(state => state.state),
+      ['queued', 'failed']
+    );
+    assert.match(errors.join('\n'), /LEAD_VISITOR_CONFIRMATION_FAILED/);
+
+    await new Promise(resolve => setImmediate(resolve));
+    const visitorRequests = () => mailRequests.filter(request =>
+      String(request.options.headers['idempotency-key']).startsWith(
+        'lead-visitor-confirmation/'));
+    assert.equal(visitorRequests().length, 1, 'scheduled scan respects the durable retry backoff');
+
+    const retried = await drainLeadVisitorEmailOutbox({ force: true });
+    assert.equal(retried.sent, 1);
+    assert.equal(visitorRequests().length, 2);
+    assert.equal(visitorRequests()[0].options.body, visitorRequests()[1].options.body);
+    assert.equal(
+      visitorRequests()[0].options.headers['idempotency-key'],
+      `lead-visitor-confirmation/${lead.receiptId}`
+    );
+    assert.equal(
+      visitorRequests()[0].options.headers['idempotency-key'],
+      visitorRequests()[1].options.headers['idempotency-key']
+    );
+
+    const payload = JSON.parse(visitorRequests()[1].options.body);
+    assert.deepEqual(payload.to, ['avery@example.com']);
+    assert.equal(payload.reply_to, 'owner@example.com');
+    assert.match(payload.text, /^Hi,/);
+    assert.doesNotMatch(payload.text, /Avery/);
+    assert.match(payload.text, /Your project request was saved for Leon to review\./);
+    assert.match(payload.text, new RegExp(lead.receiptId));
+    assert.match(payload.text, /https:\/\/leonbuilds\.org\/call/);
+    assert.doesNotMatch(payload.text, /hours?|days?|guarantee|delivered/i);
+    assert.doesNotMatch(payload.text, /quote path on my business website/i);
+
+    const afterSent = await drainLeadVisitorEmailOutbox({ force: true });
+    assert.equal(afterSent.attempted, 0);
+    assert.equal(visitorRequests().length, 2);
+    const states = readLeadVisitorEmailOutbox();
+    assert.deepEqual(states.map(state => state.state), ['queued', 'failed', 'sent']);
+    assert.equal(states[2].attempts, 2);
+    assert.equal(states[2].providerMessageId, 'visitor-confirmation-id');
+
+    const visibleLead = readLeads(1)[0];
+    assert.equal(Object.hasOwn(visibleLead, '_emailOutbox'), false);
+    assert.equal(Object.hasOwn(visibleLead, '_visitorEmailOutbox'), false);
+  } finally {
+    await drainLeadEmailOutbox().catch(() => {});
+    await drainLeadVisitorEmailOutbox().catch(() => {});
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+  }
+});
+
+test('visitor outbox write failure preserves the durable lead and owner notification', async () => {
+  const server = app.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const restoreEnv = useDeliveryEnv({
+    RENDER: 'true',
+    RESEND_API_KEY: 'test-key',
+    LEAD_TO_EMAIL: 'owner@example.com',
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>'
+  });
+  const original = {
+    fetch: global.fetch,
+    mkdirSync: fs.mkdirSync,
+    appendFileSync: fs.appendFileSync,
+    readFileSync: fs.readFileSync,
+    log: console.log,
+    error: console.error
+  };
+  const files = new Map();
+  const mailRequests = [];
+  const errors = [];
+  let visitorOutboxWrites = 0;
+  seedVerifiedResendConfig(files, {
+    from: 'Leon Builds <leads@example.com>',
+    to: 'owner@example.com'
+  });
+
+  fs.mkdirSync = () => {};
+  fs.appendFileSync = (file, data) => {
+    const key = String(file);
+    if (key.endsWith('/lead-visitor-email-outbox.jsonl')) {
+      visitorOutboxWrites += 1;
+      throw new Error('simulated visitor-outbox-only write failure');
+    }
+    files.set(key, (files.get(key) || '') + data);
+  };
+  fs.readFileSync = (file, ...args) => {
+    const key = String(file);
+    if (files.has(key)) return files.get(key);
+    if (key.endsWith('/leads.jsonl')
+        || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')) {
+      const error = new Error(`ENOENT: ${key}`);
+      error.code = 'ENOENT';
+      throw error;
+    }
+    return original.readFileSync(file, ...args);
+  };
+  console.log = () => {};
+  console.error = (...args) => errors.push(args.join(' '));
+  global.fetch = async (url, options) => {
+    if (String(url) === 'https://api.resend.com/emails') {
+      mailRequests.push({ url: String(url), options });
+      return { ok: true, json: async () => ({ id: 'owner-survived-message-id' }) };
+    }
+    return original.fetch(url, options);
+  };
+
+  try {
+    const response = await global.fetch(base + '/api/lead', {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-forwarded-for': '203.0.113.44'
+      },
+      body: JSON.stringify({
+        email: 'visitor-ledger-failure@example.com',
+        problem: 'Keep this inquiry even if only the visitor receipt ledger fails.',
+        via: 'quote-form',
+        idempotencyKey: 'leadreq_44444444-5555-4666-8777-888888888888'
+      })
+    });
+    const result = await response.json();
+    await new Promise(resolve => setImmediate(resolve));
+    await drainLeadEmailOutbox();
+    await drainLeadVisitorEmailOutbox();
+
+    assert.equal(response.status, 200);
+    assert.equal(result.ok, true);
+    assert.match(result.receiptId, /^lead_[0-9a-f-]{36}$/);
+    assert.equal(visitorOutboxWrites, 1);
+
+    const leadPath = [...files.keys()].find(file => file.endsWith('/leads.jsonl'));
+    assert.ok(leadPath, 'the canonical lead ledger was still written');
+    const storedLead = files.get(leadPath).trim().split('\n')
+      .map(line => JSON.parse(line))
+      .find(lead => lead.receiptId === result.receiptId);
+    assert.ok(storedLead, 'the accepted lead remains in the canonical ledger');
+    assert.equal(storedLead.receiptId, result.receiptId);
+    assert.equal(storedLead.email, 'visitor-ledger-failure@example.com');
+    assert.equal(storedLead._emailOutbox.provider, 'resend');
+    assert.equal(Object.hasOwn(storedLead, '_visitorEmailOutbox'), false);
+
+    const ownerStates = readLeadEmailOutbox()
+      .filter(state => state.receiptId === result.receiptId);
+    assert.deepEqual(ownerStates.map(state => state.state), ['queued', 'sent']);
+    assert.equal(ownerStates[1].providerMessageId, 'owner-survived-message-id');
+    assert.deepEqual(readLeadVisitorEmailOutbox(), []);
+
+    assert.equal(mailRequests.length, 1);
+    assert.equal(
+      mailRequests[0].options.headers['idempotency-key'],
+      `lead-email/${result.receiptId}`
+    );
+    const ownerMail = JSON.parse(mailRequests[0].options.body);
+    assert.deepEqual(ownerMail.to, ['owner@example.com']);
+    assert.equal(ownerMail.reply_to, 'visitor-ledger-failure@example.com');
+    assert.match(ownerMail.text, /Keep this inquiry/);
+    assert.doesNotMatch(
+      String(mailRequests[0].options.headers['idempotency-key']),
+      /visitor-confirmation/
+    );
+
+    assert.match(errors.join('\n'), /visitor email outbox write failed/);
+    assert.match(errors.join('\n'), /LEAD_VISITOR_CONFIRMATION_NOT_QUEUED/);
+    assert.doesNotMatch(errors.join('\n'), /LEAD_MAIL_FAILED|lead file write failed/);
+  } finally {
+    global.fetch = original.fetch;
+    fs.mkdirSync = original.mkdirSync;
+    fs.appendFileSync = original.appendFileSync;
+    fs.readFileSync = original.readFileSync;
+    console.log = original.log;
+    console.error = original.error;
+    restoreEnv();
+    await new Promise((resolve, reject) => {
+      server.close(error => error ? reject(error) : resolve());
+    });
   }
 });
 
@@ -794,6 +1192,7 @@ test('lead acknowledgement does not wait for the queued Resend request', async (
   };
   const files = new Map();
   let releaseMail;
+  let visitorMailRequests = 0;
   let timeout;
 
   fs.mkdirSync = () => {};
@@ -804,7 +1203,8 @@ test('lead acknowledgement does not wait for the queued Resend request', async (
   fs.readFileSync = (file, ...args) => {
     const key = String(file);
     if (files.has(key)) return files.get(key);
-    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')) {
+    if (key.endsWith('/leads.jsonl') || key.endsWith('/lead-email-outbox.jsonl')
+        || key.endsWith('/lead-visitor-email-outbox.jsonl')) {
       const error = new Error(`ENOENT: ${key}`);
       error.code = 'ENOENT';
       throw error;
@@ -815,6 +1215,10 @@ test('lead acknowledgement does not wait for the queued Resend request', async (
   console.error = () => {};
   global.fetch = async (url, options) => {
     if (String(url) === 'https://api.resend.com/emails') {
+      if (String(options.headers['idempotency-key']).startsWith('lead-visitor-confirmation/')) {
+        visitorMailRequests += 1;
+        return { ok: true, json: async () => ({ id: 'visitor-confirmation-id' }) };
+      }
       return new Promise(resolve => {
         releaseMail = () => resolve({ ok: true, json: async () => ({ id: 'delayed-mail-id' }) });
       });
@@ -843,10 +1247,12 @@ test('lead acknowledgement does not wait for the queued Resend request', async (
     assert.equal(response.status, 200);
     assert.equal(body.ok, true);
     assert.deepEqual(readLeadEmailOutbox().map(state => state.state), ['queued']);
+    assert.deepEqual(readLeadVisitorEmailOutbox(), []);
 
     // The provider kick is deferred until after the handler can return.
     await new Promise(resolve => setImmediate(resolve));
     assert.equal(typeof releaseMail, 'function');
+    assert.equal(visitorMailRequests, 0);
 
     releaseMail();
     await drainLeadEmailOutbox();
@@ -1056,6 +1462,8 @@ test('health keeps service liveness separate from delivery readiness', async t =
     assert.equal(body.leadEmailConfigured, true);
     assert.equal(body.leadEmailSupported, false);
     assert.equal(body.leadEmailReady, false);
+    assert.equal(body.visitorEmailConfirmationConfigured, false);
+    assert.equal(body.visitorEmailConfirmationState, 'delivery_unavailable');
     assert.equal(body.leadEmail, false);
     assert.equal(body.leadEmailState, 'blocked');
     assert.equal(body.leadEmailWorks, false);
@@ -1069,6 +1477,7 @@ test('health keeps service liveness separate from delivery readiness', async t =
     RENDER: 'true',
     RESEND_API_KEY: 'test-key',
     LEAD_TO_EMAIL: 'leon@example.com',
+    LEAD_FROM_EMAIL: 'Leon Builds <leads@example.com>',
     LEADS_KEY: 'admin-test-key'
   });
   try {
@@ -1080,6 +1489,8 @@ test('health keeps service liveness separate from delivery readiness', async t =
     assert.equal(body.leadEmailProvider, 'resend');
     assert.equal(body.leadEmailTransport, 'https');
     assert.equal(body.leadEmailReady, true);
+    assert.equal(body.visitorEmailConfirmationConfigured, false);
+    assert.equal(body.visitorEmailConfirmationState, 'sender_unverified');
     assert.equal(body.leadEmailState, 'configured_unverified');
     assert.equal(body.leadEmailWorks, null);
     assert.equal(body.leadEmailCheckPassed, null);

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Generates the SEO page fleet: /services/*, /industries/*, both index pages,
-/work, conditional /reviews, /missed-lead-recovery, /quote, sitemap.xml and robots.txt — all in the site's own visual language
+/work, /work/* case studies, /guides/*, conditional /reviews, /missed-lead-recovery,
+/quote, sitemap.xml and robots.txt — all in the site's own visual language
 (same styles.css, nav, footer, lowercase-by-CSS, one accent).
 
 Run after editing PAGE DATA below:   python3 tools/build_pages.py
@@ -30,8 +31,8 @@ TESTIMONIAL_DISPLAY_ORDER = [
 ]
 HOMEPAGE_TESTIMONIAL_LIMIT = 2
 TESTIMONIAL_PROJECT_LINKS = {
-    "testimonial-02": "/work#work-site-intelligence",
-    "testimonial-03": "/work#work-beastypages",
+    "testimonial-02": "/work/allcpr-site-intelligence",
+    "testimonial-03": "/work/beastypages-website",
 }
 TESTIMONIAL_PROJECT_LABELS = {
     "testimonial-03": "beastypages.com",
@@ -62,7 +63,7 @@ SERVICES = [
    "we design fast, phone-first business websites around that decision. you work directly with the founder who builds the project, see a working link during the build, and get a written scope and handover."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
   build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — Leon works in all four"],
-  proof=("public product and workflow evidence","inspect a live app-store product, a public document-workflow demo and a clearly labelled client website with demo ordering."),
+  proof=("beastypages.com client website","inspect the phone-first catalog, which contained 37 businesses in the September 4, 2026 review snapshot, plus search, menus, and a clearly labelled demo cart. payment and kitchen progression are simulations."),
   faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
    ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and we'll tell you which parts are worth keeping."),
    ("how long does it take?","most focused business sites take one to two weeks after the scope, content and required access are ready. you get a working link to review during the build."),
@@ -138,7 +139,7 @@ SERVICES = [
    "custom software is for when nothing on the menu is the shape of your problem. the client-funded beastypages.com website, for example, pairs public business pages with server-side pricing and vendor-separated demo order logic while clearly keeping payments and kitchen operations mocked."],
   pains=["you've outgrown the spreadsheet that runs part of the business","off-the-shelf tools each do 70% of what you need","your industry has a workflow no product understands","you're paying for five subscriptions to approximate one system"],
   build=["operations systems designed around your real workflow","web apps your team logs into every day","the database, accounts, permissions and reports underneath","migrations off the spreadsheet without losing history","one system replacing several almost-right subscriptions"],
-  proof=("ALLCPR Site Intelligence","an operational location-planning platform that helps a CPR training network screen expansion markets across all 33,772 U.S. ZIP codes while keeping uncertainty and field validation visible."),
+  proof=("ALLCPR Site Intelligence","an operational location-planning platform built from 33,772 U.S. ZIP-code records in the reviewed project dataset while keeping uncertainty and field validation visible."),
  faqs=[("how do i know custom is worth it vs off-the-shelf?","if an existing product does 90% of what you need, buy it — we'll tell you so in the free call. custom wins when the missing part is what your business actually runs on."),
    ("what does custom software cost?","full builds start at $1,500 and scale with scope. quotes are written and fixed, with staged payments tied to milestones you can see working."),
    ("can another developer take over later?","yes. the agreed repo and project accounts, included source code and setup documentation are handed over. third-party hosts and licensed services keep their terms, and another competent developer can use the handoff — nothing is set up to make us irreplaceable.")],
@@ -167,7 +168,7 @@ SERVICES = [
    "the same goes for a job somebody repeats forty times a day in six clicks. a focused internal tool can shorten that path, and the scope can define exactly which clicks or minutes to measure before and after."],
   pains=["reports are assembled by hand every week","the numbers live in five different logins","you find out about a bad week after it's over","a repetitive task eats hours across the team","the answer to 'how do we know this number' is 'ask the one person who knows'"],
   build=["live dashboards fed straight from your real systems","the handful of numbers that matter, not eighty charts","alerts when a number crosses a line you set","scheduled email summaries for people who won't open a dashboard","clean history so trends are visible, not remembered","chrome extensions and small tools built for the exact job, nothing else"],
-  proof=("ALLCPR Site Intelligence","decision support covering all 33,772 U.S. ZIP codes, with Maps context, public data, company history, uncertainty ranges, screening verdicts and team exports."),
+  proof=("ALLCPR Site Intelligence","decision support built from 33,772 U.S. ZIP-code records in the reviewed project dataset, with Maps context, public data, company history, uncertainty ranges, screening verdicts and team exports."),
  faqs=[("what does a dashboard cost?","both a small internal tool and a dashboard start at $750, and scale with how many systems have to feed them. fixed quote before work starts."),
    ("our data is a mess. does that matter?","that's normal — cleaning and joining it is part of the build, not a surcharge surprise."),
    ("can it pull from our pos / quickbooks / sheets?","usually yes. we verify your specific systems before quoting.")],
@@ -360,7 +361,7 @@ FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="p
 def e(s): return html.escape(str(s), quote=True)
 
 
-def testimonial_card(testimonial_id, classes="testimonial-card"):
+def testimonial_card(testimonial_id, classes="testimonial-card", link_project=True):
     """Render one exact, individually released testimonial or nothing."""
     item = RELEASED_TESTIMONIALS.get(testimonial_id)
     if not item:
@@ -369,7 +370,7 @@ def testimonial_card(testimonial_id, classes="testimonial-card"):
     if item["show_rating"]:
         stars = '<p class="testimonial-stars" aria-label="5 out of 5 stars">★★★★★</p>'
     project = e(TESTIMONIAL_PROJECT_LABELS.get(testimonial_id, item["project"]))
-    project_href = TESTIMONIAL_PROJECT_LINKS.get(testimonial_id)
+    project_href = TESTIMONIAL_PROJECT_LINKS.get(testimonial_id) if link_project else None
     if project_href:
         project = (
             f'<a href="{e(project_href)}" data-evt="testimonial_project_click">'
@@ -461,7 +462,7 @@ def footer():
       <p class="avail"><i></i>available for new projects</p>
     </div>
     <nav><h4>services</h4><a href="/missed-lead-recovery">website + lead follow-up</a><a href="/services/websites">business websites</a><a href="/services/business-automation">workflow automation</a><a href="/services/">all services and prices</a></nav>
-    <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
+    <nav><h4>explore</h4><a href="/work">work and case studies</a>{reviews_link}<a href="/guides/contractor-inquiry-workflow">contractor inquiry guide</a><a href="/about">about leon</a><a href="/industries/">browse industries</a></nav>
     <nav><h4>contact &amp; language</h4><a href="/quote">get a fixed quote</a><a href="/call">book a 15-minute call</a><a href="/es">español</a><a href="/pt">português</a><a href="/zh">中文</a><a href="/privacy">privacy</a></nav>
   </div>
   <div class="rail foot-bar">
@@ -556,23 +557,23 @@ ICONS = '<svg width="0" height="0" style="position:absolute" aria-hidden="true">
 
 # Proof links must land on visible, current public evidence. Unreleased client
 # feedback is never a proof destination.
-WORK_ANCHORS = [
-    ('allcpr site intelligence', '#work-site-intelligence'),
-    ('site intelligence', '#work-site-intelligence'),
-    ('location', '#work-site-intelligence'),
-    ('beastypages.com', '#work-beastypages'),
-    ('home screen', '#work-homescreen'),
-    ('ordering', '#work-homescreen'),
-    ('operator prototype', '#work-homescreen'),
-    ('loqol', '#work-loqol'),
-    ('curio', '#work-curio-public'),
+WORK_ROUTES = [
+    ('allcpr site intelligence', '/work/allcpr-site-intelligence'),
+    ('site intelligence', '/work/allcpr-site-intelligence'),
+    ('location', '/work/allcpr-site-intelligence'),
+    ('beastypages.com', '/work/beastypages-website'),
+    ('home screen', '/work/beastypages-website'),
+    ('ordering', '/work/beastypages-website'),
+    ('operator prototype', '/work/beastypages-website'),
+    ('curio', '/work/curio-app'),
+    ('loqol', '/work#work-loqol'),
 ]
 
 def work_link(proof_title):
     t = (proof_title or '').lower()
-    for needle, anchor in WORK_ANCHORS:
+    for needle, route in WORK_ROUTES:
         if needle in t:
-            return '/work' + anchor
+            return route
     return '/work'
 
 def service_page(s):
@@ -809,8 +810,9 @@ def industry_page(i):
     <p class="label">one focused starting point</p>
     <div class="proofcard">
       <h2>contractor lead recovery system</h2>
-      <p class="sub">a fixed-scope, 10-business-day product for {e(sprint_copy[0])}: a focused contractor website, estimate intake, prompt acknowledgment, short follow-up sequence and documented human handoff.</p>
+      <p class="sub">a fixed-scope product for {e(sprint_copy[0])}: a focused contractor website, estimate intake, prompt acknowledgment, short follow-up sequence and documented human handoff. Timing is confirmed after scope and access are checked.</p>
       <a class="cx-mini" href="/missed-lead-recovery" data-evt="lead_sprint_detail_click">{e(sprint_copy[1])} →</a>
+      <a class="cx-mini" href="/guides/contractor-inquiry-workflow" data-evt="contractor_guide_click">audit your current inquiry path →</a>
     </div>
   </div>
 </section>
@@ -865,6 +867,371 @@ def industry_page(i):
 </main>''' + footer() + '</body></html>'
 
 
+CASE_STUDIES = [
+    dict(
+        slug="allcpr-site-intelligence",
+        name="ALLCPR Site Intelligence",
+        status="Operational client system · ALLCPR",
+        title="ALLCPR Site Intelligence Case Study | Leon Builds",
+        desc=("How Leon built an operational location-planning system from 33,772 reviewed U.S. ZIP-code "
+              "records while keeping uncertainty and field checks visible."),
+        lede=("ALLCPR needed a consistent way to compare expansion markets without reducing a real location "
+              "decision to one unexplained score. Leon built the internal system the team uses to screen and "
+              "review those markets."),
+        image="/assets/proof/site-intelligence-map.png",
+        image_alt="ALLCPR Site Intelligence nationwide opportunity map",
+        image_width=1200,
+        image_height=480,
+        role="Data product and full-stack developer",
+        project_type="Client project",
+        decision_heading="Compare expansion markets without hiding uncertainty.",
+        problem=("Opening a training location depends on more than population. ALLCPR needed one reviewable "
+                 "place to compare local demand signals, its own operating history, nearby businesses and "
+                 "facilities, and the practical reasons to investigate or reject an area."),
+        built=[
+            ("Reviewed nationwide dataset", "The reviewed project dataset contained 33,772 U.S. ZIP-code records, with selected public business and facility data, local map context, and ALLCPR's own history brought into one workflow."),
+            ("Reasons, ranges, and maps", "Each area exposes the reasons for and against it, uncertainty ranges, map context, and an Excel export the team can review outside the product."),
+            ("A reliability correction", "Leon found and removed a misleading validation loop. The current system keeps uncertainty visible instead of presenting false confidence as a fact."),
+        ],
+        evidence=[
+            "The screenshot on this page shows the system's nationwide map interface.",
+            "ALLCPR approved the exact client statement published below for this project.",
+            "The system is operational for the client; it is an internal tool, so there is no public login offered as proof.",
+        ],
+        boundary=("The system prioritizes markets for investigation. Rent, parking, classroom fit, instructor "
+                  "coverage, and current local conditions still require human field validation. This case does "
+                  "not claim that every recommendation became a branch or produced leads or revenue."),
+        testimonial_id="testimonial-02",
+        proof_links=[],
+        service_href="/services/custom-software",
+        service_label="See custom software scope and pricing",
+    ),
+    dict(
+        slug="curio-app",
+        name="Curio",
+        status="Live product · App Store",
+        title="Curio iPhone App Case Study | Leon Builds",
+        desc=("A public case study of Curio: the iPhone client, backend, subscriptions, content pipeline, "
+              "and four-language in-app content experience Leon built end to end."),
+        lede=("Curio turns short-form scrolling into source-backed learning. Leon took the product from "
+              "interface and system decisions through a release that anyone can inspect on the U.S. App Store."),
+        image="/assets/proof/curio-appstore-current.png",
+        image_alt="Curio live listing on the U.S. App Store",
+        image_width=1200,
+        image_height=630,
+        role="Solo product developer",
+        project_type="Founder-built product",
+        decision_heading="Release one connected app, backend, subscription, and content system.",
+        problem=("The product needed to deliver short learning experiences without treating the mobile feed as "
+                 "an isolated set of screens. Accounts, content delivery, subscriptions, localization, and the "
+                 "App Store release all had to work as one product."),
+        built=[
+            ("Mobile product", "A React and TypeScript client with a native iOS shell and the product states needed for discovery and learning."),
+            ("Backend and subscriptions", "An Express and Postgres backend plus the subscription flow behind the public iPhone release."),
+            ("Content and localization", "The content pipeline and a four-language in-app content experience carried through the released app."),
+        ],
+        evidence=[
+            "The U.S. App Store listing is public and downloadable.",
+            "The page image records the public App Store listing rather than a design mockup.",
+            "Curio's public team profile identifies Leon and his role in the product.",
+        ],
+        boundary=("This case establishes that the product was built and released with the listed technical "
+                  "scope. It does not make claims about revenue, user growth, retention, or a client outcome."),
+        testimonial_id="",
+        proof_links=[
+            ("Open Curio on the App Store", "https://apps.apple.com/app/apple-store/id6781121127?pt=129044256&ct=leonbuilds-case-study&mt=8", "case_curio_app_store_click", True),
+            ("View Leon's public Curio profile", "https://trycurio.app/team.html#leon", "case_curio_profile_click", True),
+        ],
+        service_href="/services/mobile-apps",
+        service_label="See mobile app development scope and pricing",
+    ),
+    dict(
+        slug="beastypages-website",
+        name="beastypages.com",
+        status="Client website project · demo checkout",
+        title="beastypages.com Website Case Study | Leon Builds",
+        desc=("How Leon built a phone-first catalog with 37 businesses in a September 4, 2026 review snapshot, "
+              "plus search, menus, and clearly labeled demo ordering."),
+        lede=("A client needed one phone-first website for browsing local-business pages and menus in a "
+              "consistent interface. Leon built the public site and the supporting demonstration flow while "
+              "keeping the unfinished commerce boundary explicit."),
+        image="/assets/proof/home-screen-catalog.png",
+        image_alt="beastypages.com catalog of local-business destinations",
+        image_width=380,
+        image_height=844,
+        secondary_image="/assets/proof/home-screen-menu.png",
+        secondary_image_alt="beastypages.com business-specific menu and demonstration cart",
+        role="Website and full-stack developer",
+        project_type="Client website project",
+        decision_heading="Make many business pages feel like one phone-first website.",
+        problem=("The website had to organize many distinct businesses without making a phone visitor relearn "
+                 "the interface on every page. Search, business details, menus, and the cart demonstration had "
+                 "to remain understandable in one compact experience."),
+        built=[
+            ("Catalog snapshot: 37 businesses", "The September 4, 2026 review snapshot contained 37 businesses. Search and consistent business-specific pages give phone visitors one place to browse the catalog."),
+            ("Business menus", "Each business can present its own menu or offering inside the shared site structure."),
+            ("Demonstration order logic", "A prototype cart uses server-side repricing and vendor-separated demo tickets instead of trusting totals from the browser."),
+        ],
+        evidence=[
+            "A public business page can be opened from this case study.",
+            "The two published screenshots show the catalog and menu interfaces on a phone-sized layout.",
+            "The website client approved the exact project statement published below.",
+        ],
+        boundary=("Payment and kitchen progression are simulations. The public evidence supports the website "
+                  "build and the labelled demonstration flow; it does not establish a production ordering "
+                  "rollout, completed transactions, sales, or lead performance."),
+        testimonial_id="testimonial-03",
+        proof_links=[
+            ("Open a live business page", "https://beastypages.com/?b=b_bulapies", "case_beastypages_live_click", True),
+        ],
+        service_href="/services/websites",
+        service_label="See small-business website scope and pricing",
+    ),
+]
+
+CASE_STUDY_BY_SLUG = {case["slug"]: case for case in CASE_STUDIES}
+
+
+def case_study_page(case):
+    path = f'/work/{case["slug"]}'
+    bc = [("home", "/"), ("work and case studies", "/work"), (case["name"], None)]
+    article_id = f'{BASE}{path}#case-study'
+    person_ref = {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li", "url": f"{BASE}/about"}
+    schema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": f"{BASE}{path}#page",
+            "url": f"{BASE}{path}",
+            "name": case["title"].split(" | ", 1)[0],
+            "description": case["desc"],
+            "isPartOf": {"@id": f"{BASE}/#website"},
+            "mainEntity": {"@id": article_id},
+            "dateModified": "2026-09-04",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "@id": article_id,
+            "headline": case["title"].split(" | ", 1)[0],
+            "description": case["desc"],
+            "image": f'{BASE}{case["image"]}',
+            "author": person_ref,
+            "publisher": {"@id": f"{BASE}/#business"},
+            "mainEntityOfPage": {"@id": f"{BASE}{path}#page"},
+            "dateModified": "2026-09-04",
+        },
+        breadcrumb_schema(bc, path),
+    ]
+    build_cards = ''.join(
+        f'<article><span>{number:02d}</span><h3>{e(title)}</h3><p>{e(copy)}</p></article>'
+        for number, (title, copy) in enumerate(case["built"], 1)
+    )
+    evidence_items = ''.join(
+        f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(item)}</li>'
+        for item in case["evidence"]
+    )
+    proof_links = ''.join(
+        f'<a class="case-link" href="{e(href)}" data-evt="{e(event)}"'
+        f'{" target=\"_blank\" rel=\"noopener\"" if external else ""}>{e(label)} →</a>'
+        for label, href, event, external in case["proof_links"]
+    )
+    testimonial = testimonial_card(
+        case["testimonial_id"], "service-review case-study-review", link_project=False
+    )
+    secondary_image = ''
+    cover_class = ''
+    if case.get("secondary_image"):
+        cover_class = ' case-study-cover--phones'
+        secondary_image = (
+            f'<img src="{e(case["secondary_image"])}" alt="{e(case["secondary_image_alt"])}" '
+            f'width="380" height="844">'
+        )
+    feedback = ''
+    if testimonial:
+        feedback = f'''<section class="sec case-study-feedback" aria-labelledby="case-feedback-title">
+  <div class="rail">
+    <p class="label">Approved client feedback</p>
+    <h2 class="page-section-title" id="case-feedback-title">The client's exact, approved words.</h2>
+    {testimonial}
+  </div>
+</section>'''
+    page_head = head(
+        case["title"], case["desc"], path, schema,
+        social_image=case["image"], social_alt=case["image_alt"],
+    ).replace('<body>', '<body class="evidence-page" data-assistant-launcher="hidden">', 1)
+    return page_head + ICONS + nav() + f'''
+<main id="main">
+<article>
+<section class="sec page-hero case-study-hero">
+  <div class="rail case-study-hero-grid">
+    <div>
+      {crumbs(bc)}
+      <p class="label">{e(case["status"])}</p>
+      <h1 class="dsp business-copy">{e(case["name"])} <em>case study.</em></h1>
+      <p class="sub business-copy">{e(case["lede"])}</p>
+      <p class="case-study-meta business-copy">Role: {e(case["role"])} · {e(case["project_type"])} · reviewed September 4, 2026</p>
+    </div>
+    <figure class="case-study-cover{cover_class}"><img src="{e(case["image"])}" alt="{e(case["image_alt"])}" width="{case["image_width"]}" height="{case["image_height"]}">{secondary_image}</figure>
+  </div>
+</section>
+
+<section class="sec case-study-answer" aria-labelledby="case-answer-title">
+  <div class="rail">
+    <p class="label">The decision this solved</p>
+    <h2 class="page-section-title" id="case-answer-title">{e(case["decision_heading"])}</h2>
+    <p class="sub business-copy">{e(case["problem"])}</p>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="case-built-title">
+  <div class="rail">
+    <p class="label">What Leon built</p>
+    <h2 class="page-section-title" id="case-built-title">Delivered scope.</h2>
+    <div class="scope-grid case-study-build">{build_cards}</div>
+  </div>
+</section>
+
+<section class="sec case-study-evidence" aria-labelledby="case-evidence-title" data-view-event="proof_view">
+  <div class="rail two-col">
+    <div>
+      <p class="label">Evidence on this page</p>
+      <h2 class="page-section-title" id="case-evidence-title">What supports the case.</h2>
+      <ul class="blist">{evidence_items}</ul>
+      <div class="case-links">{proof_links}</div>
+    </div>
+    <aside class="proofcard case-study-boundary">
+      <p class="label">Claim boundary</p>
+      <h3>What this case does not claim</h3>
+      <p class="sub business-copy">{e(case["boundary"])}</p>
+    </aside>
+  </div>
+</section>
+
+{feedback}
+
+<section class="sec case-study-start" data-view-event="start_section_view">
+  <div class="rail">
+    <p class="label">Have a related problem?</p>
+    <h2 class="page-section-title">Bring the decision or workflow, even if the right build is still unclear.</h2>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote" data-evt="case_study_quote_click"><span>Get a fixed quote</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="btn magnet" href="/call" data-evt="case_study_call_click"><span>Book a free 15-minute call</span></a><a class="cx-mini" href="{e(case["service_href"])}">{e(case["service_label"])} →</a></div>
+  </div>
+</section>
+</article>
+</main>''' + footer() + '</body></html>'
+
+
+def contractor_inquiry_guide_page():
+    path = '/guides/contractor-inquiry-workflow'
+    title = 'What Happens After a Contractor Quote Request? | Leon Builds'
+    desc = ('A five-step contractor inquiry workflow and self-audit for estimate forms, acknowledgments, '
+            'owner handoff, limited follow-up, and useful measurement.')
+    bc = [("home", "/"), ("contractor inquiry guide", None)]
+    article_id = f'{BASE}{path}#article'
+    schema = [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": f"{BASE}{path}#page",
+            "url": f"{BASE}{path}",
+            "name": "What happens after a contractor quote request?",
+            "description": desc,
+            "isPartOf": {"@id": f"{BASE}/#website"},
+            "mainEntity": {"@id": article_id},
+            "dateModified": "2026-09-04",
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "@id": article_id,
+            "headline": "What happens after a contractor quote request?",
+            "description": desc,
+            "author": {"@type": "Person", "@id": f"{BASE}/#leon", "name": "Leon Kelvin Li", "url": f"{BASE}/about"},
+            "publisher": {"@id": f"{BASE}/#business"},
+            "mainEntityOfPage": {"@id": f"{BASE}{path}#page"},
+            "dateModified": "2026-09-04",
+        },
+        breadcrumb_schema(bc, path),
+    ]
+    page_head = head(title, desc, path, schema).replace(
+        '<body>', '<body class="evidence-page guide-page" data-assistant-launcher="hidden">', 1
+    )
+    return page_head + ICONS + nav() + f'''
+<main id="main">
+<article>
+<section class="sec page-hero guide-hero">
+  <div class="rail">
+    {crumbs(bc)}
+    <p class="label">Contractor inquiry self-audit · reviewed September 4, 2026</p>
+    <h1 class="dsp business-copy">What happens after a contractor <em>quote request?</em></h1>
+    <p class="sub business-copy">A useful inquiry path does five things: captures enough information to route the job, confirms receipt, assigns a person, follows up with clear stop rules, and records what happened. Use this page to inspect your current path from a customer's phone.</p>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="#audit"><span>Run the self-audit</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="btn magnet" href="/missed-lead-recovery"><span>See the built service</span></a></div>
+  </div>
+</section>
+
+<section class="sec guide-workflow" id="workflow" aria-labelledby="guide-workflow-title" data-view-event="proof_view">
+  <div class="rail">
+    <p class="label">A five-step handoff</p>
+    <h2 class="page-section-title" id="guide-workflow-title">The form is the start of the workflow.</h2>
+    <ol class="contractor-example business-copy" aria-label="Five-step contractor inquiry workflow">
+      <li><span>01</span><h3>Capture</h3><p>Ask for the job type, service area, contact route, and only the details needed to decide who should respond.</p></li>
+      <li><span>02</span><h3>Acknowledge</h3><p>Confirm that the request arrived. State the response expectation the business can actually meet; an automatic receipt is not a human reply.</p></li>
+      <li><span>03</span><h3>Route</h3><p>Send the inquiry to one monitored inbox, CRM, or shared sheet. Avoid a hidden mailbox that nobody owns.</p></li>
+      <li><span>04</span><h3>Assign and follow up</h3><p>Name the person responsible. If reminders are appropriate, limit them and stop when the person replies or opts out.</p></li>
+      <li><span>05</span><h3>Record the result</h3><p>Keep distinct statuses for received, acknowledged, assigned, replied, booked, and closed. Do not count a form receipt as a booked estimate.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="sec" id="audit" aria-labelledby="guide-audit-title">
+  <div class="rail">
+    <p class="label">Eight checks from a customer's phone</p>
+    <h2 class="page-section-title" id="guide-audit-title">Can your current site answer yes?</h2>
+    <div class="guide-audit">
+      <article><span>01</span><h3>Service fit</h3><p>Can a visitor tell what work you do and whether their job is in your service area?</p></article>
+      <article><span>02</span><h3>One estimate action</h3><p>Is the primary quote or estimate action obvious without opening a menu or zooming?</p></article>
+      <article><span>03</span><h3>Reasonable intake</h3><p>Does the form collect enough to route the job without turning the first contact into a long application?</p></article>
+      <article><span>04</span><h3>Visible receipt</h3><p>After submission, does the visitor see a clear accepted or failed state rather than an endless spinner?</p></article>
+      <article><span>05</span><h3>Monitored delivery</h3><p>Can the team name the exact inbox, CRM, or sheet where every accepted request appears?</p></article>
+      <article><span>06</span><h3>Named owner</h3><p>Does each new request have a person responsible for the next human action?</p></article>
+      <article><span>07</span><h3>Stop rules</h3><p>Do automated reminders stop on reply or opt-out, with consent and provider requirements documented?</p></article>
+      <article><span>08</span><h3>Honest measurement</h3><p>Can you separate received requests from replies, booked estimates, held appointments, and won work?</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="guide-boundary-title">
+  <div class="rail two-col">
+    <div>
+      <p class="label">What the workflow can improve</p>
+      <h2 class="page-section-title" id="guide-boundary-title">A clearer path and a reviewable handoff.</h2>
+      <ul class="blist">
+        <li><svg class="ic"><use href="#ic-check"/></svg>fewer unanswered questions at the first contact</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a consistent place for accepted requests to arrive</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>clear responsibility for the next human action</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>event states that can be checked instead of guessed</li>
+      </ul>
+    </div>
+    <aside class="proofcard case-study-boundary">
+      <p class="label">Claim boundary</p>
+      <h3>What the workflow cannot guarantee</h3>
+      <p class="sub business-copy">It does not create demand, repair weak pricing, qualify every visitor, or guarantee leads, bookings, revenue, or won jobs. Traffic, service fit, availability, and the team's sales process still matter.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="sec guide-start" data-view-event="start_section_view">
+  <div class="rail">
+    <p class="label">Free 3-point review</p>
+    <h2 class="page-section-title">Send your current website and ask Leon to inspect the inquiry path.</h2>
+    <p class="sub business-copy">Include the website address in the first field. The review is a focused look at the public path, not a traffic, ranking, or revenue promise.</p>
+    <div class="ctarow"><a class="btn btn-solid magnet" href="/quote?service=contractor-lead-recovery" data-evt="contractor_guide_review_click"><span>Request the 3-point review</span><svg class="ic"><use href="#ic-arrow"/></svg></a><a class="btn magnet" href="/missed-lead-recovery" data-evt="contractor_guide_service_click"><span>See website + follow-up scope</span></a></div>
+  </div>
+</section>
+</article>
+</main>''' + footer() + '</body></html>'
+
+
 def work_page():
     """Long-form proof and project archive kept off the conversion homepage."""
     path = '/work'
@@ -900,7 +1267,7 @@ def work_page():
   </div>
 </section>
 
-<section class="sec" aria-labelledby="selected-work-title">
+<section class="sec" aria-labelledby="selected-work-title" data-view-event="proof_view">
   <div class="rail">
     <header class="sec-head">
       <p class="label">Selected work</p>
@@ -914,11 +1281,12 @@ def work_page():
           <p class="label">Operational client system · ALLCPR</p>
           <h3>ALLCPR Site Intelligence</h3>
           <p class="business-copy"><b>Problem:</b> ALLCPR needed a consistent way to compare where to open, staff, and grow instead of manually searching maps or trusting one headline score.</p>
-          <p class="business-copy"><b>Built:</b> Leon built a location-planning system covering all 33,772 U.S. ZIP codes. It brings together targeted local-business map data, public business and facility data, ALLCPR's history, uncertainty ranges, reasons for and against each area, maps, and Excel exports for the team.</p>
+          <p class="business-copy"><b>Built:</b> Leon built a location-planning system from a reviewed project dataset containing 33,772 U.S. ZIP-code records. It brings together targeted local-business map data, public business and facility data, ALLCPR's history, uncertainty ranges, reasons for and against each area, maps, and Excel exports for the team.</p>
           <p class="business-copy"><b>Reliability check:</b> Leon found and removed a misleading validation loop, so the platform shows uncertainty instead of presenting false confidence as fact.</p>
           <p class="business-copy"><b>Decision boundary:</b> The platform prioritizes markets to investigate. Rent, parking, classroom fit, instructor coverage, and current local conditions still require human field validation before opening.</p>
           <p class="case-role">Role: data product and full-stack developer · ALLCPR client project</p>
           {testimonial_card("testimonial-02", "service-review case-review")}
+          <a class="case-link" href="/work/allcpr-site-intelligence" data-evt="work_allcpr_case_click">Read the full case study →</a>
         </div>
       </article>
 
@@ -933,10 +1301,10 @@ def work_page():
           <p class="label">Client website project · demo checkout</p>
           <h3>beastypages.com</h3>
           <p class="business-copy"><b>Problem:</b> A client needed a phone-first website for browsing local-business pages and menus in one consistent interface.</p>
-          <p class="business-copy"><b>Built:</b> A 37-business catalog with search, business-specific menus, a prototype cart, server-side repricing, and vendor-separated demo tickets.</p>
+          <p class="business-copy"><b>Built:</b> The September 4, 2026 review snapshot contained 37 businesses, with search, business-specific menus, a prototype cart, server-side repricing, and vendor-separated demo tickets.</p>
           <p class="business-copy"><b>Honest boundary:</b> Payment and kitchen progression are simulations. The client claim is for the website build, not a production ordering rollout.</p>
           <p class="case-role">Role: website and full-stack developer · client identity withheld</p>
-          <a class="case-link" href="https://beastypages.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a>
+          <div class="case-links"><a class="case-link" href="/work/beastypages-website" data-evt="work_beastypages_case_click">Read the full case study →</a><a class="case-link" href="https://beastypages.com/?b=b_bulapies" target="_blank" rel="noopener" data-evt="case_homescreen_click">Open a live business page →</a></div>
         </div>
       </article>
 
@@ -951,10 +1319,11 @@ def work_page():
           <p class="label">Live product · App Store</p>
           <h3>Curio</h3>
           <p class="business-copy"><b>Problem:</b> Turn passive scrolling into short, source-backed learning.</p>
-          <p class="business-copy"><b>Built:</b> The React and TypeScript client, native iOS shell, Express and Postgres backend, subscriptions, content pipeline, and four-language product experience.</p>
+          <p class="business-copy"><b>Built:</b> The React and TypeScript client, native iOS shell, Express and Postgres backend, subscriptions, content pipeline, and four-language in-app content experience.</p>
           <p class="business-copy"><b>Public proof:</b> The product is downloadable on the U.S. App Store and its public founder profile identifies Leon's role.</p>
           <p class="case-role">Role: solo product developer</p>
           <div class="case-links">
+            <a class="case-link" href="/work/curio-app" data-evt="work_curio_case_click">Read the full case study →</a>
             <a class="case-link" href="https://apps.apple.com/app/apple-store/id6781121127?pt=129044256&amp;ct=leonbuilds-work&amp;mt=8" target="_blank" rel="noopener" data-evt="case_curio_click">Open on the App Store →</a>
             <a class="case-link" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">View the founder profile →</a>
             <a class="case-link" href="/services/mobile-apps" data-evt="case_app_service_click">See mobile app development →</a>
@@ -1085,8 +1454,8 @@ def missed_lead_recovery_page():
          "Yes. If the current site is sound, we can repair its estimate path and connect the follow-up workflow instead of replacing pages that already work."),
         ("Is this lead generation, ad management, or a guarantee?",
          "No. This product improves how an existing visitor becomes an estimate request and how that request reaches your team. Traffic, lead quality, pricing, availability, and your sales process still determine results."),
-        ("When do the 10 business days start, and what is handed over?",
-         "The window starts after the written scope, compatible access, and customer-facing copy are approved. Handoff includes the agreed project accounts, included source or configuration, setup notes, one handoff session, and 30 days of fixes against the written scope."),
+        ("How is timing set, and what is handed over?",
+         "The schedule is confirmed after the written scope, compatible access, and customer-facing copy are approved. Handoff includes the agreed project accounts, included source or configuration, setup notes, one handoff session, and 30 days of fixes against the written scope."),
     ]
     bc = [("home", "/"), ("contractor lead recovery system", None)]
     schema = [
@@ -1111,7 +1480,7 @@ def missed_lead_recovery_page():
         breadcrumb_schema(bc, path),
     ]
     review_cta = '''<a class="btn btn-solid magnet" href="/quote?service=contractor-lead-recovery" data-evt="contractor_review_click"><span class="business-copy">Get a free 3-point website review</span><svg class="ic"><use href="#ic-arrow"/></svg></a>'''
-    call_cta = '''<a class="btn magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Book a free 15-minute review</span></a>'''
+    call_cta = '''<a class="btn magnet" href="/call?service=contractor-lead-recovery" data-evt="cta_call_click"><span class="business-copy">Prefer to talk? Book 15 minutes</span></a>'''
     check = '<svg class="ic"><use href="#ic-check"/></svg>'
     review_cards = testimonial_cards(
         ["testimonial-03", "testimonial-04", "testimonial-05"], "service-review"
@@ -1139,7 +1508,8 @@ def missed_lead_recovery_page():
     {crumbs(bc)}
     <p class="label">Contractor website + missed-lead follow-up</p>
     <h1 class="dsp business-copy">A contractor website that captures estimate requests <em>and follows up automatically.</em></h1>
-    <p class="sub business-copy">We build the site, estimate form, instant acknowledgment, up to two follow-ups, and owner handoff—fixed scope from $1,500 and typically delivered in 10 business days after scope, access, and approved copy are ready.</p>
+    <p class="sub business-copy">Leon builds the site, estimate form, prompt automatic acknowledgment, owner handoff, and up to two follow-ups. Fixed scope starts at $1,500; timing follows the written scope and access check.</p>
+    <p class="hero-local business-copy">The free review sends three specific observations by email. Prefer a conversation? Choose the 15-minute call.</p>
     <div class="ctarow">{review_cta}{call_cta}</div>
     <p class="hero-local business-copy">Based in California. Working remotely with contractors and home-service businesses across the U.S.</p>
   </div>
@@ -1164,7 +1534,7 @@ def missed_lead_recovery_page():
           <li>{check}one focused, phone-first contractor website or lead page</li>
           <li>{check}services, service area, trust proof, and one primary estimate action</li>
           <li>{check}structured intake for the agreed project details and optional photos</li>
-          <li>{check}one immediate email or SMS acknowledgment using approved copy</li>
+          <li>{check}one automatic email or SMS acknowledgment using approved copy</li>
         </ul>
       </div>
       <div>
@@ -1178,13 +1548,13 @@ def missed_lead_recovery_page():
       </div>
     </div>
     <div class="scope-boundary business-copy"><p><b>Boundaries:</b> Buying leads, ad management, a new CRM, live call answering, historical-data cleanup, and large multi-location sites are separate. Provider fees remain with the provider. Compatibility and consent requirements are checked before the fixed quote.</p></div>
-    <p class="pricetag business-copy"><b>From $1,500.</b> The typical 10-business-day window starts after the written scope, compatible access, and approved copy are ready.</p>
+    <p class="pricetag business-copy"><b>From $1,500.</b> You receive the fixed price, schedule, inclusions, and handoff terms in writing before work begins.</p>
   </div>
 </section>
 
 {reviews_section}
 
-<section class="sec" id="proof" aria-labelledby="contractor-proof-title">
+<section class="sec" id="proof" aria-labelledby="contractor-proof-title" data-view-event="proof_view">
   <div class="rail">
     <p class="label">Illustrative workflow · not a live client result</p>
     <h2 class="page-section-title business-copy" id="contractor-proof-title">See the estimate-to-follow-up path.</h2>
@@ -1195,15 +1565,16 @@ def missed_lead_recovery_page():
       <li><span>04</span><h3>Follow-up with limits</h3><p>Up to two reminders. A reply or opt-out stops the sequence.</p></li>
     </ol>
     <div class="proofcard">
-      <p class="label">Operational client system · ALLCPR</p>
-      <h3>ALLCPR Site Intelligence</h3>
-      <p class="sub business-copy">Related technical work: Leon built a location-planning system that prioritizes markets for field validation. This is not a contractor follow-up case study or evidence of leads, revenue, or an opening decision.</p>
-      <a class="cx-mini" href="/work#work-site-intelligence" data-evt="contractor_proof_demo_click">View the project details →</a>
+      <p class="label">Client website project · demo checkout</p>
+      <h3>beastypages.com</h3>
+      <p class="sub business-copy">Related website work: Leon built phone-first business pages, search, menus, and server-side cart logic. Payment and kitchen progression are simulations. This is evidence of website delivery, not a contractor lead or revenue result.</p>
+      <a class="cx-mini" href="/work/beastypages-website" data-evt="contractor_proof_demo_click">Read the website case study →</a>
     </div>
+    <a class="cx-mini" href="/guides/contractor-inquiry-workflow" data-evt="contractor_guide_click">Use the 5-step contractor inquiry audit →</a>
   </div>
 </section>
 
-<section class="sec" id="faq">
+<section class="sec" id="faq" data-view-event="start_section_view">
   <div class="rail">
     <p class="label">Three questions before booking</p>
     {faq_html(faqs)}
@@ -1297,13 +1668,13 @@ def technical_partner_page():
       <h1 class="dsp business-copy">Bring the bottleneck. We'll plan and build the smallest fix that works.</h1>
       <p class="sub business-copy">Whether it's lost leads, repeated admin work, an outdated website, or a tool or app that is stuck, you work directly with Leon. He scopes one result in writing, builds it, and shows it working before handoff.</p>
       <div class="ctarow">{quote_cta}{call_cta}</div>
-      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. We reply to the email you provide, usually the same business day.</p>
+      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. Leon replies to the email you provide.</p>
     </div>
     <aside class="hero-proof partner-hero-proof" aria-label="Public work you can inspect before contacting Leon">
       <div class="hero-proof-head"><span>Public proof</span><small>Inspect before you contact</small></div>
-      <a href="/work#work-site-intelligence" data-evt="technical_partner_hero_proof_system_click"><span>01</span><div><strong>ALLCPR Site Intelligence</strong><small>Operational planning system across 33,772 U.S. ZIP codes</small></div></a>
-      <a href="/work#work-curio-public" data-evt="technical_partner_hero_proof_app_click"><span>02</span><div><strong>Curio</strong><small>Live App Store product built end to end</small></div></a>
-      <a href="/work#work-beastypages" data-evt="technical_partner_hero_proof_web_click"><span>03</span><div><strong>beastypages.com</strong><small>Phone-first client website with a demo cart you can try</small></div></a>
+      <a href="/work/allcpr-site-intelligence" data-evt="technical_partner_hero_proof_system_click"><span>01</span><div><strong>ALLCPR Site Intelligence</strong><small>Operational planning system across 33,772 U.S. ZIP codes</small></div></a>
+      <a href="/work/curio-app" data-evt="technical_partner_hero_proof_app_click"><span>02</span><div><strong>Curio</strong><small>Live App Store product built end to end</small></div></a>
+      <a href="/work/beastypages-website" data-evt="technical_partner_hero_proof_web_click"><span>03</span><div><strong>beastypages.com</strong><small>Phone-first client website with a demo cart you can try</small></div></a>
       <p>One person · written scope · reviewable checkpoints · agreed handoff</p>
     </aside>
   </div>
@@ -1362,9 +1733,9 @@ def technical_partner_page():
     <p class="label">Problems we've taken from unclear to working</p>
     <h2 class="page-section-title" id="partner-proof-title">Inspect the work before you trust us with yours.</h2>
     <div class="fixrow partner-proof-grid">
-      <a class="fixcard link" href="/work#work-site-intelligence"><figure class="service-proof-media service-proof-media--map"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><p class="proof-status">Operational client system · ALLCPR</p><h3>Turn a recurring location decision into one reviewable workflow</h3><p>Leon built a screening system across all 33,772 U.S. ZIP codes using selected public data and Google Maps context. It shows uncertainty ranges, the reasons for and against each area, maps, and a team export. The system ranks and explains; the final field check stays with the team.</p><span class="go">Read the case and client feedback →</span></a>
-      <a class="fixcard link" href="/work#work-curio-public"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><p class="proof-status">Live product · App Store</p><h3>Take a consumer app from product decisions through release</h3><p>Leon built the Curio iPhone app, its backend, subscriptions, content pipeline, and a four-language release, end to end. It is live on the App Store, where anyone can check it.</p><span class="go">Verify the live product →</span></a>
-      <a class="fixcard link" href="/work#work-beastypages"><figure class="service-proof-media service-proof-media--center"><img src="/assets/proof/home-screen-ui.png" alt="beastypages.com phone-first business website interface" loading="lazy" width="700" height="450"></figure><p class="proof-status">Client website · demo checkout</p><h3>Give phone visitors a clearer path through a business website</h3><p>Leon built phone-first business pages, menus, search, and a demonstration cart. The work page marks which parts are live and which are demos, so you know exactly what shipped.</p><span class="go">Inspect the website project →</span></a>
+      <a class="fixcard link" href="/work/allcpr-site-intelligence"><figure class="service-proof-media service-proof-media--map"><img src="/assets/proof/site-intelligence-map.png" alt="ALLCPR Site Intelligence nationwide opportunity map" loading="lazy" width="1200" height="480"></figure><p class="proof-status">Operational client system · ALLCPR</p><h3>Turn a recurring location decision into one reviewable workflow</h3><p>Leon built a screening system from a reviewed project dataset containing 33,772 U.S. ZIP-code records, using selected public data and Google Maps context. It shows uncertainty ranges, the reasons for and against each area, maps, and a team export. The system ranks and explains; the final field check stays with the team.</p><span class="go">Read the case and client feedback →</span></a>
+      <a class="fixcard link" href="/work/curio-app"><figure class="service-proof-media"><img src="/assets/proof/curio-appstore-current.png" alt="Curio live App Store listing" loading="lazy" width="1200" height="630"></figure><p class="proof-status">Live product · App Store</p><h3>Take a consumer app from product decisions through release</h3><p>Leon built the Curio iPhone app, its backend, subscriptions, content pipeline, and a four-language in-app content experience, end to end. It is live on the App Store, where anyone can check it.</p><span class="go">Verify the live product →</span></a>
+      <a class="fixcard link" href="/work/beastypages-website"><figure class="service-proof-media proof-phone-pair"><img src="/assets/proof/home-screen-catalog.png" alt="beastypages.com catalog of local-business destinations" loading="lazy" width="380" height="844"><img src="/assets/proof/home-screen-menu.png" alt="beastypages.com business-specific menu and demonstration cart" loading="lazy" width="380" height="844"></figure><p class="proof-status">Client website · demo checkout</p><h3>Give phone visitors a clearer path through a business website</h3><p>Leon built phone-first business pages, menus, search, and a demonstration cart. The work page marks which parts are live and which are demos, so you know exactly what shipped.</p><span class="go">Inspect the website project →</span></a>
     </div>
     <a class="section-link" href="/reviews" data-evt="technical_partner_reviews_click">Read all 3 approved client reviews →</a>
   </div>
@@ -1502,7 +1873,7 @@ def about_page():
         <li><svg class="ic"><use href="#ic-check"/></svg>an iphone app that is on the app store today — built solo end to end, including subscriptions and app store review</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>an online ordering system where one kitchen runs several brands and a single cart splits itself per brand, with each brand's accounting kept separate</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform covering all 33,772 U.S. ZIP codes with Maps context, public data, company history, and uncertainty ranges</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform built from 33,772 U.S. ZIP-code records in the reviewed project dataset, with Maps context, public data, company history, and uncertainty ranges</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a chinese-language health-education prototype with source citations and safety checks that run before the model</li>
       </ul>
     </div>
@@ -1879,6 +2250,7 @@ def quote_page():
 <section class="sec">
   <div class="rail">
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
+      <label>Business website <i>(optional if it is not live)</i><input name="websiteUrl" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com"></label>
       <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
       <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where we should reply"></label>
       <button class="btn btn-solid magnet qsend" type="submit"><span>Send your project</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
@@ -1914,7 +2286,7 @@ def quote_page():
       <span class="qok-mark" aria-hidden="true">✓</span>
       <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
       <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon Builds.</em></h2>
-      <p class="sub">We received your request. We usually reply to the email you provided the same business day.</p>
+      <p class="sub">Your request was saved. Leon will reply to the email you provided.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
         <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
@@ -1943,8 +2315,8 @@ def quote_page():
     document.getElementById('quote-context-label').textContent='Free contractor website review';
     document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
     document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. We will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
-    document.getElementById('quote-problem-label').textContent='What is your website URL and biggest lead problem?';
-    f.elements.problem.placeholder='https://your-site.com — estimate requests get lost, the mobile form is hard to use, or another specific issue…';
+    document.getElementById('quote-problem-label').textContent='What is the biggest lead problem?';
+    f.elements.problem.placeholder='Estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
   }else if(technicalPartner){
     f.elements.service.value=service;
@@ -1989,7 +2361,7 @@ def quote_page():
     if(window.leonEvt) window.leonEvt(name,details);
   }
   function fingerprint(d){
-    var raw=['service','package','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
+    var raw=['service','package','websiteUrl','problem','email','name','company','currentTools','desiredOutcome','timeline','budget','phone']
       .map(function(k){return String(d[k]||'');}).join('\\u001f');
     var hash=2166136261;
     for(var i=0;i<raw.length;i++){hash^=raw.charCodeAt(i);hash=Math.imul(hash,16777619);}
@@ -2088,6 +2460,7 @@ def quote_page():
       + line('email',d.email)
       + line('phone',d.phone)
       + line('business',d.company)
+      + line('website',d.websiteUrl)
       + line('package',d.package)
       + line('currently using',d.currentTools)
       + line('timeline',d.timeline)
@@ -2278,13 +2651,17 @@ w('quote.html', quote_page())
 w('about.html', about_page())
 w('call.html', call_page())
 w('work.html', work_page())
+for case in CASE_STUDIES:
+    w(f'work/{case["slug"]}.html', case_study_page(case))
 if REVIEWS_ROUTE_ENABLED:
     w('reviews.html', reviews_page())
 w('missed-lead-recovery.html', missed_lead_recovery_page())
 w('technical-build-partner.html', technical_partner_page())
+w('guides/contractor-inquiry-workflow.html', contractor_inquiry_guide_page())
 
 # sitemap + robots
-urls = ['/', '/about', '/call', '/work', '/missed-lead-recovery', '/technical-build-partner', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
+urls = ['/', '/about', '/call', '/work'] + [f'/work/{case["slug"]}' for case in CASE_STUDIES] \
+     + ['/guides/contractor-inquiry-workflow', '/missed-lead-recovery', '/technical-build-partner', '/quote', '/privacy', '/es', '/pt', '/zh', '/services/'] + [f'/services/{s["slug"]}' for s in SERVICES] \
      + ['/industries/'] + [f'/industries/{i["slug"]}' for i in INDUSTRIES]\
      + LANG_URLS
 if REVIEWS_ROUTE_ENABLED:
@@ -2328,5 +2705,6 @@ w('sitemap.xml', sm)
 w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
 
 print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, work, '
+      f'{len(CASE_STUDIES)} case studies, contractor inquiry guide, '
       f'{"reviews, " if REVIEWS_ROUTE_ENABLED else ""}contractor product, quote, '
       f'sitemap ({len(urls)} urls), robots.')

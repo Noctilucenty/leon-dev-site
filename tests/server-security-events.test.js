@@ -15,7 +15,13 @@ process.env.LEADS_KEY = 'header-only-test-key';
 process.env.OPENAI_API_KEY = '';
 
 const { app } = require('../server/index');
-const { normalizeEvent, sourceOf, funnelStats } = require('../server/events');
+const {
+  normalizeEvent,
+  sourceOf,
+  funnelStats,
+  deviceJourneyStats,
+  reviewMilestoneStats
+} = require('../server/events');
 
 let server;
 let base;
@@ -66,6 +72,56 @@ test('anonymous correlation rejects contact-like session values and strips refer
   }, '2026-08-22T12:00:00.000Z');
   assert.equal(event.sessionId, '');
   assert.equal(event.firstRef, 'https://example.com');
+});
+
+test('event device class is bounded to four anonymous viewport buckets', () => {
+  assert.equal(normalizeEvent({ name: 'page_view', device: 'mobile' }).device, 'mobile');
+  assert.equal(normalizeEvent({ name: 'page_view', device: 'desktop' }).device, 'desktop');
+  assert.equal(Object.hasOwn(normalizeEvent({ name: 'page_view', device: 'visitor@example.com' }), 'device'), false);
+});
+
+test('device journey exposes the lead path without treating event rows as people', () => {
+  const rows = deviceJourneyStats([
+    { name: 'page_view', device: 'mobile' },
+    { name: 'proof_view', device: 'mobile' },
+    { name: 'start_section_view', device: 'mobile' },
+    { name: 'quote_form_start', device: 'mobile' },
+    { name: 'quote_lead_accepted', device: 'mobile' },
+    { name: 'calendar_booking_success', device: 'desktop' },
+    { name: 'page_view' }
+  ]);
+  assert.deepEqual(rows.find(row => row.device === 'mobile'), {
+    device: 'mobile',
+    pageViews: 1,
+    proofViews: 1,
+    startViews: 1,
+    formStarts: 1,
+    leadsAccepted: 1,
+    bookings: 0
+  });
+  assert.equal(rows.find(row => row.device === 'desktop').bookings, 1);
+  assert.equal(rows.find(row => row.device === 'unknown').pageViews, 1);
+});
+
+test('review milestones report direct-to-form visitors without a false sequential gate', () => {
+  const report = reviewMilestoneStats([
+    { name: 'page_view', sessionId: 'review-a' },
+    { name: 'proof_view', sessionId: 'review-a' },
+    { name: 'quote_form_start', sessionId: 'review-a' },
+    { name: 'page_view', sessionId: 'review-b' },
+    { name: 'quote_form_start', sessionId: 'review-b' },
+    { name: 'quote_lead_accepted', sessionId: 'review-b' },
+    { name: 'calendar_booking_success', sessionId: 'booking-without-page' },
+    { name: 'proof_view' }
+  ]);
+  const stage = id => report.stages.find(candidate => candidate.id === id);
+  assert.equal(report.baselineSessionCount, 2);
+  assert.equal(stage('proof').eventCount, 2);
+  assert.equal(stage('proof').attributableCount, 1);
+  assert.equal(stage('form').attributableCount, 2);
+  assert.equal(stage('lead').attributableCount, 1);
+  assert.equal(stage('booking').sessionCount, 1);
+  assert.equal(stage('booking').attributableCount, 0);
 });
 
 test('known AI referrers are referral signals, not citation claims', () => {
@@ -209,6 +265,12 @@ test('every redesigned quote and direct-contact CTA remains a high-intent funnel
     'technical_partner_systems_plan_click',
     'technical_partner_sprint_click',
     'technical_partner_ongoing_click',
+    'hero_review_cta_click',
+    'mobile_review_cta_click',
+    'work_review_cta_click',
+    'about_review_cta_click',
+    'service_quote_start',
+    'calendar_direct_click',
   ];
   const events = names.flatMap((name, index) => {
     const sessionId = `redesign-intent-${index}`;
