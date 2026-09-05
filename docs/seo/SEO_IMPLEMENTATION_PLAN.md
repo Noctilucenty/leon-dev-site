@@ -4,7 +4,7 @@
 
 Verified the separate homepage source, all 49 live canonical page bodies, root/robots/sitemap/404 behavior and preserved the historical Search Console baseline as dated evidence. Created `SEO_AUDIT.md` before coding. The initial branch inference from repository notes was wrong: both branches shared the live revision. Subsequent read-only Render inspection established that the static site actually watches `main`, not `codex/freelance2-homepage`. See the audit's correction record. No account or campaign settings were changed.
 
-## Phase 1 — confirmed low-risk fixes (implemented locally)
+## Phase 1 — confirmed low-risk fixes (live and verified)
 
 - One useful buyer guide: website builder vs existing-tool automation vs custom software. Answer first, customer-request example, quote checklist, named author, original dates, source/proof boundaries and existing inquiry CTA.
 - Four contextual inbound links from the services hub and relevant services, with shared alias ownership for 12 concepts / 54 query variants.
@@ -21,7 +21,7 @@ Browser checks at 390 × 844 and 1440 × 960 found no horizontal overflow. The c
 
 The independent root-agent editorial review accepted the exact guide source at 9/10 for clarity, usefulness, trust and decision support. The separate review record binds named producer/reviewer identities to the source and rendered-page hashes. This is editorial process evidence, not a reader study, ranking prediction or conversion result.
 
-Verified local build fingerprint: `6aeb5a1cf7e232c0d0f2f68eb981ef4a68a6661ecdab53c3d5745efa844319e6`. Publication and live verification remain separate release steps below.
+Verified build fingerprint: `6aeb5a1cf7e232c0d0f2f68eb981ef4a68a6661ecdab53c3d5745efa844319e6`. It now matches production. See `RELEASE_2026-09-05.md` for exact live-byte, crawl-check and IndexNow receipts, plus the Search Console access limitation.
 
 ## Release steps (root owns final publication)
 
