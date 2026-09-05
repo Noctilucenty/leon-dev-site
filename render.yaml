@@ -27,6 +27,8 @@ services:
         sync: false        # HTTPS lead delivery; required on Render because SMTP egress is blocked
       - key: LEAD_TO_EMAIL
         sync: false        # off-host inbox that receives each lead
+      - key: LEAD_FROM_EMAIL
+        value: Leon Builds <hello@leonbuilds.org>  # Resend-verified sender used for owner and visitor mail
       - key: OPENAI_MODEL
         value: gpt-5-mini
       - key: OPENAI_MAX_OUTPUT
