@@ -37,8 +37,9 @@ The **homepage source** lives in the private `Noctilucenty/freelance2` repositor
 in `homepage/`. The remaining pages retain their existing plain static sources.
 `tools/build_static.py` assembles the legacy public allowlist, then overlays only
 the reviewed homepage, favicon, browser chunks, fonts and images into `dist/`.
-The **API** remains a separate Render web service; this publication branch does
-not change its runtime, data or secrets. See `HOMEPAGE_DEPLOYMENT.md`.
+The **API** remains a separate Render web service. Both existing Render services
+deploy from `main`; static-only changes can therefore redeploy unchanged API code.
+Keep its runtime, durable data and secrets unchanged. See `HOMEPAGE_DEPLOYMENT.md`.
 
 ## Run it
 
@@ -55,9 +56,12 @@ npm run check                           # content, site-integrity and server reg
 ## Two deployments, one repo
 
 1. **Static site:** Render `leonkelvinli` → leonbuilds.org, publishing the
-   `codex/freelance2-homepage` branch. The API continues to use `main`.
-   Set **Build Command** to `npm run build:static` and **Publish Directory** to
-   `dist`. Never publish the repository root `.`. Pretty URLs serve
+   `main` branch, as verified in its Settings dashboard on September 5, 2026.
+   The API also uses `main`. The existing **Build Command** is
+   `npm run build:static`, **Publish Directory** is `dist`, and **Auto-Deploy**
+   is `On Commit`. Preserve these settings. Earlier notes naming
+   `codex/freelance2-homepage` as the live target were incorrect; that branch was
+   only a source/review branch. Never publish the repository root `.`. Pretty URLs serve
    `/services/websites` from `dist/services/websites.html`.
    **Retiring a public file is an overwrite, not a deletion.** Render keeps files
    from earlier deploys reachable after they leave `dist/` (measured 2026-09-01: a

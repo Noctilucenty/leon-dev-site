@@ -5,7 +5,7 @@ Audit date: September 5, 2026. Goal: qualified inquiry → scoped conversation �
 ## Verified architecture
 
 - Production is `https://leonbuilds.org`, a Render static site (`leonkelvinli`) behind Cloudflare. The separate Express intake/analytics API is `https://leon-assist.onrender.com`.
-- The publishing repository is `Noctilucenty/leon-dev-site`, branch `codex/freelance2-homepage`. The audited branch head is `0c983d4bb3ea94af16b3afe5817f7c143a9db338`. `main` happens to match now but deploys the API; it is not the static publication target.
+- The publishing repository is `Noctilucenty/leon-dev-site`, branch `main`. The live Render Settings dashboard confirms `npm run build:static` → `dist`, Auto-Deploy `On Commit`, and no root directory or build filters. The separate API also tracks `main`; a static-only push can redeploy unchanged API code. The audited live revision was `0c983d4bb3ea94af16b3afe5817f7c143a9db338`.
 - `homepage/` is the reviewed React/Vinext prerendered export from `Noctilucenty/freelance2` at `d14a4eedf0ef60ebdb6ba6e5dab9583c7c86c7fe`. Do not edit its compiled HTML or browser chunks. Edit its separate source and export only when a homepage change is needed.
 - Existing subpages are plain generated HTML. Their authority is `tools/build_pages.py`, `tools/lang_pages.py`, and `content/lang_pages.json`. `tools/build_static.py` combines the allowlisted legacy pages and homepage export into `dist/`.
 - There are 49 canonical sitemap URLs: homepage, service/industry hubs, nine service pages, ten industry pages, three detailed project cases, one inquiry guide, translated landing/service/booking pages, trust pages, and conversion pages. There is no large unpublished public knowledge database analogous to Curio cards.
@@ -27,6 +27,12 @@ At approximately 21:07 UTC, all 49 sitemap URLs returned HTTP 200, one H1 and th
 | Existing quality checks | Canonicals, one H1, schema, link targets, private asset allowlist, proof boundaries and prices already tested | Extend existing checks; do not replace working foundations |
 
 The repository's September 4 Search Console record reports 6 clicks / 55 impressions for August 19–September 2, and a dated indexing report with 37 indexed pages. Those are historical observations, **not a refreshed September 5 baseline**. Query rows were withheld/limited, so search demand, competition, the clicked queries, qualified-lead rate and organic revenue remain unknown here. No authenticated account, booking webhook or campaign was modified in this audit.
+
+### Deployment-target correction
+
+The initial audit incorrectly identified `codex/freelance2-homepage` as the live static branch, relying on `HOMEPAGE_DEPLOYMENT.md` and the README. Both branches then pointed to the same revision, so byte-matching all 49 live pages could not establish which branch Render watched. That was a verification gap, not a deployment delay.
+
+After commits `c3686da` and `14ef080` reached the review branch, the guide still returned 404 and the old fingerprint remained on both the canonical domain and `leonkelvinli.onrender.com`. Read-only Render inspection on September 5 confirmed the actual branch is `main`; the latest static deployment remained `dep-dadv08favr4c73aodjdg`, commit `0c983d4`, at 03:34:09 PDT. Remote `main` remained at that commit, while the review branch reached `14ef080`. The two SEO commits are a fast-forward from that base and contain no API runtime, lockfile, hosting or workflow changes. Correct the documentation and use the existing `main` workflow, without changing Render settings. The existing main-triggered search workflow is correctly wired.
 
 ## Prioritized findings
 

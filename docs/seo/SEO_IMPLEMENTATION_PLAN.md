@@ -2,7 +2,7 @@
 
 ## Phase 0 — establish reality (completed)
 
-Verified the real publishing branch, the separate homepage source, all 49 live canonical page bodies, root/robots/sitemap/404 behavior and preserved the historical Search Console baseline as dated evidence. Created `SEO_AUDIT.md` before coding. No account or campaign actions.
+Verified the separate homepage source, all 49 live canonical page bodies, root/robots/sitemap/404 behavior and preserved the historical Search Console baseline as dated evidence. Created `SEO_AUDIT.md` before coding. The initial branch inference from repository notes was wrong: both branches shared the live revision. Subsequent read-only Render inspection established that the static site actually watches `main`, not `codex/freelance2-homepage`. See the audit's correction record. No account or campaign settings were changed.
 
 ## Phase 1 — confirmed low-risk fixes (implemented locally)
 
@@ -28,10 +28,10 @@ Verified local build fingerprint: `6aeb5a1cf7e232c0d0f2f68eb981ef4a68a6661ecdab5
 1. Review the exact diff, new guide and private output list.
 2. After generation, run `npm run build:static`, then `npm run check`, `npm run seo:opportunities` and `git diff --check`. The read-only check deliberately rejects a stale existing `dist/`; rebuild it first.
 3. Verify mobile/desktop rendering and key local navigation, without submitting a synthetic inquiry.
-4. Fetch the remote publication branch again. Integrate any new upstream work safely in this isolated checkout; never overwrite either user's saved checkout.
-5. Commit only these scoped files. Normal-push the exact reviewed commit to `refs/heads/codex/freelance2-homepage`, **not main**, which deploys the API. No force push or hosting changes.
+4. Fetch `origin/main` again. Integrate any new upstream work safely in this isolated checkout; never overwrite either user's saved checkout. At the read-only deployment audit, `main` was `0c983d4` and the reviewed SEO head `14ef080` was its direct two-commit descendant.
+5. Commit only these scoped files. Normal-push the exact reviewed commit to `refs/heads/main`, the dashboard-confirmed target for the static site. The separate API also follows `main` and may redeploy unchanged code. Verify no API runtime, dependency, durable-data or secret changes entered the diff. No force push or hosting changes.
 6. After Render deploys, match `/site-version.txt` to `dist/site-version.txt`; verify the new guide and changed service-page bytes, retained home, sitemap and robots. A local build is not deployment proof.
-7. Submit changed canonical URLs only after the exact release is live. Existing IndexNow tooling can validate/submission-gate them. IndexNow acceptance is not Google indexing. Note: the existing GitHub search workflow triggers only on main; do not assume it runs for this static branch.
+7. The existing main-triggered GitHub search workflow builds the exact fingerprint, waits for that release, checks crawl foundations, then submits changed canonical URLs to IndexNow. Verify the run's actual result before claiming submission; do not duplicate a successful batch. IndexNow acceptance is not Google indexing. No workflow change is needed.
 8. Observe Search Console later over matched windows. Do not repeatedly request unchanged URLs or call a recrawl a ranking win.
 
 ## Next phases — not automatically authorized or completed
