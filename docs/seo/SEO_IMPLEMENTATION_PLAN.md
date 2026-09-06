@@ -34,9 +34,11 @@ Verified build fingerprint: `6aeb5a1cf7e232c0d0f2f68eb981ef4a68a6661ecdab53c3d57
 7. The existing main-triggered GitHub search workflow builds the exact fingerprint, waits for that release, checks crawl foundations, then submits changed canonical URLs to IndexNow. Verify the run's actual result before claiming submission; do not duplicate a successful batch. IndexNow acceptance is not Google indexing. No workflow change is needed.
 8. Observe Search Console later over matched windows. Do not repeatedly request unchanged URLs or call a recrawl a ranking win.
 
-## Next phases — not automatically authorized or completed
+## Current follow-through — September 6
 
-P2: verify exact host redirect rules for `.html`/slash aliases; expand semantic mapping to the remaining legacy pages; obtain mobile field performance and joined qualified-inquiry evidence; review source-backed guide candidates.
+The earlier P2 list is superseded: semantic ownership now covers all 50 sitemap routes and 206 query variants. The guide self-redirect rule was removed in Render, its canonical returns 200, and Google's individual inspection now confirms indexing. Protected acquisition reports and small first-party field samples were read successfully through the existing Render Web Shell; completeness and causal performance claims remain limited. See `SEO_METRICS.md` and `ACQUISITION_CHECKPOINT_2026-09-06.md`.
+
+Remaining external setup is Google's owner acceptance and read-only OAuth grant for API reporting. Tooling can refresh an authorized token; it cannot create completed consent or fabricate post-release data. Review matched-window search and qualified-inquiry observations after sufficient data accumulates. No scheduler was created.
 
 P3: a reusable interactive scoping tool, one public technical teardown or evidence-backed comparison only if buyers/query data demonstrate demand. No automatically published long-tail fleet, bulk outreach, paid links or location doorways.
 

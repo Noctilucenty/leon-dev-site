@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedOn": "2026-09-06",
+  "evidenceType": "signed_in_search_console_ui_observation_not_api_export",
+  "property": "https://leonbuilds.org/",
+  "period": { "start": "2026-08-19", "end": "2026-09-04", "timezone": "Search Console displayed reporting dates" },
+  "filters": { "searchType": "web", "country": "all", "device": "all", "query": "all" },
+  "webSearch": { "clicks": 6, "impressions": 58, "ctrPercent": 10.3, "averagePosition": 12.9, "queryRows": null, "pageRows": null, "jointQueryPageRows": null },
+  "googleGenerativeAi": {
+    "impressions": 3, "clicks": null,
+    "period": { "start": "2026-08-19", "end": "2026-09-04" },
+    "pageRows": [
+      { "page": "/", "impressions": 1 },
+      { "page": "/industries/restaurants", "impressions": 1 },
+      { "page": "/services/", "impressions": 1 }
+    ],
+    "aggregation": "Property totals and displayed page rows have separate scopes; impressions do not establish citations, clicks, or leads."
+  },
+  "indexCoverage": { "reportUpdatedOn": "2026-08-27", "indexed": 37, "notIndexed": 7, "isCurrentSitemapCoverage": false },
+  "sitemap": { "path": "/sitemap.xml", "submittedOn": "2026-08-24", "lastReadOn": "2026-09-05", "status": "Success", "discoveredPages": 49, "currentLiveSitemapUrls": 50 },
+  "urlInspection": {
+    "url": "https://leonbuilds.org/guides/website-builder-or-custom-software",
+    "status": "indexed_on_google",
+    "lastCrawlDisplayed": "Sep 5, 2026, 4:28:14 PM",
+    "crawler": "Googlebot smartphone", "fetch": "Successful",
+    "crawlAllowed": true, "indexingAllowed": true,
+    "userCanonical": "https://leonbuilds.org/guides/website-builder-or-custom-software",
+    "googleCanonical": "Inspected URL", "breadcrumbsValidItems": 1,
+    "newIndexingRequestSubmitted": false
+  },
+  "coreWebVitals": { "reportUpdatedOn": "2026-09-04", "mobile": "insufficient_usage_last_90_days", "desktop": "insufficient_usage_last_90_days" },
+  "outcomes": { "qualifiedInquiries": null, "bookings": null, "wonWork": null },
+  "limitations": [
+    "Native UI observation, not a connected API export. Search data predates the September 5 release; no causal gains can be inferred.",
+    "The indexed guide is individually confirmed. The August 27 sitewide report and September 5 sitemap discovery count do not establish current 50-page coverage.",
+    "The separate retained September 5-6 first-party funnel and sampled vitals are documented in docs/seo/ACQUISITION_CHECKPOINT_2026-09-06.md. They cannot be joined to individual Search Console queries."
+  ]
+}

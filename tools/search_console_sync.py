@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Bounded, read-only Search Analytics ingestion into private immutable history.
 
-OAuth is supplied only through SEO_GSC_ACCESS_TOKEN; no browser/session access,
-refresh-token storage, indexing, account changes, scheduler, or paid provider.
+OAuth uses owner-authorized local or environment-injected credentials. auth-login
+stores only the offline grant privately; sync keeps access tokens in memory.
+No browser/session extraction, indexing, account changes, scheduler, or paid provider.
 API contract: https://developers.google.com/webmaster-tools/v1/searchanalytics/query
 Data limits: https://developers.google.com/webmaster-tools/v1/how-tos/all-your-data
 """
@@ -18,16 +19,26 @@ import re
 import sys
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, unquote, urlsplit
+from urllib.parse import quote, unquote, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from zoneinfo import ZoneInfo
 
+try:
+    from . import search_console_auth as auth
+except ImportError:
+    import search_console_auth as auth
+
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_ROOT = ROOT / "private" / "seo-search-console"
+AUTH_FILE = PRIVATE_ROOT / "oauth-credentials.json"
 PROPERTIES = {"https://leonbuilds.org/": "leonbuilds", "https://trycurio.app/": "curio"}
 VIEWS = {"summary": [], "daily": ["date"], "query": ["query"],
          "page": ["page"], "query_page": ["query", "page"]}
 TOKEN_ENV = "SEO_GSC_ACCESS_TOKEN"
+REFRESH_ENV = ("SEO_GSC_CLIENT_ID", "SEO_GSC_CLIENT_SECRET", "SEO_GSC_REFRESH_TOKEN")
+OAUTH_ENDPOINT = "https://oauth2.googleapis.com/token"
+READONLY_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly"
+MAX_TOKEN_RESPONSE_BYTES = 64 * 1024
 MAX_RESPONSE_BYTES = 8 * 1024 * 1024
 MAX_PAGES = 8
 LIMITS = [
@@ -94,6 +105,73 @@ class NoRedirects(HTTPRedirectHandler):
         raise SyncBlocked("Search API redirect refused; credentials were not forwarded.")
 
 
+def credential_value(value):
+    return auth.valid_secret(value)
+
+
+def local_credentials():
+    try:
+        return auth.load_credentials(AUTH_FILE)
+    except auth.AuthBlocked as error:
+        raise SyncBlocked(str(error)) from None
+
+
+def authentication_status(env=None):
+    """Configuration inventory only: never validates access or prints values."""
+    env = os.environ if env is None else env
+    if env.get(TOKEN_ENV):
+        if not credential_value(env[TOKEN_ENV]):
+            raise SyncBlocked("SEO_GSC_ACCESS_TOKEN is malformed; no credential values were displayed.")
+        return {"status": "configured_unverified", "mode": "access_token", "missing_env": [],
+                "limits": ["A supplied access token takes precedence and may expire; configuration is not API access proof."]}
+    missing = [name for name in REFRESH_ENV if not env.get(name)]
+    if missing:
+        if len(missing) == len(REFRESH_ENV) and (AUTH_FILE.exists() or AUTH_FILE.is_symlink()):
+            local_credentials()
+            return {"status": "configured_unverified", "mode": "local_refresh_token", "missing_env": [],
+                    "limits": ["Saved owner consent is available; sync must still verify API and property access."]}
+        return {"status": "not_configured", "mode": "refresh_token", "missing_env": missing,
+                "limits": ["No Google request was made; missing authorization is not zero search traffic."]}
+    if not all(credential_value(env[name]) for name in REFRESH_ENV):
+        raise SyncBlocked("Refresh credential environment values are malformed; no values were displayed.")
+    return {"status": "configured_unverified", "mode": "refresh_token", "missing_env": [],
+            "limits": ["A fresh access token is requested only during sync; configuration is not property access proof."]}
+
+
+def access_token(env=None):
+    """Exchange owner-provided refresh credentials once; retain tokens in memory."""
+    env = os.environ if env is None else env
+    state = authentication_status(env)
+    if state["status"] == "not_configured":
+        raise SyncBlocked("OAuth unavailable: supply SEO_GSC_ACCESS_TOKEN or all refresh credential variables; run auth-status for names.")
+    if state["mode"] == "access_token":
+        return env[TOKEN_ENV]
+    credentials = local_credentials() if state["mode"] == "local_refresh_token" else dict(zip(
+        ("client_id", "client_secret", "refresh_token"), (env[name] for name in REFRESH_ENV)))
+    body = urlencode({**credentials, "grant_type": "refresh_token"})
+    request = Request(OAUTH_ENDPOINT, data=body.encode(), method="POST",
+                      headers={"Content-Type": "application/x-www-form-urlencoded"})
+    try:
+        with build_opener(NoRedirects()).open(request, timeout=30) as response:
+            raw = response.read(MAX_TOKEN_RESPONSE_BYTES + 1)
+        if len(raw) > MAX_TOKEN_RESPONSE_BYTES:
+            raise SyncBlocked("OAuth response exceeded the bounded size limit.")
+        value = json.loads(raw)
+        if (not isinstance(value, dict) or not credential_value(value.get("access_token"))
+                or str(value.get("token_type", "")).lower() != "bearer"):
+            raise SyncBlocked("OAuth response did not contain a valid bearer token.")
+        if "scope" in value and value["scope"] != READONLY_SCOPE:
+            raise SyncBlocked("OAuth grant must contain only Search Console read-only access; authorize the documented scope.")
+        return value["access_token"]
+    except HTTPError as error:
+        error.close()
+        if error.code in {400, 401, 403}:
+            raise SyncBlocked("OAuth refresh was denied or expired; complete owner authorization again. No search values were recorded.") from None
+        raise SyncBlocked(f"OAuth refresh returned HTTP {error.code}; no search values were recorded.") from None
+    except (URLError, TimeoutError, OSError, UnicodeError, json.JSONDecodeError):
+        raise SyncBlocked("OAuth refresh transport or response failed; credentials were not saved.") from None
+
+
 def api_query(property_url, body, token):
     if property_url not in PROPERTIES:
         raise SyncBlocked("Property not allowed.")
@@ -158,11 +236,12 @@ def sanitize_row(row, dimensions, property_url):
             "position": metrics["position"] if impressions else None}
 
 
-def collect(config, token, query=None):
+def collect(config, token, query=None, secret_values=()):
     if not token or not isinstance(token, str) or re.search(r"[\s\x00-\x1f]", token):
         raise SyncBlocked("OAuth unavailable: supply SEO_GSC_ACCESS_TOKEN; missing authorization is not zero traffic.")
     validate_scope(config)
     query = query or api_query
+    secrets = [value for value in (token, *secret_values) if isinstance(value, str) and value]
     views = {}
     for name, dimensions in VIEWS.items():
         rows, seen, received, withheld, requests = [], set(), 0, 0, 0
@@ -179,7 +258,7 @@ def collect(config, token, query=None):
             received += len(raw_rows)
             for raw in raw_rows:
                 # The token is never persisted even if a malformed response echoes it.
-                if token in json.dumps(raw, ensure_ascii=False):
+                if any(value in json.dumps(raw, ensure_ascii=False) for value in secrets):
                     withheld += 1
                     continue
                 row = sanitize_row(raw, dimensions, config["property"])
@@ -371,6 +450,11 @@ def private_snapshot_path(value):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest="command", required=True)
+    sub.add_parser("auth-status", help="List configured authentication mode and missing variable names; no Google request")
+    login = sub.add_parser("auth-login", help="Authorize a downloaded Desktop OAuth client through a private loopback callback")
+    login.add_argument("--client-file", required=True)
+    login.add_argument("--timeout-seconds", type=int, default=300)
+    login.add_argument("--replace", action="store_true", help="Intentionally replace an existing local grant after consent")
     sync = sub.add_parser("sync", help="Read finalized API data; requires explicitly supplied OAuth")
     sync.add_argument("--property", choices=PROPERTIES, required=True)
     sync.add_argument("--start-date", required=True)
@@ -390,7 +474,16 @@ def main(argv=None):
     try:
         if args.command == "sync":
             config = configuration(args.property, args.start_date, args.end_date, args.country, args.device, args.type, args.row_limit, args.max_pages)
-            result = store_snapshot(collect(config, os.environ.get(TOKEN_ENV)))
+            state = authentication_status()
+            token = access_token()
+            secrets = list(local_credentials().values()) if state["mode"] == "local_refresh_token" else [os.environ.get(name) for name in REFRESH_ENV]
+            result = store_snapshot(collect(config, token, secret_values=secrets))
+        elif args.command == "auth-status":
+            result = authentication_status()
+        elif args.command == "auth-login":
+            result = auth.login(args.client_file, AUTH_FILE,
+                                emit=lambda value: print(json.dumps(value), flush=True),
+                                timeout_seconds=args.timeout_seconds, replace=args.replace)
         elif args.command == "history":
             result = history(property_url=args.property, limit=args.limit)
         else:
@@ -399,10 +492,10 @@ def main(argv=None):
             result = compare_windows(previous, current)
         print(json.dumps(result, ensure_ascii=False, indent=2, allow_nan=False))
         return 0
-    except (SyncBlocked, OSError) as error:
+    except (SyncBlocked, auth.AuthBlocked, OSError) as error:
         # Only our bounded messages are surfaced. An OS error can contain private
         # paths, so do not echo its raw detail; HTTP bodies never reach this layer.
-        reason = str(error) if isinstance(error, SyncBlocked) else "Private snapshot storage unavailable."
+        reason = str(error) if isinstance(error, (SyncBlocked, auth.AuthBlocked)) else "Private snapshot or authorization storage unavailable."
         print(json.dumps({"status": "BLOCKED", "reason": reason, "metrics": None}))
         return 2
 

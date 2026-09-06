@@ -2,9 +2,11 @@
 
 ## Current evidence
 
-All 50 current sitemap routes were verified live on September 5. An indexable route is not an indexed route. The newer signed-in UI baseline is `content/seo/search-baseline-2026-09-05.json`; it is not an API export. The older September 4 record remains historical evidence.
+All 50 current sitemap routes passed the live crawl gate after the redirect repair. The latest signed-in UI baseline is `content/seo/search-baseline-2026-09-06.json`; it is not an API export. Prior baselines remain historical evidence.
 
-The displayed August 19–September 3 Web window had 6 clicks and 56 impressions. Google generative-AI search showed 3 impressions separately. The August 27 indexing snapshot had 37 indexed pages; it is not a current 37/50 coverage ratio. Qualified inquiries, bookings, won work and acquisition revenue for that window remain **unknown** here.
+The displayed August 19–September 4 Web window had 6 clicks and 58 impressions (10.3% CTR, average position 12.9). Google generative-AI search showed 3 impressions separately. The August 27 indexing snapshot still reports 37 indexed pages; it is not a current 37/50 coverage ratio. Individual URL Inspection now confirms the buyer guide is indexed with the correct canonical and a successful September 5 smartphone crawl. Sitemap processing succeeded September 5 with 49 discovered pages; the current sitemap contains 50 URLs. No duplicate indexing request was submitted.
+
+The authenticated September 5–6 UTC first-party report contains 27 retained sessions and zero accepted inquiries; the retained lifecycle ledger has zero counted bookings or qualified/won stages after known QA exclusions. Collection completeness is unverified and operator visits can remain, so rates and complete business outcomes stay unknown. Small field-performance samples are available; Google still has insufficient CrUX usage for either device report. See [the exact evidence and limitations](ACQUISITION_CHECKPOINT_2026-09-06.md). These first-party observations are a different period/source from the Search Console totals and establish no release lift.
 
 Google now provides a [Generative AI performance report](https://support.google.com/webmasters/answer/16984139). Record its date/filter/scope separately from Web search and first-party visits; an impression is not a click, citation, inquiry or recommendation. Its report was inspected; no account setting was changed.
 
@@ -44,7 +46,9 @@ It flags positions 8–20 and low CTR after at least 20 impressions as review ca
 
 ## Read-only API history
 
-`tools/search_console_sync.py` supports the two existing URL-prefix properties, Leon Builds and Curio. It is implemented and tested offline, but **not connected**: an owner-authorized OAuth access token with Search Console read-only scope must be supplied as `SEO_GSC_ACCESS_TOKEN` by the execution environment. Never paste a token into a command, documentation, a committed file or browser extraction. The tool does not create OAuth clients, purchase services, save tokens or change properties.
+`tools/search_console_sync.py` supports the two existing URL-prefix properties, Leon Builds and Curio. It supports a one-time owner consent flow from a downloaded Desktop OAuth client JSON, then refreshes access automatically from a mode-600 file in the gitignored private directory. `auth-status` reports configuration without requesting Google or displaying credentials. Authorization still needs to be completed before API history is connected; see [the exact setup and verification steps](SEARCH_CONSOLE_SETUP.md). The helper does not create OAuth clients, accept policies, purchase services, change properties or read browser sessions. It stores only the owner-authorized offline grant locally and keeps access tokens in memory.
+
+Execution environments can alternatively inject `SEO_GSC_CLIENT_ID`, `SEO_GSC_CLIENT_SECRET` and `SEO_GSC_REFRESH_TOKEN`, or a temporary `SEO_GSC_ACCESS_TOKEN`. Explicit access-token configuration takes precedence, followed by the complete refresh environment, then the local grant. An incomplete environment override blocks instead of silently using another identity. Never paste token values into commands, chat, documentation or committed files.
 
 ```sh
 python3 tools/search_console_sync.py sync --property https://leonbuilds.org/ --start-date 2026-09-06 --end-date 2026-10-03
