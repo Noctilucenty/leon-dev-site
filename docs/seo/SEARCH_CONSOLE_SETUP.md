@@ -1,7 +1,8 @@
 # Connect local Search Console reporting
 
-The helper is implemented and tested offline. Setup is complete only after owner
-consent succeeds and an actual `sync` records a private API snapshot.
+Local Search Console API access was verified on September 6, 2026 after owner
+consent, a successful refresh-token exchange, and an actual private API snapshot.
+The setup instructions below also serve as the reconnection procedure.
 
 ## Owner setup
 
@@ -41,11 +42,11 @@ never requests write access or sends indexing requests.
 
 ```sh
 python3 tools/search_console_sync.py auth-status
-python3 tools/search_console_sync.py sync --property https://leonbuilds.org/ --start-date 2026-08-19 --end-date 2026-09-03
+python3 tools/search_console_sync.py sync --property https://leonbuilds.org/ --start-date 2026-08-19 --end-date 2026-09-04
 python3 tools/search_console_sync.py history --property https://leonbuilds.org/
 ```
 
-That initial historical window matches the saved September 5 UI baseline. It is
+That initial historical window matches the saved September 6 UI baseline. It is
 not a post-release result. A successful sync reads finalized property totals,
 daily rows, query rows, page rows, and joint query/page rows separately, then
 stores an immutable private snapshot. Privacy-hidden or capped data remain
@@ -70,18 +71,59 @@ remove an expired temporary override to use the saved grant again. A partial
 refresh override blocks rather than switching identities silently.
 
 Refresh grants can expire or be revoked under Google's consent and account rules.
-An OAuth project left in testing may require renewed owner consent; its status
-is not changed by this helper. Reconnect deliberately with the same `auth-login`
-command and `--replace`. The prior file stays intact until Google returns the
-new valid grant and an atomic replacement succeeds. The helper does not revoke
-any other application's access or alter Google policy settings.
+Google's [refresh-token expiration rules](https://developers.google.com/identity/protocols/oauth2#expiration)
+give an external app in Testing a seven-day refresh token for this scope. Moving
+the app to production does not establish that an already-issued token's lifetime
+has changed. Reconnect deliberately with the same `auth-login` command and
+`--replace`. The prior file stays intact until Google returns the new valid grant
+and an atomic replacement succeeds. Production grants remain subject to Google's
+revocation, inactivity and account rules. The helper does not revoke any other
+application's access or alter Google policy settings.
 
 ## Setup state on September 6, 2026
 
-The dedicated project exists. Search Console API activation and Google Auth
-Platform app creation are waiting for the owner's Google terms/policy acceptance.
-The OAuth identity fields are prepared but not yet saved. No Desktop OAuth client
-has been created or downloaded, no authorization has run, and no credential or API
-snapshot has been stored for this connection. After the owner accepts those terms,
-finish step 1, create the Desktop client, and run the flow above. Report connected
-only after API/property access succeeds in a real sync.
+The owner approved Google's API terms and User Data Policy. The dedicated project,
+Search Console API activation, OAuth app and Desktop client, and local owner grant
+were completed. The first `sync` successfully refreshed the local grant and read
+`https://leonbuilds.org/` with the exact read-only scope. The local connection is
+verified; no hosted scheduler or credential copy was created.
+
+Google Auth Platform's Audience page subsequently showed **In production**, a
+**Back to testing** control, and **1 user out of a 100-user cap**. Publishing mode
+is confirmed; Google app-verification approval has not been established. The
+authorized domain, homepage and privacy URLs were saved. The public privacy
+disclosure was verified live at [leonbuilds.org/privacy](https://leonbuilds.org/privacy)
+from commit `76092207558548bbc2bf15a98a6343e75eb86247`; the
+[search workflow](https://github.com/Noctilucenty/leon-dev-site/actions/runs/34051899626)
+passed.
+
+**Reconnection completed:** after the app moved to production, the owner completed
+Google device verification and consent. `auth-login --replace` returned the exact
+read-only scope and saved the replacement grant with mode `600` at
+**2026-09-06T18:38:10.265143+00:00**. A subsequent real `sync` refreshed that grant
+and successfully read the property again. It returned `already_recorded` with the
+same snapshot hash below because the retrieved report was unchanged; the first
+snapshot was preserved. This establishes refreshed API/property access after
+production-mode reauthorization. It does not assume that the previous Testing
+grant's expiry was extended or that the replacement is permanent or irrevocable.
+
+First recorded API snapshot: **2026-09-06T18:22:39.672880+00:00**.
+Content hash:
+`1c21713c95502e117a0e595bf61a22dfa778e8ab9afa56035773d058f97a99d9`.
+The grant, downloaded client file, and snapshot were confirmed owner-only with
+mode `600`; private report and credential files are gitignored.
+
+| API observation | Value |
+| --- | --- |
+| Scope | Web search, finalized data, all countries and devices |
+| Reporting window | August 19–September 4, 2026; America/Los_Angeles |
+| Property totals | 6 clicks, 58 impressions, 10.3448% CTR, average position 12.8621 |
+| Returned daily coverage | 17 of 17 dates, through September 4 |
+| Returned rows | 1 property summary, 17 daily, 26 page, 2 query, 2 joint query/page |
+| Pagination cap reached | No, on all five surfaces |
+
+Only aggregate results appear here. Query/page detail stays in the private
+snapshot. Exhausting the returned pagination is not a complete query census:
+Google can withhold queries for privacy, and each aggregation has its own scope.
+These historical observations verify reporting access and agree with the dated
+UI totals; they do not demonstrate post-release search or lead gains.

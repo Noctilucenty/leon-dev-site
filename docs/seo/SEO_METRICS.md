@@ -2,7 +2,7 @@
 
 ## Current evidence
 
-All 50 current sitemap routes passed the live crawl gate after the redirect repair. The latest signed-in UI baseline is `content/seo/search-baseline-2026-09-06.json`; it is not an API export. Prior baselines remain historical evidence.
+All 50 current sitemap routes passed the live crawl gate after the redirect repair. The latest signed-in UI baseline is `content/seo/search-baseline-2026-09-06.json`; it is not an API export. A separate finalized Search Console API snapshot was recorded at `2026-09-06T18:22:39.672880+00:00` after successful local refresh-token authentication. It covers the same August 19–September 4 window and confirms 6 clicks and 58 impressions, with all 17 daily dates returned and no pagination cap reached. Detailed API rows remain private; see [the connection receipt and measurement boundaries](SEARCH_CONSOLE_SETUP.md#setup-state-on-september-6-2026). Prior baselines remain historical evidence.
 
 The displayed August 19–September 4 Web window had 6 clicks and 58 impressions (10.3% CTR, average position 12.9). Google generative-AI search showed 3 impressions separately. The August 27 indexing snapshot still reports 37 indexed pages; it is not a current 37/50 coverage ratio. Individual URL Inspection now confirms the buyer guide is indexed with the correct canonical and a successful September 5 smartphone crawl. Sitemap processing succeeded September 5 with 49 discovered pages; the current sitemap contains 50 URLs. No duplicate indexing request was submitted.
 
@@ -46,17 +46,24 @@ It flags positions 8–20 and low CTR after at least 20 impressions as review ca
 
 ## Read-only API history
 
-`tools/search_console_sync.py` supports the two existing URL-prefix properties, Leon Builds and Curio. It supports a one-time owner consent flow from a downloaded Desktop OAuth client JSON, then refreshes access automatically from a mode-600 file in the gitignored private directory. `auth-status` reports configuration without requesting Google or displaying credentials. Authorization still needs to be completed before API history is connected; see [the exact setup and verification steps](SEARCH_CONSOLE_SETUP.md). The helper does not create OAuth clients, accept policies, purchase services, change properties or read browser sessions. It stores only the owner-authorized offline grant locally and keeps access tokens in memory.
+`tools/search_console_sync.py` supports the two existing URL-prefix properties, Leon Builds and Curio. It supports a one-time owner consent flow from a downloaded Desktop OAuth client JSON, then refreshes access automatically from a mode-600 file in the gitignored private directory. Leon Builds API/property access is now verified by a real refreshed sync; Curio API access has not been verified by this connection. `auth-status` reports configuration without requesting Google or displaying credentials; see [the setup, verification receipt and reconnection steps](SEARCH_CONSOLE_SETUP.md). The helper does not create OAuth clients, accept policies, purchase services, change properties or read browser sessions. It stores only the owner-authorized offline grant locally and keeps access tokens in memory.
+
+The OAuth app now shows In production. The owner completed reauthorization after
+that change; the mode-600 replacement grant was saved at
+`2026-09-06T18:38:10.265143+00:00`. A subsequent real refreshed sync returned the
+same report and `already_recorded` snapshot hash, verifying API/property access
+with the replacement. Publishing mode is separate from Google app verification,
+and refresh grants remain subject to Google's revocation and account rules.
 
 Execution environments can alternatively inject `SEO_GSC_CLIENT_ID`, `SEO_GSC_CLIENT_SECRET` and `SEO_GSC_REFRESH_TOKEN`, or a temporary `SEO_GSC_ACCESS_TOKEN`. Explicit access-token configuration takes precedence, followed by the complete refresh environment, then the local grant. An incomplete environment override blocks instead of silently using another identity. Never paste token values into commands, chat, documentation or committed files.
 
 ```sh
-python3 tools/search_console_sync.py sync --property https://leonbuilds.org/ --start-date 2026-09-06 --end-date 2026-10-03
+python3 tools/search_console_sync.py sync --property https://leonbuilds.org/ --start-date 2026-08-19 --end-date 2026-09-04
 python3 tools/search_console_sync.py history --property https://leonbuilds.org/
 python3 tools/search_console_sync.py compare --previous private/seo-search-console/leonbuilds/PREVIOUS_HASH.json --current private/seo-search-console/leonbuilds/CURRENT_HASH.json
 ```
 
-Use actual past finalized reporting dates when running sync; the example dates are a planned post-release window, not imported observations. Replace the comparison filenames with paths returned by successful sync. Run `--help` for optional country/device filters and bounded pagination. Missing authorization returns `BLOCKED` with null metrics. Snapshots live under the gitignored, unpublished `private/seo-search-console` directory and are immutable/content-addressed. Property totals, dates, query rows, page rows and joint rows remain separate; privacy-hidden queries and capped API rows are not a complete demand census. Equal-window comparison rejects mismatched properties, surfaces or filters.
+Use actual past finalized reporting dates when running sync; the example dates reproduce the first imported historical window. Replace the comparison filenames with paths returned by successful sync. Run `--help` for optional country/device filters and bounded pagination. Missing authorization returns `BLOCKED` with null metrics. Snapshots live under the gitignored, unpublished `private/seo-search-console` directory and are immutable/content-addressed. Property totals, dates, query rows, page rows and joint rows remain separate; privacy-hidden queries and capped API rows are not a complete demand census. Equal-window comparison rejects mismatched properties, surfaces or filters.
 
 Google generative-AI UI observations stay in the separately scoped baseline file. This Web Search API tool does not claim to import the generative-AI report or join it to a particular person.
 
