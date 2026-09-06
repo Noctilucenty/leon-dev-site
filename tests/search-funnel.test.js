@@ -61,6 +61,35 @@ test('unmatched stages and missing collection completeness cannot become convers
   assert.equal(complete.rows[0].sessionToInquiryRate, 1);
   assert.equal(buildSearchFunnel({ ...options, events: [page], coverageVerified: true, eventsTruncated: true }).rows[0].sessionToInquiryRate, null);
 });
+test('later qualification retains an earlier booking source without adding visits to the period', () => {
+  const prior = { ...page, ts: '2026-08-31T23:59:59Z' };
+  const booking = { ...prior, name: 'calendar_booking_success', bookingUid: 'booking_prior' };
+  const acquisition = [
+    { ts: prior.ts, kind: 'funnel_stage', stage: 'booked', bookingUid: booking.bookingUid },
+    { ts, kind: 'funnel_stage', stage: 'qualified', bookingUid: booking.bookingUid },
+    { ts, kind: 'funnel_stage', stage: 'won', bookingUid: booking.bookingUid },
+  ];
+  const report = buildSearchFunnel({ ...options, events: [booking, prior], acquisition, coverageVerified: true });
+  assert.equal(report.rows[0].observedSessions, 0);
+  assert.equal(report.rows[0].authoritativeBookings, 0);
+  assert.equal(report.rows[0].authoritativeQualified, 1);
+  assert.equal(report.rows[0].authoritativeWon, 1);
+  assert.equal(report.rows[0].sessionToInquiryRate, null);
+  assert.equal(report.unattributedAuthoritativeStages, 0);
+});
+test('historical booking matches still reject ambiguous and future session evidence', () => {
+  const prior = { ...page, ts: '2026-08-31T12:00:00Z' };
+  const booking = { ...prior, name: 'calendar_booking_success', bookingUid: 'booking_prior' };
+  const acquisition = [{ ts, kind: 'funnel_stage', stage: 'qualified', bookingUid: booking.bookingUid }];
+  const ambiguous = buildSearchFunnel({ ...options, acquisition, events: [prior, booking,
+    { ...prior, sessionId: 'other_session' }, { ...booking, sessionId: 'other_session' }] });
+  assert.equal(ambiguous.rows[0].authoritativeQualified, 0);
+  assert.equal(ambiguous.unattributedAuthoritativeStages, 1);
+  const future = buildSearchFunnel({ ...options, acquisition, events: [
+    { ...prior, ts: '2026-09-06T00:00:00Z' }, { ...booking, ts: '2026-09-06T00:00:01Z' }] });
+  assert.equal(future.rows[0].authoritativeQualified, 0);
+  assert.equal(future.unattributedAuthoritativeStages, 1);
+});
 test('rejects invalid dates and respects the observation window', () => {
   assert.throws(() => buildSearchFunnel({ start: '2026-02-30', end: '2026-09-05' }));
   assert.equal(buildSearchFunnel({ ...options, events: [{ ...page, ts: '2026-08-31T23:59:59Z' }] }).rows[0].observedSessions, 0);

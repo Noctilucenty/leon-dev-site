@@ -23,6 +23,13 @@ The authenticated `/api/traffic?format=json&start=YYYY-MM-DD&end=YYYY-MM-DD` rep
 
 The same report includes sampled `webVitals`; see [the measurement boundaries](WEB_VITALS.md). These events are not qualification evidence.
 
+Lifecycle outcomes use their own event dates. A September qualification can keep
+the source of an August visit when that anonymous session and booking link are
+still retained. Those earlier visits do not enter September's session denominator
+or inquiry rate. Ambiguous, missing or future-only links remain unattributed.
+Homepage inquiry attribution preserves the entire recorded first visit, including
+empty direct-visit fields; a later advertising click remains a separate last touch.
+
 ## Offline Search Console import
 
 Use a legitimate joint report with columns `Query,Page,Clicks,Impressions,Position`. A query table and a separate page table cannot be safely joined; the tool rejects that input. Country/device splits may be included as separate rows and are aggregated, so keep exported filters and row completeness documented alongside the source.

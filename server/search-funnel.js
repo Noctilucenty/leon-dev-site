@@ -50,9 +50,19 @@ function buildSearchFunnel({ events = [], leads = [], acquisition = [], start, e
   const qa = qaEventExclusion(events, leads, acquisition, acquisition);
   const retained = events.filter((event, index) => !qa.directEventIndexes.has(index) && !qa.sessionIds.has(String(event.sessionId || '')));
   const windowEvents = retained.filter(inWindow);
+  // Qualification can happen after the visit/booking reporting period. Keep
+  // retained source evidence through the period end for lifecycle attribution,
+  // while the visit denominator still contains only this period's page views.
+  const attributionEvents = retained.filter(event => {
+    const time = Date.parse(event.ts || '');
+    return Number.isFinite(time) && new Date(time).toISOString().slice(0, 10) <= end;
+  }).sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts));
+  const attributionSessions = new Map();
   const sessions = new Map();
-  for (const event of [...windowEvents].sort((a, b) => Date.parse(a.ts) - Date.parse(b.ts))) {
-    if (event.name === 'page_view' && event.sessionId && !sessions.has(event.sessionId)) sessions.set(event.sessionId, searchChannel(event));
+  for (const event of attributionEvents) {
+    if (event.name !== 'page_view' || !event.sessionId) continue;
+    if (!attributionSessions.has(event.sessionId)) attributionSessions.set(event.sessionId, searchChannel(event));
+    if (inWindow(event)) sessions.set(event.sessionId, attributionSessions.get(event.sessionId));
   }
   const rows = Object.fromEntries(CHANNELS.map(channel => [channel, {
     channel, observedSessions: 0, acceptedInquiries: 0, sessionLinkedInquiries: 0,
@@ -92,8 +102,8 @@ function buildSearchFunnel({ events = [], leads = [], acquisition = [], start, e
   };
   const excludedBookings = new Set([...exclusions.bookingUids].map(canonical));
   const bookingSessions = new Map();
-  for (const event of retained) {
-    if (event.name !== 'calendar_booking_success' || !event.bookingUid || !sessions.has(event.sessionId)) continue;
+  for (const event of attributionEvents) {
+    if (event.name !== 'calendar_booking_success' || !event.bookingUid || !attributionSessions.has(event.sessionId)) continue;
     const uid = canonical(event.bookingUid);
     if (!uid || excludedBookings.has(uid)) continue;
     const set = bookingSessions.get(uid) || new Set(); set.add(event.sessionId); bookingSessions.set(uid, set);
@@ -109,7 +119,7 @@ function buildSearchFunnel({ events = [], leads = [], acquisition = [], start, e
     counted.add(key);
     const linked = bookingSessions.get(uid);
     if (!linked || linked.size !== 1) { unattributedStages++; continue; }
-    rows[sessions.get([...linked][0])][stageFields[record.stage]]++;
+    rows[attributionSessions.get([...linked][0])][stageFields[record.stage]]++;
   }
   for (const channel of CHANNELS) {
     if (coverageVerified && !eventsTruncated && rows[channel].observedSessions) rows[channel].sessionToInquiryRate = inquirySessions[channel].size / rows[channel].observedSessions;
@@ -120,6 +130,7 @@ function buildSearchFunnel({ events = [], leads = [], acquisition = [], start, e
     limitations: ['Counts cover retained observations, not all visitors or all historical business records.',
       'Only an accepted backend receipt counts as an inquiry; only a lifecycle record counts as booked, qualified or won.',
       'Booking attribution needs an unambiguous anonymous-session match; unmatched stages remain separate.',
+      'Lifecycle attribution can use retained visits before this period; observed sessions and inquiry rates use only in-period page views.',
       'AI referral means an observed referrer, not an AI citation. Search Console totals cannot identify these sessions.',
       'Historical events may contain legacy mixed-touch attribution; only newly normalized events preserve empty first-touch fields.',
       'Rates remain null unless the collection window is independently verified complete.']
