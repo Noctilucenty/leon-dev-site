@@ -520,6 +520,24 @@
       "editorial_status": "legacy_review_pending"
     },
     {
+      "id": "loqol-seller-portal-case",
+      "canonical_path": "/work/loqol-seller-portal",
+      "language": "en",
+      "cluster": "proof",
+      "primary_query": "Leon LOQOL seller portal contribution",
+      "aliases": ["Leon Builds real estate seller portal case study"],
+      "question_queries": ["What did Leon contribute to the LOQOL seller portal"],
+      "related_entities": ["LOQOL", "React", "TypeScript", "seller disclosures"],
+      "search_intents": ["Assess Leon's implementation contribution to an existing real-estate seller portal"],
+      "relationships": [{"path":"/technical-build-partner","type":"deeper_dive","label":"Discuss your client portal or workflow"}],
+      "intent_key": "loqol-seller-portal-contribution",
+      "page_type": "case_study",
+      "audience": "prospective client-portal buyers",
+      "intent_boundary": "Describe Leon's implementation contribution to the existing LOQOL seller portal. This does not own LOQOL product-support questions, the separate public disclosure demo, or generic client-portal service intent.",
+      "translation_of": null,
+      "editorial_status": "publication_reviewed"
+    },
+    {
       "id": "curio-case",
       "canonical_path": "/work/curio-app",
       "language": "en",

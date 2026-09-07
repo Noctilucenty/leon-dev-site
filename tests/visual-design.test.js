@@ -9,7 +9,7 @@ const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 
 test('all canonical subpages share the homepage-derived local design layer', () => {
   const urls = [...read('sitemap.xml').matchAll(/<loc>https:\/\/leonbuilds.org([^<]*)<\/loc>/g)].map(x => x[1]);
-  assert.equal(urls.length, 50);
+  assert.equal(urls.length, 51);
   for (const url of urls.filter(x => x !== '/')) {
     const file = url.endsWith('/') ? url.slice(1) + 'index.html' : ['es','pt','zh'].includes(url.slice(1)) ? url.slice(1) + '/index.html' : url.slice(1) + '.html';
     const html = read(file);

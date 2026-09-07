@@ -612,6 +612,14 @@ def service_page(s):
     pains = ''.join(f'<li>{e(p)}</li>' for p in s["pains"])
     build = ''.join(f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(b)}</li>' for b in s["build"])
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
+    starter_website = ''
+    if s["slug"] == "websites":
+        starter_website = '''<section class="sec" id="starter"><div class="rail">
+  <p class="label">A smaller starting point</p><h2 class="page-section-title">One-page starter website · $199</h2>
+  <p class="sub">One responsive page with up to four sections, your supplied copy and images, one contact or booking link, and one revision. Target delivery is five days after the scope, content, access and start date are agreed.</p>
+  <p class="sub">Extra pages, new writing, backend forms, checkout, accounts and integrations are separate. Hosting and domains are not included. The larger business-website scope above starts at $300; this is the same focused $199 starter offered on Upwork.</p>
+  <a class="btn btn-solid" href="/quote?service=websites" data-evt="starter_website_quote_click"><span>Ask about the one-page starter</span></a>
+</div></section>\n'''
     partner_related = (
         '<a class="rel" href="/technical-build-partner">technical build partner →</a>'
         if s["slug"] in {"websites", "business-automation", "business-dashboards", "custom-software", "mobile-apps"}
@@ -711,7 +719,7 @@ def service_page(s):
   </div>
 </section>
 </div></details>
-<section class="sec">
+{starter_website}<section class="sec">
   <div class="rail">
     <p class="label">{e(proof_label)}</p>
     <h2 class="page-section-title">{e(proof_heading)}</h2>
@@ -1005,6 +1013,7 @@ CASE_STUDIES = [
     ),
 ]
 
+CASE_STUDIES.append(seo_json("loqol-seller-portal.json"))
 CASE_STUDY_BY_SLUG = {case["slug"]: case for case in CASE_STUDIES}
 
 
@@ -1023,7 +1032,7 @@ def case_study_page(case):
             "description": case["desc"],
             "isPartOf": {"@id": f"{BASE}/#website"},
             "mainEntity": {"@id": article_id},
-            "dateModified": "2026-09-04",
+            "dateModified": case.get("reviewed_date", "2026-09-04"),
         },
         {
             "@context": "https://schema.org",
@@ -1035,7 +1044,7 @@ def case_study_page(case):
             "author": person_ref,
             "publisher": {"@id": f"{BASE}/#business"},
             "mainEntityOfPage": {"@id": f"{BASE}{path}#page"},
-            "dateModified": "2026-09-04",
+            "dateModified": case.get("reviewed_date", "2026-09-04"),
         },
         breadcrumb_schema(bc, path),
     ]
@@ -1086,7 +1095,7 @@ def case_study_page(case):
       <p class="label">{e(case["status"])}</p>
       <h1 class="dsp business-copy">{e(case["name"])} <em>case study.</em></h1>
       <p class="sub business-copy">{e(case["lede"])}</p>
-      <p class="case-study-meta business-copy">Role: {e(case["role"])} · {e(case["project_type"])} · reviewed September 4, 2026</p>
+      <p class="case-study-meta business-copy">Role: {e(case["role"])} · {e(case["project_type"])} · reviewed {e(case.get("reviewed_label", "September 4, 2026"))}</p>
     </div>
     <figure class="case-study-cover{cover_class}"><img src="{e(case["image"])}" alt="{e(case["image_alt"])}" width="{case["image_width"]}" height="{case["image_height"]}">{secondary_image}</figure>
   </div>
@@ -1103,7 +1112,7 @@ def case_study_page(case):
 <section class="sec" aria-labelledby="case-built-title">
   <div class="rail">
     <p class="label">What Leon built</p>
-    <h2 class="page-section-title" id="case-built-title">Delivered scope.</h2>
+    <h2 class="page-section-title" id="case-built-title">{e(case.get("scope_heading", "Delivered scope."))}</h2>
     <div class="scope-grid case-study-build">{build_cards}</div>
   </div>
 </section>
@@ -1398,6 +1407,18 @@ def work_page():
             <a class="case-link" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">View the founder profile →</a>
             <a class="case-link" href="/services/mobile-apps" data-evt="case_app_service_click">See mobile app development →</a>
           </div>
+        </div>
+      </article>
+
+      <article class="case-card" id="work-loqol-portal">
+        <figure class="case-media"><img src="/assets/proof/loqol-seller-portal-contribution.svg" alt="Labelled implementation diagram of Leon's seller-portal contribution, not a production screenshot" loading="lazy" width="1600" height="1200"></figure>
+        <div class="case-copy">
+          <p class="label">Client product contribution · existing product and design</p>
+          <h3>LOQOL seller portal</h3>
+          <p class="business-copy"><b>Problem:</b> Long disclosure answers need careful handling when users pause, switch fields or receive background updates.</p>
+          <p class="business-copy"><b>Contribution:</b> React/TypeScript form-to-API connections, autosave attempts and separating unfinished local answers from server refreshes.</p>
+          <p class="case-role">Role: frontend implementation within the team's existing product and design</p>
+          <div class="case-links"><a class="case-link" href="/work/loqol-seller-portal" data-evt="work_loqol_portal_case_click">Read the contribution case →</a></div>
         </div>
       </article>
 
@@ -1896,9 +1917,8 @@ def about_page():
         "url": f"{BASE}/about",
         "mainEntityOfPage": {"@id": f"{BASE}/about#webpage"},
         "jobTitle": "Software Developer",
-        "description": ("Independent software developer and computer engineering student at California "
-                        "State University, East Bay. Builds websites, mobile apps, online ordering, booking "
-                        "systems, AI assistants and business automation for companies across the United States."),
+        "description": ("Independent software developer building client portals, websites, mobile apps "
+                        "and connected business workflows. Works directly with clients from scope through handoff."),
         "knowsLanguage": ["en", "zh", "pt-BR", "es"],
         "knowsAbout": ["web development", "iOS development", "Android development",
                        "online ordering systems", "booking systems", "AI chatbots",
@@ -1906,8 +1926,6 @@ def about_page():
         "email": "leondragon3798@gmail.com",
         "telephone": "+1-510-826-7735",
         "address": {"@type": "PostalAddress", "addressRegion": "CA", "addressCountry": "US"},
-        "affiliation": {"@type": "CollegeOrUniversity", "name": "California State University, East Bay"},
-        "alumniOf": {"@type": "CollegeOrUniversity", "name": "Green River College"},
         "worksFor": {"@id": f"{BASE}/#business"},
         "sameAs": IDENTITY_URLS,
     }
@@ -1916,7 +1934,7 @@ def about_page():
         "@id": f"{BASE}/about#webpage",
         "url": f"{BASE}/about",
         "name": "About Leon Kelvin Li — Software Developer",
-        "description": "Leon Kelvin Li's work, background, education and verified public profiles.",
+        "description": "Leon Kelvin Li's project work, responsibilities and public professional profiles.",
         "isPartOf": {"@id": f"{BASE}/#website"},
         "mainEntity": {"@id": f"{BASE}/#leon"},
     }
@@ -1942,7 +1960,7 @@ def about_page():
       <p class="label">what he has actually built</p>
       <ul class="blist">
         <li><svg class="ic"><use href="#ic-check"/></svg>an iphone app that is on the app store today — built solo end to end, including subscriptions and app store review</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>an online ordering system where one kitchen runs several brands and a single cart splits itself per brand, with each brand's accounting kept separate</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>a phone-first business catalog and ordering prototype with a cart that splits demo tickets by brand. payment and kitchen progression are simulations, not a production commerce rollout</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
         <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform built from 33,772 U.S. ZIP-code records in the reviewed project dataset, with Maps context, public data, company history, and uncertainty ranges</li>
         <li><svg class="ic"><use href="#ic-check"/></svg>a chinese-language health-education prototype with source citations and safety checks that run before the model</li>
@@ -1963,8 +1981,8 @@ def about_page():
 
 <section class="sec">
   <div class="rail">
-    <p class="label">background</p>
-    <p class="sub">he is a computer engineering student at <span class="keepcase">California State University, East Bay</span>, an alumnus of <span class="keepcase">Green River College</span>, and a working developer with a live App Store product plus public demos. all three are true at once, and he would rather say so than hide any of them.</p>
+    <p class="label">recent client work</p>
+    <p class="sub">Leon contributes to <span class="keepcase">LOQOL</span>'s existing real-estate seller portal, connecting disclosure forms to backend APIs and working on autosave and unfinished answers. he also designed and built the <span class="keepcase">FLORES Boxing Gloves</span> website and <span class="keepcase">ONPECY</span>'s bilingual website. <a class="tlink" href="/work/loqol-seller-portal">see his seller-portal contribution</a>, separate from the older public disclosure demo.</p>
     <p class="sub">owners who know the bottleneck but not the right software can start with Leon's <a class="tlink" href="/technical-build-partner">Technical Build Partner offer</a>: one person maps the problem, recommends the smallest useful build, and stays responsible through testing and handoff.</p>
     <p class="sub">his current product is <a class="tlink" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="tlink" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="tlink" href="/services/mobile-apps">mobile app development service</a>. additional public product and workflow evidence is collected in the <a class="tlink" href="/work">Leon Builds work archive</a>.</p>
     <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="tlink" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="tlink" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="tlink" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="tlink" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="tlink" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>

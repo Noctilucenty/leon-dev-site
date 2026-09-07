@@ -100,7 +100,7 @@ test('published export has the current metadata and four-section navigation', ()
   assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
   const description = attributes(html.match(/<meta\b[^>]*name=["']description["'][^>]*>/i)?.[0] || '').content || '';
   assert.match(description, /free 3-point website review/i);
-  assert.match(description, /websites from \$300/i);
+  assert.match(description, /starter websites from \$199/i);
   assert.match(description, /automation from \$500/i);
   assert.match(html, /rel=["']canonical["'][^>]*href=["']https:\/\/leonbuilds\.org\/?["']/i);
   assert.match(html, /property=["']og:image["'][^>]*assets\/og\.png/i);
@@ -120,7 +120,7 @@ test('hero uses the free review as its primary action', () => {
   assert.match(visible, /websites that make it easy to act/i);
   assert.match(visible, /automation that follows up/i);
   assert.match(visible, /small businesses.*clearer inquiry paths and less busywork/i);
-  assert.match(visible, /websites from \$\s*300.*automation from \$\s*500/i);
+  assert.match(visible, /one-page websites from \$\s*199.*automation from \$\s*500/i);
   const primary = linksIn(hero).find(link => link.attrs['data-event'] === 'hero_review_cta_click');
   assert.equal(primary?.attrs.href, '#review-form');
   assert.match(primary?.text || '', /get a free 3-point review/i);
@@ -133,7 +133,7 @@ test('service cards have crawlable detail links and scope controls', () => {
   const cards = elementsWithClass(services, 'article', 'service-v2-card');
   assert.equal(cards.length, 3);
   const expected = [
-    ['/services/websites', '300'],
+    ['/services/websites', '199'],
     ['/missed-lead-recovery', '1,500'],
     ['/services/business-automation', '500'],
   ];

@@ -17,7 +17,7 @@ class SeoSystemTests(unittest.TestCase):
 
     def test_every_canonical_route_has_one_honest_owner_including_translations(self):
         topics = seo.read_json("topics.json")["topics"]
-        self.assertEqual(len(topics), 50)
+        self.assertEqual(len(topics), 51)
         self.assertEqual({topic["canonical_path"] for topic in topics}, set(seo.sitemap_paths()))
         self.assertEqual(sum(bool(topic["translation_of"]) for topic in topics), 15)
         self.assertEqual(sum(topic["editorial_status"] == "legacy_review_pending" for topic in topics), 49)

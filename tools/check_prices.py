@@ -44,6 +44,7 @@ FLOORS = {
 # separate preserves the historical service-floor fingerprint used by the
 # off-site publication ledger while still making every public amount auditable.
 PUBLIC_OFFERS = {
+    'one-page-website-starter': 199,
     'technical-build-partner-plan': 199,
     'technical-build-partner-ongoing': 2000,
 }
@@ -51,7 +52,7 @@ PUBLIC_OFFERS = {
 # Figures a given service page may legitimately mention besides its own floor,
 # because the copy deliberately points at a neighbouring service.
 CROSS = {
-    'websites': {625, 600, 75, 300},     # backend, booking/ordering, small fixes
+    'websites': {625, 600, 75, 300, 199}, # backend, booking/ordering, small fixes, separately scoped starter
     'booking-systems': {600, 300},       # ordering sits with booking
     'custom-software': {1500, 3500},     # apps are the bigger sibling
     'business-automation': {500, 600},   # integrations quoted alongside booking

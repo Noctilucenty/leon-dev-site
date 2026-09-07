@@ -1,0 +1,34 @@
+{
+  "slug": "loqol-seller-portal",
+  "name": "LOQOL seller portal",
+  "status": "Client product contribution · implementation case",
+  "title": "LOQOL Seller Portal Contribution | Leon Builds",
+  "desc": "Leon's React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.",
+  "lede": "A seller can spend several minutes writing a disclosure answer, then switch fields or get interrupted. Leon contributed to LOQOL's existing seller portal to connect those forms to backend APIs and handle unfinished answers more carefully.",
+  "image": "/assets/proof/loqol-seller-portal-contribution.svg",
+  "image_alt": "Implementation diagram, not a production screenshot: seller answer, local draft, and backend API",
+  "image_width": 1600,
+  "image_height": 1200,
+  "role": "Frontend developer contributing to an existing product and design",
+  "project_type": "Client product contribution",
+  "reviewed_date": "2026-09-06",
+  "reviewed_label": "September 6, 2026",
+  "scope_heading": "Leon's implementation contribution.",
+  "decision_heading": "Let the seller finish typing before replacing their answer.",
+  "problem": "A seller is halfway through an answer when the page fetches an older saved copy. If the form replaces the text too soon, their unfinished work can disappear. Leon's work focused on that moment: keeping the answer being typed separate from the last saved version, and connecting each field to the right record.",
+  "built": [
+    ["Connect the form to the record", "Connected React/TypeScript disclosure fields to backend APIs, the connections used to load and update the seller's answers."],
+    ["Save at natural stopping points", "Added save requests after a pause in typing, when the seller moves to another field, and when they close a form with an unfinished edit."],
+    ["Keep the answer being typed", "Kept the current draft separate from an incoming saved copy while the seller is editing. That separation is important when the page refreshes information in the background."]
+  ],
+  "evidence": [
+    "Leon's work covers the form interface, its API connections and handling unfinished answers. The team already had the product and its design.",
+    "The diagram explains that work without showing seller records or private client documents. It is not a production screenshot.",
+    "The older public disclosure demo is linked separately, so it is not mistaken for this seller portal."
+  ],
+  "boundary": "This is an implementation contribution, not ownership of the whole LOQOL platform or its original design. It is not a live test: a save request or a 'Saved' label alone does not prove the server kept the answer. Production rollout and completion-rate improvements have not been established by this case.",
+  "testimonial_id": "",
+  "proof_links": [["See the separately labelled disclosure demo", "/work#work-loqol", "case_loqol_older_demo_click", false]],
+  "service_href": "/technical-build-partner",
+  "service_label": "Discuss your client portal or workflow"
+}

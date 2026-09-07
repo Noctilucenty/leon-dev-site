@@ -58,7 +58,7 @@ test('published homepage metadata, services, and inquiry path state the current 
   assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
   const description = metadataText(html, /<meta\b[^>]*name="description"[^>]*content="([^"]+)"/i);
   assert.match(description, /free 3-point website review/i);
-  assert.match(description, /websites from \$300/i);
+  assert.match(description, /starter websites from \$199/i);
   assert.match(description, /automation from \$500/i);
   assert.match(html, /<link\b[^>]*rel="canonical"[^>]*href="https:\/\/leonbuilds\.org\/?"/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
@@ -71,7 +71,7 @@ test('published homepage metadata, services, and inquiry path state the current 
   assert.match(html, /<form\b/i);
   assert.match(html, /id="quote-email"[^>]*type="email"|type="email"[^>]*id="quote-email"/i);
   assert.match(html, /id="quote-problem"/i);
-  for (const price of ['$300', '$1,500', '$500']) {
+  for (const price of ['$199', '$1,500', '$500']) {
     assert.match(visible, new RegExp('\\$\\s*' + price.slice(1)), `homepage includes the published ${price} starting floor`);
   }
   const nodes = schemaNodes(html);
