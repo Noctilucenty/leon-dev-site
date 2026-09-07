@@ -1,5 +1,7 @@
 # Orlando campaign follow-through — September 6, 2026
 
+Later evening readback supersedes the pending-review status below: all ten keywords were Eligible, the campaign recorded its first click, and four sitelinks plus four callouts were attached. See the [final followthrough receipt](../../docs/seo/FOLLOWTHROUGH_2026-09-06.md).
+
 The owner requested all outstanding ad-delivery and reporting work. Changes below were saved through a fresh Google Ads tab in Leon Builds account `794-705-8433`, signed in as `leondragon3798@gmail.com`.
 
 ## Saved keyword change

@@ -2,6 +2,8 @@
 
 ## Current evidence
 
+See the [September 6 evening followthrough](FOLLOWTHROUGH_2026-09-06.md) for the newer 51-route release, first observed successor-campaign click, completed asset associations, and accepted indexing requests. Earlier windows below remain historical observations.
+
 All 50 current sitemap routes passed the live crawl gate after the redirect repair. The latest signed-in UI baseline is `content/seo/search-baseline-2026-09-06.json`; it is not an API export. A separate finalized Search Console API snapshot was recorded at `2026-09-06T18:22:39.672880+00:00` after successful local refresh-token authentication. It covers the same August 19–September 4 window and confirms 6 clicks and 58 impressions, with all 17 daily dates returned and no pagination cap reached. Detailed API rows remain private; see [the connection receipt and measurement boundaries](SEARCH_CONSOLE_SETUP.md#setup-state-on-september-6-2026). Prior baselines remain historical evidence.
 
 The displayed August 19–September 4 Web window had 6 clicks and 58 impressions (10.3% CTR, average position 12.9). Google generative-AI search showed 3 impressions separately. The August 27 indexing snapshot still reports 37 indexed pages; it is not a current 37/50 coverage ratio. Individual URL Inspection now confirms the buyer guide is indexed with the correct canonical and a successful September 5 smartphone crawl. Sitemap processing succeeded September 5 with 49 discovered pages; the current sitemap contains 50 URLs. No duplicate indexing request was submitted.

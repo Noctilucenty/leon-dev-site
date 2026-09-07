@@ -36,6 +36,8 @@ Verified build fingerprint: `6aeb5a1cf7e232c0d0f2f68eb981ef4a68a6661ecdab53c3d57
 
 ## Current follow-through — September 6
 
+The [evening followthrough receipt](FOLLOWTHROUGH_2026-09-06.md) is the latest state: the newer 51-route release is verified, ad assets and default conversion goals are completed, and two indexing requests were accepted. The earlier observations below retain their original scope.
+
 The earlier P2 list is superseded: semantic ownership now covers all 50 sitemap routes and 206 query variants. The guide self-redirect rule was removed in Render, its canonical returns 200, and Google's individual inspection now confirms indexing. Protected acquisition reports and small first-party field samples were read successfully through the existing Render Web Shell; completeness and causal performance claims remain limited. See `SEO_METRICS.md` and `ACQUISITION_CHECKPOINT_2026-09-06.md`.
 
 The owner approved Google's terms, and local read-only OAuth/API access was verified. A successful refreshed sync on September 6 imported finalized August 19–September 4 Search Console observations: 6 clicks, 58 impressions, all 17 daily dates, and no pagination cap reached. The OAuth app now shows In production, and the owner completed reauthorization after that change. The replacement grant was saved privately at 18:38:10 UTC; a subsequent refreshed property sync returned the same report and preserved its existing immutable snapshot. See `SEARCH_CONSOLE_SETUP.md` for both verification receipts and the remaining token-lifecycle boundaries. Review matched-window search and qualified-inquiry observations after sufficient post-release data accumulates; this historical connection proof does not establish release gains. No scheduler was created.
