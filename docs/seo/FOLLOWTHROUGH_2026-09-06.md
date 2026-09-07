@@ -74,6 +74,30 @@ The sitemap API reported **50 processed URLs**, with its latest download at
 **23:31 UTC**, before the newer 51-route sitemap. Neither that sitemap status nor
 the successful 51-route HTTP crawl proves that all 51 pages are indexed.
 
-No automatic monitor was created. Search reporting access, operational delivery,
+At this checkpoint, no automatic monitor had been created. Search reporting access, operational delivery,
 ad eligibility, actual paid delivery, indexed pages and business outcomes remain
 separate evidence. No real lead, booking, or sale is proven by these checks.
+
+## Late-evening indexing progress and scheduled follow-up
+
+At **2026-09-07T05:17:24.241208Z** (September 6 Pacific), fresh authenticated
+URL Inspection API results showed the contractor inquiry guide as **Submitted
+and indexed**, with its exact canonical and a successful mobile crawl at
+**04:48:14Z**. The Technical Build Partner page had a successful mobile crawl at
+**04:42:13Z**, but remained **Crawled - currently not indexed**. Its indexed
+canonical was not yet returned; earlier live self-canonical checks remain a
+separate observation. No duplicate requests were submitted.
+
+A fresh Google Ads September 6 report still showed **1 impression, 1 click,
+$5.00 spent, and 0 recorded conversions**. Campaign settings were unchanged.
+
+The thread follow-up `finish-leon-builds-indexing-and-ad-follow-through` is now
+**ACTIVE**, scheduled daily at **10 AM local time through September 17**. It
+checks the outstanding indexing state and campaign results, reports meaningful
+changes or required action, and preserves the existing spending authorization
+and September 14 campaign end date. It stops after verified indexing and the
+settled campaign report, or closes with explicit remaining uncertainty on
+September 17. Scheduling does not establish completed indexing or real leads.
+
+These local checks require the Mac to be on with the app running. The credentials
+remain in the private local directory; no credentials were copied to a hosted job.
