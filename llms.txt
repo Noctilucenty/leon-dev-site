@@ -66,7 +66,7 @@ These status labels are part of the evidence. A client website project is not au
 - [AI chatbots](https://leonbuilds.org/services/ai-chatbots): assistants grounded in approved business information; from $750.
 - [Dashboards and internal tools](https://leonbuilds.org/services/business-dashboards): focused operational views and task tools; from $750.
 - [Custom software](https://leonbuilds.org/services/custom-software): portals, CRM, inventory and business-specific systems; from $1,500.
-- [SEO and AI search](https://leonbuilds.org/services/seo): technical search foundations and answer-ready content structure; from $300.
+- [SEO and AI search (GEO)](https://leonbuilds.org/services/seo): technical SEO pass on an existing site from $450; AI search (GEO) pass with a before-and-after answer-engine check from $1,350; ongoing search or AI-visibility work from $450/mo.
 
 Third-party providers and licensed components retain their own terms and charges. The written scope defines which source, accounts, data, setup notes and support are included.
 

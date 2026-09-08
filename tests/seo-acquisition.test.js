@@ -274,7 +274,7 @@ test('app service has natural authority links from relevant proof and identity p
 
 test('services index exposes starting floors without making buyers open nine pages', () => {
   const visible = text(read('services/index.html'));
-  for (const floor of ['$300', '$3,500', '$750', '$1,000', '$500', '$1,500', '$600']) {
+  for (const floor of ['$300', '$450', '$3,500', '$750', '$1,000', '$500', '$1,500', '$600']) {
     assert.ok(visible.includes(`from ${floor}`), `services index includes ${floor}`);
   }
 });

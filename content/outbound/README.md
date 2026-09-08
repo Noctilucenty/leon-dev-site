@@ -38,7 +38,7 @@ site changes and this snapshot does not. It is a reference, not a rate-card post
 
 <!-- floor: small fixes=75 -->
 <!-- floor: websites=300 -->
-<!-- floor: seo=300 -->
+<!-- floor: seo=450 -->
 <!-- floor: business-automation=500 -->
 <!-- floor: booking-systems=600 -->
 <!-- floor: websites-backend=625 -->
@@ -53,8 +53,8 @@ site changes and this snapshot does not. It is a reference, not a rate-card post
 |---|---:|
 | Small fixes | $75+ |
 | Business website | $300+ |
-| SEO and AI search | $300+ |
 | Ongoing work | $400+/month |
+| SEO and AI search (GEO) | $450+ |
 | Workflow automation | $500+ |
 | Booking or direct ordering | $600+ |
 | Website with accounts and a database | $625+ |

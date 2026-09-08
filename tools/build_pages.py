@@ -179,15 +179,17 @@ SERVICES = [
   related=["business-automation","ai-chatbots","custom-software"]),
 
  dict(slug="seo", name="technical seo & ai search", h1=("technical seo for google —", "structured for ai search"),
-  price="$300", title="Technical SEO & AI Search Optimization | Leon Builds",
-  desc="Technical SEO, Search Console cleanup and answer-ready site structure. Measurable changes without fake locations, ranking promises or mass content.",
+  price="$450", title="Technical SEO & AI Search (GEO) Optimization | Leon Builds",
+  price_note='AI search (GEO) pass from <b>$1,350</b> · ongoing search or AI-visibility work from <b>$450/mo</b> · every scope agreed in writing',
+  desc="Technical SEO, Search Console cleanup and GEO-ready structure for Google and AI answers. Measurable changes, no fake locations, ranking promises or mass content.",
   intro=["google search and ai answer systems both need a crawlable site, clear language, useful pages and claims they can verify. there is no separate shortcut that replaces those fundamentals.",
    "we fix the technical and content structure: titles, internal links, indexing, schema, sitemaps, page speed and direct answers to real buyer questions — without fake city pages or mass-produced articles."],
   pains=["google has discovered pages but does not index the ones that matter","the site never says the service in the words customers search","important pages are buried or linked with vague anchor text","nobody measures impressions, clicks, calls or inquiries after a change"],
-  build=["search console and index-coverage diagnosis","titles, descriptions, headings, canonicals, sitemaps and crawlable internal links","useful service and industry pages with distinct buyer answers","structured data that matches visible content","clear entity, proof and citation paths for answer systems","measurement tied to calls, quote requests and bookings"],
+  build=["search console and index-coverage diagnosis","titles, descriptions, headings, canonicals, sitemaps and crawlable internal links","useful service and industry pages with distinct buyer answers","structured data that matches visible content","clear entity, proof and citation paths for answer systems","a before-and-after check of how chatgpt, perplexity and google's ai answers describe the business","measurement tied to calls, quote requests and bookings"],
   proof=("this site's public search foundation","inspect the clean sitemap, canonical pages, reciprocal language clusters, public proof links and structured data. none of those is presented as a ranking guarantee."),
   faqs=[("how is ai search different from seo?","there is no special markup that guarantees ai visibility. clear, crawlable, useful pages and verifiable claims support both traditional search and answer systems."),
-   ("what does it cost?","from $300 for a technical pass on an existing site. ongoing work is scoped in writing — no vague monthly retainer."),
+   ("what does it cost?","from $450 for a technical seo pass on an existing site. the ai search (geo) pass starts at $1,350 and includes the answer-engine check described above. ongoing search or ai-visibility work is scoped in writing from $450 a month — no vague retainer. the fixed price is written down before anything starts."),
+   ("what does the ai search (geo) pass include?","generative engine optimization means making your business easy for chatgpt, perplexity and google's ai answers to find, understand and cite. the pass records how those systems currently answer real buyer questions about your business and category, fixes the entity, proof and citation paths and the structured data they rely on, adds an llms.txt index, rewrites the key service pages to answer first, and re-runs the same questions after the changes. no citation or ranking guarantee — the work is documented and measured."),
    ("can you guarantee rankings?","no. we can document the changes, validate the technical implementation and measure impressions, clicks and inquiries, but search engines decide rankings."),
    ("do i need an llms.txt file?","it can provide a concise factual index for some systems, but it is not a google ranking control. the main work still belongs in visible pages, normal links and accurate structured data.")],
   related=["websites","ai-chatbots","business-dashboards"]),
@@ -614,6 +616,7 @@ def service_page(s):
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
     starter_website = ''
     starter_note = ''
+    price_note = f'<p class="sub pricetag-note">{s["price_note"]}</p>\n    ' if s.get("price_note") else ''
     if s["slug"] == "websites":
         starter_note = '<p class="sub">Only need one page? The <a href="#starter">$199 starter</a> includes supplied content, up to four sections, one contact or booking link and one revision. Larger website scopes start at $300.</p>\n    '
         starter_website = '''<section class="sec" id="starter"><div class="rail">
@@ -704,7 +707,7 @@ def service_page(s):
     <h1 class="dsp" >{e(s["h1"][0])} <em>{e(s["h1"][1])}</em></h1>
     {service_visual(s['slug'])}
     <p class="pricetag">From <b>{s["price"]}</b> · final scope and price agreed in writing</p>
-    {starter_note}{cta_block(starter, quote_first=quote_first or s["slug"] in {"websites", "business-automation"})}
+    {price_note}{starter_note}{cta_block(starter, quote_first=quote_first or s["slug"] in {"websites", "business-automation"})}
   </div>
 </section>
 <details class="rail visual-details"><summary>Scope, examples &amp; what is included</summary><div class="visual-details-content">

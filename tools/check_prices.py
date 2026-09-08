@@ -28,7 +28,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FLOORS = {
     'small fixes': 75,
     'websites': 300,
-    'seo': 300,
+    'seo': 450,
     'business-automation': 500,
     'booking-systems': 600,
     'websites-backend': 625,
@@ -47,6 +47,8 @@ PUBLIC_OFFERS = {
     'one-page-website-starter': 199,
     'technical-build-partner-plan': 199,
     'technical-build-partner-ongoing': 2000,
+    'ai-search-pass': 1350,          # the AI search (GEO) pass on /services/seo; anchored in research/2026-09-08-seo-geo-market-prices.md
+    'search-ongoing-monthly': 450,   # ongoing search or AI-visibility work, per month
 }
 
 # Figures a given service page may legitimately mention besides its own floor,
@@ -56,7 +58,7 @@ CROSS = {
     'booking-systems': {600, 300},       # ordering sits with booking
     'custom-software': {1500, 3500},     # apps are the bigger sibling
     'business-automation': {500, 600},   # integrations quoted alongside booking
-    'seo': {300},
+    'seo': {450, 1350},             # its own floor and the AI search (GEO) pass
     'ai-chatbots': {750, 600},
     'ai-phone-agents': {1000, 600, 500},
     'business-dashboards': {750, 500},
