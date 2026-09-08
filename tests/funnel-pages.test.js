@@ -219,6 +219,8 @@ test('contractor lead recovery is a focused website plus follow-up product', () 
   assert.match(html, /href="\/call\?service=contractor-lead-recovery" data-evt="cta_call_click"/);
   assert.match(html, /href="\/quote\?service=contractor-lead-recovery" data-evt="contractor_review_click"/);
   assert.match(html, /Get a free 3-point website review/i);
+  assert.match(html, /href="\/quote" data-evt="contractor_fixed_quote_click"/);
+  assert.match(visible, /No call or paid planning session required/);
   assert.match(html, /Prefer to talk\? Book 15 minutes/i);
   assert.match(visible, /three specific observations by email/i);
   assert.equal((html.match(/href="\/call\?service=contractor-lead-recovery"/g) || []).length, 2, 'booking remains prominent in hero and final CTA');
@@ -276,6 +278,8 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(visible, /one primary milestone plus agreed maintenance or fixes—not unlimited development/i);
   assert.match(visible, /Capacity, exclusions, and rollover are written before the month starts/i);
   assert.match(visible, /45-minute working session/i);
+  assert.match(visible, /Requesting a quote is free/);
+  assert.match(visible, /not a required first purchase/);
   assert.match(visible, /weekly progress note/i);
   assert.match(visible, /Free fit call Confirm whether we're a fit before deciding/i);
   assert.match(visible, /Read all 3 approved client reviews/i);

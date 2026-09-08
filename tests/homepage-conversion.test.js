@@ -119,13 +119,13 @@ test('hero uses the free review as its primary action', () => {
   const visible = plainText(hero);
   assert.match(visible, /websites that make it easy to act/i);
   assert.match(visible, /automation that follows up/i);
-  assert.match(visible, /small businesses.*clearer inquiry paths and less busywork/i);
-  assert.match(visible, /one-page websites from \$\s*199.*automation from \$\s*500/i);
+  assert.match(visible, /inquiries that reach you/i);
+  assert.match(visible, /Scope and price agreed first/i);
   const primary = linksIn(hero).find(link => link.attrs['data-event'] === 'hero_review_cta_click');
   assert.equal(primary?.attrs.href, '#review-form');
   assert.match(primary?.text || '', /get a free 3-point review/i);
-  assert.ok(linksIn(hero).some(link => link.attrs.href === '#work' && /see real work/i.test(link.text)));
-  assert.doesNotMatch(hero, /start a project|get a fixed quote|quote_cta_click/i);
+  assert.ok(linksIn(hero).some(link => link.attrs.href === 'https://leonbuilds.org/quote' && /get a fixed quote/i.test(link.text)));
+  assert.doesNotMatch(hero, /start a project/i);
 });
 
 test('service cards have crawlable detail links and scope controls', () => {

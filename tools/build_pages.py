@@ -59,15 +59,15 @@ IDENTITY_URLS = [
 # ══════════════════════════════════════════════════════════════════
 
 SERVICES = [
- dict(slug="websites", name="small-business web design", h1=("small-business web design that turns visits into", "calls and bookings"),
+ dict(slug="websites", name="small-business web design", h1=("Small-business web design with", "one clear next step."),
   price="$300", title="Small Business Web Design | Fixed-Price Websites | Leon Builds",
   desc="Phone-first small-business web design from a California-based, founder-led studio. Clear calls to action, fixed scope, direct communication and clean handover.",
   intro=["your website has seconds to answer four questions: what you do, who it is for, why the visitor should trust you, and what they should do next.",
    "we design fast, phone-first business websites around that decision. you work directly with the founder who builds the project, see a working link during the build, and get a written scope and handover."],
   pains=["you have no website, or you're embarrassed to send people to it","it looks broken on phones","nobody on your team can change the text or the hours","it doesn't take bookings, orders or payments","you paid an agency and can't even log into your own site"],
-  build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","english, spanish, portuguese or chinese — Leon works in all four"],
+  build=["a fast, responsive website with clear calls, quote requests, bookings or orders","search-ready titles, page structure, internal links, sitemap and structured data","editable content where the scope calls for it","the included source code and setup notes handed over; domains, hosting, fonts, plugins and other vendors keep their own terms","multilingual website layouts and content, with translated copy reviewed and approved by you before launch"],
   proof=("beastypages.com client website","inspect the phone-first catalog, which contained 37 businesses in the September 4, 2026 review snapshot, plus search, menus, and a clearly labelled demo cart. payment and kitchen progression are simulations."),
-  faqs=[("how much does a website cost?","a frontend business site starts at $300. if it needs a backend — logins, a database, an admin area, apis, anything that stores or processes data — that work typically starts around $625. you get a written fixed quote before anything starts, and it doesn't change after."),
+  faqs=[("how much does a website cost?","the focused one-page starter is $199 with supplied content, one contact or booking link and one revision. larger frontend business sites start at $300. a small, defined backend integration starts around $625, not a complete custom application. you get a written fixed quote before work starts; any change to that scope needs your agreement first."),
    ("i already have a website. do i have to start over?","usually not. most sites have one real problem — slow, broken on phones, or nobody can update it. a redesign is priced like a new build, from $300, and we'll tell you which parts are worth keeping."),
    ("how long does it take?","most focused business sites take one to two weeks after the scope, content and required access are ready. you get a working link to review during the build."),
    ("do you only design websites in california?","no. we're based in california and work remotely with businesses across the united states."),
@@ -613,7 +613,9 @@ def service_page(s):
     build = ''.join(f'<li><svg class="ic"><use href="#ic-check"/></svg>{e(b)}</li>' for b in s["build"])
     intro = ''.join(f'<p class="sub">{e(p)}</p>' for p in s["intro"])
     starter_website = ''
+    starter_note = ''
     if s["slug"] == "websites":
+        starter_note = '<p class="sub">Only need one page? The <a href="#starter">$199 starter</a> includes supplied content, up to four sections, one contact or booking link and one revision. Larger website scopes start at $300.</p>\n    '
         starter_website = '''<section class="sec" id="starter"><div class="rail">
   <p class="label">A smaller starting point</p><h2 class="page-section-title">One-page starter website · $199</h2>
   <p class="sub">One responsive page with up to four sections, your supplied copy and images, one contact or booking link, and one revision. Target delivery is five days after the scope, content, access and start date are agreed.</p>
@@ -677,8 +679,8 @@ def service_page(s):
     <h2 class="page-section-title">Website cost depends on what the site must do</h2>
     <div class="scope-grid">
       <article><span>01</span><h3>Frontend presence site</h3><p>A fast, responsive site with your offer, proof, contact path and handover. Starts at $300.</p></article>
-      <article><span>02</span><h3>Website with a backend</h3><p>Accounts, a database, an admin area or APIs add application work. Typically starts at $625.</p></article>
-      <article><span>03</span><h3>Booking or ordering</h3><p>Calendars, reminders, deposits, menus or checkout are scoped as a customer workflow. Starts at $600.</p></article>
+      <article><span>02</span><h3>One backend integration</h3><p>A small, defined form, data or API integration starts at $625. Accounts, admin areas and complete custom applications need a separate scope and quote.</p></article>
+      <article><span>03</span><h3>One booking or ordering flow</h3><p>A focused setup using an agreed existing platform starts at $600. Custom calendars, marketplaces and multiple payment flows are quoted separately.</p></article>
     </div>
     <p class="sub web-scope-note">If an existing website only needs one repair, we'll say so. If a standard platform is the better fit, we'll recommend that instead of custom code.</p>
     <p class="label web-industry-label">web design by business type</p>
@@ -702,11 +704,11 @@ def service_page(s):
     <h1 class="dsp" >{e(s["h1"][0])} <em>{e(s["h1"][1])}</em></h1>
     {service_visual(s['slug'])}
     <p class="pricetag">From <b>{s["price"]}</b> · final scope and price agreed in writing</p>
-    {cta_block(starter, quote_first=quote_first)}
+    {starter_note}{cta_block(starter, quote_first=quote_first or s["slug"] in {"websites", "business-automation"})}
   </div>
 </section>
 <details class="rail visual-details"><summary>Scope, examples &amp; what is included</summary><div class="visual-details-content">
-{intro}{reviews}{web_guide}<section class="sec">
+{intro}{web_guide}<section class="sec">
   <div class="rail two-col">
     <div>
       <h2 class="page-section-title">{e(pains_heading)}</h2>
@@ -719,7 +721,7 @@ def service_page(s):
   </div>
 </section>
 </div></details>
-{starter_website}<section class="sec">
+{reviews}{starter_website}<section class="sec">
   <div class="rail">
     <p class="label">{e(proof_label)}</p>
     <h2 class="page-section-title">{e(proof_heading)}</h2>
@@ -737,7 +739,7 @@ def service_page(s):
     {faq_html(s["faqs"])}{decision_guide}
     <p class="label" style="margin-top:3rem">related</p>
     <div class="relrow">{related}</div>
-    {cta_block(starter, quote_first=quote_first)}
+    {cta_block(starter, quote_first=quote_first or s["slug"] in {"websites", "business-automation"})}
   </div>
 </section>
 </main>''' + footer() + '</body></html>'
@@ -1602,6 +1604,7 @@ def missed_lead_recovery_page():
     <p class="sub business-copy">Leon builds the site, estimate form, prompt automatic acknowledgment, owner handoff, and up to two follow-ups. Fixed scope starts at $1,500; timing follows the written scope and access check.</p>
     <p class="hero-local business-copy">The free review sends three specific observations by email. Prefer a conversation? Choose the 15-minute call.</p>
     <div class="ctarow">{review_cta}{call_cta}</div>
+    <p class="hero-local business-copy">Already know what needs building? <a href="/quote" data-evt="contractor_fixed_quote_click">Request a fixed quote by email</a>. No call or paid planning session required.</p>
     <p class="hero-local business-copy">Based in California. Working remotely with contractors and home-service businesses across the U.S.</p>
   </div>
 </section>
@@ -1684,9 +1687,9 @@ def technical_partner_page():
             'automation, internal tool, or app, with written scope and direct handoff.')
     faqs = [
         ("Do I need to know what should be built?",
-         "No. Bring the bottleneck and a rough idea of what a good outcome looks like. Turning that into a concrete recommendation is exactly what the Systems Plan is for."),
+         "No. Describe the bottleneck and the result you need. We can discuss a first milestone and quote by email. You do not need to buy a Systems Plan or book a call first."),
         ("Should I book the free call or start with the $199 Systems Plan?",
-         "Use the free 15-minute call to confirm we're a fit. Choose the Systems Plan when the problem needs a real working session, and you want the recommendation, budget range, timeline, and first-milestone scope in writing. That plan is yours to keep whether or not you continue."),
+         "Both are optional. Use the free 15-minute call to confirm we're a fit. Choose the $199 Systems Plan only when the problem needs a deeper working session and written recommendation, budget range, timeline and first-milestone scope. That plan is yours to keep whether or not you continue."),
         ("Can the whole project be delivered in 1–3 days?",
          "The 1–3 day window is for the first working milestone on a ready, well-scoped project, not the whole build. The full schedule is confirmed in writing once scope and access are checked, so there are no surprises later."),
         ("What is handed over when the work is done?",
@@ -1759,7 +1762,7 @@ def technical_partner_page():
       <h1 class="dsp business-copy">Bring the bottleneck. We'll plan and build the smallest fix that works.</h1>
       <p class="sub business-copy">Whether it's lost leads, repeated admin work, an outdated website, or a tool or app that is stuck, you work directly with Leon. He scopes one result in writing, builds it, and shows it working before handoff.</p>
       <div class="ctarow">{quote_cta}{call_cta}</div>
-      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. Leon replies to the email you provide.</p>
+      <p class="partner-cta-note business-copy">No payment or commitment to send the problem. Leon replies by email with a proposed next step. A call and the paid Systems Plan are optional.</p>
     </div>
     <aside class="hero-proof partner-hero-proof" aria-label="Public work you can inspect before contacting Leon">
       <div class="hero-proof-head"><span>Public proof</span><small>Inspect before you contact</small></div>
@@ -1835,7 +1838,8 @@ def technical_partner_page():
 <section class="sec" id="offers">
   <div class="rail">
     <p class="label">Choose the next decision, not the biggest package</p>
-    <h2 class="page-section-title business-copy">One free call, then three defined ways to start.</h2>
+    <h2 class="page-section-title business-copy">Start with one working result. Decide on ongoing support later.</h2>
+    <p class="sub business-copy">Requesting a quote is free. If we can define the work from your brief, we can go straight to a fixed scope. The paid plan is for deeper investigation, not a required first purchase.</p>
     <div class="partner-chooser" aria-label="Which Technical Build Partner starting point should I choose?">
       <a href="#start"><b>Free fit call</b><span>Confirm whether we're a fit before deciding.</span></a>
       <a href="#offer-plan"><b>$199 Systems Plan</b><span>Leave with a written recommendation you keep.</span></a>

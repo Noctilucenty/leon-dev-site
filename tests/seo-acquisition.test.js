@@ -204,7 +204,10 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   const visible = text(html);
 
   assert.match(html, /<title>Small Business Web Design \| Fixed-Price Websites \| Leon Builds<\/title>/i);
-  assert.match(visible, /small-business web design that turns visits into calls and bookings/i);
+  assert.match(visible, /small-business web design with one clear next step/i);
+  assert.doesNotMatch(visible, /Leon works in all four/i);
+  assert.match(visible, /translated copy reviewed and approved by you/i);
+  assert.match(visible, /not a complete custom application/i);
   assert.match(visible, /what your website must answer in five seconds/i);
   assert.match(visible, /website cost depends on what the site must do/i);
   assert.match(visible, /beastypages\.com client website/i);
@@ -219,7 +222,10 @@ test('website pillar answers search, trust, scope, and next-action questions', (
   assert.match(html, /href="\/industries\/restaurants"/i);
 
   const hero = html.match(/<section class="sec page-hero">[\s\S]*?<\/section>/i)?.[0] || '';
-  assert.ok(hero.indexOf('href="/call"') < hero.indexOf('href="/quote"'), 'calendar is the first service-page action');
+  assert.ok(hero.indexOf('href="/quote"') < hero.indexOf('href="/call"'), 'quote-ready buyers do not have to book a call');
+  assert.match(text(hero), /\$199 starter/);
+  const detailsEnd = html.indexOf('</div></details>');
+  assert.ok(html.indexOf('class="sec service-reviews"') > detailsEnd, 'client feedback is outside collapsed scope details');
 });
 
 test('app-development landing page is clear, credible, and quote-first', () => {
