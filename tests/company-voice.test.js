@@ -13,7 +13,7 @@ const text = html => html.replace(/<script\b[\s\S]*?<\/script>/gi, '')
 test('company voice keeps a named founder instead of implying an anonymous team', () => {
   for (const file of ['index.html', 'technical-build-partner.html']) {
     const visible = text(read(file));
-    assert.match(visible, /Founder-led delivery/i, file);
+    assert.match(visible, /Founder-led delivery|Work directly with Leon/i, file);
     assert.match(visible, /Leon Kelvin Li/, file);
     assert.doesNotMatch(visible, /our team of (?:developers|engineers|experts)/i, file);
   }

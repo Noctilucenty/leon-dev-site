@@ -120,7 +120,7 @@
   var contractorReview=service==='contractor-lead-recovery';
   var technicalPartner=service==='technical-build-partner';
   if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
-  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send the bottleneck':'Send your project');
+  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send my project details':'Send your project');
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
@@ -132,31 +132,31 @@
   }else if(technicalPartner){
     f.elements.service.value=service;
     f.elements.package.value=packageName;
-    document.getElementById('quote-context-label').textContent='Technical build partner inquiry';
-    document.getElementById('quote-context-title').innerHTML='Tell us what is <em>slowing the business down.</em>';
-    document.getElementById('quote-context-intro').textContent='Describe the bottleneck in plain words. We will recommend the smallest sensible next step before asking you to commit to a larger build.';
-    document.getElementById('quote-problem-label').textContent='What is slowing the business down, and what would a useful result look like?';
-    f.elements.problem.placeholder='Leads get lost after the form, staff copy the same data twice, or the product is stuck before release…';
+    document.getElementById('quote-context-label').textContent='Website, app, or automation project';
+    document.getElementById('quote-context-title').innerHTML='What would you like to <em>build or improve?</em>';
+    document.getElementById('quote-context-intro').textContent='Tell me about your business and what you need. I will reply by email with a recommended next step. Requesting a quote is free, and you do not need a technical brief.';
+    document.getElementById('quote-problem-label').textContent='What would you like to build or improve?';
+    f.elements.problem.placeholder='A new website, automatic replies to inquiries, a dashboard for the team, an app idea, or something else…';
     if(packageName==='systems-plan'){
       document.getElementById('quote-context-label').textContent='$199 Systems Plan';
       document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the bottleneck and the result you need. We will confirm fit before you pay for the 45-minute working session and written plan.';
-      document.getElementById('quote-problem-label').textContent='What bottleneck should the Systems Plan solve?';
-      f.elements.problem.placeholder='Staff repeat the same task, tools do not connect, leads get lost, or another specific bottleneck…';
+      document.getElementById('quote-context-intro').textContent='Describe what you want to improve and any tools you use today. Leon will confirm whether the 45-minute working session and written plan would help before you pay.';
+      document.getElementById('quote-problem-label').textContent='What would you like help planning?';
+      f.elements.problem.placeholder='A task takes too much time, your tools do not connect, or you need help deciding how to build an idea…';
       buttonText.textContent='Ask to start the Systems Plan';
       idleButtonText='Ask to start the Systems Plan';
     }else if(packageName==='focused-build-sprint'){
       document.getElementById('quote-context-label').textContent='Focused Build Sprint · from $1,500';
-      document.getElementById('quote-context-title').innerHTML='Define one <em>working milestone.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the single result that should be working at the end. We will reply with the acceptance checks, scope, price, and timeline before work begins.';
-      document.getElementById('quote-problem-label').textContent='What one working result should this sprint deliver?';
+      document.getElementById('quote-context-title').innerHTML='What should we <em>build first?</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the part of your project you want built first. Leon will reply with what is included, how we will check it works, the price, and the timeline.';
+      document.getElementById('quote-problem-label').textContent='What is the first part of the project you want built?';
       f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
       idleButtonText='Discuss a focused build';
     }else if(packageName==='ongoing-technical-partner'){
       document.getElementById('quote-context-label').textContent='Ongoing Technical Build Partner · from $2,000/month';
       document.getElementById('quote-context-title').innerHTML='Pick your first <em>monthly priority.</em>';
-      document.getElementById('quote-context-intro').textContent='Share the first milestone and the maintenance or fixes competing for attention. We will propose a bounded monthly scope; this is not unlimited development.';
-      document.getElementById('quote-problem-label').textContent='What is the first priority, and what keeps interrupting it?';
+      document.getElementById('quote-context-intro').textContent='Share what you want to build or improve each month, along with any maintenance or fixes you need. Leon will propose an agreed monthly scope; this is not unlimited development.';
+      document.getElementById('quote-problem-label').textContent='What would you like help with each month, and what should come first?';
       f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
       idleButtonText='Discuss ongoing support';
     }

@@ -16,7 +16,7 @@ These are starting scope floors, not instant quotes. Leon confirms the fixed pri
 
 ## Technical Build Partner
 
-- [Technical Build Partner for small businesses](https://leonbuilds.org/technical-build-partner) is for owners who know the bottleneck but do not yet know whether the right fix is a website, automation, internal tool, app, or an existing product.
+- [Technical Build Partner for small businesses](https://leonbuilds.org/technical-build-partner) offers direct work with Leon on websites, automation for repeat tasks, internal tools, and custom apps. Owners can request a free project quote by email; a planning session or call is optional.
 - Systems Plan: $199 for a written problem map, the smallest recommended solution, and a proposed scope, budget and timeline. The $199 is credited toward the agreed build if the client continues with Leon.
 - Focused Build Sprint: from $1,500 for one priority build with written scope, review checkpoints, testing and the agreed handoff.
 - Ongoing Technical Build Partner: from $2,000 per month for reserved build capacity, a written priority backlog and an agreed monthly scope.

@@ -243,15 +243,15 @@
     trackContext('call_context_contractor',{service:'contractor-lead-recovery'});
   }else if(service==='technical-build-partner'){
     document.body.classList.add('technical-partner-call-context');
-    document.title='Book a Technical Build Partner Fit Call | Leon Builds';
-    if(label) label.textContent='Technical Build Partner fit call';
-    if(title) title.innerHTML='Book a free <em>15-minute fit call</em>';
-    if(intro) intro.textContent='Bring the bottleneck, even if you do not know whether the answer is a website, automation, internal tool, app, or no custom build at all.';
+    document.title='Discuss Your Website, App or Automation | Leon Builds';
+    if(label) label.textContent='Your website, app, or automation project';
+    if(title) title.innerHTML='Book a free <em>15-minute project call</em>';
+    if(intro) intro.textContent='Tell Leon what you want to build or improve. Use this free call to discuss your website, app, or repeat tasks and decide on a practical next step.';
     if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
     if(agenda) agenda.textContent='What happens in the fit call';
     if(packageName==='systems-plan'){
       if(label) label.textContent='Systems Plan fit call';
-      if(intro) intro.textContent='Bring the bottleneck and the result you need. Leon will confirm whether the 45-minute written Systems Plan is the right next step before you pay for it.';
+      if(intro) intro.textContent='Tell Leon what you want to improve. He will confirm whether a 45-minute working session and written Systems Plan would help before you pay for it.';
     }
     var context={service:'technical-build-partner'};
     if(/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) context.package=packageName;
