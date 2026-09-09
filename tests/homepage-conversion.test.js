@@ -154,7 +154,7 @@ test('work proof uses canonical case-study pages without another review pitch', 
   ]);
   assert.match(plainText(work), /33,772.*ZIP-code records/i);
   assert.match(plainText(work), /founder-built product/i);
-  assert.match(plainText(work), /client build.*demo checkout/i);
+  assert.match(plainText(work), /client website.*demo checkout/i);
   assert.match(work, /data-conversion-proof=["']allcpr-case-study["']/i);
   assert.doesNotMatch(work, /href=["'][^"']*\/work#|apps\.apple\.com|href=["']https:\/\/(?:www\.)?beastypages\.com/i);
   const repeat = linksIn(html).find(link => link.attrs['data-event'] === 'work_review_cta_click');

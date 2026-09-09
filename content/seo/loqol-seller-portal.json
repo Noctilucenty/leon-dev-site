@@ -3,8 +3,8 @@
   "name": "LOQOL seller portal",
   "status": "Client product contribution · implementation case",
   "title": "LOQOL Seller Portal Contribution | Leon Builds",
-  "desc": "Leon's React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.",
-  "lede": "A seller can spend several minutes writing a disclosure answer, then switch fields or get interrupted. Leon contributed to LOQOL's existing seller portal to connect those forms to backend APIs and handle unfinished answers more carefully.",
+  "desc": "Leon contributed to LOQOL's seller portal, connecting disclosure answers to property records and adding safeguards for unfinished work.",
+  "lede": "Real-estate disclosures take time to complete. Leon built parts of LOQOL's existing seller portal that connect answers to the right records and protect the text a seller is still writing.",
   "image": "/assets/proof/loqol-seller-portal-contribution.svg",
   "image_alt": "Implementation diagram, not a production screenshot: seller answer, local draft, and backend API",
   "image_width": 1600,
@@ -13,13 +13,13 @@
   "project_type": "Client product contribution",
   "reviewed_date": "2026-09-06",
   "reviewed_label": "September 6, 2026",
-  "scope_heading": "Leon's implementation contribution.",
+  "scope_heading": "What Leon worked on.",
   "decision_heading": "Let the seller finish typing before replacing their answer.",
   "problem": "A seller is halfway through an answer when the page fetches an older saved copy. If the form replaces the text too soon, their unfinished work can disappear. Leon's work focused on that moment: keeping the answer being typed separate from the last saved version, and connecting each field to the right record.",
   "built": [
-    ["Connect the form to the record", "Connected React/TypeScript disclosure fields to backend APIs, the connections used to load and update the seller's answers."],
-    ["Save at natural stopping points", "Added save requests after a pause in typing, when the seller moves to another field, and when they close a form with an unfinished edit."],
-    ["Keep the answer being typed", "Kept the current draft separate from an incoming saved copy while the seller is editing. That separation is important when the page refreshes information in the background."]
+    ["Keep answers with the right record", "Connected disclosure forms to the system that loads and updates each seller's answers."],
+    ["Request saves as sellers work", "Added automatic save requests when typing pauses, the seller moves to another field, or they close an unfinished form."],
+    ["Protect the answer in progress", "Kept the seller's current text separate from older saved answers arriving in the background."]
   ],
   "evidence": [
     "Leon's work covers the form interface, its API connections and handling unfinished answers. The team already had the product and its design.",

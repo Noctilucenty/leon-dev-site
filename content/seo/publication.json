@@ -7,16 +7,16 @@
       "path": "/work/loqol-seller-portal",
       "decision": "INDEX",
       "source_file": "content/seo/loqol-seller-portal.json",
-      "sha256": "50b6194ef879fdb56055292bcd28541e275c86dd0c3c4134364a4090faee6375",
+      "sha256": "bb641fff27ad2a7f23c60e75afb08b2e261e17e97261bc89f4457a90b665304d",
       "rendered_file": "work/loqol-seller-portal.html",
-      "rendered_sha256": "21de332f58de3d70c06f8a018664c21775ea50811ca70c446354acbb3be97cab",
+      "rendered_sha256": "3d8cacb5f07bc2bc8b526595f58400be025dff89c98301ba945c199a130918e6",
       "diagram_sha256": "f2c4f6bb05f876ac95349eae9c56d46b2b408c6024b9bd31f5d80f9bc4024043",
-      "reviewed_at": "2026-09-06",
+      "reviewed_at": "2026-09-09",
       "producer": "/root",
-      "reviewer": "/root/proposal_review",
-      "review_type": "Independent source, rendered HTML and diagram-content editorial review after an IMPROVE decision and plain-language revision. Not audience testing, production verification or measured performance.",
-      "scores": {"SearchIntentMatch":9,"InformationGain":9,"SourceQuality":9,"Originality":9,"Completeness":9,"Readability":9,"Curiosity":9,"FactualConfidence":9,"DuplicateSafety":9,"ConversionFit":9},
-      "rationale": "Specific unfinished-answer versus saved-copy problem; three implementation contributions match reviewed code and attribution. Existing product/design ownership, save requests versus persisted data, labelled diagram versus production screenshot, and the older separate demo remain clear. The revised headings and example resolve the earlier readability blocker. Quote/call links are proportionate. A permitted real walkthrough would be stronger proof; rollout and business results are not established."
+      "reviewer": "/root/loqol_publication_review",
+      "review_type": "Independent editorial review of exact source, rendered HTML and unchanged diagram content using the September 6 implementation provenance. Not a fresh code audit, browser layout review, production test or audience study.",
+      "scores": {"SearchIntentMatch":9.5,"InformationGain":9,"SourceQuality":9,"Originality":9.2,"Completeness":9,"Readability":9.3,"Curiosity":9,"FactualConfidence":9,"DuplicateSafety":9.5,"ConversionFit":9},
+      "rationale": "The specific unfinished-answer problem explains Leon's contribution in terms a business owner can understand. Three concrete implementation details remain, while unnecessary framework terminology has been removed. Existing product/design ownership, requested saves versus verified persistence, diagram versus production screenshot, and the separate older demo remain explicit. No measured-outcome or launch claims were introduced. Metadata and generated body agree; structured data parses; quote and call links are proportionate."
     },
     {
       "path": "/guides/website-builder-or-custom-software",

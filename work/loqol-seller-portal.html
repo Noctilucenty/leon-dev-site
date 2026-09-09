@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>LOQOL Seller Portal Contribution | Leon Builds</title>
-<meta name="description" content="Leon&#x27;s React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.">
+<meta name="description" content="Leon contributed to LOQOL&#x27;s seller portal, connecting disclosure answers to property records and adding safeguards for unfinished work.">
 <meta name="theme-color" content="#f6f5f1">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://leonbuilds.org/work/loqol-seller-portal">
@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://leonbuilds.org/work/loqol-seller-portal">
 <meta property="og:site_name" content="Leon Builds">
 <meta property="og:title" content="LOQOL Seller Portal Contribution | Leon Builds">
-<meta property="og:description" content="Leon&#x27;s React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.">
+<meta property="og:description" content="Leon contributed to LOQOL&#x27;s seller portal, connecting disclosure answers to property records and adding safeguards for unfinished work.">
 <meta property="og:image" content="https://leonbuilds.org/assets/proof/loqol-seller-portal-contribution.svg">
 <meta property="og:image:alt" content="Implementation diagram, not a production screenshot: seller answer, local draft, and backend API">
 
@@ -28,7 +28,7 @@
 <link rel="stylesheet" href="/assist.css">
 <link rel="stylesheet" href="/site-design.css">
 <script src="/site-motion.js" defer></script>
-<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebPage", "@id": "https://leonbuilds.org/work/loqol-seller-portal#page", "url": "https://leonbuilds.org/work/loqol-seller-portal", "name": "LOQOL Seller Portal Contribution", "description": "Leon's React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.", "isPartOf": {"@id": "https://leonbuilds.org/#website"}, "mainEntity": {"@id": "https://leonbuilds.org/work/loqol-seller-portal#case-study"}, "dateModified": "2026-09-06"}, {"@context": "https://schema.org", "@type": "Article", "@id": "https://leonbuilds.org/work/loqol-seller-portal#case-study", "headline": "LOQOL Seller Portal Contribution", "description": "Leon's React and TypeScript contribution to an existing real-estate seller portal: disclosure forms, API connections, autosave attempts and unfinished-answer handling.", "image": "https://leonbuilds.org/assets/proof/loqol-seller-portal-contribution.svg", "author": {"@type": "Person", "@id": "https://leonbuilds.org/#leon", "name": "Leon Kelvin Li", "url": "https://leonbuilds.org/about"}, "publisher": {"@id": "https://leonbuilds.org/#business"}, "mainEntityOfPage": {"@id": "https://leonbuilds.org/work/loqol-seller-portal#page"}, "dateModified": "2026-09-06"}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "home", "item": "https://leonbuilds.org/"}, {"@type": "ListItem", "position": 2, "name": "work and case studies", "item": "https://leonbuilds.org/work"}, {"@type": "ListItem", "position": 3, "name": "LOQOL seller portal", "item": "https://leonbuilds.org/work/loqol-seller-portal"}]}]</script>
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "WebPage", "@id": "https://leonbuilds.org/work/loqol-seller-portal#page", "url": "https://leonbuilds.org/work/loqol-seller-portal", "name": "LOQOL Seller Portal Contribution", "description": "Leon contributed to LOQOL's seller portal, connecting disclosure answers to property records and adding safeguards for unfinished work.", "isPartOf": {"@id": "https://leonbuilds.org/#website"}, "mainEntity": {"@id": "https://leonbuilds.org/work/loqol-seller-portal#case-study"}, "dateModified": "2026-09-06"}, {"@context": "https://schema.org", "@type": "Article", "@id": "https://leonbuilds.org/work/loqol-seller-portal#case-study", "headline": "LOQOL Seller Portal Contribution", "description": "Leon contributed to LOQOL's seller portal, connecting disclosure answers to property records and adding safeguards for unfinished work.", "image": "https://leonbuilds.org/assets/proof/loqol-seller-portal-contribution.svg", "author": {"@type": "Person", "@id": "https://leonbuilds.org/#leon", "name": "Leon Kelvin Li", "url": "https://leonbuilds.org/about"}, "publisher": {"@id": "https://leonbuilds.org/#business"}, "mainEntityOfPage": {"@id": "https://leonbuilds.org/work/loqol-seller-portal#page"}, "dateModified": "2026-09-06"}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "home", "item": "https://leonbuilds.org/"}, {"@type": "ListItem", "position": 2, "name": "work and case studies", "item": "https://leonbuilds.org/work"}, {"@type": "ListItem", "position": 3, "name": "LOQOL seller portal", "item": "https://leonbuilds.org/work/loqol-seller-portal"}]}]</script>
 </head>
 <body class="evidence-page" data-assistant-launcher="hidden"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="ic-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></symbol><symbol id="ic-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></symbol></svg><a class="skip" href="#main">Skip to content</a>
 <div class="progress" id="progress" aria-hidden="true"></div>
@@ -57,7 +57,7 @@
       <p class="crumbs"><a href="/">home</a> <i>/</i> <a href="/work">work and case studies</a> <i>/</i> <span>LOQOL seller portal</span></p>
       <p class="label">Client product contribution · implementation case</p>
       <h1 class="dsp business-copy">LOQOL seller portal <em>case study.</em></h1>
-      <p class="sub business-copy">A seller can spend several minutes writing a disclosure answer, then switch fields or get interrupted. Leon contributed to LOQOL&#x27;s existing seller portal to connect those forms to backend APIs and handle unfinished answers more carefully.</p>
+      <p class="sub business-copy">Real-estate disclosures take time to complete. Leon built parts of LOQOL&#x27;s existing seller portal that connect answers to the right records and protect the text a seller is still writing.</p>
       <p class="case-study-meta business-copy">Role: Frontend developer contributing to an existing product and design · Client product contribution · reviewed September 6, 2026</p>
     </div>
     <figure class="case-study-cover"><img src="/assets/proof/loqol-seller-portal-contribution.svg" alt="Implementation diagram, not a production screenshot: seller answer, local draft, and backend API" width="1600" height="1200"></figure>
@@ -75,8 +75,8 @@
 <section class="sec" aria-labelledby="case-built-title">
   <div class="rail">
     <p class="label">What Leon built</p>
-    <h2 class="page-section-title" id="case-built-title">Leon&#x27;s implementation contribution.</h2>
-    <div class="scope-grid case-study-build"><article><span>01</span><h3>Connect the form to the record</h3><p>Connected React/TypeScript disclosure fields to backend APIs, the connections used to load and update the seller&#x27;s answers.</p></article><article><span>02</span><h3>Save at natural stopping points</h3><p>Added save requests after a pause in typing, when the seller moves to another field, and when they close a form with an unfinished edit.</p></article><article><span>03</span><h3>Keep the answer being typed</h3><p>Kept the current draft separate from an incoming saved copy while the seller is editing. That separation is important when the page refreshes information in the background.</p></article></div>
+    <h2 class="page-section-title" id="case-built-title">What Leon worked on.</h2>
+    <div class="scope-grid case-study-build"><article><span>01</span><h3>Keep answers with the right record</h3><p>Connected disclosure forms to the system that loads and updates each seller&#x27;s answers.</p></article><article><span>02</span><h3>Request saves as sellers work</h3><p>Added automatic save requests when typing pauses, the seller moves to another field, or they close an unfinished form.</p></article><article><span>03</span><h3>Protect the answer in progress</h3><p>Kept the seller&#x27;s current text separate from older saved answers arriving in the background.</p></article></div>
   </div>
 </section>
 

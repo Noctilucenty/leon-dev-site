@@ -1420,8 +1420,8 @@ def work_page():
         <div class="case-copy">
           <p class="label">Client product contribution · existing product and design</p>
           <h3>LOQOL seller portal</h3>
-          <p class="business-copy"><b>Problem:</b> Long disclosure answers need careful handling when users pause, switch fields or receive background updates.</p>
-          <p class="business-copy"><b>Contribution:</b> React/TypeScript form-to-API connections, autosave attempts and separating unfinished local answers from server refreshes.</p>
+          <p class="business-copy"><b>Problem:</b> Sellers need to complete long disclosure forms without losing the answer they are still writing.</p>
+          <p class="business-copy"><b>Contribution:</b> Built parts of the existing portal to connect answers to seller records, request automatic saves, and protect unfinished text during background updates.</p>
           <p class="case-role">Role: frontend implementation within the team's existing product and design</p>
           <div class="case-links"><a class="case-link" href="/work/loqol-seller-portal" data-evt="work_loqol_portal_case_click">Read the contribution case →</a></div>
         </div>
@@ -1783,7 +1783,7 @@ def technical_partner_page():
     <h2 class="page-section-title">Here's what I can handle.</h2>
     <div class="partner-build-grid">
       <article><h3>Websites</h3><p>A clear way for customers to call, book, or request a quote.</p></article>
-      <article><h3>Automation</h3><p>Replies, reminders, and less copying between your tools.</p></article>
+      <article><h3>Automation</h3><p>Automatic replies and reminders, with less repetitive work.</p></article>
       <article><h3>Internal tools</h3><p>One place to manage the work your team does every day.</p></article>
       <article><h3>Apps</h3><p>A working product for your customers or staff.</p></article>
     </div>
@@ -1957,7 +1957,7 @@ def about_page():
 <section class="sec">
   <div class="rail">
     <p class="label">recent client work</p>
-    <p class="sub">Leon contributes to <span class="keepcase">LOQOL</span>'s existing real-estate seller portal, connecting disclosure forms to backend APIs and working on autosave and unfinished answers. he also designed and built the <span class="keepcase">FLORES Boxing Gloves</span> website and <span class="keepcase">ONPECY</span>'s bilingual website. <a class="tlink" href="/work/loqol-seller-portal">see his seller-portal contribution</a>, separate from the older public disclosure demo.</p>
+    <p class="sub">Leon contributes to <span class="keepcase">LOQOL</span>'s existing real-estate seller portal, helping connect disclosure answers to seller records and protect unfinished text while sellers work. he also designed and built the <span class="keepcase">FLORES Boxing Gloves</span> website and <span class="keepcase">ONPECY</span>'s bilingual website. <a class="tlink" href="/work/loqol-seller-portal">see his seller-portal contribution</a>, separate from the older public disclosure demo.</p>
     <p class="sub">owners who know the bottleneck but not the right software can start with Leon's <a class="tlink" href="/technical-build-partner">Technical Build Partner offer</a>: one person maps the problem, recommends the smallest useful build, and stays responsible through testing and handoff.</p>
     <p class="sub">his current product is <a class="tlink" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="tlink" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="tlink" href="/services/mobile-apps">mobile app development service</a>. additional public product and workflow evidence is collected in the <a class="tlink" href="/work">Leon Builds work archive</a>.</p>
     <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="tlink" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="tlink" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="tlink" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="tlink" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="tlink" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
