@@ -18,7 +18,7 @@ test('company voice keeps a named founder instead of implying an anonymous team'
     assert.doesNotMatch(visible, /our team of (?:developers|engineers|experts)/i, file);
   }
   assert.match(text(read('quote.html')), /Tell me what you need fixed/i);
-  assert.match(text(read('quote.html')), /Your request was saved\. Leon will reply/i);
+  assert.match(text(read('quote.html')), /Your request was saved\. I'll reply/i);
 });
 
 test('AI offers explain limits without promising perfect answers or availability', () => {

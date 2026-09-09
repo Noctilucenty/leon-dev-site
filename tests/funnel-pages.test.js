@@ -78,7 +78,7 @@ test('quote submission waits for a receipt and keeps mailto as a fallback', () =
   assert.match(html, /Name <i>\(optional\)<\/i>/i);
   assert.match(html, /Email <i>\(required\)<\/i>/i);
   assert.match(html, /<details>[\s\S]*<summary>Add project details <i>\(optional\)<\/i><\/summary>/i);
-  assert.match(html, /<button[^>]*type="submit"[^>]*>[\s\S]*Send your project/i);
+  assert.match(html, /<button[^>]*type="submit"[^>]*>[\s\S]*Send my project details/i);
   assert.doesNotMatch(html, /Need help describing it\?|data-assist-open/i);
   assert.match(html, /No payment or commitment\.[\s\S]*scope and price are agreed before work begins/i);
   assert.ok(html.indexOf('name="websiteUrl"') < html.indexOf('name="problem"'));
@@ -338,7 +338,7 @@ test('technical build partner is a concrete, attributable offer with honest timi
   assert.match(quote, /Describe the part of your project you want built first/);
   assert.match(quote, /Ongoing partner · from \$2,000\/month/);
   assert.match(quote, /What would you like help with each month, and what should come first\?/);
-  assert.match(quote, /Leon will propose an agreed monthly scope; this is not unlimited development/);
+  assert.match(quote, /I will propose an agreed monthly scope; this is not unlimited development/);
   assert.match(quote, /packageName=.*get\('package'\)/);
   assert.match(quote, /bookCall\.href='\/call\?service='/);
   assert.match(quote, /details\.service=service/);

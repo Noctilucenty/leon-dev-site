@@ -53,7 +53,7 @@
 <section class="sec page-hero">
   <div class="rail">
     <p class="crumbs"><a href="/">home</a> <i>/</i> <span>get a quote</span></p>
-    <p class="label" id="quote-context-label">Fixed-scope project inquiry</p>
+    <p class="label" id="quote-context-label">Tell me about your project</p>
     <h1 class="dsp" id="quote-context-title">Tell me what you <em>need fixed.</em></h1>
     <p class="sub business-copy" id="quote-context-intro">Describe what you want to build or improve. I'll reply by email with a practical next step. No technical brief needed.</p>
   </div>
@@ -63,10 +63,10 @@
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
       <label>Business website <i>(optional if it is not live)</i><input name="websiteUrl" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com"></label>
       <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
-      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where we should reply"></label>
-      <button class="btn btn-solid magnet qsend" type="submit"><span>Send your project</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email us</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
-      <p class="qnote" id="qnote">No payment or commitment. This goes directly to us; scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email us</a> · <a href="tel:+15108267735" data-evt="phone_click">Call us</a></p>
+      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where I should reply"></label>
+      <button class="btn btn-solid magnet qsend" type="submit"><span>Send my project details</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email Leon</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
+      <p class="qnote" id="qnote">No payment or commitment. Your message comes directly to me. Scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email Leon</a> · <a href="tel:+15108267735" data-evt="phone_click">Call Leon</a></p>
       <details>
         <summary>Add project details <i>(optional)</i></summary>
         <div style="display:grid;gap:1.1rem;margin-top:1.1rem">
@@ -97,11 +97,11 @@
       <span class="qok-mark" aria-hidden="true">✓</span>
       <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
       <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon Builds.</em></h2>
-      <p class="sub">Your request was saved. Leon will reply to the email you provided.</p>
+      <p class="sub">Your request was saved. I'll reply to the email you provided.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
         <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-        <a class="btn magnet" href="/work"><span>See our work</span></a>
+        <a class="btn magnet" href="/work"><span>See my work</span></a>
       </div>
     </div>
   </div>
@@ -120,12 +120,12 @@
   var contractorReview=service==='contractor-lead-recovery';
   var technicalPartner=service==='technical-build-partner';
   if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
-  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send my project details':'Send your project');
+  var idleButtonText=contractorReview?'Request the 3-point review':'Send my project details';
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
     document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
-    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. We will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
+    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. I will reply with three specific observations and a practical next step. No payment or commitment.';
     document.getElementById('quote-problem-label').textContent='What is the biggest lead problem?';
     f.elements.problem.placeholder='Estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
@@ -140,22 +140,22 @@
     if(packageName==='systems-plan'){
       document.getElementById('quote-context-label').textContent='$199 Systems Plan';
       document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe what you want to improve and any tools you use today. Leon will confirm whether the 45-minute working session and written plan would help before you pay.';
+      document.getElementById('quote-context-intro').textContent='Describe what you want to improve and any tools you use today. I will confirm whether the 45-minute working session and written plan would help before you pay.';
       document.getElementById('quote-problem-label').textContent='What would you like help planning?';
       f.elements.problem.placeholder='A task takes too much time, your tools do not connect, or you need help deciding how to build an idea…';
       buttonText.textContent='Ask to start the Systems Plan';
       idleButtonText='Ask to start the Systems Plan';
     }else if(packageName==='focused-build-sprint'){
       document.getElementById('quote-context-label').textContent='One-time project · from $1,500';
-      document.getElementById('quote-context-title').innerHTML='What should we <em>build first?</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the part of your project you want built first. Leon will reply with what is included, how we will check it works, the price, and the timeline.';
+      document.getElementById('quote-context-title').innerHTML='What should I <em>build first?</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the part of your project you want built first. I will reply with what is included, how I will check it works, the price, and the timeline.';
       document.getElementById('quote-problem-label').textContent='What is the first part of the project you want built?';
       f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
-      idleButtonText='Discuss a focused build';
+      idleButtonText='Discuss this project';
     }else if(packageName==='ongoing-technical-partner'){
       document.getElementById('quote-context-label').textContent='Ongoing partner · from $2,000/month';
       document.getElementById('quote-context-title').innerHTML='Pick your first <em>monthly priority.</em>';
-      document.getElementById('quote-context-intro').textContent='Share what you want to build or improve each month, along with any maintenance or fixes you need. Leon will propose an agreed monthly scope; this is not unlimited development.';
+      document.getElementById('quote-context-intro').textContent='Share what you want to build or improve each month, along with any maintenance or fixes you need. I will propose an agreed monthly scope; this is not unlimited development.';
       document.getElementById('quote-problem-label').textContent='What would you like help with each month, and what should come first?';
       f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
       idleButtonText='Discuss ongoing support';
@@ -198,7 +198,7 @@
     var d=Object.fromEntries(new FormData(f).entries());
     Object.keys(d).forEach(function(k){ if(typeof d[k]==='string') d[k]=d[k].trim(); });
     var invalid=null;
-    if(!d.problem){ err.textContent='tell us at least a sentence about what you need.'; invalid=f.elements.problem; }
+    if(!d.problem){ err.textContent='Please describe what you need.'; invalid=f.elements.problem; }
     else if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(d.email||'')){ err.textContent='that email does not look right.'; invalid=f.elements.email; }
     if(invalid){
       invalid.setAttribute('aria-invalid','true');

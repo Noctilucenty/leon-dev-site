@@ -269,7 +269,7 @@ test('app-development landing page is clear, credible, and quote-first', () => {
 test('app service has natural authority links from relevant proof and identity pages', () => {
   assert.match(read('index.html'), /href="(?:https:\/\/leonbuilds\.org)?\/services\/mobile-apps"/i);
   assert.match(read('work.html'), /work-curio-public[\s\S]*href="\/services\/mobile-apps"/i);
-  assert.match(read('about.html'), /shipped product[\s\S]*href="\/services\/mobile-apps"/i);
+  assert.match(read('about.html'), /My own app[\s\S]*href="\/services\/mobile-apps"/i);
 });
 
 test('services index exposes starting floors without making buyers open nine pages', () => {

@@ -1922,33 +1922,33 @@ def about_page():
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label">leon --about</p>
-    <h1 class="dsp"><span class="keepcase">Leon Kelvin Li</span> — <em>the person who writes the code</em></h1>
-    <p class="sub"><span class="keepcase">Leon Kelvin Li</span> is an independent software developer working with businesses across the united states. he builds business websites, iphone and android apps, online ordering, booking systems, ai assistants and the automation that runs behind them — and he does the work himself, so the person you talk to is the person writing the code.</p>
-    <p class="sub">he works in english, chinese, portuguese and spanish. that matters more than it sounds: a lot of owners can describe their problem precisely in their own language and only roughly in english, and the rough version is where projects go wrong.</p>
+    <p class="label">Your developer</p>
+    <h1 class="dsp">Meet <span class="keepcase">Leon <em>Kelvin Li.</em></span></h1>
+    <p class="sub">I build websites, apps, and automation for small businesses. You work directly with me, from the first conversation to launch.</p>
+    <p class="sub">Tell me what you need in English, Chinese, Portuguese, or Spanish.</p>
   </div>
 </section>
 
 <section class="sec">
   <div class="rail two-col">
     <div>
-      <p class="label">what he has actually built</p>
+      <p class="label">What I've built</p>
       <ul class="blist">
-        <li><svg class="ic"><use href="#ic-check"/></svg>an iphone app that is on the app store today — built solo end to end, including subscriptions and app store review</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a phone-first business catalog and ordering prototype with a cart that splits demo tickets by brand. payment and kitchen progression are simulations, not a production commerce rollout</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a tool that reads the reviews a business receives and drafts the replies from that business's own verified facts — a human still presses send</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg><span class="keepcase">ALLCPR Site Intelligence</span>, a location-planning platform built from 33,772 U.S. ZIP-code records in the reviewed project dataset, with Maps context, public data, company history, and uncertainty ranges</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a chinese-language health-education prototype with source citations and safety checks that run before the model</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span><span class="keepcase">Curio:</span> a live iPhone app I built, including subscriptions and App Store release.</span></li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span><span class="keepcase">ALLCPR:</span> a tool for comparing expansion areas, built from 33,772 U.S. ZIP-code records in the reviewed project dataset.</span></li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span><span class="keepcase">Beasty Pages:</span> a business catalog and demo cart. Payment and kitchen progression are simulations.</span></li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span>A review-reply tool that drafts responses from a business's verified facts. A person reviews and sends them.</span></li>
+        <li><svg class="ic"><use href="#ic-check"/></svg><span>A Chinese-language health-education prototype with source citations and checks before answering.</span></li>
       </ul>
     </div>
     <div>
-      <p class="label">how he works</p>
+      <p class="label">How we'll work together</p>
       <ul class="blist">
-        <li><svg class="ic"><use href="#ic-check"/></svg>one person, on purpose — no account manager, no handoff to a junior</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>a written fixed price before work starts; additions are priced and approved first</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>working reviews and delivery cadence stated in the written scope</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>the agreed project accounts, included source code, project data and setup notes are handed over; domains, hosting, app stores, libraries and other third-party services remain under their own terms</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>he will tell you when you don't need him — a script or an off-the-shelf tool is often the right answer, and saying so is cheaper than being wrong</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>You work directly with me.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>We agree on a written scope and fixed price before I start. Additions are priced and approved first.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>You review working previews along the way.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>You receive the agreed code, accounts, data, and setup notes. Third-party services keep their own terms.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>I recommend existing tools when they can do the job.</li>
       </ul>
     </div>
   </div>
@@ -1956,13 +1956,14 @@ def about_page():
 
 <section class="sec">
   <div class="rail">
-    <p class="label">recent client work</p>
-    <p class="sub">Leon contributes to <span class="keepcase">LOQOL</span>'s existing real-estate seller portal, helping connect disclosure answers to seller records and protect unfinished text while sellers work. he also designed and built the <span class="keepcase">FLORES Boxing Gloves</span> website and <span class="keepcase">ONPECY</span>'s bilingual website. <a class="tlink" href="/work/loqol-seller-portal">see his seller-portal contribution</a>, separate from the older public disclosure demo.</p>
-    <p class="sub">owners who know the bottleneck but not the right software can start with Leon's <a class="tlink" href="/technical-build-partner">Technical Build Partner offer</a>: one person maps the problem, recommends the smallest useful build, and stays responsible through testing and handoff.</p>
-    <p class="sub">his current product is <a class="tlink" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>; its <a class="tlink" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a> connects that work to this site. that shipped product is also the public proof behind his <a class="tlink" href="/services/mobile-apps">mobile app development service</a>. additional public product and workflow evidence is collected in the <a class="tlink" href="/work">Leon Builds work archive</a>.</p>
-    <p class="sub" aria-label="Leon Kelvin Li public profiles">public profiles: <a class="tlink" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">wca</a> · <a class="tlink" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">f6s</a> · <a class="tlink" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">linkedin</a> · <a class="tlink" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">apple developer</a> · <a class="tlink" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">instagram</a>.</p>
+    <p class="label">More of my work</p>
+    <p class="sub">I contribute to <span class="keepcase">LOQOL</span>'s existing real-estate seller portal, connecting disclosure answers to seller records and protecting unfinished text. <a class="tlink" href="/work/loqol-seller-portal">Read about my contribution</a>, separate from the older public disclosure demo.</p>
+    <p class="sub">I also built the <span class="keepcase">FLORES Boxing Gloves</span> website and <span class="keepcase">ONPECY</span>'s bilingual site. <a class="tlink" href="/work">Explore the projects</a>.</p>
+    <p class="sub">My own app, <a class="tlink" href="https://trycurio.app/" target="_blank" rel="noopener"><span class="keepcase">Curio</span></a>, shows what I can deliver through my <a class="tlink" href="/services/mobile-apps">app development service</a>. You can also read my <a class="tlink" href="https://trycurio.app/team.html#leon" target="_blank" rel="me noopener">founder profile</a>.</p>
+    <p class="sub">Need ongoing help with your website, tools, or app? <a class="tlink" href="/technical-build-partner">See how we can work together</a>.</p>
+    <p class="sub" aria-label="Leon Kelvin Li public profiles">Find me on <a class="tlink" href="https://www.worldcubeassociation.org/persons/2016LILE01" target="_blank" rel="me noopener">WCA</a> · <a class="tlink" href="https://www.f6s.com/leonkelvinli" target="_blank" rel="me noopener">F6S</a> · <a class="tlink" href="https://www.linkedin.com/in/leon-kelvin-li" target="_blank" rel="me noopener">LinkedIn</a> · <a class="tlink" href="https://apps.apple.com/us/developer/leon-kelvin-li/id6781121129" target="_blank" rel="me noopener">Apple Developer</a> · <a class="tlink" href="https://www.instagram.com/lkelvn_/" target="_blank" rel="me noopener">Instagram</a>.</p>
     <div class="ctarow">
-      <a class="btn btn-solid magnet" href="/quote" data-evt="about_quote_click"><span>tell him what you need</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
+      <a class="btn btn-solid magnet" href="/quote" data-evt="about_quote_click"><span>Tell me what you need fixed</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
       <a class="btn magnet" href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_about"><span>whatsapp</span></a>
       <a class="cx-mini" href="mailto:leondragon3798@gmail.com" data-evt="email_click">or email leon directly →</a>
     </div>
@@ -2205,26 +2206,26 @@ def call_page():
     bc = [("home","/"),("book a call", None)]
     schema = [breadcrumb_schema(bc, path), {
         "@context": "https://schema.org", "@type": "Service",
-        "name": "Free 15-minute project-fit call",
+        "name": "Free 15-minute call with Leon",
         "provider": {"@id": f"{BASE}/#leon"},
         "areaServed": {"@type": "Country", "name": "United States"},
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-        "description": "A free 15-minute call with Leon to identify the smallest useful next step or whether custom work is unnecessary.",
+        "description": "A free 15-minute call with Leon to discuss your project, a practical next step, and a starting budget.",
     }]
     booker_html = booker("en")
     call_alts = ''.join(
         f'<link rel="alternate" hreflang="{hl}" href="{BASE}{href}">'
         for hl, href in lang_pages.call_alternates())
     return head("Book a Free 15-Minute Call | Leon Builds",
-        "Book a free 15-minute call with Leon Kelvin Li. He looks at what you have now and tells you honestly whether it is worth changing. No sales team, no obligation.",
+        "Talk directly with Leon about your website, app, or a task you want to automate. A free 15-minute call to discuss the next step and a starting budget.",
         path, schema, call_alts).replace('<body>', '<body class="call-page" data-assistant-launcher="hidden">', 1) + ICONS + nav() + '''
 <main id="main">
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label" id="call-context-label">Free project-fit call</p>
+    <p class="label" id="call-context-label">Free call with Leon</p>
     <h1 class="dsp" id="call-context-title">Book a free <em>15-minute call</em></h1>
-    <p class="sub" id="call-context-intro">Show Leon what is slow, manual, or missing. In 15 minutes, you will get a direct view of the smallest useful next step, what it starts at, or whether you do not need custom work.</p>
+    <p class="sub" id="call-context-intro">Tell me about your website, app, or a task you want to automate. I'll help you work out the next step and a starting budget.</p>
     <p class="pricetag" id="call-context-price">Free · 15 minutes · weekday availability, Pacific time · directly with Leon</p>
   </div>
 </section>
@@ -2238,12 +2239,12 @@ def call_page():
     <div>
       <p class="label" id="call-context-agenda">what happens on the call</p>
       <ul class="blist">
-        <li><svg class="ic"><use href="#ic-check"/></svg>you describe the problem in plain words — no technical vocabulary needed</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>he asks about what you use today and where it actually breaks</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>you get a straight answer on what it would take and what it starts at</li>
-        <li><svg class="ic"><use href="#ic-check"/></svg>if a cheaper tool or a small script solves it, he says so — that ends the call early and saves you money</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>Tell me what you want to build or improve.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>I'll ask about the tools you use and what needs to change.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>We'll discuss a practical next step and starting budget.</li>
+        <li><svg class="ic"><use href="#ic-check"/></svg>I'll tell you if an existing tool would solve it.</li>
       </ul>
-      <p class="sub">english, spanish, portuguese or chinese — whichever you would rather think in.</p>
+      <p class="sub">We can speak English, Spanish, Portuguese, or Chinese.</p>
     </div>
     </div>
   </div>
@@ -2270,7 +2271,7 @@ def call_page():
     document.title='Book a Contractor Website Review | Leon Builds';
     if(label) label.textContent='Contractor website + follow-up review';
     if(title) title.innerHTML='Book a free <em>15-minute website review</em>';
-    if(intro) intro.textContent='Show Leon your current contractor website and estimate path. You will leave knowing the smallest useful change, what the fixed scope includes, and whether the $1,500 product fits.';
+    if(intro) intro.textContent='Show me your current contractor website and how customers request an estimate. I will help you decide whether the $1,500 website and follow-up package fits.';
     if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
     if(agenda) agenda.textContent='What happens in the contractor review';
     trackContext('call_context_contractor',{service:'contractor-lead-recovery'});
@@ -2279,12 +2280,12 @@ def call_page():
     document.title='Discuss Your Website, App or Automation | Leon Builds';
     if(label) label.textContent='Your website, app, or automation project';
     if(title) title.innerHTML='Book a free <em>15-minute project call</em>';
-    if(intro) intro.textContent='Tell Leon what you want to build or improve. Use this free call to discuss your website, app, or repeat tasks and decide on a practical next step.';
+    if(intro) intro.textContent='Tell me what you want to build or improve. We can discuss your website, app, or repeat tasks and decide on a practical next step.';
     if(price) price.textContent='Free · 15 minutes · weekday availability, Pacific time · directly with Leon';
-    if(agenda) agenda.textContent='What happens in the fit call';
+    if(agenda) agenda.textContent='What happens on the call';
     if(packageName==='systems-plan'){
-      if(label) label.textContent='Systems Plan fit call';
-      if(intro) intro.textContent='Tell Leon what you want to improve. He will confirm whether a 45-minute working session and written Systems Plan would help before you pay for it.';
+      if(label) label.textContent='Discuss the $199 Systems Plan';
+      if(intro) intro.textContent='Tell me what you want to improve. I will confirm whether a 45-minute working session and written Systems Plan would help before you pay for it.';
     }
     var context={service:'technical-build-partner'};
     if(/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) context.package=packageName;
@@ -2306,7 +2307,7 @@ def quote_page():
 <section class="sec page-hero">
   <div class="rail">
     ''' + crumbs(bc) + '''
-    <p class="label" id="quote-context-label">Fixed-scope project inquiry</p>
+    <p class="label" id="quote-context-label">Tell me about your project</p>
     <h1 class="dsp" id="quote-context-title">Tell me what you <em>need fixed.</em></h1>
     <p class="sub business-copy" id="quote-context-intro">Describe what you want to build or improve. I'll reply by email with a practical next step. No technical brief needed.</p>
   </div>
@@ -2316,10 +2317,10 @@ def quote_page():
     <form class="qform" id="qform" method="post" action="/quote" novalidate aria-describedby="qnote">
       <label>Business website <i>(optional if it is not live)</i><input name="websiteUrl" type="text" inputmode="url" autocomplete="url" maxlength="300" placeholder="yourbusiness.com"></label>
       <label><span id="quote-problem-label">What are you trying to fix or build?</span> <i>(required)</i><textarea name="problem" rows="4" required placeholder="The task that is still manual, the thing that is broken, or what you wish existed…"></textarea></label>
-      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where we should reply"></label>
-      <button class="btn btn-solid magnet qsend" type="submit"><span>Send your project</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
-      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email us</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
-      <p class="qnote" id="qnote">No payment or commitment. This goes directly to us; scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email us</a> · <a href="tel:+15108267735" data-evt="phone_click">Call us</a></p>
+      <label>Email <i>(required)</i><input name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Where I should reply"></label>
+      <button class="btn btn-solid magnet qsend" type="submit"><span>Send my project details</span><svg class="ic"><use href="#ic-arrow"/></svg></button>
+      <noscript><p class="qnote">This form needs JavaScript to submit safely. <a href="mailto:leondragon3798@gmail.com">Email Leon</a> or <a href="tel:+15108267735">call (510) 826-7735</a>.</p></noscript>
+      <p class="qnote" id="qnote">No payment or commitment. Your message comes directly to me. Scope and price are agreed before work begins. Prefer another route? <a href="https://wa.me/15108267735?text=Hi%20Leon%20-%20saw%20your%20site.%20My%20business%20is%3A%20" target="_blank" rel="noopener" data-evt="wa_click_quote">WhatsApp</a> · <a href="mailto:leondragon3798@gmail.com" data-evt="quote_manual_email">Email Leon</a> · <a href="tel:+15108267735" data-evt="phone_click">Call Leon</a></p>
       <details>
         <summary>Add project details <i>(optional)</i></summary>
         <div style="display:grid;gap:1.1rem;margin-top:1.1rem">
@@ -2350,11 +2351,11 @@ def quote_page():
       <span class="qok-mark" aria-hidden="true">✓</span>
       <p class="label" role="status" aria-live="assertive" aria-atomic="true">project sent</p>
       <h2 class="dsp" id="qok-title">Your project was <em>sent to Leon Builds.</em></h2>
-      <p class="sub">Your request was saved. Leon will reply to the email you provided.</p>
+      <p class="sub">Your request was saved. I'll reply to the email you provided.</p>
       <p class="qreceipt">Submission receipt: <code id="qreceipt"></code></p>
       <div class="ctarow">
         <a class="btn btn-solid magnet" id="quote-book-call" href="/call" data-evt="quote_to_calendar"><span>Book the free 15-minute call</span><svg class="ic"><use href="#ic-arrow"/></svg></a>
-        <a class="btn magnet" href="/work"><span>See our work</span></a>
+        <a class="btn magnet" href="/work"><span>See my work</span></a>
       </div>
     </div>
   </div>
@@ -2373,12 +2374,12 @@ def quote_page():
   var contractorReview=service==='contractor-lead-recovery';
   var technicalPartner=service==='technical-build-partner';
   if(!technicalPartner||!/^(systems-plan|focused-build-sprint|ongoing-technical-partner)$/.test(packageName)) packageName='';
-  var idleButtonText=contractorReview?'Request the 3-point review':(technicalPartner?'Send my project details':'Send your project');
+  var idleButtonText=contractorReview?'Request the 3-point review':'Send my project details';
   if(contractorReview){
     f.elements.service.value=service;
     document.getElementById('quote-context-label').textContent='Free contractor website review';
     document.getElementById('quote-context-title').innerHTML='Send your current website for a <em>3-point review.</em>';
-    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. We will reply with three specific observations and the smallest sensible next step—no payment or commitment.';
+    document.getElementById('quote-context-intro').textContent='Share the URL and the biggest issue you see. I will reply with three specific observations and a practical next step. No payment or commitment.';
     document.getElementById('quote-problem-label').textContent='What is the biggest lead problem?';
     f.elements.problem.placeholder='Estimate requests get lost, the mobile form is hard to use, or another specific issue…';
     buttonText.textContent=idleButtonText;
@@ -2393,22 +2394,22 @@ def quote_page():
     if(packageName==='systems-plan'){
       document.getElementById('quote-context-label').textContent='$199 Systems Plan';
       document.getElementById('quote-context-title').innerHTML='Start with a <em>written technical plan.</em>';
-      document.getElementById('quote-context-intro').textContent='Describe what you want to improve and any tools you use today. Leon will confirm whether the 45-minute working session and written plan would help before you pay.';
+      document.getElementById('quote-context-intro').textContent='Describe what you want to improve and any tools you use today. I will confirm whether the 45-minute working session and written plan would help before you pay.';
       document.getElementById('quote-problem-label').textContent='What would you like help planning?';
       f.elements.problem.placeholder='A task takes too much time, your tools do not connect, or you need help deciding how to build an idea…';
       buttonText.textContent='Ask to start the Systems Plan';
       idleButtonText='Ask to start the Systems Plan';
     }else if(packageName==='focused-build-sprint'){
       document.getElementById('quote-context-label').textContent='One-time project · from $1,500';
-      document.getElementById('quote-context-title').innerHTML='What should we <em>build first?</em>';
-      document.getElementById('quote-context-intro').textContent='Describe the part of your project you want built first. Leon will reply with what is included, how we will check it works, the price, and the timeline.';
+      document.getElementById('quote-context-title').innerHTML='What should I <em>build first?</em>';
+      document.getElementById('quote-context-intro').textContent='Describe the part of your project you want built first. I will reply with what is included, how I will check it works, the price, and the timeline.';
       document.getElementById('quote-problem-label').textContent='What is the first part of the project you want built?';
       f.elements.problem.placeholder='A lead form that reaches the right person, an internal dashboard, one app workflow, or another testable result…';
-      idleButtonText='Discuss a focused build';
+      idleButtonText='Discuss this project';
     }else if(packageName==='ongoing-technical-partner'){
       document.getElementById('quote-context-label').textContent='Ongoing partner · from $2,000/month';
       document.getElementById('quote-context-title').innerHTML='Pick your first <em>monthly priority.</em>';
-      document.getElementById('quote-context-intro').textContent='Share what you want to build or improve each month, along with any maintenance or fixes you need. Leon will propose an agreed monthly scope; this is not unlimited development.';
+      document.getElementById('quote-context-intro').textContent='Share what you want to build or improve each month, along with any maintenance or fixes you need. I will propose an agreed monthly scope; this is not unlimited development.';
       document.getElementById('quote-problem-label').textContent='What would you like help with each month, and what should come first?';
       f.elements.problem.placeholder='Ship one milestone while keeping the current site, automations, or app stable…';
       idleButtonText='Discuss ongoing support';
@@ -2451,7 +2452,7 @@ def quote_page():
     var d=Object.fromEntries(new FormData(f).entries());
     Object.keys(d).forEach(function(k){ if(typeof d[k]==='string') d[k]=d[k].trim(); });
     var invalid=null;
-    if(!d.problem){ err.textContent='tell us at least a sentence about what you need.'; invalid=f.elements.problem; }
+    if(!d.problem){ err.textContent='Please describe what you need.'; invalid=f.elements.problem; }
     else if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/.test(d.email||'')){ err.textContent='that email does not look right.'; invalid=f.elements.email; }
     if(invalid){
       invalid.setAttribute('aria-invalid','true');
