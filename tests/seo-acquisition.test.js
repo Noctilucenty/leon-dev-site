@@ -57,12 +57,12 @@ test('published homepage metadata, services, and inquiry path state the current 
   const visible = text(html);
   assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
   const description = metadataText(html, /<meta\b[^>]*name="description"[^>]*content="([^"]+)"/i);
-  assert.match(description, /free 3-point website review/i);
-  assert.match(description, /starter websites from \$199/i);
-  assert.match(description, /automation from \$500/i);
+  assert.match(description, /websites, automation, and custom tools/i);
+  assert.match(description, /small business easier to run/i);
+  assert.match(description, /directly with Leon/i);
   assert.match(html, /<link\b[^>]*rel="canonical"[^>]*href="https:\/\/leonbuilds\.org\/?"/i);
   assert.equal((html.match(/<h1\b/gi) || []).length, 1);
-  assert.match(visible, /websites that/i);
+  assert.match(visible, /websites & automation that/i);
   assert.match(visible, /small businesses/i);
   assert.ok(html.indexOf('id="services"') < html.indexOf('id="work"'));
   assert.match(html, /href="#start"/i);

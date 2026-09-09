@@ -17,7 +17,7 @@ test('company voice keeps a named founder instead of implying an anonymous team'
     assert.match(visible, /Leon Kelvin Li/, file);
     assert.doesNotMatch(visible, /our team of (?:developers|engineers|experts)/i, file);
   }
-  assert.match(text(read('quote.html')), /Tell us what is broken, manual, or missing/i);
+  assert.match(text(read('quote.html')), /Tell me what you need fixed/i);
   assert.match(text(read('quote.html')), /Your request was saved\. Leon will reply/i);
 });
 

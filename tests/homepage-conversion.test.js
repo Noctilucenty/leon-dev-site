@@ -99,9 +99,9 @@ const clientJs = referencedAssets('.js');
 test('published export has the current metadata and four-section navigation', () => {
   assert.match(html, /<title>Small Business Websites &amp; Automation \| Leon Builds<\/title>/i);
   const description = attributes(html.match(/<meta\b[^>]*name=["']description["'][^>]*>/i)?.[0] || '').content || '';
-  assert.match(description, /free 3-point website review/i);
-  assert.match(description, /starter websites from \$199/i);
-  assert.match(description, /automation from \$500/i);
+  assert.match(description, /websites, automation, and custom tools/i);
+  assert.match(description, /small business easier to run/i);
+  assert.match(description, /directly with Leon/i);
   assert.match(html, /rel=["']canonical["'][^>]*href=["']https:\/\/leonbuilds\.org\/?["']/i);
   assert.match(html, /property=["']og:image["'][^>]*assets\/og\.png/i);
 
@@ -111,40 +111,39 @@ test('published export has the current metadata and four-section navigation', ()
   for (const [href, label] of [['#services', 'Services'], ['#work', 'Work'], ['#about', 'About'], ['#start', 'Start']]) {
     assert.ok(linksIn(header).some(link => link.attrs.href === href && link.text.includes(label)), `${label} is in the nav`);
   }
-  assert.match(header, /href=["']#review-form["'][^>]*data-event=["']mobile_review_cta_click["']/i);
+  assert.match(header, /href=["']https:\/\/leonbuilds\.org\/quote["'][^>]*data-event=["']mobile_project_cta_click["']/i);
 });
 
-test('hero uses the free review as its primary action', () => {
+test('hero has one primary project action and a secondary work link', () => {
   const hero = elementsWithClass(html, 'section', 'hero-journey')[0] || '';
   const visible = plainText(hero);
-  assert.match(visible, /websites that make it easy to act/i);
-  assert.match(visible, /automation that follows up/i);
-  assert.match(visible, /inquiries that reach you/i);
-  assert.match(visible, /Scope and price agreed first/i);
-  const primary = linksIn(hero).find(link => link.attrs['data-event'] === 'hero_review_cta_click');
-  assert.equal(primary?.attrs.href, '#review-form');
-  assert.match(primary?.text || '', /get a free 3-point review/i);
-  assert.ok(linksIn(hero).some(link => link.attrs.href === 'https://leonbuilds.org/quote' && /get a fixed quote/i.test(link.text)));
-  assert.doesNotMatch(hero, /start a project/i);
+  assert.match(visible, /websites & automation that make your business easier to run/i);
+  assert.match(visible, /small businesses/i);
+  const primary = linksIn(hero).find(link => link.attrs['data-event'] === 'hero_fixed_quote_click');
+  assert.equal(primary?.attrs.href, 'https://leonbuilds.org/quote');
+  assert.match(primary?.text || '', /Tell me what you need fixed/i);
+  assert.ok(linksIn(hero).some(link => link.attrs.href === '#work'));
+  assert.doesNotMatch(hero, /free 3-point|Systems Plan/);
 });
 
-test('service cards have crawlable detail links and scope controls', () => {
+test('service cards have one clear detail link each', () => {
   const services = elementWithId(html, 'section', 'services');
   const cards = elementsWithClass(services, 'article', 'service-v2-card');
   assert.equal(cards.length, 3);
   const expected = [
     ['/services/websites', '199'],
-    ['/missed-lead-recovery', '1,500'],
     ['/services/business-automation', '500'],
+    ['/services/custom-software', '1,500'],
   ];
   for (const [index, card] of cards.entries()) {
     assert.ok(linksIn(card).some(link => hrefPath(link.attrs.href) === expected[index][0]), `${expected[index][0]} is crawlable`);
     assert.match(plainText(card), new RegExp(`\\$\\s*${expected[index][1]}`));
-    assert.match(card, /<button\b[^>]*aria-label=["']View [^"']+ scope["'][^>]*>[\s\S]*?View scope/i);
+    assert.equal(linksIn(card).length, 1);
+    assert.doesNotMatch(card, /<button\b/i);
   }
 });
 
-test('work proof uses canonical case-study pages and repeats the review action', () => {
+test('work proof uses canonical case-study pages without another review pitch', () => {
   const work = elementWithId(html, 'section', 'work');
   const projects = elementsWithClass(work, 'article', 'project-scene');
   assert.equal(projects.length, 3);
@@ -159,7 +158,7 @@ test('work proof uses canonical case-study pages and repeats the review action',
   assert.match(work, /data-conversion-proof=["']allcpr-case-study["']/i);
   assert.doesNotMatch(work, /href=["'][^"']*\/work#|apps\.apple\.com|href=["']https:\/\/(?:www\.)?beastypages\.com/i);
   const repeat = linksIn(html).find(link => link.attrs['data-event'] === 'work_review_cta_click');
-  assert.equal(repeat?.attrs.href, '#review-form');
+  assert.equal(repeat, undefined);
 });
 
 test('founder proof, four-step process, and reviews support the start section', () => {
@@ -170,12 +169,12 @@ test('founder proof, four-step process, and reviews support the start section', 
   assert.match(plainText(about), /helped us evaluate and plan new locations/i);
   const process = elementWithId(about, 'div', 'process');
   assert.equal(elementsWithClass(process, 'div', 'process-stop').length, 4);
-  for (const step of ['Problem', 'Scope', 'Build', 'Launch']) assert.match(plainText(process), new RegExp(`\\b${step}\\b`));
+  for (const step of ['Tell me', 'Agree', 'Review', 'Launch']) assert.match(plainText(process), new RegExp(`\\b${step}\\b`));
 
   const start = elementWithId(html, 'section', 'start');
   assert.match(plainText(start), /three specific improvements to consider/i);
-  assert.match(start, /data-conversion-proof=["']website-client-review["']/i);
-  assert.ok(linksIn(start).some(link => hrefPath(link.attrs.href) === '/reviews' && /client reviews/i.test(link.text)));
+  assert.match(start, /<details\b[^>]*class=["']review-disclosure["']/i);
+  assert.ok(linksIn(start).some(link => hrefPath(link.attrs.href) === '/quote'));
   assert.doesNotMatch(JSON.stringify(schemaNodes(html)), /aggregateRating|reviewRating|ratingValue/i);
 });
 

@@ -29,5 +29,6 @@ test('starter website offer is separate from systems plan and larger websites', 
   assert.match(page, /larger business-website scope above starts at \$300/);
   const home = read('homepage/index.html');
   assert.match(home, /href="https:\/\/leonbuilds.org\/technical-build-partner"/);
-  assert.match(home, /\$199 systems plan/);
+  assert.doesNotMatch(home, /\$199 systems plan/i);
+  assert.match(read('technical-build-partner.html'), /\$199 Systems Plan/);
 });
