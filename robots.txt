@@ -1,4 +1,6 @@
 User-agent: *
+# Keep personal founder portraits out of search results, including older versions.
+Disallow: /images/leon-kelvin-li
 Allow: /
 
 Sitemap: https://leonbuilds.org/sitemap.xml

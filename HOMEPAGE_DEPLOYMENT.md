@@ -39,6 +39,14 @@ assets. It overlays the new root only after discovering those resources, and it
 refuses unknown files, symlinks, collisions or unpublished resource references.
 `tools/check_site.py` checks the effective new homepage at its logical root URL.
 
+Personal portrait privacy: keep the `/images/leon-kelvin-li` path prefix blocked
+in the root `robots.txt` and its generator in `tools/build_pages.py`. The source
+preview also ships this rule from `public/robots.txt`. All current and older
+founder portraits use this prefix; keep future replacements under it. This
+targets the photo files while leaving the business pages and portfolio images
+crawlable. It is a search-engine instruction, not access control or a guarantee
+against cached results, non-compliant crawlers, or copies hosted elsewhere.
+
 The contact form uses the existing API directly on the canonical domain. It
 requires an accepted receipt before displaying success and reuses its request key
 on retries. No synthetic lead or email is sent by the invalid-payload check.

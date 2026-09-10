@@ -2793,7 +2793,10 @@ for u in urls:
     sm += f'  <url><loc>{BASE}{u}</loc><lastmod>{url_lastmod(u)}</lastmod></url>\n'
 sm += '</urlset>\n'
 w('sitemap.xml', sm)
-w('robots.txt', f'User-agent: *\nAllow: /\n\nSitemap: {BASE}/sitemap.xml\n')
+w('robots.txt', f'User-agent: *\n'
+    '# Keep personal founder portraits out of search results, including older versions.\n'
+    'Disallow: /images/leon-kelvin-li\nAllow: /\n\n'
+    f'Sitemap: {BASE}/sitemap.xml\n')
 
 print(f'\n{len(SERVICES)} service pages, {len(INDUSTRIES)} industry pages, 2 indexes, work, '
       f'{len(CASE_STUDIES)} case studies, contractor inquiry guide, '
