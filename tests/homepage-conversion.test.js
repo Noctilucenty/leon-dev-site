@@ -166,6 +166,14 @@ test('founder proof, four-step process, and reviews support the start section', 
   const builder = linksIn(about).find(link => link.attrs['data-event'] === 'about_builder_click');
   assert.equal(hrefPath(builder.attrs.href), '/about');
   assert.match(plainText(about), /built by Leon/i);
+  const portrait = about.match(/<img\b[^>]*src="\/images\/leon-kelvin-li-bridge\.webp"[^>]*>/)?.[0];
+  assert.ok(portrait, 'About displays the latest approved Golden Gate portrait');
+  const portraitAttrs = attributes(portrait);
+  assert.equal(portraitAttrs.alt, 'Leon Kelvin Li, founder of Leon Builds');
+  assert.equal(portraitAttrs.width, '1086');
+  assert.equal(portraitAttrs.height, '1448');
+  assert.ok(fs.existsSync(path.join(ROOT, 'homepage/images/leon-kelvin-li-bridge.webp')));
+  assert.doesNotMatch(about, /leon-kelvin-li-snow/);
   assert.match(plainText(about), /helped us evaluate and plan new locations/i);
   const process = elementWithId(about, 'div', 'process');
   assert.equal(elementsWithClass(process, 'div', 'process-stop').length, 4);
